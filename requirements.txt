@@ -1,0 +1,22 @@
+# TigerResearchBuddy Dependencies
+
+# Web Crawling
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+lxml>=5.0.0
+
+# Google Scholar (with rate limiting workarounds)
+scholarly>=1.7.0
+
+# AI & Embeddings
+google-generativeai>=0.3.0
+sentence-transformers>=2.2.0
+chromadb>=0.4.0
+
+# Utilities
+python-dotenv>=1.0.0
+rich>=13.0.0
+click>=8.1.0
+
+# Data handling
+pandas>=2.0.0
