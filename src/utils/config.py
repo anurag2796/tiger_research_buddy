@@ -21,8 +21,17 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
 
 # Crawling Configuration
-RIT_RESEARCH_URL = "https://www.rit.edu/computing/key-research-areas"
-CRAWL_DELAY = 2  # seconds between requests to be respectful
+# Crawling Configuration
+# RIT Colleges Research Pages
+COLLEGE_URLS = {
+    "computing": "https://www.rit.edu/computing/key-research-areas",
+    "engineering": "https://www.rit.edu/engineering/research",
+    "science": "https://www.rit.edu/science/research",
+    "liberal_arts": "https://www.rit.edu/liberalarts/research",
+    "business": "https://www.rit.edu/business/research",
+    "technology": "https://www.rit.edu/cet/research"
+}
+CRAWL_DELAY = 1.0  # Reduced slightly for speed, but still polite
 
 # Embedding Configuration
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"

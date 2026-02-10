@@ -131,6 +131,8 @@ class PDFCrawler:
                     papers.append({
                         "title": title,
                         "author": prof.get("name", ""),
+                        "college": prof.get("college", ""),
+                        "department": prof.get("department", ""),
                         "url": url,
                         "pdf_url": pdf_url,
                         "year": pub.get("year", ""),
@@ -236,6 +238,8 @@ def extract_papers_to_vectorstore(data_file: str = "rit_data.json"):
                 "title": paper["title"][:200],
                 "author": paper.get("author", ""),
                 "year": paper.get("year", ""),
+                "college": paper.get("college", ""),
+                "department": paper.get("department", ""),
                 "tags": str(tag_names)
             }
         })

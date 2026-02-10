@@ -10,7 +10,7 @@ from rich.console import Console
 console = Console()
 
 # Default model - lightweight and fast
-DEFAULT_MODEL = "llama3.2:1b"
+DEFAULT_MODEL = "tigerbuddy"
 
 # Check if ollama is available
 try:
@@ -24,10 +24,19 @@ except ImportError:
 class OllamaClient:
     """Client for interacting with local Ollama LLM."""
     
-    def __init__(self, model: str = DEFAULT_MODEL):
+    def __init__(self, model: str = DEFAULT_MODEL, persona: str = "tiger"):
         self.model = model
+        self.persona = persona
         self._initialized = False
         self._available_models = []
+        self._persona_prompts = {}
+    
+    def set_persona(self, persona: str):
+        """Change the active persona (tiger, analyzer, critique)."""
+        if persona not in ["tiger", "analyzer", "critique"]:
+            raise ValueError(f"Unknown persona: {persona}")
+        self.persona = persona
+        console.print(f"[cyan]Switched to {persona} persona[/]")
     
     def initialize(self):
         """Initialize the Ollama client."""
@@ -78,13 +87,41 @@ class OllamaClient:
         except Exception as e:
             raise RuntimeError(f"Ollama server not running. Start it with: brew services start ollama\nError: {e}")
 
+    def _load_persona_prompt(self) -> str:
+        """Load the prompt for the current persona."""
+        from pathlib import Path
+        
+        # Cache prompts
+        if self.persona in self._persona_prompts:
+            return self._persona_prompts[self.persona]
+        
+        # Map persona to file
+        persona_files = {
+            "tiger": "role.md",
+            "analyzer": "analyzer.md",
+            "critique": "critique.md"
+        }
+        
+        prompt_file = Path("data/prompts") / persona_files.get(self.persona, "role.md")
+        
+        try:
+            with open(prompt_file, "r") as f:
+                prompt = f.read()
+                self._persona_prompts[self.persona] = prompt
+                return prompt
+        except FileNotFoundError:
+            console.print(f"[yellow]Warning: {prompt_file} not found, using default[/]")
+            return "You are a helpful research assistant."
+
+
 
     
     def generate(
         self, 
         prompt: str, 
         context: Optional[str] = None,
-        system_prompt: Optional[str] = None
+        system_prompt: Optional[str] = None,
+        **kwargs
     ) -> str:
         """Generate a response from local LLM."""
         if not self._initialized:
@@ -92,6 +129,10 @@ class OllamaClient:
         
         # Build the full prompt
         messages = []
+        
+        # Use persona-specific prompt if no custom system_prompt
+        if not system_prompt:
+            system_prompt = self._load_persona_prompt()
         
         if system_prompt:
             messages.append({"role": "system", "content": system_prompt})
@@ -104,9 +145,16 @@ class OllamaClient:
         messages.append({"role": "user", "content": user_content})
         
         try:
+            # Set default options if not provided
+            options = kwargs.get("options", {})
+            if "num_ctx" not in options:
+                options["num_ctx"] = 8192 # Increase context to 8k
+            kwargs["options"] = options
+            
             response = ollama.chat(
                 model=self.model,
-                messages=messages
+                messages=messages,
+                **kwargs
             )
             return response['message']['content']
         except Exception as e:

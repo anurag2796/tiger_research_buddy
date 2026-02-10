@@ -100,6 +100,29 @@ class VectorStore:
         )
         
         console.print(f"[green]✓ Added {len(documents)} documents to vector store[/]")
+
+    def add_idea(self, idea):
+        """Add a single idea to the vector store."""
+        content = f"""Idea: {idea.title}
+Description: {idea.description}
+Author: {idea.author_name}
+College: {idea.college if idea.college else 'Unknown'}
+Tags: {', '.join(idea.tags)}
+Status: {idea.status}"""
+        
+        self.add_documents([{
+            "id": f"idea_{idea.id}",
+            "content": content,
+            "metadata": {
+                "doc_type": "idea",
+                "title": idea.title,
+                "author": idea.author_name,
+                "college": idea.college,
+                "tags": json.dumps(idea.tags),
+                "status": idea.status,
+                "created_at": idea.created_at
+            }
+        }])
     
     def search(self, query: str, n_results: int = 5, doc_type: Optional[str] = None) -> list[dict]:
         """Search for similar documents."""
@@ -202,6 +225,7 @@ URL: {area.get('url', '')}"""
                 "doc_type": "research_area",
                 "name": area["name"],
                 "url": area.get("url", ""),
+                "college": area.get("college", ""),
                 "tags": json.dumps(tag_names)
             }
         })
@@ -239,7 +263,8 @@ Tags: {', '.join(tag_names) if tag_names else 'faculty'}
 Google Scholar Citations: {citations}
 H-Index: {h_index}
 Recent Publications: {', '.join(p.get('title', '')[:100] for p in pubs[:5]) if pubs else 'Not available'}
-Profile URL: {prof.get('profile_url', '')}"""
+Profile URL: {prof.get('profile_url', '')}
+College: {prof.get('college', '')}"""
         
         documents.append({
             "id": doc_id,
@@ -251,7 +276,8 @@ Profile URL: {prof.get('profile_url', '')}"""
                 "url": prof.get("profile_url", ""),
                 "tags": json.dumps(tag_names),
                 "citations": str(citations),
-                "h_index": str(h_index)
+                "h_index": str(h_index),
+                "college": prof.get("college", "")
             }
         })
         
@@ -286,7 +312,8 @@ Tags: {', '.join(pub_tag_names) if pub_tag_names else 'research'}"""
                     "author": prof["name"],
                     "year": pub.get("year", ""),
                     "citations": str(pub.get("citations", 0)),
-                    "tags": json.dumps(pub_tag_names)
+                    "tags": json.dumps(pub_tag_names),
+                    "college": prof.get("college", "")
                 }
             })
     

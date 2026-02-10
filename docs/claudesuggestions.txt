@@ -1,0 +1,1431 @@
+# Detailed Implementation Roadmap: TigerStack 2.0
+
+---
+
+## Phase 1: Foundation (Weeks 1-2)
+**Goal**: Replace brittle components with robust, LLM-powered alternatives and establish new storage layer.
+
+### 1.1 Refine SmartCrawler (Qwen JSON Mode)
+**Duration**: 3-4 days
+
+#### Implementation Steps:
+
+**A. Create Unified Extraction Schema**
+```python
+# schemas/faculty_schema.py
+from pydantic import BaseModel, Field
+from typing import Optional, List
+
+class FacultyProfile(BaseModel):
+    """Structured schema for faculty data extraction"""
+    name: str = Field(description="Full name of faculty member")
+    title: str = Field(description="Academic title/position")
+    department: str = Field(description="Department affiliation")
+    email: Optional[str] = Field(default=None)
+    phone: Optional[str] = Field(default=None)
+    office: Optional[str] = Field(default=None)
+    
+    # Previously missed fields
+    education: List[str] = Field(
+        default_factory=list,
+        description="Degrees earned (e.g., 'Ph.D. Computer Science, MIT, 2015')"
+    )
+    research_interests: List[str] = Field(
+        default_factory=list,
+        description="Research areas/keywords"
+    )
+    
+    # Rich fields for context
+    bio_summary: Optional[str] = Field(
+        default=None,
+        description="2-3 sentence bio extracted from page"
+    )
+    recent_publications: List[str] = Field(
+        default_factory=list,
+        description="Up to 5 most recent paper titles"
+    )
+```
+
+**B. Build SmartCrawler Class**
+```python
+# crawlers/smart_crawler.py
+import requests
+from bs4 import BeautifulSoup
+import ollama
+import json
+from typing import Optional
+
+class SmartCrawler:
+    def __init__(self, model: str = "qwen2.5:latest"):
+        self.model = model
+        self.extraction_prompt = """
+You are a web data extraction expert. Extract faculty information from the HTML below.
+
+HTML Content:
+{html_content}
+
+Extract the following as valid JSON matching this schema:
+{schema}
+
+Rules:
+1. If a field is not found, use null or [] (not "N/A" or "Not found")
+2. For education: Extract full degree strings (e.g., "Ph.D. Computer Science, Stanford, 2010")
+3. For research_interests: Extract keywords/phrases, even if listed as "areas of expertise"
+4. For bio_summary: Condense the bio to 2-3 sentences max
+5. Return ONLY valid JSON, no markdown fences
+
+JSON Output:
+"""
+    
+    def extract_faculty_data(self, url: str) -> Optional[FacultyProfile]:
+        """
+        Fetch page and extract structured data using Qwen
+        """
+        # Fetch HTML
+        response = requests.get(url, timeout=10)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        # Clean HTML (remove scripts, styles, nav)
+        for tag in soup(['script', 'style', 'nav', 'footer', 'header']):
+            tag.decompose()
+        
+        # Limit to main content (heuristic: find largest text block)
+        main_content = soup.find('main') or soup.find('article') or soup.body
+        html_text = main_content.get_text(separator='\n', strip=True)[:8000]  # Qwen context limit
+        
+        # Generate extraction prompt
+        schema_json = FacultyProfile.schema_json(indent=2)
+        prompt = self.extraction_prompt.format(
+            html_content=html_text,
+            schema=schema_json
+        )
+        
+        # Call Qwen with JSON mode
+        response = ollama.generate(
+            model=self.model,
+            prompt=prompt,
+            format='json',  # Force JSON output
+            options={'temperature': 0.1}  # Low temp for consistency
+        )
+        
+        # Parse and validate
+        try:
+            raw_json = response['response']
+            data = json.loads(raw_json)
+            return FacultyProfile(**data)
+        except Exception as e:
+            print(f"Extraction failed for {url}: {e}")
+            return None
+    
+    def crawl_directory(self, base_url: str) -> List[FacultyProfile]:
+        """
+        Crawl faculty directory and extract all profiles
+        """
+        # Implementation for multi-page crawling
+        # (omitted for brevity - you'd add pagination logic here)
+        pass
+```
+
+**C. Testing & Validation**
+```python
+# tests/test_smart_crawler.py
+def test_extraction_accuracy():
+    """
+    Test against 20 known faculty pages with ground truth data
+    """
+    crawler = SmartCrawler()
+    test_urls = [
+        "https://cs.rit.edu/faculty/john-doe",  # Has all fields
+        "https://cs.rit.edu/faculty/jane-smith",  # Missing phone
+        # ... 18 more
+    ]
+    
+    results = []
+    for url in test_urls:
+        extracted = crawler.extract_faculty_data(url)
+        ground_truth = load_ground_truth(url)
+        
+        # Calculate field-level accuracy
+        accuracy = compare_profiles(extracted, ground_truth)
+        results.append(accuracy)
+    
+    avg_accuracy = sum(results) / len(results)
+    assert avg_accuracy > 0.95, f"Accuracy {avg_accuracy} below 95% threshold"
+```
+
+**Deliverable**: Working `SmartCrawler` with >95% extraction accuracy on test set.
+
+---
+
+### 1.2 Migrate to LanceDB (Test with 100 Papers)
+**Duration**: 4-5 days
+
+#### Implementation Steps:
+
+**A. Install & Setup LanceDB**
+```bash
+pip install lancedb sentence-transformers
+```
+
+```python
+# db/vector_store.py
+import lancedb
+from sentence_transformers import SentenceTransformer
+import pyarrow as pa
+
+class VectorStore:
+    def __init__(self, db_path: str = "./lancedb"):
+        self.db = lancedb.connect(db_path)
+        self.embedder = SentenceTransformer('nomic-ai/nomic-embed-text-v1.5', trust_remote_code=True)
+        
+        # Define schema (Lance uses Arrow schema)
+        self.schema = pa.schema([
+            pa.field("id", pa.string()),
+            pa.field("title", pa.string()),
+            pa.field("authors", pa.list_(pa.string())),
+            pa.field("abstract", pa.string()),
+            pa.field("full_text", pa.string()),  # Abstract + Intro + Conclusion
+            pa.field("embedding", pa.list_(pa.float32(), 768)),  # Nomic dim
+            pa.field("metadata", pa.struct([
+                ('year', pa.int32()),
+                ('venue', pa.string()),
+                ('citations', pa.int32())
+            ]))
+        ])
+    
+    def create_table(self, name: str = "papers"):
+        """Initialize papers table"""
+        if name not in self.db.table_names():
+            self.table = self.db.create_table(name, schema=self.schema)
+        else:
+            self.table = self.db.open_table(name)
+    
+    def add_papers(self, papers: List[dict]):
+        """
+        Batch insert papers with embeddings
+        """
+        # Prepare full text for embedding
+        full_texts = [
+            f"{p['abstract']} {p.get('intro', '')} {p.get('conclusion', '')}"[:8192]
+            for p in papers
+        ]
+        
+        # Generate embeddings in batch (much faster)
+        embeddings = self.embedder.encode(
+            full_texts,
+            batch_size=32,
+            show_progress_bar=True
+        )
+        
+        # Format for Lance
+        data = [
+            {
+                "id": p['id'],
+                "title": p['title'],
+                "authors": p['authors'],
+                "abstract": p['abstract'],
+                "full_text": full_texts[i],
+                "embedding": embeddings[i].tolist(),
+                "metadata": {
+                    'year': p.get('year', 0),
+                    'venue': p.get('venue', ''),
+                    'citations': p.get('citations', 0)
+                }
+            }
+            for i, p in enumerate(papers)
+        ]
+        
+        self.table.add(data)
+    
+    def search(self, query: str, top_k: int = 10, filters: dict = None):
+        """
+        Semantic search with optional metadata filtering
+        """
+        query_embedding = self.embedder.encode([query])[0]
+        
+        # LanceDB syntax for filtered search
+        results = self.table.search(query_embedding.tolist()) \
+            .limit(top_k)
+        
+        if filters:
+            # Example: filters = {'year': ('>=', 2020)}
+            for field, (op, value) in filters.items():
+                results = results.where(f"metadata.{field} {op} {value}")
+        
+        return results.to_pandas()
+```
+
+**B. Migration Script**
+```python
+# scripts/migrate_chromadb_to_lance.py
+import chromadb
+from db.vector_store import VectorStore
+
+def migrate():
+    # Load existing Chroma data
+    chroma_client = chromadb.PersistentClient(path="./chroma_db")
+    old_collection = chroma_client.get_collection("papers")
+    
+    # Export all documents
+    data = old_collection.get(include=['documents', 'metadatas', 'embeddings'])
+    
+    # Transform to Lance format
+    papers = []
+    for i in range(len(data['ids'])):
+        papers.append({
+            'id': data['ids'][i],
+            'title': data['metadatas'][i].get('title', ''),
+            'authors': data['metadatas'][i].get('authors', []),
+            'abstract': data['documents'][i],
+            'year': data['metadatas'][i].get('year', 0),
+            'venue': data['metadatas'][i].get('venue', ''),
+            'citations': data['metadatas'][i].get('citations', 0)
+        })
+    
+    # Insert into LanceDB
+    vs = VectorStore()
+    vs.create_table()
+    vs.add_papers(papers[:100])  # Test with 100 first
+    
+    # Validation query
+    results = vs.search("machine learning fairness", top_k=5)
+    print("Sample results:", results[['title', 'authors']])
+
+if __name__ == "__main__":
+    migrate()
+```
+
+**C. Performance Benchmarking**
+```python
+# tests/benchmark_lance_vs_chroma.py
+import time
+
+def benchmark_search():
+    queries = [
+        "neural architecture search",
+        "explainable AI healthcare",
+        "federated learning privacy",
+        # ... 20 total test queries
+    ]
+    
+    # Benchmark Chroma
+    chroma_times = []
+    for q in queries:
+        start = time.time()
+        chroma_results = chroma_search(q)
+        chroma_times.append(time.time() - start)
+    
+    # Benchmark Lance
+    lance_times = []
+    for q in queries:
+        start = time.time()
+        lance_results = lance_search(q)
+        lance_times.append(time.time() - start)
+    
+    print(f"Chroma avg: {sum(chroma_times)/len(chroma_times):.3f}s")
+    print(f"Lance avg: {sum(lance_times)/len(lance_times):.3f}s")
+    print(f"Speedup: {sum(chroma_times)/sum(lance_times):.2f}x")
+```
+
+**Deliverable**: LanceDB instance with 100 papers, benchmarked performance report.
+
+---
+
+### 1.3 Add Query Rewriting Pipeline (Qwen Prompt)
+**Duration**: 2-3 days
+
+#### Implementation Steps:
+
+**A. Query Expansion Module**
+```python
+# retrieval/query_rewriter.py
+import ollama
+from typing import List
+
+class QueryRewriter:
+    def __init__(self, model: str = "qwen2.5:latest"):
+        self.model = model
+        self.expansion_prompt = """
+You are a research query expansion expert. Given a user's search query, generate 3 semantically similar variations that would help find relevant academic papers.
+
+Rules:
+1. Include synonyms and related technical terms
+2. Expand acronyms (e.g., "ML" → "machine learning")
+3. Add domain context (e.g., "fairness" → "algorithmic fairness in AI")
+4. Keep queries concise (5-10 words each)
+5. Return as JSON array of strings
+
+Original Query: {query}
+
+Expanded Queries (JSON array):
+"""
+    
+    def expand_query(self, query: str) -> List[str]:
+        """
+        Generate query variations for better recall
+        """
+        prompt = self.expansion_prompt.format(query=query)
+        
+        response = ollama.generate(
+            model=self.model,
+            prompt=prompt,
+            format='json',
+            options={'temperature': 0.7}  # Higher temp for diversity
+        )
+        
+        try:
+            expanded = json.loads(response['response'])
+            return [query] + expanded  # Original + variations
+        except:
+            return [query]  # Fallback to original only
+    
+    def rewrite_with_context(self, query: str, conversation_history: List[str]) -> str:
+        """
+        Rewrite query using conversation context (for follow-up questions)
+        """
+        context_prompt = f"""
+Previous questions: {conversation_history}
+Current question: {query}
+
+Rewrite the current question as a standalone query that includes necessary context from the conversation.
+
+Standalone Query:
+"""
+        response = ollama.generate(
+            model=self.model,
+            prompt=context_prompt,
+            options={'temperature': 0.3}
+        )
+        
+        return response['response'].strip()
+```
+
+**B. Integrate with Search Pipeline**
+```python
+# retrieval/search_pipeline.py
+from db.vector_store import VectorStore
+from retrieval.query_rewriter import QueryRewriter
+import pandas as pd
+
+class SearchPipeline:
+    def __init__(self):
+        self.vector_store = VectorStore()
+        self.rewriter = QueryRewriter()
+    
+    def search(self, query: str, top_k: int = 20, use_expansion: bool = True):
+        """
+        Multi-query search with result fusion
+        """
+        if use_expansion:
+            queries = self.rewriter.expand_query(query)
+            print(f"Expanded to {len(queries)} queries: {queries}")
+        else:
+            queries = [query]
+        
+        # Search with each query
+        all_results = []
+        for q in queries:
+            results = self.vector_store.search(q, top_k=top_k)
+            results['query'] = q
+            all_results.append(results)
+        
+        # Reciprocal Rank Fusion (RRF)
+        combined = self._reciprocal_rank_fusion(all_results)
+        return combined.head(top_k)
+    
+    def _reciprocal_rank_fusion(self, results_list: List[pd.DataFrame], k: int = 60):
+        """
+        Combine multiple result sets using RRF algorithm
+        """
+        scores = {}
+        for results in results_list:
+            for rank, row in enumerate(results.itertuples(), start=1):
+                doc_id = row.id
+                if doc_id not in scores:
+                    scores[doc_id] = {'score': 0, 'data': row}
+                scores[doc_id]['score'] += 1 / (k + rank)
+        
+        # Sort by fused score
+        sorted_results = sorted(scores.items(), key=lambda x: x[1]['score'], reverse=True)
+        
+        # Convert back to DataFrame
+        return pd.DataFrame([item[1]['data'] for item in sorted_results])
+```
+
+**C. A/B Testing Framework**
+```python
+# tests/test_query_expansion.py
+def ab_test_expansion():
+    """
+    Compare search quality with/without query expansion
+    """
+    test_queries = [
+        ("ML bias", ["Fairness in Machine Learning", "Debiasing Neural Networks"]),  # Expected papers
+        ("NAS", ["Neural Architecture Search", "AutoML"]),
+        # ... 15 more test cases
+    ]
+    
+    pipeline = SearchPipeline()
+    
+    results = {
+        'with_expansion': [],
+        'without_expansion': []
+    }
+    
+    for query, expected_papers in test_queries:
+        # Test with expansion
+        exp_results = pipeline.search(query, use_expansion=True)
+        exp_recall = calculate_recall(exp_results, expected_papers)
+        results['with_expansion'].append(exp_recall)
+        
+        # Test without expansion
+        noexp_results = pipeline.search(query, use_expansion=False)
+        noexp_recall = calculate_recall(noexp_results, expected_papers)
+        results['without_expansion'].append(noexp_recall)
+    
+    print(f"Avg Recall (with expansion): {sum(results['with_expansion'])/len(test_queries):.2%}")
+    print(f"Avg Recall (without expansion): {sum(results['without_expansion'])/len(test_queries):.2%}")
+
+def calculate_recall(results: pd.DataFrame, expected: List[str]) -> float:
+    """Calculate recall@20"""
+    retrieved_titles = results['title'].tolist()
+    hits = sum(1 for exp in expected if any(exp.lower() in title.lower() for title in retrieved_titles))
+    return hits / len(expected)
+```
+
+**Deliverable**: Query rewriting module with A/B test showing >15% recall improvement.
+
+---
+
+## Phase 2: Graph Layer (Weeks 3-4)
+**Goal**: Build knowledge graph for concept mapping and relationship discovery.
+
+### 2.1 Start with NetworkX (Extract Entities/Relations)
+**Duration**: 5-6 days
+
+#### Implementation Steps:
+
+**A. Relationship Extraction Prompt**
+```python
+# graph/relation_extractor.py
+import ollama
+import networkx as nx
+from typing import List, Tuple
+
+class RelationExtractor:
+    def __init__(self, model: str = "qwen2.5:latest"):
+        self.model = model
+        self.extraction_prompt = """
+You are a knowledge graph extraction expert. Extract entities and their relationships from the research paper text below.
+
+Text:
+{text}
+
+Extract:
+1. **Entities**: Key concepts, methods, datasets, metrics (e.g., "BERT", "ImageNet", "F1-score")
+2. **Relations**: How entities connect (e.g., "BERT" --[trained_on]--> "Wikipedia")
+
+Relation types: uses, trained_on, improves, evaluates, proposes, extends, compares_to
+
+Return as JSON:
+{{
+  "entities": [
+    {{"id": "entity_1", "type": "model", "name": "BERT"}},
+    {{"id": "entity_2", "type": "dataset", "name": "Wikipedia"}}
+  ],
+  "relations": [
+    {{"source": "entity_1", "target": "entity_2", "type": "trained_on"}}
+  ]
+}}
+
+JSON Output:
+"""
+    
+    def extract_from_paper(self, paper_text: str) -> dict:
+        """
+        Extract knowledge graph from paper text
+        """
+        # Chunk text if too long (Qwen limit: ~32k tokens)
+        chunks = self._chunk_text(paper_text, max_length=6000)
+        
+        all_entities = []
+        all_relations = []
+        
+        for chunk in chunks:
+            prompt = self.extraction_prompt.format(text=chunk)
+            response = ollama.generate(
+                model=self.model,
+                prompt=prompt,
+                format='json',
+                options={'temperature': 0.2}
+            )
+            
+            try:
+                data = json.loads(response['response'])
+                all_entities.extend(data['entities'])
+                all_relations.extend(data['relations'])
+            except:
+                continue
+        
+        # Deduplicate entities by name
+        unique_entities = {e['name']: e for e in all_entities}.values()
+        
+        return {
+            'entities': list(unique_entities),
+            'relations': all_relations
+        }
+    
+    def _chunk_text(self, text: str, max_length: int) -> List[str]:
+        """Split text into chunks at sentence boundaries"""
+        sentences = text.split('. ')
+        chunks = []
+        current_chunk = []
+        current_length = 0
+        
+        for sent in sentences:
+            if current_length + len(sent) > max_length:
+                chunks.append('. '.join(current_chunk))
+                current_chunk = [sent]
+                current_length = len(sent)
+            else:
+                current_chunk.append(sent)
+                current_length += len(sent)
+        
+        if current_chunk:
+            chunks.append('. '.join(current_chunk))
+        
+        return chunks
+```
+
+**B. Graph Builder**
+```python
+# graph/knowledge_graph.py
+import networkx as nx
+import pickle
+from typing import List, Dict
+
+class KnowledgeGraph:
+    def __init__(self):
+        self.graph = nx.MultiDiGraph()  # Allows multiple edges between nodes
+    
+    def add_paper(self, paper_id: str, extraction_result: dict):
+        """
+        Add paper's entities and relations to graph
+        """
+        # Add paper node
+        self.graph.add_node(
+            paper_id,
+            type='paper',
+            **extraction_result.get('metadata', {})
+        )
+        
+        # Add entities
+        for entity in extraction_result['entities']:
+            entity_id = entity['id']
+            self.graph.add_node(
+                entity_id,
+                name=entity['name'],
+                type=entity['type']
+            )
+            
+            # Connect entity to paper
+            self.graph.add_edge(
+                paper_id,
+                entity_id,
+                relation='mentions'
+            )
+        
+        # Add relations between entities
+        for rel in extraction_result['relations']:
+            self.graph.add_edge(
+                rel['source'],
+                rel['target'],
+                relation=rel['type'],
+                paper_source=paper_id  # Track where relation came from
+            )
+    
+    def find_related_concepts(self, concept: str, max_depth: int = 2) -> List[str]:
+        """
+        Find concepts related to the query concept via graph traversal
+        """
+        # Find all nodes matching concept name (fuzzy match)
+        matching_nodes = [
+            node for node, data in self.graph.nodes(data=True)
+            if 'name' in data and concept.lower() in data['name'].lower()
+        ]
+        
+        if not matching_nodes:
+            return []
+        
+        # BFS to find related concepts
+        related = set()
+        for node in matching_nodes:
+            # Get neighbors within max_depth hops
+            for target in nx.single_source_shortest_path_length(
+                self.graph, node, cutoff=max_depth
+            ):
+                if self.graph.nodes[target].get('type') in ['model', 'method', 'concept']:
+                    related.add(self.graph.nodes[target]['name'])
+        
+        return list(related)
+    
+    def find_connection_path(self, concept_a: str, concept_b: str) -> List[Tuple]:
+        """
+        Find shortest path explaining how two concepts are connected
+        """
+        # Find matching nodes
+        nodes_a = [n for n, d in self.graph.nodes(data=True) 
+                   if d.get('name', '').lower() == concept_a.lower()]
+        nodes_b = [n for n, d in self.graph.nodes(data=True) 
+                   if d.get('name', '').lower() == concept_b.lower()]
+        
+        if not nodes_a or not nodes_b:
+            return []
+        
+        try:
+            path = nx.shortest_path(self.graph, nodes_a[0], nodes_b[0])
+            
+            # Format as (source, relation, target) triples
+            path_triples = []
+            for i in range(len(path) - 1):
+                edge_data = self.graph.get_edge_data(path[i], path[i+1])
+                relation = list(edge_data.values())[0]['relation']
+                path_triples.append((
+                    self.graph.nodes[path[i]]['name'],
+                    relation,
+                    self.graph.nodes[path[i+1]]['name']
+                ))
+            
+            return path_triples
+        except nx.NetworkXNoPath:
+            return []
+    
+    def save(self, filepath: str = "./knowledge_graph.pkl"):
+        """Persist graph to disk"""
+        with open(filepath, 'wb') as f:
+            pickle.dump(self.graph, f)
+    
+    def load(self, filepath: str = "./knowledge_graph.pkl"):
+        """Load graph from disk"""
+        with open(filepath, 'rb') as f:
+            self.graph = pickle.load(f)
+```
+
+**C. Batch Processing Script**
+```python
+# scripts/build_knowledge_graph.py
+from graph.relation_extractor import RelationExtractor
+from graph.knowledge_graph import KnowledgeGraph
+from db.vector_store import VectorStore
+
+def build_graph_from_papers():
+    """
+    Extract relations from all papers and build graph
+    """
+    extractor = RelationExtractor()
+    kg = KnowledgeGraph()
+    vs = VectorStore()
+    
+    # Get all papers from LanceDB
+    papers = vs.table.to_pandas()
+    
+    for idx, paper in papers.iterrows():
+        print(f"Processing {idx+1}/{len(papers)}: {paper['title']}")
+        
+        # Extract relations
+        extraction = extractor.extract_from_paper(paper['full_text'])
+        
+        # Add to graph
+        kg.add_paper(
+            paper_id=paper['id'],
+            extraction_result={
+                'entities': extraction['entities'],
+                'relations': extraction['relations'],
+                'metadata': {
+                    'title': paper['title'],
+                    'year': paper['metadata']['year']
+                }
+            }
+        )
+        
+        # Save incrementally (every 10 papers)
+        if (idx + 1) % 10 == 0:
+            kg.save()
+    
+    print(f"Graph built: {kg.graph.number_of_nodes()} nodes, {kg.graph.number_of_edges()} edges")
+    kg.save()
+
+if __name__ == "__main__":
+    build_graph_from_papers()
+```
+
+**Deliverable**: NetworkX knowledge graph with 100+ papers, relation extraction accuracy >80%.
+
+---
+
+### 2.2 Build "Concept Map" UI (Visualize with Plotly/Cytoscape.js)
+**Duration**: 3-4 days
+
+#### Implementation Steps:
+
+**A. Create Interactive Visualization**
+```python
+# ui/concept_map.py
+import plotly.graph_objects as go
+import networkx as nx
+from graph.knowledge_graph import KnowledgeGraph
+
+class ConceptMapVisualizer:
+    def __init__(self, kg: KnowledgeGraph):
+        self.kg = kg
+    
+    def create_subgraph_visualization(self, center_concept: str, depth: int = 2):
+        """
+        Create interactive subgraph around a concept
+        """
+        # Find center node
+        center_nodes = [
+            n for n, d in self.kg.graph.nodes(data=True)
+            if d.get('name', '').lower() == center_concept.lower()
+        ]
+        
+        if not center_nodes:
+            return None
+        
+        center = center_nodes[0]
+        
+        # Extract subgraph (ego graph)
+        subgraph = nx.ego_graph(self.kg.graph, center, radius=depth)
+        
+        # Generate layout
+        pos = nx.spring_layout(subgraph, k=0.5, iterations=50)
+        
+        # Create edge trace
+        edge_trace = []
+        for edge in subgraph.edges(data=True):
+            x0, y0 = pos[edge[0]]
+            x1, y1 = pos[edge[1]]
+            
+            edge_trace.append(
+                go.Scatter(
+                    x=[x0, x1, None],
+                    y=[y0, y1, None],
+                    mode='lines',
+                    line=dict(width=1, color='#888'),
+                    hoverinfo='text',
+                    text=edge[2].get('relation', 'related'),
+                    showlegend=False
+                )
+            )
+        
+        # Create node trace
+        node_x = []
+        node_y = []
+        node_text = []
+        node_color = []
+        
+        color_map = {
+            'model': '#1f77b4',
+            'dataset': '#ff7f0e',
+            'method': '#2ca02c',
+            'metric': '#d62728',
+            'paper': '#9467bd'
+        }
+        
+        for node in subgraph.nodes():
+            x, y = pos[node]
+            node_x.append(x)
+            node_y.append(y)
+            
+            data = subgraph.nodes[node]
+            node_text.append(data.get('name', node))
+            node_color.append(color_map.get(data.get('type'), '#7f7f7f'))
+        
+        node_trace = go.Scatter(
+            x=node_x,
+            y=node_y,
+            mode='markers+text',
+            marker=dict(
+                size=20,
+                color=node_color,
+                line_width=2
+            ),
+            text=node_text,
+            textposition="top center",
+            hoverinfo='text'
+        )
+        
+        # Create figure
+        fig = go.Figure(
+            data=edge_trace + [node_trace],
+            layout=go.Layout(
+                title=f"Concept Map: {center_concept}",
+                showlegend=False,
+                hovermode='closest',
+                margin=dict(b=0, l=0, r=0, t=40),
+                xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+                yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+                height=600
+            )
+        )
+        
+        return fig
+    
+    def export_to_cytoscape_json(self, subgraph: nx.Graph) -> dict:
+        """
+        Export for Cytoscape.js (web embedding)
+        """
+        elements = []
+        
+        # Add nodes
+        for node, data in subgraph.nodes(data=True):
+            elements.append({
+                'data': {
+                    'id': node,
+                    'label': data.get('name', node),
+                    'type': data.get('type', 'unknown')
+                }
+            })
+        
+        # Add edges
+        for source, target, data in subgraph.edges(data=True):
+            elements.append({
+                'data': {
+                    'source': source,
+                    'target': target,
+                    'label': data.get('relation', 'related')
+                }
+            })
+        
+        return {'elements': elements}
+```
+
+**B. Streamlit Dashboard**
+```python
+# app/concept_explorer.py
+import streamlit as st
+from graph.knowledge_graph import KnowledgeGraph
+from ui.concept_map import ConceptMapVisualizer
+
+st.set_page_config(page_title="TigerStack Concept Explorer", layout="wide")
+
+# Load knowledge graph
+@st.cache_resource
+def load_graph():
+    kg = KnowledgeGraph()
+    kg.load()
+    return kg
+
+kg = load_graph()
+viz = ConceptMapVisualizer(kg)
+
+# UI
+st.title("🕸️ Research Concept Explorer")
+
+col1, col2 = st.columns([1, 3])
+
+with col1:
+    st.subheader("Search")
+    concept = st.text_input("Enter a concept:", "BERT")
+    depth = st.slider("Graph depth:", 1, 3, 2)
+    
+    if st.button("Explore"):
+        # Find related concepts
+        related = kg.find_related_concepts(concept, max_depth=depth)
+        st.write(f"**Related concepts ({len(related)}):**")
+        st.write(", ".join(related[:20]))
+
+with col2:
+    st.subheader("Concept Map")
+    if concept:
+        fig = viz.create_subgraph_visualization(concept, depth)
+        if fig:
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.warning(f"No data found for '{concept}'")
+
+# Connection finder
+st.divider()
+st.subheader("🔗 Find Connections")
+col3, col4 = st.columns(2)
+with col3:
+    concept_a = st.text_input("Concept A:", "Transformer")
+with col4:
+    concept_b = st.text_input("Concept B:", "Attention Mechanism")
+
+if st.button("Find Path"):
+    path = kg.find_connection_path(concept_a, concept_b)
+    if path:
+        st.success(f"Path found ({len(path)} steps):")
+        for source, relation, target in path:
+            st.write(f"**{source}** --[{relation}]--> **{target}**")
+    else:
+        st.error("No connection found")
+```
+
+**Deliverable**: Interactive concept map dashboard with search and path-finding.
+
+---
+
+### 2.3 A/B Test: Vector-Only vs GraphRAG Retrieval
+**Duration**: 3-4 days
+
+#### Implementation Steps:
+
+**A. GraphRAG Retrieval Pipeline**
+```python
+# retrieval/graph_rag.py
+from graph.knowledge_graph import KnowledgeGraph
+from db.vector_store import VectorStore
+from retrieval.query_rewriter import QueryRewriter
+import pandas as pd
+
+class GraphRAG:
+    def __init__(self):
+        self.kg = KnowledgeGraph()
+        self.kg.load()
+        self.vs = VectorStore()
+        self.rewriter = QueryRewriter()
+    
+    def search_with_graph(self, query: str, top_k: int = 10):
+        """
+        Two-stage retrieval: Graph expansion → Vector search
+        """
+        # Stage 1: Extract concepts from query
+        concept_extraction_prompt = f"""
+Extract key technical concepts from this query: "{query}"
+Return as JSON array of concept names.
+Example: ["neural networks", "image classification"]
+"""
+        response = ollama.generate(
+            model="qwen2.5:latest",
+            prompt=concept_extraction_prompt,
+            format='json'
+        )
+        
+        query_concepts = json.loads(response['response'])
+        
+        # Stage 2: Graph expansion
+        expanded_concepts = set(query_concepts)
+        for concept in query_concepts:
+            related = self.kg.find_related_concepts(concept, max_depth=1)
+            expanded_concepts.update(related[:5])  # Top 5 related per concept
+        
+        # Stage 3: Build enriched query
+        enriched_query = f"{query} {' '.join(expanded_concepts)}"
+        
+        # Stage 4: Vector search
+        results = self.vs.search(enriched_query, top_k=top_k * 2)  # Retrieve 2x, will rerank
+        
+        # Stage 5: Rerank by graph connectivity
+        results['graph_score'] = results.apply(
+            lambda row: self._calculate_graph_score(row['id'], query_concepts),
+            axis=1
+        )
+        
+        # Combine vector similarity + graph score
+        results['final_score'] = 0.7 * results['_distance'] + 0.3 * results['graph_score']
+        results = results.sort_values('final_score', ascending=False)
+        
+        return results.head(top_k)
+    
+    def _calculate_graph_score(self, paper_id: str, query_concepts: List[str]) -> float:
+        """
+        Score paper based on how many query concepts it connects
+        """
+        if paper_id not in self.kg.graph:
+            return 0.0
+        
+        # Get paper's entities
+        paper_entities = [
+            n for n in self.kg.graph.neighbors(paper_id)
+            if self.kg.graph.nodes[n].get('type') != 'paper'
+        ]
+        
+        # Count matches with query concepts
+        matches = 0
+        for entity in paper_entities:
+            entity_name = self.kg.graph.nodes[entity].get('name', '').lower()
+            for concept in query_concepts:
+                if concept.lower() in entity_name:
+                    matches += 1
+        
+        return matches / len(query_concepts) if query_concepts else 0.0
+```
+
+**B. Comprehensive A/B Test**
+```python
+# tests/ab_test_graphrag.py
+from retrieval.search_pipeline import SearchPipeline
+from retrieval.graph_rag import GraphRAG
+import pandas as pd
+
+def run_ab_test():
+    """
+    Compare retrieval quality across methods
+    """
+    test_cases = [
+        {
+            'query': 'bias in facial recognition',
+            'relevant_papers': ['paper_123', 'paper_456', 'paper_789'],  # Ground truth
+            'type': 'multi-concept'
+        },
+        {
+            'query': 'transformer efficiency',
+            'relevant_papers': ['paper_111', 'paper_222'],
+            'type': 'technical'
+        },
+        # ... 20 total test cases
+    ]
+    
+    vector_only = SearchPipeline()
+    graph_rag = GraphRAG()
+    
+    results = {
+        'vector_only': {'precision': [], 'recall': [], 'ndcg': []},
+        'graph_rag': {'precision': [], 'recall': [], 'ndcg': []}
+    }
+    
+    for case in test_cases:
+        query = case['query']
+        relevant = case['relevant_papers']
+        
+        # Test vector-only
+        vo_results = vector_only.search(query, top_k=10, use_expansion=True)
+        vo_metrics = calculate_metrics(vo_results, relevant)
+        results['vector_only']['precision'].append(vo_metrics['precision'])
+        results['vector_only']['recall'].append(vo_metrics['recall'])
+        results['vector_only']['ndcg'].append(vo_metrics['ndcg'])
+        
+        # Test GraphRAG
+        gr_results = graph_rag.search_with_graph(query, top_k=10)
+        gr_metrics = calculate_metrics(gr_results, relevant)
+        results['graph_rag']['precision'].append(gr_metrics['precision'])
+        results['graph_rag']['recall'].append(gr_metrics['recall'])
+        results['graph_rag']['ndcg'].append(gr_metrics['ndcg'])
+    
+    # Summary report
+    report = pd.DataFrame({
+        'Method': ['Vector Only', 'GraphRAG'],
+        'Avg Precision@10': [
+            sum(results['vector_only']['precision']) / len(test_cases),
+            sum(results['graph_rag']['precision']) / len(test_cases)
+        ],
+        'Avg Recall@10': [
+            sum(results['vector_only']['recall']) / len(test_cases),
+            sum(results['graph_rag']['recall']) / len(test_cases)
+        ],
+        'Avg NDCG@10': [
+            sum(results['vector_only']['ndcg']) / len(test_cases),
+            sum(results['graph_rag']['ndcg']) / len(test_cases)
+        ]
+    })
+    
+    print(report)
+    report.to_csv('ab_test_results.csv')
+    
+    # Statistical significance test
+    from scipy.stats import ttest_rel
+    t_stat, p_value = ttest_rel(
+        results['graph_rag']['ndcg'],
+        results['vector_only']['ndcg']
+    )
+    print(f"\nStatistical significance: t={t_stat:.3f}, p={p_value:.4f}")
+    
+    if p_value < 0.05:
+        print("✅ GraphRAG shows statistically significant improvement")
+    else:
+        print("⚠️ No significant difference - stick with vector-only")
+
+def calculate_metrics(results: pd.DataFrame, relevant: List[str]) -> dict:
+    """Calculate precision, recall, NDCG@10"""
+    retrieved = results['id'].tolist()[:10]
+    
+    # Precision & Recall
+    tp = len(set(retrieved) & set(relevant))
+    precision = tp / len(retrieved) if retrieved else 0
+    recall = tp / len(relevant) if relevant else 0
+    
+    # NDCG@10
+    dcg = sum([
+        1 / np.log2(i + 2) if retrieved[i] in relevant else 0
+        for i in range(len(retrieved))
+    ])
+    idcg = sum([1 / np.log2(i + 2) for i in range(min(len(relevant), 10))])
+    ndcg = dcg / idcg if idcg > 0 else 0
+    
+    return {'precision': precision, 'recall': recall, 'ndcg': ndcg}
+
+if __name__ == "__main__":
+    run_ab_test()
+```
+
+**Deliverable**: A/B test report showing whether GraphRAG improves retrieval (decision to enable by default or keep opt-in).
+
+---
+
+## Phase 3: Optimization (Week 5+)
+**Goal**: Polish the system for production use.
+
+### 3.1 Implement Reranking (Cross-Encoder)
+**Duration**: 2-3 days
+
+#### Implementation Steps:
+
+**A. Add Cross-Encoder Reranking**
+```python
+# retrieval/reranker.py
+from sentence_transformers import CrossEncoder
+import pandas as pd
+
+class Reranker:
+    def __init__(self, model: str = 'cross-encoder/ms-marco-MiniLM-L-12-v2'):
+        """
+        Cross-encoder for reranking top-k results
+        """
+        self.model = CrossEncoder(model)
+    
+    def rerank(self, query: str, results: pd.DataFrame, top_k: int = 10) -> pd.DataFrame:
+        """
+        Rerank results using query-document cross-attention
+        """
+        # Prepare query-document pairs
+        pairs = [
+            [query, f"{row['title']} {row['abstract']}"]
+            for _, row in results.iterrows()
+        ]
+        
+        # Score pairs
+        scores = self.model.predict(pairs)
+        
+        # Add reranking scores
+        results['rerank_score'] = scores
+        results = results.sort_values('rerank_score', ascending=False)
+        
+        return results.head(top_k)
+```
+
+**B. Integrate into Pipeline**
+```python
+# Update retrieval/search_pipeline.py
+class SearchPipeline:
+    def __init__(self):
+        self.vector_store = VectorStore()
+        self.rewriter = QueryRewriter()
+        self.reranker = Reranker()  # Add this
+    
+    def search(self, query: str, top_k: int = 10, use_reranking: bool = True):
+        # ... existing vector search code ...
+        
+        if use_reranking:
+            # Retrieve 2x candidates, rerank to top_k
+            results = self.vector_store.search(query, top_k=top_k * 2)
+            results = self.reranker.rerank(query, results, top_k=top_k)
+        else:
+            results = self.vector_store.search(query, top_k=top_k)
+        
+        return results
+```
+
+**Deliverable**: Reranking module with latency <200ms for 20 candidates.
+
+---
+
+### 3.2 Migrate to KùzuDB (If NetworkX Becomes Bottleneck)
+**Duration**: 3-4 days (conditional)
+
+#### Implementation Steps:
+
+**A. Performance Profiling**
+```python
+# tests/profile_graph_performance.py
+import time
+from graph.knowledge_graph import KnowledgeGraph
+
+def profile_operations():
+    kg = KnowledgeGraph()
+    kg.load()
+    
+    # Test 1: Related concept search
+    start = time.time()
+    for _ in range(100):
+        kg.find_related_concepts("transformer", max_depth=2)
+    avg_time = (time.time() - start) / 100
+    
+    print(f"Avg related_concepts time: {avg_time*1000:.1f}ms")
+    
+    if avg_time > 0.5:  # Threshold: 500ms
+        print("⚠️ Consider migrating to KùzuDB")
+    else:
+        print("✅ NetworkX performance acceptable")
+```
+
+**B. KùzuDB Migration (If Needed)**
+```python
+# graph/kuzu_knowledge_graph.py
+import kuzu
+
+class KuzuKnowledgeGraph:
+    def __init__(self, db_path: str = "./kuzudb"):
+        self.db = kuzu.Database(db_path)
+        self.conn = kuzu.Connection(self.db)
+        
+        # Create schema
+        self.conn.execute("""
+            CREATE NODE TABLE IF NOT EXISTS Entity(
+                id STRING,
+                name STRING,
+                type STRING,
+                PRIMARY KEY(id)
+            )
+        """)
+        
+        self.conn.execute("""
+            CREATE REL TABLE IF NOT EXISTS Relation(
+                FROM Entity TO Entity,
+                relation_type STRING,
+                paper_source STRING
+            )
+        """)
+    
+    def add_entities(self, entities: List[dict]):
+        """Batch insert entities"""
+        for entity in entities:
+            self.conn.execute(
+                "CREATE (:Entity {id: $id, name: $name, type: $type})",
+                parameters=entity
+            )
+    
+    def find_related_concepts(self, concept: str, max_depth: int = 2):
+        """Cypher query for traversal"""
+        query = f"""
+            MATCH (start:Entity {{name: '{concept}'}})-[*1..{max_depth}]-(related:Entity)
+            WHERE related.type IN ['model', 'method', 'concept']
+            RETURN DISTINCT related.name AS name
+            LIMIT 20
+        """
+        results = self.conn.execute(query)
+        return [row[0] for row in results.get_as_pl()]
+```
+
+**Deliverable**: (Only if needed) KùzuDB implementation with >10x faster traversal.
+
+---
+
+### 3.3 Batch PDF Processing (Target <10s per Paper)
+**Duration**: 3-4 days
+
+#### Implementation Steps:
+
+**A. Parallel Processing**
+```python
+# ingestion/batch_processor.py
+from concurrent.futures import ProcessPoolExecutor, as_completed
+from ingestion.distill_paper import distill_paper
+import multiprocessing as mp
+
+class BatchProcessor:
+    def __init__(self, num_workers: int = None):
+        self.num_workers = num_workers or mp.cpu_count()
+    
+    def process_papers_parallel(self, pdf_paths: List[str]):
+        """
+        Process multiple PDFs in parallel
+        """
+        with ProcessPoolExecutor(max_workers=self.num_workers) as executor:
+            # Submit all tasks
+            futures = {
+                executor.submit(distill_paper, pdf): pdf
+                for pdf in pdf_paths
+            }
+            
+            # Collect results as they complete
+            results = []
+            for future in as_completed(futures):
+                pdf_path = futures[future]
+                try:
+                    result = future.result(timeout=120)  # 2 min timeout
+                    results.append(result)
+                    print(f"✓ Processed: {pdf_path}")
+                except Exception as e:
+                    print(f"✗ Failed: {pdf_path} - {e}")
+            
+            return results
+```
+
+**B. Optimize Qwen Inference**
+```python
+# ingestion/distill_paper.py (optimized)
+def distill_paper_optimized(pdf_path: str):
+    """
+    Faster version using smaller model for initial extraction
+    """
+    # Step 1: Quick extraction with Qwen-7B (faster)
+    text = extract_pdf_text(pdf_path)
+    
+    quick_summary = ollama.generate(
+        model="qwen2.5:7b",  # Smaller model
+        prompt=f"Summarize this paper in 3 sentences:\n{text[:4000]}",
+        options={'num_predict': 150}  # Limit output tokens
+    )
+    
+    # Step 2: Only use 32B for complex tasks (if needed)
+    # ... full research card generation
+```
+
+**C. Benchmark Improvements**
+```python
+# tests/benchmark_batch_processing.py
+import time
+
+def benchmark():
+    pdfs = glob.glob("test_papers/*.pdf")[:20]
+    
+    # Sequential baseline
+    start = time.time()
+    for pdf in pdfs:
+        distill_paper(pdf)
+    sequential_time = time.time() - start
+    
+    # Parallel processing
+    processor = BatchProcessor(num_workers=4)
+    start = time.time()
+    processor.process_papers_parallel(pdfs)
+    parallel_time = time.time() - start
+    
+    print(f"Sequential: {sequential_time:.1f}s ({sequential_time/len(pdfs):.1f}s/paper)")
+    print(f"Parallel: {parallel_time:.1f}s ({parallel_time/len(pdfs):.1f}s/paper)")
+    print(f"Speedup: {sequential_time/parallel_time:.2f}x")
+```
+
+**Deliverable**: Batch processing achieving <15s/paper on average (with 4-core CPU).
+
+---
+
+## Success Metrics
+
+### Phase 1
+- ✅ SmartCrawler extraction accuracy >95%
+- ✅ LanceDB migration complete with benchmark showing 2x+ speed improvement
+- ✅ Query expansion improving recall by >15%
+
+### Phase 2
+- ✅ Knowledge graph with >1000 entities and >2000 relations
+- ✅ Interactive concept map UI deployed
+- ✅ A/B test results determining GraphRAG adoption (p<0.05 significance)
+
+### Phase 3
+- ✅ Reranking improving NDCG@10 by >10%
+- ✅ Graph performance optimized (KùzuDB if needed)
+- ✅ PDF processing <15s/paper average
+
+---
+
+## Final Deliverables
+
+1. **Documentation**: Architecture diagram, API docs, user guide
+2. **Notebooks**: Jupyter notebooks demonstrating each component
+3. **Tests**: >80% code coverage with integration tests
+4. **Deployment**: Docker Compose setup for full stack
+
+This roadmap balances **innovation** (LLM-powered extraction, GraphRAG) with **pragmatism** (start with NetworkX, A/B test before committing). Each phase has clear deliverables and success criteria. Let me know if you want me to drill deeper into any specific component! 🚀

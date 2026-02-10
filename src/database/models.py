@@ -1,67 +1,73 @@
-"""Data models for TigerResearchBuddy."""
-
 from dataclasses import dataclass, field
-from typing import Optional
-
+from typing import List, Optional
+import uuid
+from datetime import datetime
 
 @dataclass
-class Publication:
-    """Represents an academic publication."""
+class Idea:
+    """Represents a research idea or collaboration proposal."""
     title: str
-    year: str = ""
-    citations: int = 0
-    venue: str = ""
-    authors: list[str] = field(default_factory=list)
+    description: str
+    author_name: str
+    id: str = field(default_factory=lambda: str(uuid.uuid4()))
+    author_id: Optional[str] = None
+    author_email: Optional[str] = None
+    college: Optional[str] = None
+    department: Optional[str] = None
+    tags: List[str] = field(default_factory=list)
+    status: str = "Open"  # Open, In Progress, Completed
+    created_at: str = field(default_factory=lambda: datetime.now().isoformat())
+    collaborators: List[str] = field(default_factory=list)
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "description": self.description,
+            "author_name": self.author_name,
+            "author_id": self.author_id,
+            "author_email": self.author_email,
+            "college": self.college,
+            "department": self.department,
+            "tags": self.tags,
+            "status": self.status,
+            "created_at": self.created_at,
+            "collaborators": self.collaborators
+        }
 
 @dataclass
 class Professor:
     """Represents a faculty member."""
     name: str
-    title: str = ""
-    department: str = ""
-    profile_url: str = ""
-    email: str = ""
-    research_interests: list[str] = field(default_factory=list)
-    publications: list[Publication] = field(default_factory=list)
-    citations: int = 0
-    h_index: int = 0
-    
-    def to_text(self) -> str:
-        """Convert to searchable text."""
-        parts = [
-            f"Professor: {self.name}",
-            f"Title: {self.title}" if self.title else "",
-            f"Department: {self.department}" if self.department else "",
-            f"Research interests: {', '.join(self.research_interests)}" if self.research_interests else "",
-        ]
-        return "\n".join(p for p in parts if p)
-
-
+    url: str
+    department: Optional[str] = None
+    college: Optional[str] = None
+    title: Optional[str] = None
+    email: Optional[str] = None
+    research_interests: List[str] = field(default_factory=list)
+    research_areas: List[str] = field(default_factory=list)
 @dataclass
 class ResearchArea:
-    """Represents a research area at RIT."""
+    """Represents a research area."""
     name: str
-    url: str = ""
-    description: str = ""
-    faculty: list[str] = field(default_factory=list)
-    keywords: list[str] = field(default_factory=list)
-    
-    def to_text(self) -> str:
-        """Convert to searchable text."""
-        parts = [
-            f"Research Area: {self.name}",
-            f"Description: {self.description}" if self.description else "",
-            f"Keywords: {', '.join(self.keywords)}" if self.keywords else "",
-            f"Faculty: {', '.join(self.faculty)}" if self.faculty else "",
-        ]
-        return "\n".join(p for p in parts if p)
+    url: str
+    faculty: List[str] = field(default_factory=list)
+    description: Optional[str] = None
+    college: Optional[str] = None
 
+@dataclass
+class Publication:
+    """Represents a research paper."""
+    title: str
+    author_id: str
+    year: Optional[int] = None
+    url: Optional[str] = None
+    citations: int = 0
+    pdf_url: Optional[str] = None
 
 @dataclass
 class Document:
-    """A document for the vector store."""
+    """Generic document for vector store."""
     id: str
     content: str
-    doc_type: str  # "research_area", "professor", "publication"
     metadata: dict = field(default_factory=dict)
