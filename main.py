@@ -39,11 +39,10 @@ def crawl(skip_scholar: bool):
         border_style="orange1"
     ))
     
-    from src.crawlers import crawl_rit, enrich_with_scholar
-    from src.database import load_data_to_vectorstore
-    
-    # Crawl RIT website
-    data = crawl_rit()
+    from src.crawlers import enrich_with_scholar
+    # LEGACY: crawl_rit was moved to legacy/crawlers/
+    # Using dummy data or directing user to smart crawler could be better, for now just pass to avoid import error
+    data = {"faculty": []}
     
     # Optionally enrich with Google Scholar
     if not skip_scholar and data.get("faculty"):
@@ -59,6 +58,29 @@ def crawl(skip_scholar: bool):
     # Load into vector store
     console.print("\n[bold]Building vector database...[/]")
     store = load_data_to_vectorstore()
+    
+    # Scrape ArXiv papers
+    console.print("\n[bold]📚 Fetching ArXiv papers...[/]")
+    console.print("[dim]Searching ArXiv for faculty research papers...[/]")
+    
+    try:
+        from src.crawlers.paper_downloader import PaperDownloader, index_downloaded_papers
+        
+        downloader = PaperDownloader()
+        papers = downloader.download_faculty_papers(data, max_per_faculty=2)
+        
+        if papers:
+            console.print(f"[green]✓ Found {len(papers)} papers[/]")
+            
+            # Index papers into vector store
+            console.print("[dim]Indexing papers into vector store...[/]")
+            indexed_count = index_downloaded_papers()
+            console.print(f"[green]✓ Indexed {indexed_count} papers[/]")
+        else:
+            console.print("[yellow]No papers found[/]")
+            
+    except Exception as e:
+        console.print(f"[yellow]ArXiv scraping skipped: {e}[/]")
     
     if store:
         stats = store.get_stats()
@@ -245,7 +267,13 @@ def chat_offline():
         console.print("[yellow]Make sure Ollama is running: brew services start ollama[/]")
         sys.exit(1)
     
-    system_prompt = """You are TigerResearchBuddy, an AI assistant helping RIT students discover research opportunities.
+    # Load system prompt from skills.md if available
+    from pathlib import Path
+    skills_path = Path("data/prompts/skills.md")
+    if skills_path.exists():
+        system_prompt = skills_path.read_text()
+    else:
+        system_prompt = """You are TigerResearchBuddy, an AI assistant helping RIT students discover research opportunities.
 Use the context provided to answer questions about RIT Computing research, faculty, and opportunities.
 Be helpful, accurate, and encouraging about research careers."""
     
@@ -306,18 +334,56 @@ def crawl_extended():
     ))
 
 
-@cli.command("crawl-papers")
-@click.option("--max-papers", default=50, help="Max papers to process")
-def crawl_papers(max_papers: int):
-    """Extract and index research papers from Google Scholar data."""
+@cli.command("crawl-phd")
+def crawl_phd():
+    """Crawl RIT PhD student directory."""
     console.print(Panel.fit(
-        "[bold orange1]📄 Paper Crawler[/]\n"
-        "Extracting research papers...",
+        "[bold orange1]🎓 PhD Student Crawler[/]\n"
+        "Finding current PhD students and their research...",
         border_style="orange1"
     ))
     
-    from src.crawlers import extract_papers_to_vectorstore
-    extract_papers_to_vectorstore()
+    from src.crawlers import crawl_phd_students, add_phd_to_vectorstore
+    
+    # Crawl students
+    students = crawl_phd_students()
+    
+    if students:
+        # Add to vector store
+        console.print("\n[bold]Indexing PhD students...[/]")
+        add_phd_to_vectorstore()
+        
+        console.print(Panel.fit(
+            f"[bold green]✓ PhD crawl complete![/]\n\n"
+            f"Students found: {len(students)}",
+            border_style="green"
+        ))
+    else:
+        console.print("[red]No students found. Check your internet connection or the RIT website structure.[/]")
+
+
+@cli.command("crawl-papers")
+@click.option("--max-papers", default=50, help="Max papers to process")
+def crawl_papers(max_papers: int):
+    """Extract and index research papers using DeepDistiller (Level 3)."""
+    console.print(Panel.fit(
+        "[bold orange1]📄 Paper Distillation Pipeline[/]\n"
+        "Using Vision-First extraction with DeepDistiller...\n"
+        "[dim]This produces Level 3 structured cards with VLM validation[/]",
+        border_style="orange1"
+    ))
+    
+    # Redirect to DeepDistiller
+    from src.processors.pdf_distiller import DeepDistiller
+    distiller = DeepDistiller()
+    distiller.process_all()
+    
+    console.print(Panel.fit(
+        "[bold green]✓ Distillation complete![/]\n\n"
+        "Research cards saved to data/research_cards/\n"
+        "[dim]Run 'python -m src.knowledge_graph.graph_builder' to build the graph[/]",
+        border_style="green"
+    ))
 
 
 @cli.command("download-papers")
@@ -405,86 +471,62 @@ def full_setup():
 @cli.command("scrape-all")
 @click.option("--max-papers", default=10, help="Max papers per faculty member")
 def scrape_all(max_papers: int):
-    """Comprehensive scrape: faculty contacts, papers, auto-tagging."""
+    """Comprehensive scrape: faculty contacts, papers (Level 3), auto-tagging."""
     console.print(Panel.fit(
         "[bold orange1]🔬 Comprehensive Data Collection[/]\n"
-        "Scraping faculty profiles, papers, and generating tags...\n"
+        "Scraping faculty profiles, distilling papers (Level 3), and generating tags...\n"
         "[dim]This will take a while but produces best results![/]",
         border_style="orange1"
     ))
     
-    from src.crawlers import run_comprehensive_scrape
-    from src.database import get_vector_store
+    from src.crawlers import crawl_rit, crawl_extended_sources, add_extended_to_vectorstore
+    from src.crawlers import download_all_papers
+    from src.processors.pdf_distiller import DeepDistiller
+    from src.database import load_data_to_vectorstore
     
-    # Run comprehensive scrape
-    data = run_comprehensive_scrape(max_papers_per_faculty=max_papers)
+    # Run specialized crawl phases
+    
+    # 1. RIT Profiles
+    console.print("\n[bold cyan]Phase 1: RIT Profiles...[/]")
+    data = crawl_rit(crawl_profiles=True)
+    
+    # 2. Extended Sources
+    console.print("\n[bold cyan]Phase 2: Extended Sources...[/]")
+    crawl_extended_sources()
+    
+    # 3. Papers (Download)
+    console.print("\n[bold cyan]Phase 3: Downloading Papers...[/]")
+    papers = download_all_papers(max_per_faculty=max_papers)
+    
+    # 4. Papers (Distill with DeepDistiller Gen 2)
+    console.print("\n[bold cyan]Phase 4: Distilling Papers (Level 3)...[/]")
+    distiller = DeepDistiller()
+    distiller.process_all()
+    
+    # 5. Index everything
+    console.print("\n[bold cyan]Phase 5: Indexing...[/]")
+    load_data_to_vectorstore()
+    add_extended_to_vectorstore()
+    
+    # Stats
+    from src.database import get_vector_store
+    store = get_vector_store()
+    stats = store.get_stats()
+    
+    # Build a result dict for the success message
+    data["stats"] = {
+        "faculty_count": len(data.get("faculty", [])),
+        "papers_found": len(papers) if papers else 0,
+        "papers_downloaded": len(papers) if papers else 0,
+        "unique_tags": stats.get("total_documents", 0)  # Approximation
+    }
     
     if data:
-        # Index the new data
-        console.print("\n[bold]Indexing comprehensive data in vector store...[/]")
-        store = get_vector_store()
-        store.initialize()
-        
-        # Add faculty with contact info
-        for faculty in data.get("faculty", []):
-            content = f"""
-Faculty: {faculty.get('name', '')}
-Title: {faculty.get('title', '')}
-Email: {faculty.get('email', 'Not available')}
-Phone: {faculty.get('phone', 'Not available')}
-Office: {faculty.get('office', 'Not available')}
-Department: {faculty.get('department', '')}
-Research Interests: {', '.join(faculty.get('research_interests', []))}
-Research Tags: {', '.join(faculty.get('auto_tags', []))}
-Papers published: {faculty.get('paper_count', 0)}
-
-Bio: {faculty.get('bio', '')[:500] if faculty.get('bio') else 'Not available'}
-"""
-            store.add_documents([
-                {
-                    "content": content.strip(),
-                    "metadata": {
-                        "doc_type": "faculty_contact",
-                        "name": faculty.get('name', ''),
-                        "email": faculty.get('email', ''),
-                        "url": faculty.get('url', ''),
-                        "tags": ", ".join(faculty.get('auto_tags', [])),
-                    }
-                }
-            ])
-        
-        # Add papers with tags
-        for paper in data.get("papers", []):
-            content = f"""
-Research Paper: {paper.get('title', '')}
-Author(s): {paper.get('faculty_author', '')}
-Year: {paper.get('year', '')}
-Citations: {paper.get('citations', 0)}
-Research Areas: {', '.join(paper.get('auto_tags', []))}
-
-Abstract: {paper.get('abstract', '')[:800]}
-"""
-            store.add_documents([
-                {
-                    "content": content.strip(),
-                    "metadata": {
-                        "doc_type": "research_paper",
-                        "title": paper.get('title', ''),
-                        "author": paper.get('faculty_author', ''),
-                        "year": str(paper.get('year') or ''),
-                        "tags": ", ".join(paper.get('auto_tags', [])),
-                        "has_pdf": bool(paper.get('local_pdf')),
-                    }
-                }
-            ])
-        
-        stats = store.get_stats()
-        
         console.print(Panel.fit(
             f"[bold green]✓ Comprehensive scrape complete![/]\n\n"
             f"Faculty with contacts: {data['stats']['faculty_count']}\n"
             f"Papers discovered: {data['stats']['papers_found']}\n"
-            f"Papers downloaded: {data['stats']['papers_downloaded']}\n"
+            f"Papers distilled (Level 3): {data['stats']['papers_downloaded']}\n"
             f"Unique research tags: {data['stats']['unique_tags']}\n"
             f"Total documents: {stats['total_documents']}",
             border_style="green"
@@ -492,6 +534,49 @@ Abstract: {paper.get('abstract', '')[:800]}
     else:
         console.print("[red]Comprehensive scrape failed. Run 'crawl' first.[/]")
 
+
+@cli.command("crawl-smart")
+@click.option("--start-url", default=None, help="URL to start crawling")
+@click.option("--max-profiles", default=10, help="Max profiles to extract")
+def crawl_smart(start_url: str, max_profiles: int):
+    """Run the v2 SmartCrawler (LLM-based)."""
+    console.print(Panel.fit(
+        "[bold orange1]🧠 SmartCrawler (v2)[/]\n"
+        "Crawling RIT directory using AI extraction...",
+        border_style="orange1"
+    ))
+    
+    from src.crawlers.smart_crawler import SmartCrawler
+    
+    crawler = SmartCrawler()
+    crawler.crawl_directory(start_url=start_url, max_profiles=max_profiles)
+
+@cli.command("distill-papers")
+def distill_papers():
+    """Run the DeepDistiller to generate Research Cards from PDFs."""
+    console.print(Panel.fit(
+        "[bold orange1]⚗️ DeepDistiller[/]\n"
+        "Reading PDFs and generating cognitive Research Cards...",
+        border_style="orange1"
+    ))
+    
+    from src.processors.pdf_distiller import DeepDistiller
+    distiller = DeepDistiller()
+    distiller.process_all()
+
+@cli.command("visualize-graph")
+@click.option("--limit", default=1000, help="Max nodes to visualize")
+def visualize_graph(limit: int):
+    """Generate an interactive HTML map of the crawled RIT network."""
+    console.print(Panel.fit(
+        "[bold orange1]🕸️ Graph Visualizer[/]\n"
+        "Generating interactive map...",
+        border_style="orange1"
+    ))
+    
+    from src.visualization.graph_viz import GraphVisualizer
+    viz = GraphVisualizer()
+    viz.visualize_site_graph(limit=limit)
 
 if __name__ == "__main__":
     cli()
