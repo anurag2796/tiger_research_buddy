@@ -29,6 +29,7 @@ wheels/
 # Data (can be large)
 # Data (User scrapes this locally)
 data/
+data_backup_*/
 
 
 # IDE
