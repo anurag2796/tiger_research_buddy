@@ -95,6 +95,12 @@ with st.sidebar:
 # Main Chat Interface
 st.header("🐅 TigerResearchBuddy")
 st.caption("AI Research Assistant for RIT Computing")
+st.markdown(
+    "**TigerResearchBuddy** is an AI-powered assistant that helps RIT students explore research "
+    "opportunities at the Golisano College of Computing and Information Sciences. Ask it about "
+    "faculty advisors, ongoing research projects, or specific papers — and get instant, "
+    "context-aware answers backed by a local knowledge base."
+)
 
 # Display messages
 for message in st.session_state.messages:

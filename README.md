@@ -1,8 +1,6 @@
 # 🐅 TigerResearchBuddy - AI Agent for RIT Research
 
-TigerResearchBuddy is an intelligent, AI-powered assistant designed to help RIT (Golisano College) students discover research opportunities, potential advisors, and interesting projects.
-
-It combines **web scraping**, **vector databases** (RAG), and **local Large Language Models** (Ollama) to provide a private, offline-capable research companion.
+**TigerResearchBuddy** is an AI-powered research companion built for RIT (Golisano College of Computing) students. It helps you discover faculty advisors, explore ongoing research projects, and find relevant papers — all through a simple chat interface. Under the hood it combines **web scraping**, **vector databases** (RAG), and **local Large Language Models** via Ollama, so your data stays private and the app works fully offline.
 
 ## 🚀 Features
 
