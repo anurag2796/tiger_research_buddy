@@ -2,6 +2,7 @@ import json
 import re
 import time
 import base64
+import asyncio
 from pathlib import Path
 from typing import Optional, List, Dict, Tuple
 from rich.console import Console
@@ -9,9 +10,12 @@ from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn
 
 from ..chatbot.ollama_client import OllamaClient
 from ..chatbot.gemini_client import get_gemini_client
-from ..utils.config import DATA_DIR, GEMINI_API_KEY
+from ..utils.config import DATA_DIR, GEMINI_API_KEY, LLMConfig
+from ..utils.db_logger import setup_db_logging, log_timing, PerformanceTimer as Timer
 from ..crawlers.vision_crawler import VisionCrawler
 import fitz  # PyMuPDF - used for page image extraction only
+
+logger = setup_db_logging("DeepDistiller")
 
 console = Console()
 
@@ -22,14 +26,16 @@ class DeepDistiller:
     Now powered by Vision-First Ingestion (Marker-PDF).
     """
 
-    def __init__(self, pdf_dir: Path = DATA_DIR / "pdfs"):
-        self.pdf_dir = pdf_dir
+    def __init__(self, pdf_dir: Path = None, faculty_db_path: Path = None):
+        # Allow full config-aware overrides; fall back to global defaults
+        self.pdf_dir = pdf_dir if pdf_dir is not None else DATA_DIR / "pdfs"
         self.output_dir = DATA_DIR / "research_cards"
         self.output_dir.mkdir(exist_ok=True)
+        self._faculty_db_path = faculty_db_path  # Override for faculty JSON
         
-        self.llm_client = OllamaClient()
-        # Initialize Vision Crawler
-        self.vision_crawler = VisionCrawler()
+        self.llm_client = OllamaClient(model=LLMConfig.PIPELINE_MODEL)
+        # Initialize Vision Crawler with accelerated engine
+        self.vision_crawler = VisionCrawler(engine="apple_fast")
         
         # VLM client for validation (if API key available)
         self.vlm_client = None
@@ -43,32 +49,51 @@ class DeepDistiller:
         # Load faculty database for author pre-resolution
         self.faculty_db = self._load_faculty_db()
         
-    def extract_text(self, pdf_path: Path) -> str:
-        """Extract high-quality markdown from PDF using VisionCrawler."""
+    @log_timing("Extract Text from PDF")
+    async def extract_text_async(self, pdf_path: Path) -> str:
+        """Extract high-quality markdown from PDF using VisionCrawler (Async Wrapper)."""
+        import asyncio
         try:
-            # Use Marker-PDF to convert to Markdown
-            return self.vision_crawler.convert_pdf(str(pdf_path))
+            # Run blocking extraction in thread pool
+            with Timer(f"Extracting text from {pdf_path.name}", use_rich=False):
+                result = await asyncio.to_thread(self.vision_crawler.convert, str(pdf_path))
+            return result.get("content", "")
         except Exception as e:
+            logger.error(f"Error reading {pdf_path.name}: {e}")
             console.print(f"[red]Error reading {pdf_path.name}: {e}[/]")
             return ""
+
+    @log_timing("Extract Text from PDF")
+    def extract_text(self, pdf_path: Path) -> str:
+        """Extract high-quality markdown from PDF using VisionCrawler."""
+        # Non-async version for backward compatibility if needed
+        import asyncio
+        return asyncio.run(self.extract_text_async(pdf_path))
     
     def _load_faculty_db(self) -> Dict[str, Dict]:
         """Load RIT faculty database for author resolution."""
-        try:
-            with open(DATA_DIR / "rit_data_v2.json") as f:
-                data = json.load(f)
-                faculty = data.get("faculty", [])
-                # Build lookup by normalized name
-                db = {}
-                for fac in faculty:
-                    name = fac.get("name", "")
-                    if name:
-                        # Store under lowercase for fuzzy matching
-                        db[name.lower()] = fac
-                return db
-        except Exception as e:
-            console.print(f"[yellow]Could not load faculty DB: {e}[/]")
-            return {}
+        # Use the override path if provided (e.g. restricted mode JSON)
+        candidate_paths = []
+        if self._faculty_db_path and self._faculty_db_path.exists():
+            candidate_paths.append(self._faculty_db_path)
+        # Fallback chain: v2 → restricted
+        candidate_paths += [
+            DATA_DIR / "rit_data_v2.json",
+            DATA_DIR / "restricted" / "rit_data_restricted.json",
+        ]
+        for path in candidate_paths:
+            if path.exists():
+                try:
+                    with open(path) as f:
+                        data = json.load(f)
+                    faculty = data.get("faculty", [])
+                    db = {fac["name"].lower(): fac for fac in faculty if fac.get("name")}
+                    console.print(f"[dim]Faculty DB loaded: {len(db)} entries from {path.name}[/]")
+                    return db
+                except Exception as e:
+                    logger.warning(f"Could not load faculty DB from {path}: {e}")
+        console.print("[yellow]No faculty DB found — author resolution disabled.[/]")
+        return {}
     
     def _extract_page_image(self, pdf_path: Path, page_num: int = 0) -> Optional[str]:
         """Extract a page as base64-encoded PNG for VLM validation."""
@@ -199,9 +224,9 @@ Response:"""
             console.print(f"[yellow]Could not load taxonomy: {e}[/]")
             return {}
 
-    def classify_domain(self, text: str) -> str:
-        """Classify the paper text into a top-level domain."""
-        taxonomy = self._load_taxonomy()
+    async def classify_domain_async(self, text: str) -> str:
+        """Classify the paper text into a top-level domain (Async)."""
+        taxonomy = await asyncio.to_thread(self._load_taxonomy)
         domains = taxonomy.get("domains", {})
         
         prompt = f"""
@@ -216,7 +241,9 @@ Response:"""
         """
         
         try:
-            response = self.llm_client.generate(prompt, system_prompt="You are a librarian.").strip()
+            with Timer(f"Classifying domain for items", use_rich=False):
+                response = await self.llm_client.generate_async(prompt, system_prompt="You are a librarian.")
+                response = response.strip()
             # Clean up response to get just the key
             for key in domains:
                 if key in response:
@@ -224,6 +251,10 @@ Response:"""
             return "Other"
         except Exception:
             return "Other"
+
+    def classify_domain(self, text: str) -> str:
+        import asyncio
+        return asyncio.run(self.classify_domain_async(text))
 
     def repair_json(self, json_str: str) -> Optional[Dict]:
         """Attempt to repair common LLM JSON errors."""
@@ -247,11 +278,12 @@ Response:"""
         except Exception:
             return None
 
-    def distill(self, text: str, filename: str, domain: str = "", pdf_path: Optional[Path] = None) -> Optional[Dict]:
-        """Generate a Research Card using Qwen."""
+    @log_timing("Distill Paper")
+    async def distill_async(self, text: str, filename: str, domain: str = "", pdf_path: Optional[Path] = None, metadata: Dict = None) -> Optional[Dict]:
+        """Generate a Research Card using Qwen (Async)."""
+        import asyncio
         
-        # Schema for the LLM to fill
-        # TigerCard 2.0 Schema
+        # Schema definition (same as before)
         schema = {
             "card_id": "paper_unique_id",
             "bibliographic_data": {
@@ -278,8 +310,8 @@ Response:"""
             }
         }
 
-        # Truncate to safe limit (30k chars ~ 7.5k tokens)
-        safe_text = text[:30000]
+        # Provide the full text to the model (or handle via recursive summarization if needed)
+        safe_text = text
 
         domain_hint = ""
         if domain and domain != "Other":
@@ -343,23 +375,20 @@ Response:"""
         Response (JSON Only):
         """
 
-        # console.print(f"[dim]Prompt:\n{prompt[:500]}...[/]")
-        
         try:
             self.llm_client.initialize()
-            # 2. Distill with LLM
-            response = self.llm_client.generate(
-                prompt, 
-                system_prompt="You are a Scientific Knowledge Distiller.",
-                format='json'
-            )
+            # 2. Distill with Async LLM
+            with Timer(f"Distilling {filename}", use_rich=False):
+                response = await self.llm_client.generate_async(
+                    prompt, 
+                    system_prompt="You are a Scientific Knowledge Distiller.",
+                    format='json',
+                    options=LLMConfig.DEFAULT_OPTIONS
+                )
             
-            console.print(f"[bold red]RAW LLM RESPONSE:[/]\n{response[:1000]}")
-            
-            # Clean JSON (Ollama might still include markdown fences even in JSON mode)
+            # Clean JSON
             clean_text = response.replace("```json", "").replace("```", "").strip()
             
-            # Extract JSON object if surrounded by text
             start = clean_text.find('{')
             end = clean_text.rfind('}')
             if start != -1 and end != -1:
@@ -369,50 +398,71 @@ Response:"""
             try:
                 card = json.loads(clean_text)
             except json.JSONDecodeError:
-                # Attempt repair
                 card = self.repair_json(clean_text)
                 
             if not card:
-                # Save failure for debug
                 debug_path = DATA_DIR / "debug_failures" / f"failed_{filename}.txt"
+                debug_path.parent.mkdir(exist_ok=True)
                 with open(debug_path, "w") as f:
                     f.write(response)
                 console.print(f"[yellow]JSON Syntax Error. Saved to {debug_path}[/]")
                 return None
             
-            # Normalize Schema (Robustness Adapter)
+            # Normalize
             card = self._normalize_card(card)
             
             if card:
                 card["source_file"] = filename
                 
-                # Post-process: Author resolution
+                # MERGE METADATA (Authoritative Override)
+                if metadata:
+                    bib = card.setdefault("bibliographic_data", {})
+                    # Use metadata authors if available and valid
+                    if metadata.get("authors") and isinstance(metadata["authors"], list) and len(metadata["authors"]) > 0:
+                         bib["authors"] = metadata["authors"]
+                    
+                    if metadata.get("title"):
+                        bib["title"] = metadata["title"]
+                        
+                    if metadata.get("year"):
+                        bib["year"] = metadata["year"]
+                        
+                    if metadata.get("venue"):
+                         bib["venue"] = metadata["venue"]
+                
+                # Resolve Authors (Faculty Matching)
                 if "bibliographic_data" in card and "authors" in card["bibliographic_data"]:
                     raw_authors = card["bibliographic_data"]["authors"]
                     if isinstance(raw_authors, list):
                         resolved_authors = self._resolve_authors(raw_authors)
                         card["bibliographic_data"]["authors"] = resolved_authors
                 
-                # Post-process: VLM table validation (if PDF path provided)
                 if pdf_path and self.vlm_client:
                     markdown_text = card.get("core_content", {}).get("full_text_markdown", "")
-                    if "|" in markdown_text:  # Heuristic: contains table
-                        console.print("  [cyan]Detected table, running VLM validation...[/]")
-                        # Extract table portion (naive: find markdown table)
+                    if "|" in markdown_text:
+                        # VLM call 
                         table_match = re.search(r"(\|.+\|\n\|[-:| ]+\|\n(?:\|.+\|\n)+)", markdown_text, re.MULTILINE)
                         if table_match:
                             table_text = table_match.group(1)
-                            is_valid, corrected = self._validate_table_with_vlm(pdf_path, markdown_text, table_text)
+                            # Run VLM validation in thread
+                            is_valid, corrected = await asyncio.to_thread(
+                                self._validate_table_with_vlm, pdf_path, markdown_text, table_text
+                            )
                             if not is_valid:
-                                # Replace table in markdown
                                 markdown_text = markdown_text.replace(table_text, corrected)
                                 card["core_content"]["full_text_markdown"] = markdown_text
                 
                 return card
 
         except Exception as e:
+            logger.error(f"Distillation error for {filename}: {e}")
             console.print(f"[red]Distillation error for {filename}: {e}[/]")
             return None
+
+    @log_timing("Distill Paper")
+    def distill(self, text: str, filename: str, domain: str = "", pdf_path: Optional[Path] = None) -> Optional[Dict]:
+        import asyncio
+        return asyncio.run(self.distill_async(text, filename, domain, pdf_path))
 
     def _normalize_card(self, card: Dict) -> Dict:
         """Normalize semantic fallback fields into TigerCard 2.0 schema."""
@@ -478,55 +528,74 @@ Response:"""
                 
         return new_card
 
-    def process_all(self):
-        """Process all PDFs in the directory."""
+    async def process_one_pdf(self, pdf_path: Path, semaphore: asyncio.Semaphore, progress, task):
+        """Process a single PDF with semaphore control."""
+        async with semaphore:
+            output_path = self.output_dir / f"{pdf_path.stem}_card.json"
+            if output_path.exists():
+                progress.advance(task)
+                return
+
+            # 1. Read (Async)
+            text = await self.extract_text_async(pdf_path)
+            if len(text) < 100:
+                progress.advance(task)
+                return
+            
+            # 2. Load Metadata (if available)
+            metadata = {}
+            meta_path = DATA_DIR / "papers" / f"{pdf_path.stem}.json"
+            if meta_path.exists():
+                try:
+                    with open(meta_path, "r") as f:
+                        metadata = json.load(f)
+                except Exception as e:
+                    logger.error(f"Failed to load metadata for {pdf_path.name}: {e}")
+
+            # 3. Classify (Async)
+            progress.update(task, description=f"Classifying {pdf_path.name[:20]}...")
+            domain = await self.classify_domain_async(text)
+            
+            # 4. Distill (Async)
+            progress.update(task, description=f"Distilling {pdf_path.name[:20]}...")
+            card = await self.distill_async(text, pdf_path.name, domain=domain, pdf_path=pdf_path, metadata=metadata)
+
+            if card:
+                with open(output_path, "w") as f:
+                    json.dump(card, f, indent=2)
+            
+            progress.advance(task)
+
+    async def process_all_async(self):
+        """Process all PDFs in parallel."""
+        import asyncio
         pdfs = list(self.pdf_dir.glob("*.pdf"))
         
         if not pdfs:
             console.print(f"[yellow]No PDFs found in {self.pdf_dir}[/]")
             return
 
-        console.print(f"[bold blue]⚗️ Starting Deep Distillation on {len(pdfs)} papers...[/]")
+        console.print(f"[bold blue]⚗️ Starting Async Deep Distillation on {len(pdfs)} papers...[/]")
+        
+        # Limit concurrency to 3-5 to avoid OOM or LLM thrashing
+        concurrency = 3
+        semaphore = asyncio.Semaphore(concurrency)
         
         with Progress(
             SpinnerColumn(),
             TextColumn("[progress.description]{task.description}"),
             BarColumn(),
-            TextColumn("{task.completed}/{task.total}"),
+            TextColumn("{task.completed}/{task.total} papers"),
             console=console
         ) as progress:
             task = progress.add_task("Distilling...", total=len(pdfs))
             
-            for pdf_path in pdfs:
-                # Check if already processed
-                output_path = self.output_dir / f"{pdf_path.stem}_card.json"
-                if output_path.exists():
-                    progress.advance(task)
-                    continue
-                
-                # 1. Read
-                text = self.extract_text(pdf_path)
-                if len(text) < 100:
-                    progress.advance(task)
-                    continue
-                
-                # 1.5 Classify
-                progress.update(task, description=f"Classifying {pdf_path.name[:20]}...")
-                domain = self.classify_domain(text)
-                console.print(f"   [dim]Domain: {domain}[/]")
-
-                # 2. Distill (pass PDF path for VLM validation)
-                progress.update(task, description=f"Distilling {pdf_path.name[:20]}...")
-                card = self.distill(text, pdf_path.name, domain=domain, pdf_path=pdf_path)
-                
-                # 3. Graph Extraction (Deprecated - Now in TigerCard 2.0)
-                # card["knowledge_graph"] is populated by distill()
-                
-                # 4. Save
-                if card:
-                    with open(output_path, "w") as f:
-                        json.dump(card, f, indent=2)
-                
-                progress.advance(task)
+            tasks = [self.process_one_pdf(p, semaphore, progress, task) for p in pdfs]
+            await asyncio.gather(*tasks)
 
         console.print(f"[green]✅ Distillation complete. Cards saved to {self.output_dir}[/]")
+
+    def process_all(self):
+        """Process all PDFs (Synchronous Wrapper)."""
+        import asyncio
+        asyncio.run(self.process_all_async())
