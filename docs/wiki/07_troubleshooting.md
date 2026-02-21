@@ -1,7 +1,7 @@
 # 07 - Troubleshooting
 
-**Last Updated:** February 9, 2026  
-**Purpose:** Common issues, debugging techniques, and solutions
+**Last Updated:** February 20, 2026  
+**Purpose:** Common issues, debugging techniques, and step-by-step solutions
 
 ---
 
@@ -9,10 +9,11 @@
 
 1. [Quick Diagnostic](#quick-diagnostic)
 2. [Installation Issues](#installation-issues)
-3. [Runtime Errors](#runtime-errors)
-4. [Performance Problems](#performance-problems)
-5. [Data Quality Issues](#data-quality-issues)
-6. [Integration Problems](#integration-problems)
+3. [Pipeline Errors](#pipeline-errors)
+4. [Runtime Errors (Web App)](#runtime-errors-web-app)
+5. [Performance Problems](#performance-problems)
+6. [Data Quality Issues](#data-quality-issues)
+7. [Debugging Techniques](#debugging-techniques)
 
 ---
 
@@ -21,15 +22,15 @@
 ### System Health Check
 
 ```bash
-# Run diagnostic script
+# Check all pipeline dependencies
 python scripts/health_check.py
 ```
 
-**Expected Output:**
+Expected output:
 ```
-✓ Python version: 3.10.8
+✓ Python version: 3.10.x
 ✓ Ollama service: Running (tigerbuddy available)
-✓ Graph file: Found (45,280 nodes)
+✓ Graph file: Found (data/tiger_brain.json — 45,280 nodes)
 ✓ Vector DB: Initialized (1,523 documents)
 ✓ Disk space: 42GB free
 ```
@@ -38,77 +39,68 @@ python scripts/health_check.py
 
 ```bash
 # Fix 1: Restart Ollama
-brew services restart ollama
+brew services restart ollama            # macOS
+sudo systemctl restart ollama           # Linux
 
-# Fix 2: Clear ChromaDB cache
+# Fix 2: Wipe and rebuild vector DB
 rm -rf data/chroma/
-python scripts/rebuild_vectordb.py
+python run_pipeline.py --skip-crawl --skip-scholar --skip-download --skip-distill
 
-# Fix 3: Rebuild graph
-python src/knowledge_graph/graph_builder.py
+# Fix 3: Rebuild knowledge graph only
+python -m src.knowledge_graph.graph_builder
+
+# Fix 4: Wipe restricted mode data for clean slate
+rm -rf data/restricted/
+rm -f data/crawler_checkpoint_restricted.json
+python run_pipeline.py --mode restricted
 ```
 
 ---
 
 ## Installation Issues
 
-### Issue: `ModuleNotFoundError: No module named 'src'`
+### `ModuleNotFoundError: No module named 'src'`
 
-**Cause:** Running from wrong directory
-
-**Solution:**
+**Cause:** Running from wrong directory.  
+**Fix:**
 ```bash
-# Always run from project root
-cd /path/to/tiger_research_buddy
-streamlit run src/ui/app.py
+cd /path/to/tiger_research_buddy   # Always run from project root
+streamlit run web_app.py           # Not from a subdirectory
 ```
 
 ---
 
-### Issue: `ollama: command not found`
+### `ollama: command not found`
 
-**Cause:** Ollama not installed
-
-**Solution (macOS):**
+**Fix:**
 ```bash
+# macOS
 brew install ollama
-ollama serve
-```
 
-**Solution (Linux):**
-```bash
+# Linux
 curl https://ollama.ai/install.sh | sh
 ```
 
 ---
 
-### Issue: `No models found. Run: ollama pull tigerbuddy`
+### `No models found. Run: ollama pull tigerbuddy`
 
-**Cause:** Model not downloaded
-
-**Solution:**
+**Fix:**
 ```bash
-# Pull base model
-ollama pull qwen2.5
-
-# Create custom model
-ollama create tigerbuddy -f Modelfile.tigerbuddy
-
-# Verify
-ollama list
+ollama pull qwen2.5                          # Pull base model
+ollama create tigerbuddy -f Modelfile.tigerbuddy   # Build custom model
+ollama list                                  # Verify available
 ```
 
 ---
 
-### Issue: `ChromaDB initialization failed`
+### `ChromaDB initialization failed` / Permission error
 
-**Cause:** Corrupted database or permission issues
-
-**Solution:**
+**Fix:**
 ```bash
 # Option 1: Clear and rebuild
 rm -rf data/chroma/
-python main.py load
+python run_pipeline.py --skip-crawl --skip-scholar --skip-download --skip-distill
 
 # Option 2: Fix permissions
 chmod -R 755 data/chroma/
@@ -116,95 +108,161 @@ chmod -R 755 data/chroma/
 
 ---
 
-## Runtime Errors
+### Dependency version conflicts
 
-### Issue: `Graph file not found: data/tiger_brain.json`
-
-**Cause:** Graph not built
-
-**Solution:**
+**Symptom:** `ImportError` on chromadb, sentence-transformers, or streamlit.  
+**Fix:** The installed versions supersede `requirements.txt` pins. Upgrade cleanly:
 ```bash
-# Build graph from scratch
-python src/knowledge_graph/graph_builder.py
-
-# Verify
-ls -lh data/tiger_brain.json
+pip install --upgrade chromadb sentence-transformers streamlit
+pip install -e .    # Re-install the project package
 ```
 
 ---
 
-### Issue: `Ollama connection refused (localhost:11434)`
+## Pipeline Errors
 
-**Cause:** Ollama server not running
+### Stage 1 (Crawl) fails immediately
+
+**Cause:** Ollama not running, or wrong start URL.  
+**Diagnosis:**
+```bash
+curl http://localhost:11434/api/tags   # Test Ollama is up
+```
+**Fix:**
+```bash
+ollama serve &    # Start Ollama
+# or: brew services start ollama
+```
+
+---
+
+### Stage 2 (Scholar) returns 0 enriched
+
+**Cause:** Google Scholar rate-limiting or block.  
+**Fix:** Increase crawl delay and retry:
+```bash
+# Edit .env or config.py:
+CRAWL_DELAY = 3.0   # Up from 1.0
+```
+
+---
+
+### Stage 3 (Download) — papers skipped due to author mismatch
+
+**This is expected behavior.** The `_is_author_match()` function now rejects:
+- Last-name-only collisions (two different people with the same last name).
+- Papers where no author name matches the faculty member's known names.
+
+Check `data/publications/download_summary.json` to see what was skipped and why.
+
+---
+
+### Stage 4 (Distill) — LLM returns invalid JSON
+
+**Cause:** Context window too small for the TigerCard schema.  
+**Fix:** Verify Modelfile has `num_ctx 8192`:
+```bash
+ollama show tigerbuddy --modelfile | grep num_ctx
+# Should output: num_ctx 8192
+```
+If not: rebuild the model from `Modelfile.tigerbuddy`.
+
+---
+
+### Stage 5 (Index) — ChromaDB duplicate ID error
+
+**Cause:** Re-running index on existing data.  
+**Fix:** The pipeline uses `upsert()` by default; this should not happen. If it does:
+```bash
+rm -rf data/chroma/
+python run_pipeline.py --skip-crawl --skip-scholar --skip-download --skip-distill
+```
+
+---
+
+### Stage 6 (Graph) — `data/site_graph.gml not found`
+
+**Cause:** Stage 1 (Crawl) was skipped and there is no existing `site_graph.gml`.  
+**Fix:** Run Stage 1 first:
+```bash
+python run_pipeline.py --mode restricted   # Runs all including crawl
+```
+Or manually generate from existing data:
+```bash
+python -m src.crawlers.smart_crawler
+```
+
+---
+
+## Runtime Errors (Web App)
+
+### `Graph file not found: data/tiger_brain.json`
+
+**Fix:**
+```bash
+python run_pipeline.py --skip-crawl --skip-scholar --skip-download --skip-distill --skip-index
+# Runs only Stage 6 (graph builder)
+```
+
+---
+
+### `Ollama connection refused (localhost:11434)`
 
 **Diagnosis:**
 ```bash
-# Check if Ollama is running
 ps aux | grep ollama
 curl http://localhost:11434/api/tags
 ```
 
-**Solution:**
+**Fix:**
 ```bash
-# macOS
-brew services start ollama
-
-# Linux (systemd)
-sudo systemctl start ollama
-
-# Manual (any OS)
-ollama serve &
+brew services start ollama    # macOS
+sudo systemctl start ollama   # Linux
+ollama serve &                # Manual
 ```
 
 ---
 
-### Issue: `KeyError: 'message'` when calling Ollama
+### `KeyError: 'message'` from Ollama
 
-**Cause:** Incorrect Ollama library version or API change
-
-**Solution:**
+**Cause:** Stale `ollama` Python library.  
+**Fix:**
 ```bash
-# Update ollama library
 pip install --upgrade ollama
-
-# Check version
 python -c "import ollama; print(ollama.__version__)"
 ```
 
 ---
 
-### Issue: `LLM returns empty response`
+### `NameError: name 'QueryEngine' is not defined` (web app)
 
-**Cause:** Context too long or model offline
-
-**Diagnosis:**
-```bash
-# Test Ollama directly
-ollama run tigerbuddy "Say hello"
+**Cause:** Missing import in `web_app.py`.  
+**Fix:** Ensure `web_app.py` has at the top:
+```python
+from src.chatbot.query_engine import QueryEngine
 ```
 
-**Solution:**
-```bash
-# If model missing
-ollama pull tigerbuddy
+---
 
-# If context too long (edit config.py)
-PARAMETER num_ctx 4096  # Reduce from 8192
+### Port 8501 already in use
+
+```bash
+lsof -ti:8501 | xargs kill -9
+streamlit run web_app.py --server.port 8502   # Alternative port
 ```
 
 ---
 
 ## Performance Problems
 
-### Issue: Slow query responses (>10s)
+### Slow query responses (>10s)
 
-**Diagnosis:**
+**Profile the bottleneck:**
 ```python
-# Add timing logs
 import time
 
 start = time.time()
-results = retriever.retrieve(query)
+results = retriever.hybrid_search(query)
 print(f"Retrieval: {time.time() - start:.2f}s")
 
 start = time.time()
@@ -212,196 +270,106 @@ response = synthesizer.synthesize(query, results)
 print(f"Synthesis: {time.time() - start:.2f}s")
 ```
 
-**Common Bottleneck: LLM Inference (70% of time)**
-
-**Solutions:**
+**Common fix — use quantized LLM:**
 ```bash
-# Use quantized model (2x faster)
 ollama pull qwen2.5:7b-q4_0
-ollama create tigerbuddy-fast -f Modelfile.fast
+ollama create tigerbuddy-fast -f Modelfile.fast   # Use q4_0 in Modelfile
+```
 
-# Reduce context window
-# Edit Modelfile: PARAMETER num_ctx 4096
-
-# Disable LLM fallback for entity extraction
-# Edit config.py: ENABLE_LLM_FALLBACK = False
+**Reduce context window for faster synthesis:**
+```dockerfile
+# Modelfile.fast
+PARAMETER num_ctx 4096   # Down from 8192
 ```
 
 ---
 
-### Issue: High memory usage (>4GB)
+### High memory usage (>8GB)
 
-**Cause:** Large graph or model loaded in RAM
-
-**Diagnosis:**
-```bash
-# Check memory
-ps aux | grep streamlit
-```
-
-**Solutions:**
-```bash
-# Use smaller embedding model
-# Edit config.py:
-EMBEDDING_MODEL = "all-MiniLM-L6-v2"  # 384-dim instead of 768-dim
-
-# Reduce graph size (prune orphan nodes)
-python scripts/prune_graph.py
-
-# Use quantizedOllama model
-ollama pull qwen2.5:7b-q4_0  # 4GB vs 14GB
-```
+**Causes:**
+1. Full-precision model loaded → switch to `q4_0`.
+2. Large graph in RAM → prune orphan nodes: `python scripts/prune_graph.py`.
+3. Surya models loaded during distillation → normal; will drop after pipeline completes.
 
 ---
 
-### Issue: Streamlit app freezes/crashes
+### Streamlit app freezes
 
-**Cause:** Blocking operations in main thread
-
-**Solution:**
+**Cause:** Blocking operation in main thread.  
+**Fix:** Wrap all heavy calls in `st.spinner`:
 ```python
-# Use Streamlit caching for heavy operations
+with st.spinner("Searching knowledge graph..."):
+    results = retriever.hybrid_search(query)
+```
+Also ensure `@st.cache_resource` is used for all backend instantiation:
+```python
 @st.cache_resource
-def load_graph():
-    return nx.read_json("data/tiger_brain.json")
-
-# Use spinner for long operations
-with st.spinner("Processing..."):
-    results = retriever.retrieve(query)
+def get_engine():
+    return HybridRetriever(...), ResponseSynthesizer()
 ```
 
 ---
 
 ## Data Quality Issues
 
-### Issue: Faculty bio is "Not available"
-
-**Cause:** Crawl failed or bio not on page
+### Faculty bio shows "Not available"
 
 **Diagnosis:**
 ```bash
-# Check raw data
-cat data/rit_data_v2.json | jq '.[] | select(.name=="Thomas Kinsman")'
+cat data/rit_data.json | python3 -c "
+import json, sys
+data = json.load(sys.stdin)
+for f in data['faculty']:
+    if not f.get('bio'): print(f['name'])
+"
 ```
 
-**Solution:**
+**Fix:**  
+Force a re-crawl for that specific professor:
 ```bash
-# Manual patching
-python scripts/patch_kinsman.py
-
-# Or re-crawl specific faculty
-python src/crawlers/smart_crawler.py --url="https://www.rit.edu/directory/..."
+python -m src.crawlers.smart_crawler --url "https://www.rit.edu/directory/..."
 ```
+Or update `data/entity_mappings.json` manually and rebuild the graph.
 
 ---
 
-### Issue: Duplicate nodes in graph
-
-**Cause:** Entity resolution failed
+### Duplicate faculty nodes in graph
 
 **Diagnosis:**
 ```bash
-# Check for duplicates
 python scripts/debug_duplicates.py
 ```
 
-**Solution:**
-```bash
-# Update entity mappings
-# Edit data/entity_mappings.json:
+**Fix:** Update `data/entity_mappings.json`:
+```json
 {
   "faculty": {
     "c. kanan": "faculty_christopher_kanan",
     "chris kanan": "faculty_christopher_kanan"
   }
 }
-
-# Rebuild graph
-python src/knowledge_graph/graph_builder.py
 ```
+Then rebuild: `python -m src.knowledge_graph.graph_builder`
 
 ---
 
-### Issue: Vector search returns irrelevant results
-
-**Cause:** Embedding model mismatch or poor query
+### Vector search returns irrelevant results
 
 **Diagnosis:**
 ```python
-# Test embeddings directly
 from sentence_transformers import SentenceTransformer
+from scipy.spatial.distance import cosine
 
 model = SentenceTransformer('all-MiniLM-L6-v2')
-emb1 = model.encode("computer vision research")
-emb2 = model.encode("machine learning")
-
-from scipy.spatial.distance import cosine
-print(f"Similarity: {1 - cosine(emb1, emb2):.3f}")
+e1 = model.encode("computer vision")
+e2 = model.encode("machine learning")
+print(f"Similarity: {1 - cosine(e1, e2):.3f}")   # Should be ~0.5+
 ```
 
-**Solutions:**
+**Fix:** Rebuild vector DB with correct embedding model:
 ```bash
-# Use better embedding model
-# Edit config.py:
-EMBEDDING_MODEL = "all-mpnet-base-v2"  # Slower but more accurate
-
-# Rebuild vector DB
 rm -rf data/chroma/
-python main.py load
-```
-
----
-
-## Integration Problems
-
-### Issue: API rate limiting from RIT servers
-
-**Cause:** Too many crawl requests
-
-**Solution:**
-```bash
-# Increase crawl delay
-# Edit config.py:
-CRAWL_DELAY = 2.0  # Wait 2s between requests
-
-# Use cached data
-# Don't re-crawl if data/rit_data_v2.json exists
-```
-
----
-
-### Issue: PDF distillation fails
-
-**Cause:** Corrupted PDF or unsupported format
-
-**Diagnosis:**
-```bash
-# Test PDF manually
-python -c "import fitz; doc = fitz.open('paper.pdf'); print(len(doc))"
-```
-
-**Solution:**
-```bash
-# Re-download PDF
-wget -O paper.pdf "https://arxiv.org/pdf/..."
-
-# Skip corrupted PDFs
-# Add to .gitignore or delete
-```
-
----
-
-### Issue: Streamlit port 8501 already in use
-
-**Cause:** Another Streamlit instance running
-
-**Solution:**
-```bash
-# Find and kill process
-lsof -ti:8501 | xargs kill -9
-
-# Or use different port
-streamlit run src/ui/app.py --server.port 8502
+python run_pipeline.py --skip-crawl --skip-scholar --skip-download --skip-distill
 ```
 
 ---
@@ -411,49 +379,51 @@ streamlit run src/ui/app.py --server.port 8502
 ### Enable Debug Logging
 
 ```python
-# Add to main.py
+# At top of any script
 import logging
-
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
+logging.basicConfig(level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 ```
 
-### Inspect Graph Interactively
+### Inspect Knowledge Graph Interactively
 
 ```python
-import networkx as nx
+import json, networkx as nx
 
-graph = nx.read_json("data/tiger_brain.json")
+with open("data/tiger_brain.json") as f:
+    data = json.load(f)
+
+G = nx.node_link_graph(data)
 
 # Find specific node
-node_data = graph.nodes["faculty_christopher_kanan"]
-print(node_data)
+node = G.nodes["faculty_christopher_kanan"]
+print(node)
 
-# Find neighbors
-neighbors = list(graph.neighbors("faculty_christopher_kanan"))
+# Find neighbors (papers authored by Kanan)
+neighbors = list(G.neighbors("faculty_christopher_kanan"))
 print(neighbors[:5])
 
-# Check connectivity
-print(nx.is_connected(graph))
+# Graph stats
+print(f"Nodes: {G.number_of_nodes()}, Edges: {G.number_of_edges()}")
 ```
 
-### Test Components Independently
+### Test Pipeline Components Individually
 
 ```bash
-# Test crawler
-python -m src.crawlers.smart_crawler
-
-# Test graph builder
-python -m src.knowledge_graph.graph_builder
-
-# Test retriever
+# Test vector search
 python scripts/test_retrieval.py
+
+# Test crawler on a single URL
+python -m src.crawlers.smart_crawler --url "https://www.rit.edu/computing/faculty-staff"
+
+# Test distiller on a single PDF
+python -m src.processors.pdf_distiller --pdf "data/publications/some_paper.pdf"
+
+# Benchmark graph queries
+python scripts/benchmark_graph.py
 ```
 
 ---
 
+**Next:** [Challenges →](./08_current_challenges.md)  
 **End of Documentation**
-
-For further assistance, file an issue on the repository.

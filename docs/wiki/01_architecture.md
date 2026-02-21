@@ -1,8 +1,8 @@
 # 01 - System Architecture
 
-**Document Version:** 1.0  
-**System Version:** TigerBrain 2.0 (TigerStack)  
-**Last Updated:** February 9, 2026
+**Document Version:** 2.0  
+**System Version:** TigerBrain 2.2 (Fast-by-Default)  
+**Last Updated:** February 20, 2026
 
 ---
 
@@ -10,14 +10,14 @@
 
 1. [Executive Architecture Overview](#executive-architecture-overview)
 2. [The TigerStack Philosophy](#the-tigerstack-philosophy)
-3. [High-Level Architecture](#high-level-architecture)
+3. [High-Level System Diagram](#high-level-system-diagram)
 4. [Technology Stack Deep Dive](#technology-stack-deep-dive)
 5. [Data Flow Architecture](#data-flow-architecture)
 6. [Component Interactions](#component-interactions)
 7. [Design Patterns](#design-patterns)
 8. [Scalability & Performance](#scalability--performance)
 9. [Security Architecture](#security-architecture)
-10. [Evolution & Migration History](#evolution--migration-history)
+10. [Version History](#version-history)
 
 ---
 
@@ -29,91 +29,101 @@ TigerBrain is a **Hybrid RAG (Retrieval-Augmented Generation) System** designed 
 ### Core Architectural Principles
 
 1. **Local-First AI**
-   - All LLM inference runs locally via Ollama
-   - No external API dependencies for core functionality
-   - Zero per-query cost, complete privacy
+   - All LLM inference runs locally via Ollama.
+   - No external API dependencies for core functionality.
+   - Zero per-query cost; complete data privacy.
 
-2. **Hybrid Knowledge Representation**
-   - **Graph Database**: Structured relationships (NetworkX)
-   - **Vector Database**: Semantic similarity (ChromaDB/LanceDB)
-   - **Metadata Store**: Auxiliary data (JSON files)
+2. **Fast-by-Default Processing**
+   - **Digital-First:** Prioritizes extracting digital text layers from PDFs; OCR is a fallback.
+   - **Apple Silicon Optimized:** MPS-accelerated Surya OCR and layout analysis.
+   - **Smart Gating:** Uses heuristics and lightweight models (GMFT) to avoid heavy computation when possible.
 
-3. **Modular Pipeline Architecture**
-   - Each component is independently testable
-   - Clear separation of concerns
-   - Pluggable backend implementations
+3. **Hybrid Knowledge Representation**
+   - **Graph Database:** Structured relationships (NetworkX / `tiger_brain.json`)
+   - **Vector Database:** Semantic similarity (ChromaDB)
+   - **Keyword Index:** BM25 for exact-term matching
 
-4. **Autonomous Intelligence**
-   - Self-improving graph via KnowledgeDaemon (Phase 5)
-   - Automatic entity resolution
+4. **Modular Pipeline Architecture**
+   - Single orchestration entry point: `run_pipeline.py`
+   - Configurable "Restricted" (Dev) and "Full" (Prod) modes via `CrawlConfig`
+   - Data isolation: test data in `data/restricted/`, production in `data/`
+   - Each component is independently testable and each stage is skippable
+
+5. **Autonomous Intelligence (In-Progress)**
+   - Self-improving graph via KnowledgeDaemon (Phase 5 — planned)
+   - Automatic entity resolution with canonical ID system
    - Continuous quality monitoring
 
 ---
 
 ## The TigerStack Philosophy
 
-The "TigerStack" refers to our technology choices optimized for:
-- **Privacy**: Local inference, no data leaves the system
-- **Cost**: Zero-cost operation after initial setup
-- **Speed**: In-memory graph, local vectors, fast responses
-- **Accuracy**: Grounded in curated knowledge graph
+**Four core values:**
+- **Privacy**: Local inference; no data leaves the system.
+- **Cost**: Zero-cost operation after initial setup.
+- **Speed**: In-memory graph, local vectors, fast responses.
+- **Accuracy**: Grounded in a curated knowledge graph; refuses to hallucinate.
 
 ### Key Differentiators vs. Traditional RAG
 
 | Aspect | Traditional RAG | TigerStack |
 |--------|----------------|------------|
-| **Knowledge Store** | Vector DB only | Graph + Vector hybrid |
-| **LLM** | Cloud API (OpenAI/Anthropic) | Local (Ollama) |
+| **Knowledge Store** | Vector DB only | Graph + Vector + BM25 hybrid |
+| **LLM** | Cloud API (OpenAI/Anthropic) | Local (Ollama) — zero cost |
 | **Context** | Chunk-based (512 tokens) | Document-level + Graph traversal |
-| **Retrieval** | Cosine similarity only | Intent-based routing |
-| **Relationships** | None | Explicit graph edges |
-| **Cost** | Per-query fees | One-time setup |
+| **Retrieval** | Cosine similarity only | RRF fusion of Vector + BM25 + optional Graph |
+| **Relationships** | None | Explicit graph edges (AUTHORED, MENTIONS, INTERESTED_IN) |
+| **Cost** | Per-query API fees | One-time setup only |
 
 ---
 
-## High-Level Architecture
+## High-Level System Diagram
 
 ### System Layers
 
 ```mermaid
 graph TB
     subgraph "Presentation Layer"
-        UI[Streamlit Web UI]
-        CLI[Command Line Interface]
+        UI[web_app.py — Streamlit UI]
+        CLI[run_pipeline.py — CLI Orchestrator]
     end
-    
+
     subgraph "Application Layer"
-        Intent[Intent Classifier]
-        Retriever[Hybrid Retriever]
-        Synthesizer[Response Synthesizer]
-        Daemon[Knowledge Daemon]
+        Retriever[HybridRetriever — Vector + BM25 + RRF]
+        Synthesizer[ResponseSynthesizer]
+        Daemon[KnowledgeDaemon — Planned]
     end
-    
+
     subgraph "Intelligence Layer"
-        LLM[Ollama LLM]
-        EntityExt[Entity Extractor]
-        GraphOps[Graph Operations]
+        LLM[Ollama / tigerbuddy — Qwen 2.5]
+        GraphOps[Graph Operations — NetworkX]
+        Embed[SentenceTransformer — all-MiniLM-L6-v2]
     end
-    
+
     subgraph "Data Layer"
-        Graph[(NetworkX Graph)]
-        Vector[(ChromaDB)]
-        Files[("JSON/PDF Files")]
+        Graph[(tiger_brain.json — Knowledge Graph)]
+        Vector[(ChromaDB — Vector Store)]
+        BM25[(BM25 In-Memory Index)]
+        Files[(data/ — JSONs, PDFs, Cards)]
     end
-    
+
     subgraph "Ingestion Layer"
-        Crawler[Smart Crawler]
-        Distiller[Deep Distiller]
-        Builder[Graph Builder]
+        Crawler[SmartCrawler — LLM-based web scraping]
+        Scholar[ScholarCrawler — Google Scholar enrichment]
+        Downloader[PaperDownloader — ArXiv & Semantic Scholar]
+        Distiller[DeepDistiller — PDF → TigerCard 2.0]
+        Builder[GraphBuilder — Assembles knowledge graph]
     end
-    
-    UI --> Intent
-    CLI --> Retriever
-    Intent --> Retriever
-    Retriever --> EntityExt
-    Retriever --> GraphOps
+
+    UI --> Retriever
+    CLI --> Crawler
+    CLI --> Scholar
+    CLI --> Downloader
+    CLI --> Distiller
+    CLI --> Builder
     Retriever --> Vector
-    EntityExt --> LLM
+    Retriever --> BM25
+    Retriever --> GraphOps
     GraphOps --> Graph
     Synthesizer --> LLM
     Daemon --> Graph
@@ -130,187 +140,121 @@ graph TB
 ```
 TigerBrain/
 ├── Presentation Tier
-│   ├── Streamlit UI (src/ui/app.py)
-│   └── CLI Tools (main.py)
+│   ├── Streamlit UI (web_app.py)
+│   └── CLI Pipeline Runner (run_pipeline.py)
 │
 ├── Application Tier
 │   ├── Query Processing
-│   │   ├── Intent Classifier
-│   │   ├── Hybrid Retriever
-│   │   └── Entity Extractor
-│   │
+│   │   └── HybridRetriever (Vector + BM25 via RRF)
 │   └── Response Generation
-│       ├── Response Synthesizer
-│       └── Citation Engine
+│       └── ResponseSynthesizer (LLM formatting + citations)
 │
 ├── Intelligence Tier
-│   ├── Local LLM (Ollama)
-│   ├── Embedding Model (SentenceTransformer)
-│   └── Graph Algorithms (NetworkX)
+│   ├── Local LLM (Ollama — tigerbuddy/Qwen 2.5)
+│   ├── Embedding Model (all-MiniLM-L6-v2)
+│   └── Graph Algorithms (NetworkX — traversal, shortest path)
 │
 └── Data Tier
-    ├── Knowledge Graph (tiger_brain.json)
-    ├── Vector Store (chroma/)
-    └── Raw Data (pdfs/, json/)
+    ├── Knowledge Graph (data/tiger_brain.json)
+    ├── Vector Store (data/chroma/)
+    ├── Research Cards (data/research_cards/)
+    └── Raw Data (data/publications/, data/restricted/)
 ```
 
 ---
 
 ## Technology Stack Deep Dive
 
-### 1. Graph Database: NetworkX
+### 1. Knowledge Graph: NetworkX
 
 **Choice Rationale:**
-- **In-Memory Speed**: Traversals complete in microseconds
-- **Rich Algorithms**: Built-in PageRank, shortest path, centrality
-- **Python Native**: No external dependencies, easy deployment
-- **Serialization**: Simple JSON export for versioning
+- In-memory speed — traversals complete in microseconds.
+- Rich built-in algorithms: PageRank, shortest path, centrality.
+- Python-native, zero external dependencies.
+- Simple JSON export for versioning and portability.
 
 **Why Not Neo4j/ArangoDB?**
-- Overhead: External server process, memory footprint
-- Complexity: Cypher query language learning curve
-- Scale: Our graph (~50k nodes) fits comfortably in RAM
-- Cost: Neo4j community edition limitations
+- Our graph (~50k nodes, ~46k edges) fits comfortably in RAM.
+- External server process adds deployment complexity.
+- NetworkX is sufficient until 5k papers (p95 latency trigger: >200ms).
 
-**Implementation Details:**
-```python
-# Graph stored as node-link JSON
+**Graph Schema:**
+```json
 {
-  "nodes": [
-    {"id": "faculty_kanan", "type": "faculty", "name": "Christopher Kanan", ...}
-  ],
-  "links": [
-    {"source": "faculty_kanan", "target": "paper_x", "type": "AUTHORED"}
-  ]
+  "nodes": [{"id": "faculty_kanan", "type": "faculty", "name": "Christopher Kanan", "dept": "Computing"}],
+  "links": [{"source": "faculty_kanan", "target": "paper_x", "type": "AUTHORED"}]
 }
 ```
 
-**Performance Characteristics:**
-- Load time: ~2 seconds (45k nodes)
+**Performance:**
+- Load time: ~2s (45k nodes)
 - Traversal: <1ms for 2-hop queries
-- Memory: ~150MB in RAM
+- RAM footprint: ~150MB
 
-### 2. Vector Database: ChromaDB (Current) / LanceDB (Planned)
+### 2. Vector Database: ChromaDB
 
-**Current: ChromaDB**
-- **Embedding Model**: `all-MiniLM-L6-v2` (384 dimensions)
-- **Storage**: Persistent local directory
-- **Query Speed**: ~50-100ms for top-5 search
+**Current Setup:**
+- Embedding Model: `all-MiniLM-L6-v2` (384 dimensions)
+- Storage: Persistent local directory at `data/chroma/`
+- Query speed: ~50–100ms for top-5 semantic search
 
-**Why ChromaDB Initially?**
-- Zero-config setup
-- Python-native
-- No external server
-- Lightweight for MVP
+**Why ChromaDB (Currently):**
+- Zero-config setup, Python-native, no external server.
+- Upsert support handles re-indexing without duplicates.
+- Adequate for <10k documents.
 
-**Migration to LanceDB (Documented in migration_reasons.txt):**
-- **100x faster**: Parquet-based columnar storage
-- **Typed schemas**: Better data validation
-- **Serverless**: Even lighter than Chroma
-- **Modern**: Better TypeScript support for future web UI
+**Planned Migration → LanceDB:**
+- 100× faster columnar storage (Apache Lance format)
+- Better typed schemas and metadata filtering
+- Serverless — even lighter than ChromaDB
+- See `docs/project_journey.md` §9 for migration rationale.
 
-**Vector Store Schema:**
-```python
-documents = {
-    "id": "prof_christopher_kanan",
-    "content": "Professor: Christopher Kanan\nBio: ...",
-    "metadata": {
-        "doc_type": "professor",
-        "name": "Christopher Kanan",
-        "department": "Computing",
-        "tags": ["computer_vision", "deep_learning"]
-    }
-}
-```
+### 3. BM25 Keyword Index
 
-### 3. LLM Runtime: Ollama
+- Loaded in-memory from the same document corpus as ChromaDB.
+- Combined with vector results using **Reciprocal Rank Fusion (RRF)**.
+- Provides exact-term matching that semantic embeddings miss (e.g., specific professor names, acronyms).
 
-**Model:** `tigerbuddy` (custom fine-tuned/prompted Qwen 2.5)
+### 4. LLM Runtime: Ollama
 
-**Why Ollama?**
-- **Offline**: No internet required
-- **Privacy**: Data never leaves local machine
-- **Cost**: Free, unlimited queries
-- **Performance**: ~2s inference on M1/M2 Macs
-- **Flexibility**: Easy model swapping
+**Model:** `tigerbuddy` — a customized Qwen 2.5 with baked-in system prompt.
 
-**Ollama Architecture:**
-```
-┌─────────────────┐
-│  TigerBrain App │
-└────────┬────────┘
-         │ HTTP (localhost:11434)
-         ▼
-┌─────────────────┐
-│  Ollama Server  │
-│   ┌─────────┐   │
-│   │ tigerbuddy│  │ ← Custom model
-│   └─────────┘   │
-│   ┌─────────┐   │
-│   │  qwen2.5 │  │ ← Base model
-│   └─────────┘   │
-└─────────────────┘
-```
+**Why Ollama:**
+- Offline, privacy-preserving, zero API cost.
+- ~2s inference on Apple Silicon (M1/M2/M3).
+- Easy model swapping — upgrade to Llama 3 or Mistral with one command.
 
-**Custom Model Creation:**
-```dockerfile
-# Modelfile for tigerbuddy
-FROM qwen2.5:latest
+**Personas (switchable at runtime):**
+- `tiger` — Encouraging, student-friendly tone.
+- `analyzer` — Technical, data-focused.
+- `critique` — Critical reviewer; challenges assumptions.
 
-# System prompt baked into model
-SYSTEM """
-You are TigerResearchBuddy, an AI advisor for RIT...
-(See data/prompts/role.md)
-"""
+### 5. PDF Processing: DocumentProcessor (v2.2)
 
-# Temperature for focused responses
-PARAMETER temperature 0.3
-PARAMETER top_p 0.9
-```
+**Engine: `apple_fast` (default)**
+Three-stage smart gate that avoids expensive computation whenever possible:
 
-### 4. Embedding Model: SentenceTransformers
+| Gate | Trigger | Action |
+|------|---------|--------|
+| Digital Gate | PDF has selectable text (>50 chars) | Extract directly — milliseconds |
+| Table Gate | Heuristic: table-like structure detected | Surya Layout Analysis → GMFT extraction |
+| OCR Fallback | No digital text found | Surya OCR on MPS backend |
 
-**Model:** `all-MiniLM-L6-v2`
-- **Dimensions:** 384
-- **Max Tokens:** 256 (practical limit 512)
-- **Speed:** ~50ms per encoding
+**Benchmark vs. legacy Marker-PDF:**
+- Digital PDFs: **245× faster** (0.018s vs 4.42s per page)
+- Mixed PDFs: **52× faster** (0.135s vs 7.02s per page)
 
-**Why Not Larger Models?**
-- **Speed**: MiniLM is 3x faster than `all-mpnet-base-v2`
-- **Accuracy**: 95% of larger model performance
-- **Size**: 80MB vs 420MB
+### 6. Web Framework: Streamlit
 
-**Embedding Pipeline:**
-```python
-from sentence_transformers import SentenceTransformer
+**Why Streamlit:**
+- Rapid prototyping — chat interface, sidebar, caching in ~50 lines.
+- `@st.cache_resource` for loading heavy backend components once.
+- Real-time spinner for long operations.
 
-model = SentenceTransformer('all-MiniLM-L6-v2')
-
-# Embed faculty bio
-bio_text = "Dr. Kanan works on computer vision and brain-inspired AI..."
-embedding = model.encode(bio_text)  # → [0.12, -0.45, ...]  (384-dim)
-
-# Store in ChromaDB
-collection.add(
-    documents=[bio_text],
-    embeddings=[embedding],
-    ids=["prof_kanan"]
-)
-```
-
-### 5. Web Framework: Streamlit
-
-**Why Streamlit Over Flask/FastAPI?**
-- **Rapid Prototyping**: Build UI in 50 lines
-- **Built-in Components**: Chat interface, sidebar, caching
-- **Hot Reload**: Changes reflect instantly
-- **Python-Only**: No JavaScript required
-
-**Trade-offs:**
-- ❌ Limited customization (CSS hacks required)
-- ❌ Single-threaded (blocking operations)
-- ✅ Perfect for internal tools and demos
-- ✅ Easy to migrate to FastAPI later
+**Known Limitations:**
+- Single-threaded — not suitable for >10 concurrent users.
+- Limited CSS customizability.
+- Future path: migrate to FastAPI + React when multi-user support is needed.
 
 ---
 
@@ -321,144 +265,105 @@ collection.add(
 ```mermaid
 sequenceDiagram
     participant User
-    participant UI
-    participant Intent
-    participant Retriever
-    participant Graph
-    participant Vector
-    participant LLM
-    participant Synthesizer
+    participant UI as web_app.py
+    participant Retriever as HybridRetriever
+    participant Vector as ChromaDB
+    participant BM25 as BM25 Index
+    participant Graph as NetworkX
+    participant Synthesizer as ResponseSynthesizer
+    participant LLM as Ollama (tigerbuddy)
 
     User->>UI: "Who works on Computer Vision?"
-    UI->>Intent: Classify query type
-    Intent-->>UI: QueryType.ENTITY
-    
-    UI->>Retriever: retrieve(query, type=ENTITY)
-    
-    Retriever->>Retriever: Extract entities: ["Computer Vision"]
-    Retriever->>Graph: Find nodes matching "Computer Vision"
-    Graph-->>Retriever: [concept_cv]
-    
-    Retriever->>Graph: Traverse 2-hops from concept_cv
-    Graph-->>Retriever: [faculty_kanan, faculty_bailey, ...]
-    
-    Retriever->>Vector: Semantic search("Computer Vision")
-    Vector-->>Retriever: [prof_kanan_bio, paper_cv_x, ...]
-    
-    Retriever-->>UI: {graph_results, vector_results}
-    
+    UI->>Retriever: hybrid_search(query, k=50)
+
+    par Vector Search (Semantic)
+        Retriever->>Vector: search("Computer Vision", k=50)
+        Vector-->>Retriever: [ranked docs by cosine similarity]
+    and BM25 Search (Keyword)
+        Retriever->>BM25: search("Computer Vision", k=50)
+        BM25-->>Retriever: [ranked docs by BM25 score]
+    end
+
+    Retriever->>Retriever: RRF fusion of both ranked lists
+    Retriever-->>UI: top-5 fused results + graph context
+
     UI->>Synthesizer: synthesize(query, results)
-    Synthesizer->>LLM: Generate response with context
-    LLM-->>Synthesizer: "Based on the data, Dr. Kanan..."
-    Synthesizer-->>UI: Formatted response with citations
-    
-    UI-->>User: Display answer + sources
+    Synthesizer->>LLM: Prompt with context
+    LLM-->>Synthesizer: "Based on the data, Prof. Kanan..."
+    Synthesizer-->>UI: Formatted response + citations
+    UI-->>User: Display answer + source panel
 ```
 
 ### Data Ingestion Flow
 
 ```mermaid
-graph TD
-    A[RIT Website] -->|SmartCrawler| B[site_graph.gml + rit_data_v2.json]
-    C[PDF Papers] -->|DeepDistiller| D[Research Cards JSON]
-    
-    B --> E[Graph Builder]
-    D --> E
-    
-    E -->|Merge| F[Unified Graph tiger_brain.json]
-    E -->|Extract Text| G[Vector Store ChromaDB]
-    
-    F --> H[Entity Resolver]
-    H -->|Deduplicate| F
-    
-    F --> I[NetworkX in-memory graph]
-    G --> J[Persistent Vector DB]
-    
-    I --> K[HybridRetriever]
-    J --> K
+graph LR
+    A[RIT Website] -->|SmartCrawler| B[rit_data.json]
+    B -->|ScholarCrawler| C[rit_data.json + scholar metrics]
+    C -->|PaperDownloader| D[data/publications/*.pdf]
+    D -->|DeepDistiller| E[data/research_cards/*.json]
+    E -->|GraphBuilder| F[tiger_brain.json]
+    C -->|GraphBuilder| F
+    F -->|VectorStore| G[ChromaDB]
+    E -->|VectorStore| G
+    F -->|In-Memory| H[BM25 Index]
 ```
 
 ---
 
 ## Component Interactions
 
-### The Hybrid Retriever Pattern
+### Hybrid Retrieval Pattern
 
-The `HybridRetriever` is the core orchestrator. It implements an **intent-based routing strategy**:
+The `HybridRetriever` implements **Reciprocal Rank Fusion (RRF)** to combine vector and keyword signals:
 
 ```python
 class HybridRetriever:
-    def retrieve(self, query: str) -> Dict[str, Any]:
-        # Step 1: Classify intent
-        intent = self.classify_query(query)
-        
-        if intent == QueryType.ENTITY:
-            # Graph-first strategy
-            return self._sequential_retrieve(query)
-        elif intent == QueryType.FACTOID:
-            # Vector-first strategy
-            return self._parallel_retrieve(query)
-        else:
-            # Hybrid strategy
-            return self._hybrid_retrieve(query)
+    def hybrid_search(self, query: str, k: int = 50) -> List[Dict]:
+        # 1. Vector Search (ChromaDB) — semantic understanding
+        vector_results = self._search_vector(query, k=50)
+
+        # 2. Keyword Search (BM25) — exact-term matching
+        bm25_results = self._search_bm25(query, k=50)
+
+        # 3. Reciprocal Rank Fusion
+        # Score = Σ [1 / (60 + rank)] across both rankers
+        combined = self._apply_rrf(vector_results, bm25_results)
+
+        return combined[:k]
 ```
 
-**Sequential Retrieval (Graph-First):**
-1. Extract entities using lexical matching
-2. If sparse (<2 entities), invoke LLM fallback
-3. Traverse graph 1-2 hops
-4. Enrich with vector search
-5. Return combined results
+**Why RRF over weighted scores?**
+Vector similarity (0–1) and BM25 scores are on incompatible scales. RRF uses rank positions — making fusion safe and parameter-free.
 
-**Parallel Retrieval (Vector-First):**
-1. Semantic search in vector DB
-2. Concurrent lexical entity matching
-3. Merge results
-4. Return top-K
+### Entity Resolution Pipeline
 
-### Entity Extraction Strategy
-
-**Hybrid Approach (Strategy 1):**
 ```python
-class EntityExtractor:
-    def extract(self, query: str) -> List[Entity]:
-        # Fast path: Lexical matching (1ms)
-        entities = self._lexical_match(query)
-        
-        # Fallback: LLM if sparse (<2 entities)
-        if len(entities) < 2 and self.enable_llm_fallback:
-            llm_entities = self._llm_fallback(query)
-            entities = self._merge_entities(entities, llm_entities)
-        
-        return entities
+class EntityResolver:
+    def resolve_faculty(self, name: str) -> Optional[str]:
+        # 1. Exact match in canonical map
+        # 2. Fuzzy match at 90% similarity threshold
+        # 3. Last-name heuristic fallback
+        return canonical_id  # e.g., "faculty_christopher_kanan"
 ```
 
-**Performance:**
-- Lexical: 1ms, 85% recall
-- LLM Fallback: 16ms, 95% recall
-- Hit rate: 70% queries use fast path
+Canonical ID system prevents the classic "C. Kanan" + "Christopher Kanan" duplication problem that caused papers to be attributed to two different nodes.
 
 ---
 
 ## Design Patterns
 
-### 1. Strategy Pattern (Retrieval)
+### Strategy Pattern (Retrieval)
 ```python
 class RetrievalStrategy(ABC):
     @abstractmethod
-    def retrieve(self, query: str) -> Results:
-        pass
+    def retrieve(self, query: str) -> Results: pass
 
-class SequentialStrategy(RetrievalStrategy):
-    def retrieve(self, query: str) -> Results:
-        # Graph → Vector
-
-class ParallelStrategy(RetrievalStrategy):
-    def retrieve(self, query: str) -> Results:
-        # Graph || Vector
+class VectorBM25Strategy(RetrievalStrategy):  # Primary — RRF hybrid
+class SequentialGraphStrategy(RetrievalStrategy):  # For entity queries
 ```
 
-### 2. Singleton Pattern (Database Connections)
+### Singleton Pattern (Database Connections)
 ```python
 _vector_store: Optional[VectorStore] = None
 
@@ -469,33 +374,20 @@ def get_vector_store() -> VectorStore:
     return _vector_store
 ```
 
-### 3. Builder Pattern (Graph Construction)
+### Builder Pattern (Graph Construction)
 ```python
 class GraphBuilder:
-    def load_site_graph(self):
-        # Load skeleton
-    
-    def hydrate_faculty(self):
-        # Add rich data
-    
-    def merge_research_cards(self):
-        # Add papers
-    
-    def resolve_entities(self):
-        # Deduplicate
-    
-    def build(self) -> nx.Graph:
-        # Final assembly
+    def load_site_graph(self): ...    # Structural skeleton from SmartCrawler
+    def load_faculty_data(self): ...  # Rich profiles from rit_data.json
+    def merge_research_cards(self): ... # Paper nodes + author links
+    def export(self): ...             # Serialize to tiger_brain.json
 ```
 
-### 4. Facade Pattern (LLM Client)
+### Facade Pattern (LLM Client)
 ```python
 class OllamaClient:
-    def generate(self, prompt: str) -> str:
-        # Hides: model selection, persona loading, error handling
-        
-    def set_persona(self, persona: str):
-        # Simplifies: prompt template management
+    def generate(self, prompt: str, context: str = None) -> str: ...
+    def set_persona(self, persona: str): ...  # tiger | analyzer | critique
 ```
 
 ---
@@ -504,105 +396,65 @@ class OllamaClient:
 
 ### Current Performance Metrics
 
-| Operation | Latency | Throughput |
-|-----------|---------|------------|
-| Graph load (cold) | 2.0s | N/A |
-| Graph traversal (2-hop) | 0.8ms | 1000+ qps |
-| Vector search (top-5) | 80ms | 12 qps |
-| LLM inference | 2.5s | 0.4 qps |
-| End-to-end query | 3.5s | 0.28 qps |
+| Operation | Latency | Notes |
+|-----------|---------|-------|
+| Graph cold load | ~2.0s | 45k nodes from tiger_brain.json |
+| Graph traversal (2-hop) | <1ms | In-memory NetworkX |
+| Vector search (top-5) | ~80ms | ChromaDB similarity |
+| BM25 search (top-50) | <5ms | In-memory |
+| LLM inference (tigerbuddy) | 2.5–45s | Depends on context and quantization |
+| End-to-end query | 3–12s | With cached graph, q4_0 quantization |
 
 ### Bottlenecks
 
-1. **LLM Inference** (70% of latency)
-   - Mitigation: Cache common queries
-   - Future: Quantized models (4-bit)
+1. **LLM Inference (70% of latency)**
+   - Fix: Use quantized models (`qwen2.5:7b-q4_0`) — 2–3× faster.
+   - Fix: `@st.cache_resource` — components loaded once per session.
 
-2. **Vector Search** (20% of latency)
-   - Mitigation: Migrate to LanceDB
-   - Future: GPU acceleration
+2. **Vector Search (20% of latency)**
+   - Future: Migrate to LanceDB (100× faster local search).
 
-3. **Graph Load** (Cold start only)
-   - Mitigation: In-memory caching
-   - Future: Persistent process
+3. **Graph Cold Start**
+   - Fix: In-memory caching after first load.
 
-### Scalability Limits
+### Scalability Thresholds
 
-**Current System:**
-- **Nodes**: 50,000 (RAM: 150MB)
-- **Concurrent Users**: 10 (Streamlit limitation)
-- **Queries/Day**: ~5,000
-
-**Scaling Strategy:**
-- **100K nodes**: Still in-memory (300MB RAM)
-- **1M nodes**: Consider Neo4j or partitioning
-- **100 users**: Migrate to FastAPI + Redis cache
-- **100K queries/day**: Horizontal scaling with load balancer
+| Papers | Graph Tech | Users | Infra |
+|--------|-----------|-------|-------|
+| Current (~1k) | NetworkX | 1–10 | Streamlit local |
+| 3k | NetworkX + benchmark | 10 | Streamlit |
+| 5k | **Migrate to Memgraph** | 10 | Streamlit |
+| 10k+ | Memgraph / Neo4j | 50+ | FastAPI + load balancer |
 
 ---
 
 ## Security Architecture
 
-### Threat Model
+**Assets:** Faculty research data, contact information, student queries.
 
-**Assets:**
-- Proprietary research data
-- Faculty contact information
-- Student queries
+**Approach (Local-First by Design):**
+- No external API calls for core inference — data never leaves the machine.
+- No authentication implemented yet (single-user, local deployment).
+- Input sanitization: query cleaning before LLM context injection.
+- PII filtering: email addresses not surfaced in generated responses.
 
-**Threats:**
-1. Data leakage via LLM (Mitigated: Local inference)
-2. Injection attacks (Mitigated: Prompt sanitization)
-3. Unauthorized access (Mitigated: No authentication yet - Phase 6)
-
-### Security Measures
-
-1. **Local-First Design**
-   - No external API calls
-   - All data stays on-premise
-
-2. **Input Sanitization**
-   ```python
-   def sanitize_query(query: str) -> str:
-       # Strip SQL injection attempts
-       # Remove prompt injection patterns
-       return clean_query
-   ```
-
-3. **PII Filtering**
-   - Email addresses redacted in responses
-   - Phone numbers not stored
+**Planned (Phase 6):**
+- User authentication for lab server deployment.
+- Role-based access control.
+- Audit logging for queries.
 
 ---
 
-## Evolution & Migration History
+## Version History
 
-### v0.1 (Prototype)
-- Simple regex scraper
-- No graph, just text search
-- External Gemini API
-
-### v1.0 (MVP)
-- ChromaDB vector store
-- Basic RAG pipeline
-- Streamlit UI
-
-### v2.0 (TigerStack - Current)
-- Hybrid Graph + Vector
-- Local Ollama LLM
-- Entity resolution
-- Smart crawling
-
-### v2.1 (Vision-First - Current)
-- **VisionCrawler**: Replaced text extraction with Marker-PDF (VLM)
-- **TigerCard 2.0**: Schema enforcement via 8k context window
-- **DeepDistiller v2**: Domain-aware processing
-
-### v3.0 (Planned)
-- LanceDB migration
-- KnowledgeDaemon active
-- Multi-user support
-- API endpoints
+| Version | Date | Key Changes |
+|---------|------|-------------|
+| v0.1 | Early 2026 | Regex scraper, external Gemini API, no graph |
+| v1.0 | Feb 2026 | ChromaDB vector store, basic RAG pipeline, Streamlit UI |
+| v2.0 (TigerStack) | Feb 9, 2026 | Hybrid Graph+Vector, local Ollama LLM, entity resolution, SmartCrawler |
+| v2.1 (Vision-First) | Feb 10–13, 2026 | Marker-PDF, TigerCard 2.0 schema, 8k context prompting |
+| v2.2 (Fast-by-Default) | Feb 16, 2026 | apple_fast engine, MPS Surya, GMFT tables, 245× PDF speedup |
+| v2.3 (Current Dev) | Feb 20, 2026 | Full pipeline runner (run_pipeline.py), DB logging, code quality pass |
 
 ---
 

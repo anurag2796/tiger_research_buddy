@@ -1,29 +1,28 @@
 # 🐅 TigerBrain: Complete System Documentation
 
-**Version:** 2.0.0 (TigerStack)  
-**Last Updated:** February 9, 2026  
-**Status:** Production-Ready  
+**Version:** 2.2.0 (Fast-by-Default)  
+**Last Updated:** February 20, 2026  
+**Status:** Active Development  
 
 ---
 
 ## 📋 Documentation Index
 
-This is the master documentation hub for the TigerBrain system. The documentation is organized into focused modules for deep technical understanding.
+This is the master documentation hub for the TigerBrain system. Documentation is organized into focused modules for deep technical understanding.
 
 ### 🏗️ Core Documentation
 
-| Document | Description | Lines | Audience |
-|----------|-------------|-------|----------|
-| **[01 - Architecture](./01_architecture.md)** | Complete system architecture, design decisions, and technology stack | ~1200 | Architects, Senior Devs |
-| **[02 - Code Reference](./02_code_reference.md)** | Module-by-module code walkthrough with examples | ~1500 | Developers |
-| **[03 - API Reference](./03_api_reference.md)** | Complete API documentation for all public interfaces | ~800 | Integration Developers |
-| **[04 - Configuration](./04_configuration.md)** | All configuration parameters, environment variables, and tuning | ~600 | DevOps, System Admins |
-| **[05 - Data Pipeline](./05_data_pipeline.md)** | Deep dive into crawling, distillation, and graph construction | ~900 | Data Engineers |
-| **[06 - Deployment](./06_deployment.md)** | Production deployment guide with Docker, monitoring, scaling | ~700 | DevOps Engineers |
-| **[07 - Troubleshooting](./07_troubleshooting.md)** | Common issues, debugging techniques, performance optimization | ~500 | Support, Developers |
-| **[08 - Challenges](./08_current_challenges.md)** | Current technical limitations and known issues | ~400 | Architects, Developers |
-
-### 📊 Total Documentation: ~6,200 lines
+| Document | Description | Audience |
+|----------|-------------|----------|
+| **[01 - Architecture](./01_architecture.md)** | System architecture, design decisions, and technology stack | Architects, Senior Devs |
+| **[02 - Code Reference](./02_code_reference.md)** | Module-by-module code walkthrough with examples | Developers |
+| **[03 - API Reference](./03_api_reference.md)** | Complete API documentation for all public interfaces | Integration Developers |
+| **[04 - Configuration](./04_configuration.md)** | All configuration parameters, environment variables, and tuning | DevOps, System Admins |
+| **[05 - Data Pipeline](./05_data_pipeline.md)** | Deep dive into crawling, distillation, and graph construction | Data Engineers |
+| **[06 - Deployment](./06_deployment.md)** | Production deployment guide with Docker, monitoring, and scaling | DevOps Engineers |
+| **[07 - Troubleshooting](./07_troubleshooting.md)** | Common issues, debugging techniques, and performance optimization | Support, Developers |
+| **[08 - Challenges](./08_current_challenges.md)** | Current technical limitations and known issues | Architects, Developers |
+| **[09 - Evaluation](./09_evaluation.md)** | Response evaluation framework, 100-query test dataset, scoring templates, and testing workflows | QA, Developers |
 
 ---
 
@@ -42,7 +41,7 @@ This is the master documentation hub for the TigerBrain system. The documentatio
 ### For Integration Partners
 1. Read [API Reference](./03_api_reference.md)
 2. Review [Configuration](./04_configuration.md) for endpoints
-3. Check [Troubleshooting](./07_troubleshooting.md) for common integration issues
+3. Check [Troubleshooting](./07_troubleshooting.md) for common issues
 
 ---
 
@@ -50,121 +49,27 @@ This is the master documentation hub for the TigerBrain system. The documentatio
 
 ### The TigerStack
 TigerBrain uses a hybrid RAG architecture combining:
-- **Knowledge Graph** (NetworkX) - Structured relationships
-- **Vector Store** (ChromaDB/LanceDB) - Semantic search
-- **Local LLM** (Ollama) - Privacy-preserving inference
+- **Knowledge Graph** (NetworkX) — Structured faculty/paper/concept relationships
+- **Vector Store** (ChromaDB) — Semantic similarity search (BM25 keyword search layered on top)
+- **Local LLM** (Ollama / tigerbuddy) — Privacy-preserving, zero-cost inference
 
 ### Core Workflows
-1. **Data Ingestion** → SmartCrawler → DeepDistiller → Graph Builder
-2. **Query Processing** → Intent Classifier → Hybrid Retriever → Response Synthesizer
-3. **Autonomous Maintenance** → Auditor → Patcher → Graph Updater (Phase 5)
 
----
+**Data Ingestion:**
+```
+SmartCrawler → ScholarCrawler → PaperDownloader → DeepDistiller → GraphBuilder → VectorStore
+```
 
-## 📖 Document Summaries
+**Query Processing:**
+```
+User Query → HybridRetriever (Vector + BM25 / Graph) → ResponseSynthesizer → Answer
+```
 
-### 01 - Architecture
-Comprehensive overview of system design including:
-- High-level architecture diagrams
-- Technology selection rationale (why NetworkX over Neo4j, why ChromaDB, etc.)
-- Data flow diagrams
-- Component interaction patterns
-- Design patterns and principles
-
-**Key Topics:**
-- The "TigerStack" philosophy
-- Hybrid RAG architecture
-- Local-first AI design
-- Scalability considerations
-
-### 02 - Code Reference
-Complete walkthrough of every major module with:
-- File-by-file code explanations
-- Function signatures and purposes
-- Usage examples
-- Internal algorithms
-- Dependencies and imports
-
-**Key Modules:**
-- `src/crawlers/` - Web scraping agents
-- `src/knowledge_graph/` - Graph construction
-- `src/retrieval/` - Query processing
-- `src/generation/` - Response synthesis
-- `src/ui/` - Streamlit interface
-
-### 03 - API Reference
-Formal API documentation including:
-- All public classes and methods
-- Parameter specifications
-- Return types
-- Error handling
-- Usage examples
-
-**APIs Covered:**
-- VectorStore API
-- HybridRetriever API
-- GraphBuilder API
-- OllamaClient API
-- ResponseSynthesizer API
-
-### 04 - Configuration
-Exhaustive configuration reference:
-- Environment variables
-- Config file format
-- Tuning parameters
-- Performance settings
-- Security configurations
-
-**Configuration Files:**
-- `src/utils/config.py`
-- `.env` template
-- Ollama Modelfile
-- Prompt templates
-
-### 05 - Data Pipeline
-Deep technical dive into data engineering:
-- SmartCrawler implementation
-- DeepDistiller PDF processing
-- Entity resolution algorithms
-- Graph construction logic
-- Quality assurance
-
-**Pipeline Stages:**
-1. Web Crawling
-2. PDF Distillation
-3. Entity Extraction
-4. Graph Assembly
-5. Vector Indexing
-
-### 06 - Deployment
-Production deployment procedures:
-- Docker containerization
-- Environment setup
-- Ollama configuration
-- Monitoring and logging
-- Backup procedures
-- Scaling strategies
-
-**Deployment Targets:**
-- Local development
-- Single-server production
-- Multi-container setup
-- Cloud deployment (AWS/GCP/Azure)
-
-### 07 - Troubleshooting
-Comprehensive problem-solving guide:
-- Common errors and solutions
-- Performance optimization
-- Debugging techniques
-- Log analysis
-- Recovery procedures
-
-**Issue Categories:**
-- Installation problems
-- Runtime errors
-- Performance issues
-- Data quality problems
-- Integration failures
+**One-Command Pipeline:**
+```bash
+python run_pipeline.py --mode restricted    # Dev/test (~10 profiles, fast)
+python run_pipeline.py --mode full          # Production (all CS faculty, hours)
+```
 
 ---
 
@@ -174,30 +79,91 @@ Comprehensive problem-solving guide:
 # 1. Clone and setup
 git clone <repo>
 cd tiger_research_buddy
+python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
 # 2. Configure
-cp .env.template .env
-# Edit .env with your settings
+cp .env.example .env
+# Edit .env: add GEMINI_API_KEY if needed, confirm OLLAMA_HOST
 
-# 3. Initialize data
-python scripts/setup_v2.py
+# 3. Pull LLM model
+ollama pull qwen2.5
+ollama create tigerbuddy -f Modelfile.tigerbuddy
 
-# 4. Run
-streamlit run src/ui/app.py
+# 4. Run pipeline (restricted = fast dev mode)
+python run_pipeline.py --mode restricted
+
+# 5. Launch the app
+streamlit run web_app.py
 ```
 
-For detailed setup, see [Deployment Guide](./06_deployment.md).
+**Access:** `http://localhost:8501`
+
+### Pipeline Skip Flags
+Each stage can be skipped for partial reruns:
+```bash
+python run_pipeline.py --skip-crawl                              # Skip crawl, use existing data
+python run_pipeline.py --skip-crawl --skip-scholar --skip-download  # Resume from distillation
+```
 
 ---
 
-## 📚 Additional Resources
+## 📖 Document Summaries
 
-- **Project README**: `/README.md` - High-level project overview
-- **Technical Reports**: `/docs/technical_report_experiment_4.md`
-- **Migration Guide**: `/docs/migration_reasons.txt`
-- **Future Roadmap**: `/docs/future_roadmap_ideas.md`
-- **Implementation Plans**: `/docs/final_implementation_plan.md`
+### 01 - Architecture
+Full system design spanning six layers: Presentation, Application, Intelligence, Data, and Ingestion. Covers the TigerStack philosophy, the Hybrid RAG pattern, technology stack decisions (why NetworkX, why ChromaDB, why Ollama), and the v0.1 → v2.2 evolution history.
+
+### 02 - Code Reference
+Module-by-module code walkthrough covering every major class and method across `src/`. Key modules: `SmartCrawler`, `VectorStore`, `GraphBuilder`, `HybridRetriever`, `ResponseSynthesizer`, `OllamaClient`.
+
+### 03 - API Reference
+Formal public API for all major classes. Parameter specifications, return types, error handling, and usage examples. APIs: `VectorStore`, `HybridRetriever`, `GraphBuilder`, `OllamaClient`, `ResponseSynthesizer`.
+
+### 04 - Configuration
+Multi-layered config system: `.env` environment variables, `src/utils/config.py` (CrawlConfig with restricted/full mode), Ollama Modelfile, prompt templates, PDF pipeline engine options (`apple_fast` vs `marker`).
+
+### 05 - Data Pipeline
+Six-stage pipeline from raw web crawl to a queryable knowledge graph. Covers SmartCrawler's LLM parsing, DeepDistiller's TigerCard 2.0 schema, entity resolution with canonical IDs, graph assembly steps, and quality assurance.
+
+### 06 - Deployment
+Three deployment targets: Local Development, Single-Server Production (systemd service), and Docker/Docker Compose. Includes monitoring, backup scripts, and systemd watchdog configuration.
+
+### 07 - Troubleshooting
+Quick diagnostic scripts, common error fixes (Ollama not running, graph not found, port conflicts), performance profiling, data quality debugging (duplicate nodes, vector search irrelevant results), and step-by-step component isolation.
+
+### 08 - Challenges
+Active limitations: LLM inference latency (15–45s on unquantized), context window limits (8k ceiling), graph traversal explosion on multi-hop queries, entity resolution ambiguity, and no conversational memory. Hardware specs table and known workarounds.
+
+---
+
+## 📂 Project Structure Reference
+
+```
+tiger_research_buddy/
+├── run_pipeline.py       # ← Main entry point: 6-stage pipeline runner
+├── web_app.py            # ← Streamlit UI
+├── main.py               # ← CLI utilities
+├── src/
+│   ├── crawlers/         # SmartCrawler, ScholarCrawler, PaperDownloader
+│   ├── processors/       # DeepDistiller (pdf_distiller.py)
+│   ├── database/         # VectorStore (ChromaDB wrapper)
+│   ├── knowledge_graph/  # GraphBuilder, EntityResolver
+│   ├── retrieval/        # HybridRetriever (Vector + BM25 + RRF)
+│   ├── generation/       # ResponseSynthesizer
+│   ├── chatbot/          # OllamaClient, GeminiClient
+│   └── utils/            # config.py, logging
+├── data/
+│   ├── publications/     # Downloaded PDFs
+│   ├── research_cards/   # Distilled TigerCard 2.0 JSONs
+│   ├── prompts/          # role.md, analyzer.md, critique.md
+│   └── restricted/       # Dev/test data (isolated from production)
+├── docs/
+│   ├── wiki/             # ← This documentation
+│   └── project_journey.md  # Full narrative history and decision log
+├── tests/                # pytest test suite
+├── scripts/              # Utility scripts (benchmark, health-check, etc.)
+└── experiments/          # Sandbox for new ideas
+```
 
 ---
 
@@ -206,20 +172,11 @@ For detailed setup, see [Deployment Guide](./06_deployment.md).
 When contributing to TigerBrain:
 1. Read relevant wiki sections first
 2. Follow code patterns documented in [Code Reference](./02_code_reference.md)
-3. Update wiki docs when adding features
+3. Update wiki docs when adding features or changing behavior
 4. Add tests as documented in [Troubleshooting](./07_troubleshooting.md)
+5. Document significant decisions in `docs/project_journey.md`
 
 ---
 
-## 📧 Support
-
-For questions about this documentation:
-- File an issue with the `documentation` label
-- Reference specific wiki page and section
-- Include your use case context
-
----
-
-**Built with ❤️ at RIT** 🐅
-
-*Last generated: February 9, 2026*
+**Built with ❤️ at RIT** 🐅  
+*Last updated: February 20, 2026*

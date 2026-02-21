@@ -1,6 +1,6 @@
 # 02 - Code Reference
 
-**Last Updated:** February 9, 2026  
+**Last Updated:** February 20, 2026  
 **Purpose:** Complete module-by-module code walkthrough
 
 ---
@@ -23,35 +23,38 @@
 
 ```
 src/
-├── chatbot/                 # LLM client interfaces
-│   ├── ollama_client.py    # Local LLM (235 lines)
-│   ├── gemini_client.py    # Cloud LLM fallback
-│   ├── query_engine.py     # Legacy query processor
-│   └── intent_classifier.py
+├── chatbot/
+│   ├── ollama_client.py    # Local LLM client with persona support
+│   ├── gemini_client.py    # Cloud LLM fallback (optional)
+│   └── query_engine.py     # Chat session + context management
 │
-├── crawlers/                # Data collection agents
-│   ├── smart_crawler.py    # LLM-based web scraper (215 lines)
-│   ├── scholar_crawler.py  # Google Scholar integration
-│   └── pdf_crawler.py      # PDF downloader
+├── crawlers/
+│   ├── smart_crawler.py        # LLM-based web scraper
+│   ├── scholar_crawler.py      # Google Scholar enrichment (multithreaded)
+│   ├── paper_downloader_v3.py  # PDF downloader (ArXiv + Semantic Scholar)
+│   └── extended_crawler.py     # Multi-college crawler extension
 │
-├── database/                # Storage adapters
-│   ├── vector_store.py     # ChromaDB wrapper (336 lines)
-│   └── lance_manager.py    # LanceDB wrapper
+├── processors/
+│   └── pdf_distiller.py    # DeepDistiller: PDF → TigerCard 2.0 JSON
 │
-├── knowledge_graph/         # Graph construction
-│   ├── graph_builder.py    # Main assembly logic (212 lines)
-│   ├── entity_resolver.py  # Deduplication
-│   └── analytics.py        # Graph metrics
+├── database/
+│   ├── vector_store.py     # ChromaDB wrapper + BM25 indexing
+│   └── lance_manager.py    # LanceDB wrapper (planned migration)
 │
-├── retrieval/               # Search & matching
-│   ├── hybrid_retriever.py # Main retriever (202 lines)
-│   └── entity_extraction.py # Entity matching (212 lines)
+├── knowledge_graph/
+│   ├── graph_builder.py    # Main graph assembly + export
+│   ├── entity_resolver.py  # Canonical ID resolution + fuzzy matching
+│   └── analytics.py        # Graph metrics (PageRank, centrality)
 │
-├── generation/              # Response synthesis
-│   └── synthesizer.py      # LLM response formatter (134 lines)
+├── retrieval/
+│   └── hybrid_retriever.py # Vector + BM25 + RRF fusion
 │
-└── ui/                      # User interfaces
-    └── app.py              # Streamlit web app (139 lines)
+├── generation/
+│   └── synthesizer.py      # LLM response formatter + citation builder
+│
+web_app.py                  # Streamlit UI (main entry point)
+run_pipeline.py             # Pipeline orchestrator (6 stages)
+main.py                     # CLI utilities
 ```
 
 ---
@@ -197,6 +200,9 @@ class VectorStore:
 ```
 
 **Key Methods:**
+
+##### `process_data_into_documents(data: dict) -> list[dict]`
+Helper function to transform raw JSON data into the standardized document format used by both ChromaDB and BM25.
 
 ##### `initialize()`
 Sets up persistent ChromaDB client.
@@ -470,154 +476,41 @@ class EntityResolver:
 
 ### hybrid_retriever.py
 
-**Purpose:** Orchestrates query processing using both graph traversal and vector search.
+**Purpose:** Implements Hybrid Search combining Vector Search (ChromaDB) and Keyword Search (BM25) using Reciprocal Rank Fusion (RRF).
 
 #### `HybridRetriever`
 ```python
 class HybridRetriever:
-    """Hybrid retrieval combining graph + vector search."""
+    """Hybrid Retriever that combines Vector Search and BM25 using Reciprocal Rank Fusion (RRF)."""
     
-    def __init__(self, vector_db: VectorStore, graph_path: str):
-        self.vector_db = vector_db
-        self.graph = self._load_graph(graph_path)
-        self.entity_extractor = EntityExtractor(self.graph)
+    def __init__(self, vector_store: VectorStore, documents: Optional[List[Dict]] = None):
+        self.vector_store = vector_store
+        if documents:
+            self.index_bm25(documents)
 ```
 
-**Query Types:**
+**Key Methods:**
+
+##### `index_bm25(documents: List[Dict])`
+Builds an in-memory BM25 index from the provided documents.
+
+##### `hybrid_search(query: str, k: int = 50, rrf_k: int = 60) -> List[Dict]`
+Performs RRF fusion of vector and keyword results.
 
 ```python
-class QueryType(Enum):
-    ENTITY = "entity"        # "Who works on X?"
-    FACTOID = "factoid"      # "What is X?"
-    RELATIONAL = "relational"  # "Compare X and Y"
-    EXPLORATORY = "exploratory"  # Open-ended
+def hybrid_search(self, query: str, k: int = 50, rrf_k: int = 60) -> List[Dict]:
+    # 1. Get results from both retrievers
+    vector_results = self._search_vector(query, k=50)
+    bm25_results = self._search_bm25(query, k=50)
+    
+    # 2. Combine using RRF
+    # Score = 1 / (rank + k)
+    
+    # 3. Sort and return
+    return reranked_results[:k]
 ```
 
-##### `classify_query(query: str) -> QueryType`
-Intent classification using keyword heuristics.
 
-```python
-def classify_query(self, query: str) -> QueryType:
-    query_lower = query.lower()
-    
-    # Entity queries
-    entity_keywords = ["who", "faculty", "professor", "researcher", "works on", "studies"]
-    if any(kw in query_lower for kw in entity_keywords):
-        return QueryType.ENTITY
-    
-    # Factoid queries
-    factoid_keywords = ["what is", "define", "explain", "meaning of"]
-    if any(kw in query_lower for kw in factoid_keywords):
-        return QueryType.FACTOID
-    
-    # Relational queries
-    relational_keywords = ["compare", "difference", "versus", "vs", "similar"]
-    if any(kw in query_lower for kw in relational_keywords):
-        return QueryType.RELATIONAL
-    
-    return QueryType.EXPLORATORY
-```
-
-##### `retrieve(query: str, limit: int = 20) -> Dict[str, Any]`
-Main retrieval entry point.
-
-```python
-def retrieve(self, query: str, limit: int = 20) -> Dict[str, Any]:
-    query_type = self.classify_query(query)
-    console.print(f"[bold blue]Query Type: {query_type.value}[/]")
-    
-    if query_type == QueryType.FACTOID:
-        return self._parallel_retrieve(query, limit)
-    else:
-        return self._sequential_retrieve(query, limit)
-```
-
-##### `_sequential_retrieve(query: str, limit: int) -> Dict`
-Graph-first strategy (high precision).
-
-```python
-def _sequential_retrieve(self, query: str, limit: int) -> Dict[str, Any]:
-    # Step 1: Extract entities
-    entities = self.entity_extractor.extract(query)
-    
-    # Step 2: Graph traversal (2-hop)
-    graph_results = []
-    for entity in entities:
-        # Hop 1: Find connected papers
-        papers = [n for n in self.graph.neighbors(entity['id']) 
-                  if self.graph.nodes[n].get('type') == 'paper']
-        
-        # Hop 2: Find authors of those papers
-        for paper in papers:
-            authors = [n for n in self.graph.neighbors(paper)
-                      if self.graph.nodes[n].get('type') == 'faculty']
-            
-            for author in authors:
-                graph_results.append({
-                    "id": author,
-                    "type": "faculty",
-                    "data": self.graph.nodes[author],
-                    "path": [entity['id'], paper, author]
-                })
-    
-    # Step 3: Vector search enrichment
-    vector_results = self.vector_db.search(query, n_results=limit)
-    
-    return {
-        "graph_results": graph_results[:limit],
-        "vector_results": vector_results,
-        "entities": entities,
-        "query_type": self.query_type.value
-    }
-```
-
-### entity_extraction.py
-
-**Purpose:** Fast entity matching with LLM fallback.
-
-#### `EntityExtractor`
-```python
-class EntityExtractor:
-    """Hybrid entity extraction: lexical + LLM fallback."""
-    
-    def __init__(self, graph: nx.Graph, enable_llm_fallback: bool = True, threshold: int = 2):
-        self.graph = graph
-        self.enable_llm_fallback = enable_llm_fallback
-        self.threshold = threshold
-        self._build_index()
-```
-
-##### `_build_index()`
-Pre-computes lowercase lookup dictionary.
-
-```python
-def _build_index(self):
-    self.index = {}
-    for node, data in self.graph.nodes(data=True):
-        label = data.get('name') or data.get('label', str(node))
-        self.index[label.lower()] = node
-        
-        # Index aliases
-        if 'aliases' in data:
-            for alias in data['aliases']:
-                self.index[alias.lower()] = node
-```
-
-##### `extract(query: str) -> List[Dict]`
-Two-stage extraction.
-
-```python
-def extract(self, query: str) -> List[Dict[str, Any]]:
-    # Stage 1: Fast lexical matching
-    entities = self._lexical_match(query)
-    
-    # Stage 2: LLM fallback if sparse
-    if len(entities) < self.threshold and self.enable_llm_fallback:
-        llm_entities = self._llm_fallback(query)
-        entities = self._merge_entities(entities, llm_entities)
-    
-    return entities
-```
 
 ---
 

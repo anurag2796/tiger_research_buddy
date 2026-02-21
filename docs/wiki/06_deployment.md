@@ -1,6 +1,6 @@
 # 06 - Deployment
 
-**Last Updated:** February 9, 2026  
+**Last Updated:** February 20, 2026  
 **Purpose:** Production deployment procedures and best practices
 
 ---
@@ -9,7 +9,7 @@
 
 1. [Deployment Overview](#deployment-overview)
 2. [Local Development Setup](#local-development-setup)
-3. [Production Deployment](#production-deployment)
+3. [Production Deployment (Single Server)](#production-deployment-single-server)
 4. [Docker Deployment](#docker-deployment)
 5. [Monitoring & Logging](#monitoring--logging)
 6. [Backup & Recovery](#backup--recovery)
@@ -18,11 +18,15 @@
 
 ## Deployment Overview
 
-TigerBrain supports three deployment modes:
+TigerBrain supports three deployment configurations:
 
-1. **Local Development** - Laptop/workstation for testing
-2. **Single-Server Production** - Self-hosted on-premise
-3. **Containerized** - Docker for cloud deployment
+| Mode | Use Case | Complexity |
+|------|----------|------------|
+| **Local Development** | Laptop for personal use/testing | Low |
+| **Single-Server Production** | Self-hosted on-premise lab server | Medium |
+| **Containerized (Docker)** | Cloud or reproducible deployments | High |
+
+**All modes require Ollama running locally.** The system is intentionally local-first — no external API calls for core inference.
 
 ---
 
@@ -31,19 +35,18 @@ TigerBrain supports three deployment modes:
 ### Prerequisites
 
 ```bash
-# System requirements
-- Python 3.10+
-- 8GB RAM minimum (16GB recommended)
-- 10GB disk space
-
 # macOS
-brew install ollama
+brew install ollama python@3.10
 
-# Linux
+# Linux (Ubuntu 22.04+)
 curl https://ollama.ai/install.sh | sh
+sudo apt install python3.10 python3.10-venv
 ```
 
-### Installation Steps
+**Disk space:** 10GB minimum (PDFs + models + vector store)  
+**RAM:** 8GB minimum, 16GB recommended (for model + graph in memory simultaneously)
+
+### Step-by-Step Installation
 
 **1. Clone Repository**
 ```bash
@@ -51,97 +54,107 @@ git clone <repo-url>
 cd tiger_research_buddy
 ```
 
-**2. Create Virtual Environment**
+**2. Create & Activate Virtual Environment**
 ```bash
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+python3 -m venv .venv
+source .venv/bin/activate      # Windows: .venv\Scripts\activate
 ```
 
 **3. Install Dependencies**
 ```bash
 pip install -r requirements.txt
+# Includes: surya-ocr, gmft, chromadb, sentence-transformers
+# On Apple Silicon, torch MPS support is included by default
 ```
 
-**4. Setup Environment**
+**4. Configure Environment**
 ```bash
-cp .env.template .env
-# Edit .env with your settings
+cp .env.example .env
+# Edit .env:
+#   GEMINI_API_KEY=...   (optional — only if using Gemini as LLM fallback)
+#   OLLAMA_HOST=http://localhost:11434   (default, usually correct)
 ```
 
-**5. Pull Ollama Models**
+**5. Pull & Build Ollama Model**
 ```bash
-ollama pull qwen2.5
+ollama pull qwen2.5             # Base model (~4GB)
+# Optional: faster quantized version
+ollama pull qwen2.5:7b-q4_0    # 4-bit quantized (~2.5GB)
+
+# Build the TigerBuddy personality
 ollama create tigerbuddy -f Modelfile.tigerbuddy
+ollama list    # Verify tigerbuddy is available
 ```
 
-**6. Initialize Data**
+**6. Run the Pipeline (Restricted Mode — Fast)**
 ```bash
-python scripts/setup_v2.py
+# Crawls ~10 faculty, downloads papers, distills, indexes
+python run_pipeline.py --mode restricted
+# Takes ~10–20 minutes depending on hardware and Ollama inference speed
 ```
 
-**7. Run Application**
+**7. Launch the Application**
 ```bash
-streamlit run src/ui/app.py
+streamlit run web_app.py
+# Access at: http://localhost:8501
 ```
 
-**Access:** `http://localhost:8501`
+### Quick Resume Commands
+
+If pipeline stages have already run, skip them:
+```bash
+# Already crawled — just rebuild index and graph
+python run_pipeline.py --skip-crawl --skip-scholar --skip-download
+
+# Already have research cards — just re-index
+python run_pipeline.py --skip-crawl --skip-scholar --skip-download --skip-distill
+```
 
 ---
 
-## Production Deployment
+## Production Deployment (Single Server)
 
-### Server Requirements
+### Recommended Hardware
 
-**Minimum:**
-- CPU: 4 cores
-- RAM: 16GB
-- Disk: 50GB SSD
-- OS: Ubuntu 22.04 LTS
+| Component | Minimum | Recommended |
+|-----------|---------|-------------|
+| CPU | 4 cores | 8+ cores |
+| RAM | 16GB | 32GB |
+| Storage | 50GB SSD | 100GB NVMe |
+| OS | Ubuntu 22.04 LTS | Ubuntu 22.04 LTS |
 
-**Recommended:**
-- CPU: 8 cores (Apple M1/M2 or Intel/AMD)
-- RAM: 32GB
-- Disk: 100GB NVMe SSD
-- OS: Ubuntu 22.04 LTS
+### Server Setup
 
-### System Setup
-
-**1. Install System Dependencies**
 ```bash
-sudo apt update
-sudo apt install -y python3.10 python3-pip python3-venv git
-```
+# 1. Install system deps
+sudo apt update && sudo apt install -y python3.10 python3.10-venv python3-pip git
 
-**2. Install Ollama**
-```bash
+# 2. Install & enable Ollama
 curl https://ollama.ai/install.sh | sh
 sudo systemctl enable ollama
 sudo systemctl start ollama
+
+# 3. Setup app user
+sudo useradd -m -s /bin/bash tigerbrain
+sudo su - tigerbrain
+
+# 4. Deploy app
+git clone <repo> ~/tiger_research_buddy
+cd ~/tiger_research_buddy
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env    # Configure .env
 ```
 
-**3. Configure Firewall**
+### Firewall Configuration
+
 ```bash
-sudo ufw allow 8501/tcp  # Streamlit
-sudo ufw allow 22/tcp    # SSH
+sudo ufw allow 8501/tcp    # Streamlit UI
+sudo ufw allow 22/tcp      # SSH access
 sudo ufw enable
 ```
 
-**4. Setup Application User**
-```bash
-sudo useradd -m -s /bin/bash tigerbrain
-sudo su - tigerbrain
-```
-
-**5. Deploy Application**
-```bash
-git clone <repo> ~/tiger_research_buddy
-cd ~/tiger_research_buddy
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-**6. Setup Systemd Service**
+### Systemd Service Setup
 
 Create `/etc/systemd/system/tigerbrain.service`:
 ```ini
@@ -153,25 +166,22 @@ After=network.target ollama.service
 Type=simple
 User=tigerbrain
 WorkingDirectory=/home/tigerbrain/tiger_research_buddy
-Environment="PATH=/home/tigerbrain/tiger_research_buddy/venv/bin"
-ExecStart=/home/tigerbrain/tiger_research_buddy/venv/bin/streamlit run src/ui/app.py --server.port 8501 --server.address 0.0.0.0
+Environment="PATH=/home/tigerbrain/tiger_research_buddy/.venv/bin"
+ExecStart=/home/tigerbrain/tiger_research_buddy/.venv/bin/streamlit run web_app.py --server.port 8501 --server.address 0.0.0.0
 Restart=always
+WatchdogSec=60
+RestartSec=10
 
 [Install]
 WantedBy=multi-user.target
 ```
 
-**7. Enable and Start Service**
 ```bash
 sudo systemctl daemon-reload
 sudo systemctl enable tigerbrain
 sudo systemctl start tigerbrain
-```
-
-**8. Check Status**
-```bash
-sudo systemctl status tigerbrain
-journalctl -u tigerbrain -f
+sudo systemctl status tigerbrain    # Verify running
+journalctl -u tigerbrain -f         # Tail logs
 ```
 
 ---
@@ -183,34 +193,21 @@ journalctl -u tigerbrain -f
 ```dockerfile
 FROM python:3.10-slim
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Ollama
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 RUN curl https://ollama.ai/install.sh | sh
 
-# Set working directory
 WORKDIR /app
-
-# Copy requirements
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy application
 COPY . .
 
-# Expose ports
 EXPOSE 8501
 
-# Start script
-CMD ["bash", "-c", "ollama serve & sleep 5 && ollama pull tigerbuddy && streamlit run src/ui/app.py"]
+CMD ["bash", "-c", "ollama serve & sleep 5 && ollama pull tigerbuddy && python run_pipeline.py --mode restricted && streamlit run web_app.py --server.address 0.0.0.0"]
 ```
 
 ### Docker Compose
 
-**docker-compose.yml:**
 ```yaml
 version: '3.8'
 
@@ -220,8 +217,8 @@ services:
     ports:
       - "8501:8501"
     volumes:
-      - ./data:/app/data
-      - ollama_data:/root/.ollama
+      - ./data:/app/data          # Persist all pipeline data
+      - ollama_data:/root/.ollama # Persist downloaded models
     environment:
       - OLLAMA_HOST=http://localhost:11434
       - LOG_LEVEL=INFO
@@ -231,20 +228,11 @@ volumes:
   ollama_data:
 ```
 
-### Build and Run
-
 ```bash
-# Build image
 docker-compose build
-
-# Start services
 docker-compose up -d
-
-# View logs
-docker-compose logs -f
-
-# Stop services
-docker-compose down
+docker-compose logs -f    # View live logs
+docker-compose down       # Stop
 ```
 
 ---
@@ -255,26 +243,12 @@ docker-compose down
 
 **Location:** `logs/tigerbrain.log`
 
-**Log Format:**
-```
-2026-02-09 10:45:22 - INFO - Query received: "Who works on AI?"
-2026-02-09 10:45:23 - DEBUG - Entity extraction found: concept_ai
-2026-02-09 10:45:24 - INFO - Response generated: 200 tokens
-```
-
-**Viewing Logs:**
 ```bash
-# Tail logs
-tail -f logs/tigerbrain.log
-
-# Search for errors
-grep ERROR logs/tigerbrain.log
-
-# Log rotation (logrotate)
-sudo vim /etc/logrotate.d/tigerbrain
+tail -f logs/tigerbrain.log       # Live tail
+grep ERROR logs/tigerbrain.log    # Error scan  
 ```
 
-**Logrotate Config:**
+**Logrotate Config (`/etc/logrotate.d/tigerbrain`):**
 ```
 /home/tigerbrain/tiger_research_buddy/logs/*.log {
     daily
@@ -282,71 +256,50 @@ sudo vim /etc/logrotate.d/tigerbrain
     compress
     delaycompress
     notifempty
-    create 0644 tigerbrain tigerbrain
 }
 ```
 
-### Performance Monitoring
+### Pipeline Performance Metrics
 
-**Key Metrics:**
-- Query latency (target: <4s)
-- Graph load time (target: <3s)
-- Vector search time (target: <100ms)
-- LLM inference time (target: <2.5s)
+The pipeline runner outputs a summary table after every run — check it for stage-level timing:
 
-**Monitoring Script:**
-```python
-# scripts/monitor.py
-import time
-from src.retrieval.hybrid_retriever import HybridRetriever
-
-def benchmark_query(query: str):
-    start = time.time()
-    results = retriever.retrieve(query)
-    elapsed = time.time() - start
-    
-    print(f"Query: {query}")
-    print(f"Latency: {elapsed:.2f}s")
-    print(f"Results: {len(results['graph_results'])} graph, {len(results['vector_results'])} vector")
-
-if __name__ == "__main__":
-    benchmark_query("Who works on computer vision?")
+```
+╭────────────────────────────────────────────────────╮
+│              🐅 Pipeline Summary                    │
+├───────────────────┬─────────┬────────┬─────────────┤
+│ Stage             │ Status  │ Time   │ Detail      │
+│ 1. Crawl          │ ✓ Done  │ 0:02   │ 10 profiles │
+│ 2. Scholar Enrich │ ✓ Done  │ 0:05   │ 8 enriched  │
+│ 3. Download Papers│ ✓ Done  │ 0:15   │ 24 papers   │
+│ 4. Distill Papers │ ✓ Done  │ 0:45   │ 24 cards    │
+│ 5. Index          │ ✓ Done  │ 0:02   │ 120 docs    │
+│ 6. Knowledge Graph│ ✓ Done  │ 0:03   │ graph built │
+╰───────────────────┴─────────┴────────┴─────────────╯
 ```
 
-**Run Monitoring:**
-```bash
-python scripts/monitor.py | tee logs/performance.log
-```
+### Performance Targets
 
-### Health Checks
-
-**Endpoint:** `/healthz` (if using FastAPI - future)
-
-**Manual Check:**
-```bash
-curl http://localhost:8501
-# Should return 200 OK
-```
-
-**Systemd Watchdog:**
-```ini
-[Service]
-WatchdogSec=60
-Restart=on-failure
-RestartSec=10
-```
+| Operation | Target Latency |
+|-----------|---------------|
+| End-to-end query | < 10s |
+| Vector search (top-5) | < 100ms |
+| Graph traversal (2-hop) | < 1ms |
+| LLM inference (q4_0) | < 3s |
 
 ---
 
 ## Backup & Recovery
 
-### Data to Backup
+### Critical Data Files
 
-1. **Knowledge Graph:** `data/tiger_brain.json`
-2. **Vector Store:** `data/chroma/`  
-3. **Research Cards:** `data/research_cards/`
-4. **Entity Mappings:** `data/entity_mappings.json`
-5. **Configuration:** `.env`
+| File | Description | Priority |
+|------|-------------|----------|
+| `data/tiger_brain.json` | Knowledge graph | Critical |
+| `data/chroma/` | Vector embeddings | Critical |
+| `data/research_cards/` | Distilled paper cards | High |
+| `data/rit_data.json` | Faculty profiles | High |
+| `data/entity_mappings.json` | Canonical entity IDs | Medium |
+| `.env` | Configuration secrets | High |
 
 ### Backup Script
 
@@ -356,25 +309,24 @@ RestartSec=10
 
 BACKUP_DIR="/backups/tigerbrain"
 DATE=$(date +%Y%m%d_%H%M%S)
-BACKUP_FILE="$BACKUP_DIR/backup_$DATE.tar.gz"
 
 mkdir -p $BACKUP_DIR
 
-# Backup data
-tar -czf $BACKUP_FILE \
+tar -czf "$BACKUP_DIR/backup_$DATE.tar.gz" \
     data/tiger_brain.json \
     data/chroma/ \
     data/research_cards/ \
+    data/rit_data.json \
     data/entity_mappings.json \
     .env
 
-echo "Backup created: $BACKUP_FILE"
+echo "Backup created: $BACKUP_DIR/backup_$DATE.tar.gz"
 
-# Cleanup old backups (keep last 7 days)
+# Keep only last 7 days
 find $BACKUP_DIR -name "backup_*.tar.gz" -mtime +7 -delete
 ```
 
-**Cron Job (daily at 2 AM):**
+**Cron (daily at 2 AM):**
 ```bash
 0 2 * * * /home/tigerbrain/tiger_research_buddy/scripts/backup.sh
 ```
@@ -382,14 +334,9 @@ find $BACKUP_DIR -name "backup_*.tar.gz" -mtime +7 -delete
 ### Recovery
 
 ```bash
-# 1. Stop service
 sudo systemctl stop tigerbrain
-
-# 2. Extract backup
 cd ~/tiger_research_buddy
-tar -xzf /backups/tigerbrain/backup_20260209_020000.tar.gz
-
-# 3. Restart service
+tar -xzf /backups/tigerbrain/backup_20260220_020000.tar.gz
 sudo systemctl start tigerbrain
 ```
 
