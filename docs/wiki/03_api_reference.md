@@ -191,24 +191,22 @@ store.clear()
 ### Class: `HybridRetriever`
 
 **Module:** `src.retrieval.hybrid_retriever`  
-**Purpose:** Orchestrates graph + vector retrieval with intent classification
+**Purpose:** Orchestrates Hybrid Search using Vector (ChromaDB) + Keyword (BM25) with Reciprocal Rank Fusion (RRF).
 
 #### Constructor
 
 ```python
 def __init__(
     self,
-    vector_db: VectorStore,
-    graph_path: str,
-    enable_llm_fallback: bool = True
+    vector_store: VectorStore,
+    documents: Optional[List[Dict]] = None
 ) -> None:
     """
     Initialize HybridRetriever.
     
     Args:
-        vector_db: Initialized VectorStore instance
-        graph_path: Path to NetworkX graph JSON file
-        enable_llm_fallback: Whether to use LLM for entity extraction
+        vector_store: Initialized VectorStore instance
+        documents: List of documents to index for BM25 (optional)
     """
 ```
 
@@ -217,76 +215,41 @@ def __init__(
 from src.database.vector_store import get_vector_store
 from src.retrieval.hybrid_retriever import HybridRetriever
 
-retriever = HybridRetriever(
-    vector_db=get_vector_store(),
-    graph_path="data/tiger_brain.json",
-    enable_llm_fallback=True
-)
+vector_store = get_vector_store()
+# Assuming 'documents' is a list of dicts loaded from JSON
+retriever = HybridRetriever(vector_store, documents)
 ```
 
 ---
 
 #### Methods
 
-##### `retrieve(query: str, limit: int = 20) -> Dict[str, Any]`
+##### `hybrid_search(query: str, k: int = 50, rrf_k: int = 60) -> List[Dict]`
 
-Main retrieval method with automatic intent routing.
-
-**Parameters:**
-- `query` (str): User query in natural language
-- `limit` (int, default=20): Maximum results to return
-
-**Returns:** Dict with keys:
-- `query_type` (str): Classified query type ("entity", "factoid", etc.)
-- `entities` (list[dict]): Extracted entities
-- `graph_results` (list[dict]): Results from graph traversal
-- `vector_results` (list[dict]): Results from vector search
-
-**Raises:** `ValueError` if graph not loaded
-
-**Example:**
-```python
-results = retriever.retrieve("Who works on neural networks?", limit=5)
-
-print(f"Query Type: {results['query_type']}")
-print(f"Entities Found: {len(results['entities'])}")
-print(f"Graph Results: {len(results['graph_results'])}")
-print(f"Vector Results: {len(results['vector_results'])}")
-```
-
-**Output:**
-```
-Query Type: entity
-Entities Found: 2
-  - concept_neural_networks
-  - concept_deep_learning
-Graph Results: 4
-  - faculty_kanan (via 2-hop path)
-  - faculty_kubota (via 1-hop path)
-Vector Results: 5
-```
-
----
-
-##### `classify_query(query: str) -> QueryType`
-
-Classifies user intent using keyword heuristics.
+Performs the hybrid search using RRF.
 
 **Parameters:**
 - `query` (str): User query
+- `k` (int, default=50): Number of results to return
+- `rrf_k` (int, default=60): RRF constant
 
-**Returns:** `QueryType` enum value (ENTITY, FACTOID, RELATIONAL, EXPLORATORY)
+**Returns:** List of dicts (documents) with added scores/ranks.
 
 **Example:**
 ```python
-from src.retrieval.hybrid_retriever import QueryType
-
-query_type = retriever.classify_query("Who works on AI?")
-print(query_type)  # QueryType.ENTITY
-
-query_type = retriever.classify_query("What is machine learning?")
-print(query_type)  # QueryType.FACTOID
+results = retriever.hybrid_search("Who works on AI?")
+for res in results[:5]:
+    print(f"{res['metadata']['title']} (Score: {res['rrf_score']:.4f})")
 ```
+
+##### `index_bm25(documents: List[Dict]) -> None`
+
+Builds the BM25 index from the given documents.
+
+**Parameters:**
+- `documents` (List[Dict]): Documents to index.
+
+**Returns:** None
 
 ---
 
@@ -535,64 +498,7 @@ Based on my database, **Dr. Christopher Kanan** and **Dr. Cecilia Alm** have pub
 
 ---
 
-## Entity Extractor API
 
-### Class: `EntityExtractor`
-
-**Module:** `src.retrieval.entity_extraction`  
-**Purpose:** Extracts entities from queries using hybrid lexical + LLM approach
-
-#### Constructor
-
-```python
-def __init__(
-    self,
-    graph: networkx.Graph,
-    enable_llm_fallback: bool = True,
-    threshold: int = 2
-) -> None:
-    """
-    Initialize EntityExtractor.
-    
-    Args:
-        graph: NetworkX knowledge graph
-        enable_llm_fallback: Use LLM when lexical matching is sparse
-        threshold: Minimum entities before triggering LLM
-    """
-```
-
----
-
-####Methods
-
-##### `extract(query: str) -> List[Dict[str, Any]]`
-
-Extracts entities from a query string.
-
-**Parameters:**
-- `query` (str): User query
-
-**Returns:** List of dicts with keys:
-- `id` (str): Node ID in graph
-- `label` (str): Human-readable label
-- `type` (str): Node type ("faculty", "concept", "paper")
-
-**Example:**
-```python
-from src.retrieval.entity_extraction import EntityExtractor
-
-extractor = EntityExtractor(graph, enable_llm_fallback=True)
-entities = extractor.extract("Who works on neural networks and GPUs?")
-
-for e in entities:
-    print(f"{e['label']} ({e['type']})")
-```
-
-**Output:**
-```
-Neural Networks (concept)
-GPU Computing (concept)
-```
 
 ---
 
