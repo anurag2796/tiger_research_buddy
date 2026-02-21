@@ -1,9 +1,11 @@
 import json
 import uuid
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
-from fuzzywuzzy import process
+from typing import Dict, List, Optional, Tuple, Set
+from fuzzywuzzy import process, fuzz
+import jellyfish  # For phonetic matching
 from rich.console import Console
+from ..utils.schema import Faculty, Publication
 
 console = Console()
 
@@ -41,105 +43,139 @@ class EntityResolver:
                     "canonical_map": self.canonical_map,
                     "canonical_entities": self.canonical_entities
                 }, f, indent=2)
-            # console.print("[dim]Saved entity mappings.[/]")
         except Exception as e:
             console.print(f"[red]Failed to save mappings: {e}[/]")
 
-    def resolve_author(self, raw_name: str, affiliation: str = None, coauthors: List[str] = None) -> str:
-        """
-        Resolve a raw author name to a canonical ID.
-        Returns: canonical_id (str)
-        """
-        if not raw_name:
-            return "unknown_author"
+    def _is_valid_name(self, name: str) -> bool:
+        """Check if name is valid and not a blacklist term."""
+        if not name:
+            return False
             
-        # Lowercase for blacklist checking
-        lower_name = raw_name.lower().strip()
+        lower_name = name.lower().strip()
         
-        # Blacklist / Cleaning
         BLACKLIST = [
             "name not provided", "not explicitly listed", "unknown", "anonymous", 
             "author one", "author two", "various authors", "research team",
-            "deceased author"
+            "deceased author", "et al", "et al."
         ]
         
-        # If the name IS exactly a blacklist term (or close to it)
         if any(b in lower_name for b in BLACKLIST):
-            return "unknown_author"
+            return False
             
-        # Specific fix for "et al"
-        # If the name is JUST "et al" or "et al.", reject it
-        if lower_name in ["et al", "et al."]:
-            return "unknown_author"
+        if len(lower_name) < 2:
+            return False
             
-        # Remove "et al." suffix if it exists (e.g. "Smith et al.")
-        # We want to keep "Smith"
-        clean_name = raw_name.replace(" et al.", "").replace(" et al", "").strip()
-        
-        # If cleaning resulted in empty string or just punctuation
-        if not clean_name or len(clean_name) < 2:
-            return "unknown_author"
+        return True
 
-        # 1. Exact Match (O(1)) using the CLEANED name
+    def _clean_name(self, name: str) -> str:
+        """Clean author name."""
+        clean = name.replace(" et al.", "").replace(" et al", "").strip()
+        # Remove titles
+        titles = ["Dr.", "Prof.", "Mr.", "Ms.", "Mrs.", "PhD"]
+        for t in titles:
+            if clean.startswith(t):
+                clean = clean[len(t):].strip()
+        return clean
+
+    def _phonetic_match(self, name1: str, name2: str) -> bool:
+        """Check if two names sound similar using Metaphone."""
+        try:
+            return jellyfish.metaphone(name1) == jellyfish.metaphone(name2)
+        except:
+            return False
+
+    def resolve_faculty(self, raw_name: str, department: str = None) -> str:
+        """
+        Resolve a faculty name to a canonical ID with advanced matching.
+        """
+        if not self._is_valid_name(raw_name):
+            return "unknown_faculty"
+            
+        clean_name = self._clean_name(raw_name)
+        
+        # 1. Exact Match (O(1))
         if clean_name in self.canonical_map:
             return self.canonical_map[clean_name]
 
-        # 2. Fuzzy Match (Context-Aware)
-        # Only check expensive fuzzy match if we have existing entities
+        # 2. Fuzzy / Phonetic Match
         if self.canonical_entities:
-            best_match_id, score = self._find_best_fuzzy_match(clean_name, affiliation, coauthors)
+            best_match_id, score = self._find_best_match(clean_name, department)
             
-            if score > 90:  # High confidence threshold
-                # Link alias to existing canonical
+            # Thresholds
+            # High confidence: >90 fuzzy score
+            # Medium confidence + Phonetic: >80 fuzzy + phonetic match
+            
+            is_match = False
+            if score > 90:
+                is_match = True
+            elif score > 80:
+                # Check phonetic
+                canonical = self.canonical_entities[best_match_id]['canonical_name']
+                if self._phonetic_match(clean_name, canonical):
+                    is_match = True
+                    console.print(f"[dim]Phonetic match found: {clean_name} ~= {canonical}[/]")
+
+            if is_match:
+                # Link alias
                 self.canonical_map[clean_name] = best_match_id
-                self.canonical_entities[best_match_id]['aliases'].append(clean_name)
-                # Merge metadata (naive)
-                if affiliation and not self.canonical_entities[best_match_id].get('affiliation'):
-                    self.canonical_entities[best_match_id]['affiliation'] = affiliation
+                if clean_name not in self.canonical_entities[best_match_id]['aliases']:
+                    self.canonical_entities[best_match_id]['aliases'].append(clean_name)
+                
+                # Merge Dept if missing
+                if department and not self.canonical_entities[best_match_id].get('department'):
+                    self.canonical_entities[best_match_id]['department'] = department
+                    
                 self.save_mappings()
                 return best_match_id
 
-        # 3. Create New Canonical Entity
+        # 3. Create New
         new_id = f"faculty_{uuid.uuid4().hex[:8]}"
         self.canonical_entities[new_id] = {
             "id": new_id,
             "canonical_name": clean_name,
             "aliases": [clean_name],
-            "affiliation": affiliation,
-            "coauthors": coauthors or []
+            "department": department
         }
         self.canonical_map[clean_name] = new_id
         self.save_mappings()
         return new_id
 
-    def _find_best_fuzzy_match(self, raw_name: str, affiliation: str, coauthors: List[str]) -> Tuple[str, int]:
-        """
-        Compare raw_name against all canonical entities.
-        Returns (best_match_id, confidence_score)
-        """
-        # Optimization: Only compare against canonical names first to reduce search space
-        # In production, use blocking/indexing. For 2k authors, linear scan is OK.
-        
+    def _find_best_match(self, raw_name: str, department: str) -> Tuple[str, int]:
+        """Find best match using weighted scoring."""
         candidates = []
+        
+        # Blocking: Optimization (Optional for now, straightforward loop is fine for <2k entities)
+        # For huge datasets, block by first letter of last name.
+        
         for entity in self.canonical_entities.values():
-            # Base string similarity
-            # Check against all aliases of this entity? Too slow.
-            # Check against canonical name
-            base_score = process.extractOne(raw_name, entity['aliases'])[1]
+            canonical = entity['canonical_name']
             
-            final_score = base_score
+            # 1. Token Set Ratio (good for "Smith, J" vs "John Smith")
+            score = fuzz.token_set_ratio(raw_name, canonical)
+            
+            # 2. Levenshtein Distance (for typos)
+            # transform 0-100 scale: 100 - (distance / max_len * 100)
+            lev_dist = jellyfish.levenshtein_distance(raw_name, canonical)
+            max_len = max(len(raw_name), len(canonical))
+            lev_score = 100 - (lev_dist / max_len * 100) if max_len > 0 else 0
+            
+            final_score = max(score, lev_score)
             
             # Context Boost: Affiliation
-            if affiliation and entity.get('affiliation'):
-                if process.fuzz.token_set_ratio(affiliation, entity['affiliation']) > 85:
-                    final_score += 10
-            
-            # Context Boost: Co-authors (Jaccard Index logic-ish)
-            if coauthors and entity.get('coauthors'):
-                common = set(coauthors) & set(entity['coauthors'])
-                if common:
-                    final_score += 5 * len(common)  # +5 per matching co-author
-            
+            if department and entity.get('department'):
+                if fuzz.token_set_ratio(department, entity['department']) > 85:
+                    final_score += 5  # Small boost for same department
+
+            # Special Heuristic: Force strict penalty if first names are fully written but differ
+            parts_raw = raw_name.split()
+            parts_can = canonical.split()
+            if len(parts_raw) >= 2 and len(parts_can) >= 2:
+                raw_first = parts_raw[0].lower()
+                can_first = parts_can[0].lower()
+                if len(raw_first) > 1 and len(can_first) > 1 and raw_first != can_first:
+                    # e.g., "Christopher Kanan" != "Charles Kanan"
+                    final_score = min(final_score, 60) # Penalty ensures they don't merge
+
             candidates.append((entity['id'], min(final_score, 100)))
 
         if not candidates:
@@ -147,5 +183,19 @@ class EntityResolver:
             
         return max(candidates, key=lambda x: x[1])
 
-    def get_canonical_name(self, canonical_id: str) -> str:
-        return self.canonical_entities.get(canonical_id, {}).get("canonical_name", "Unknown")
+    def resolve_publication(self, title: str, authors: List[str]) -> str:
+        """
+        Deduplicate publications based on title similarity.
+        Returns a simplified hash-like ID for deduplication.
+        """
+        # We don't necessarily store a persistent map for pub IDs 
+        # unless we want global pub resolution.
+        # For now, let's normalize the title.
+        
+        clean_title = title.lower().strip()
+        # Remove punctuation
+        import string
+        clean_title = clean_title.translate(str.maketrans('', '', string.punctuation))
+        
+        # Return a hash of valid title
+        return f"pub_{uuid.uuid5(uuid.NAMESPACE_DNS, clean_title).hex[:12]}"

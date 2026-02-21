@@ -1,11 +1,14 @@
 import streamlit as st
 import time
+import json
+from pathlib import Path
 from rich.console import Console
 
 # Import backend components
-from src.database.lance_manager import LanceManager
+from src.database.vector_store import get_vector_store, process_data_into_documents
 from src.retrieval.hybrid_retriever import HybridRetriever
 from src.generation.synthesizer import ResponseSynthesizer
+from src.utils.config import RESTRICTED_CONFIG
 
 # Page Config
 st.set_page_config(
@@ -45,7 +48,11 @@ with st.sidebar:
     st.title("TigerStack 2.0 🧠")
     st.markdown("---")
     st.markdown("**Status**: ✅ System Online")
-    st.markdown("**Graph Nodes**: 48,280")
+    
+    # Get stats placeholder
+    stats_placeholder = st.empty()
+    stats_placeholder.markdown("**Docs**: Loading...")
+    
     st.markdown("**Model**: `tigerbuddy:latest`")
     st.markdown("---")
     use_cod = st.checkbox("🧬 Deep Analysis (CoD)", value=False, help="Use Chain of Density prompting for deeper, denser answers. (Slower)")
@@ -58,19 +65,38 @@ with st.sidebar:
 def get_engine():
     """Load backend components once."""
     print("Loading Engine...")
-    db_manager = LanceManager()
-    # Assuming LanceManager is already initialized from CLI runs
     
+    # 1. Initialize Vector Store
+    vector_store = get_vector_store(RESTRICTED_CONFIG)
+    vector_store.initialize()
+    
+    # 2. Load Documents for BM25
+    # We load the source JSON to build the BM25 index
+    data_path = RESTRICTED_CONFIG.OUTPUT_FILE
+    documents = []
+    
+    if data_path.exists():
+        with open(data_path, "r") as f:
+            data = json.load(f)
+        documents = process_data_into_documents(data)
+    else:
+        print("Warning: Data file not found. BM25 will be empty.")
+        
+    # 3. Initialize Hybrid Retriever
     retriever = HybridRetriever(
-        vector_db=db_manager,
-        graph_path="data/tiger_brain.json"
+        vector_store=vector_store,
+        documents=documents
     )
     
     synthesizer = ResponseSynthesizer()
-    return retriever, synthesizer
+    return retriever, synthesizer, len(documents)
 
 try:
-    retriever, synthesizer = get_engine()
+    retriever, synthesizer, doc_count = get_engine()
+    # Update sidebar stats
+    if stats_placeholder:
+        stats_placeholder.markdown(f"**Docs**: {doc_count}")
+        
 except Exception as e:
     st.error(f"Failed to load system: {e}")
     st.stop()
@@ -85,7 +111,7 @@ if "messages" not in st.session_state:
     # Add initial greeting
     st.session_state.messages.append({
         "role": "assistant", 
-        "content": "Hello! I'm your AI Research Advisor. Accessing 1,145 papers and faculty profiles. How can I help you today?"
+        "content": "Hello! I'm your AI Research Advisor. Accessing RIT faculty profiles and papers. How can I help you today?"
     })
 
 # Display chat messages
@@ -121,10 +147,10 @@ if prompt := st.chat_input("Ex: Who works on Spiking Neural Networks?"):
         message_placeholder = st.empty()
         full_response = ""
         
-        with st.spinner("Analyzing Research Graph..."):
+        with st.spinner("Searching RIT Database (Hybrid)..."):
             try:
-                # 1. Retrieve
-                results = retriever.retrieve(prompt, limit=5)
+                # 1. Hybrid Search (Vector + BM25 + RRF)
+                results = retriever.hybrid_search(prompt, k=5)
                 
                 # 2. Synthesize
                 full_response = synthesizer.synthesize(prompt, results, use_cod=use_cod)

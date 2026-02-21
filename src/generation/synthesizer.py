@@ -16,29 +16,17 @@ class ResponseSynthesizer:
         self.client = get_ollama_client()
         self.model_name = model_name
 
-    def synthesize(self, query: str, results: Dict[str, Any], use_cod: bool = False) -> str:
+    def synthesize(self, query: str, results: List[Dict], use_cod: bool = False) -> str:
         """
         Generate a cited response based on hybrid retrieval results.
         Args:
             query: User's question
-            results: Dictionary of graph and vector results
+            results: List of retrieved documents (RRF ranked)
             use_cod: If True, use Chain of Density prompting for deeper answers
         """
         context_str, sources = self._format_context(results)
         
         if not context_str:
-            # Check if we have partial entity matches to suggest
-            entities = results.get('entities', [])
-            partial_matches = [e for e in entities if e.get('match_quality') == 'partial']
-            
-            if partial_matches:
-                suggestions = [f"- **{e['label']}** ({e['type']})" for e in partial_matches[:5]]
-                return (
-                    f"I couldn't find an exact match for your query, but I found these similar topics/people:\n\n" + 
-                    "\n".join(suggestions) + 
-                    "\n\n**Did you mean one of these?**"
-                )
-            
             return "I couldn't find any relevant research or faculty in the database to answer that."
 
         if use_cod:
@@ -54,9 +42,6 @@ class ResponseSynthesizer:
 
         user_prompt = f"""
 Query: "{query}"
-
-{self._get_ambiguity_note(results)}
-
 
 Context from RIT Database:
 {context_str}
@@ -109,7 +94,7 @@ Response:
                 cod_template = "You are an expert synthesizer. output json. {context_str}"
         except Exception as e:
              console.print(f"[red]Failed to load CoD prompt: {e}[/]")
-             return self.synthesize(query, {"vector_results": [], "graph_results": []}, use_cod=False)
+             return self.synthesize(query, [], use_cod=False)
 
         # Replace placeholders
         user_prompt = cod_template.replace("{query}", query).replace("{context_str}", context_str)
@@ -143,50 +128,37 @@ Response:
              console.print(f"[red]CoD Synthesis failed: {e}[/]")
              return f"Error in Deep Synthesis: {str(e)}"
 
-    def _format_context(self, results: Dict[str, Any]) -> tuple[str, List[Dict]]:
+    def _format_context(self, results: List[Dict]) -> tuple[str, List[Dict]]:
         """
-        Combine graph and vector results into a numbered context list.
+        Format retrieved documents into a context string.
         """
         sources = []
         context_parts = []
         seen_ids = set()
         
-        # Helper to process doc
-        def process_doc(doc):
-            if doc['id'] in seen_ids: return
+        for doc in results:
+            doc_id = doc.get('id', '')
+            if doc_id in seen_ids: continue
+            
             sources.append(doc)
-            seen_ids.add(doc['id'])
+            seen_ids.add(doc_id)
             
             i = len(sources)
             meta = doc.get('metadata', {})
-            source_type = meta.get('type', 'unknown')
+            source_type = meta.get('doc_type', 'unknown')
             
             # Format based on type
-            if source_type == 'faculty_profile':
-                # Rich faculty profile
-                content = doc.get('text', '')
+            if source_type in ['professor', 'faculty_profile']:
+                content = doc.get('content', '')
                 context_entry = f"[{i}] FACULTY PROFILE: {content}"
-            elif source_type == 'research_paper':
-                # Paper with authors
-                content = doc.get('text', '')
-                source_node = meta.get('source_node', '')
-                reason = f" [Relevant to: {source_node}]" if source_node else ""
-                context_entry = f"[{i}] RESEARCH PAPER{reason}: {content}"
+            elif source_type in ['publication', 'research_paper']:
+                content = doc.get('content', '')
+                context_entry = f"[{i}] RESEARCH PAPER: {content}"
             else:
-                # Generic fallback
-                title = meta.get('title', doc.get('text', 'Source'))
-                content = doc.get('text', '')[:500].replace('\n', ' ')
-                context_entry = f"[{i}] {title} ({source_type}): {content}"
+                content = doc.get('content', '')[:1000].replace('\n', ' ')
+                context_entry = f"[{i}] SOURCE ({source_type}): {content}"
             
             context_parts.append(context_entry)
-
-        # Prioritize Graph results (Faculty & Papers)
-        for doc in results.get('graph_results', []):
-            process_doc(doc)
-        
-        # Add Vector results (Global context)
-        for doc in results.get('vector_results', []):
-            process_doc(doc)
             
         return "\n\n".join(context_parts), sources
 
@@ -198,26 +170,9 @@ Response:
         
         for i, doc in enumerate(sources, 1):
             meta = doc.get('metadata', {})
-            title = meta.get('title', doc.get('text', 'Source'))
+            # Use title if available, otherwise fallback
+            title = meta.get('name') or meta.get('title') or doc.get('id')
             
-            # If it's a paper, maybe show authors?
-            # For now keep it simple
             output.append(f"[{i}] {title}")
             
         return "\n".join(output)
-
-    def _get_ambiguity_note(self, results: Dict[str, Any]) -> str:
-        """
-        Check for partial/fuzzy matches and return a note for the LLM.
-        """
-        entities = results.get('entities', [])
-        partial_matches = [e for e in entities if e.get('match_quality') == 'partial']
-        
-        if partial_matches:
-            names = ", ".join([f"{e['label']} ({e['type']})" for e in partial_matches[:3]])
-            return (
-                f"NOTE: The user's query partially matched the following entities in our database: {names}.\n"
-                "If the retrieved context is relevant to these entities, explicitly mention: 'Assuming you meant [Name]...' "
-                "in your response."
-            )
-        return ""

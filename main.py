@@ -39,23 +39,46 @@ def crawl(skip_scholar: bool):
         border_style="orange1"
     ))
     
-    from src.crawlers import enrich_with_scholar
-    # LEGACY: crawl_rit was moved to legacy/crawlers/
-    # Using dummy data or directing user to smart crawler could be better, for now just pass to avoid import error
-    data = {"faculty": []}
+    from src.crawlers import enrich_with_scholar, run_smart_crawl
+    from src.utils.config import RESTRICTED_CONFIG
+    import json
     
-    # Optionally enrich with Google Scholar
+    # 1. Verification of API Keys
+    # (Optional but good practice)
+    
+    # 2. Run SmartCrawler (Level 2 Extraction)
+    console.print("\n[bold]Running SmartCrawler...[/]")
+    console.print("[dim]Extracting faculty profiles using LLM...[/]")
+    
+    # Default to restricted mode configs for now to be safe
+    try:
+        faculty = run_smart_crawl(max_profiles=15)
+        data = {"faculty": faculty}
+    except Exception as e:
+        console.print(f"[red]SmartCrawler failed: {e}[/]")
+        return
+
+    # 3. Enrich with Google Scholar
     if not skip_scholar and data.get("faculty"):
-        console.print("\n[bold]Google Scholar enrichment[/]")
-        console.print("[dim]This may take a while due to rate limiting...[/]")
-        console.print("[dim]Use --skip-scholar to skip this step[/]")
+        console.print("\n[bold]Google Scholar Enrichment[/]")
+        console.print("[dim]Fetching publication data (multithreaded)...[/]")
         
         try:
             data["faculty"] = enrich_with_scholar(data["faculty"])
         except Exception as e:
             console.print(f"[yellow]Scholar enrichment skipped: {e}[/]")
+            
+    # 4. Save merged data for VectorStore loading
+    # We must overwrite the file because load_data_to_vectorstore reads from it
+    outfile = RESTRICTED_CONFIG.OUTPUT_FILE
+    try:
+        with open(outfile, 'w') as f:
+            json.dump(data, f, indent=2)
+        console.print(f"[green]✓ Saved enriched data to {outfile}[/]")
+    except Exception as e:
+        console.print(f"[red]Failed to save data: {e}[/]")
     
-    # Load into vector store
+    # 5. Load into vector store
     console.print("\n[bold]Building vector database...[/]")
     store = load_data_to_vectorstore()
     

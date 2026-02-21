@@ -1,0 +1,30 @@
+{
+    "faculty": [
+        {
+            "name": "Christopher Kanan",
+            "title": "Associate Professor",
+            "department": "Computer Science",
+            "email": "kanan@rit.edu",
+            "bio": "Christopher Kanan is an Associate Professor in the Department of Computer Science. He works on deep learning, computer vision, and brain-inspired computing.",
+            "research_interests": [
+                "Machine Learning",
+                "Computer Vision",
+                "Deep Learning",
+                "Brain-Inspired Computing"
+            ],
+            "profile_url": "https://www.rit.edu/computing/directory/ckics-christopher-kanan",
+            "college": "Golisano College of Computing and Information Sciences"
+        }
+    ],
+    "research_areas": [
+        {
+            "name": "Artificial Intelligence",
+            "description": "Research in AI, Machine Learning, and Computer Vision.",
+            "faculty": [
+                {
+                    "name": "Christopher Kanan"
+                }
+            ]
+        }
+    ]
+}

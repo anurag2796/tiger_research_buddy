@@ -1,0 +1,203 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.7, pytest-9.0.1, pluggy-1.6.0 -- /Users/anurag/.pyenv/versions/3.12.7/bin/python3.12
+cachedir: .pytest_cache
+rootdir: /Users/anurag/codebase/personalProjects/tiger_research_buddy
+configfile: pytest.ini
+plugins: asyncio-1.3.0, anyio-3.7.1, locust-2.42.5
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 5 items
+
+tests/test_canary.py::test_canary_scenario[faculty_lookup] FAILED        [ 20%]
+tests/test_canary.py::test_canary_scenario[topic_search] FAILED          [ 40%]
+tests/test_canary.py::test_canary_scenario[follow_up] FAILED             [ 60%]
+tests/test_canary.py::test_canary_scenario[off_topic] PASSED             [ 80%]
+tests/test_canary.py::test_canary_scenario[hallucination_check] PASSED   [100%]
+
+=================================== FAILURES ===================================
+_____________________ test_canary_scenario[faculty_lookup] _____________________
+
+engine = <src.chatbot.rag_engine.RAGEngine object at 0x17f95e600>
+test_case = {'id': 1, 'max_time': 10.0, 'must_contain': ['Christopher Kanan', 'kanan'], 'must_not_contain': ['Result 1:', 'Context:', '✅ GOOD'], ...}
+
+    @pytest.mark.parametrize("test_case", CANARY_TESTS, ids=lambda x: f"{x['type']}")
+    def test_canary_scenario(engine, test_case):
+        """Run a parametrized canary test scenario"""
+    
+        # Setup context if needed
+        if test_case.get("context_query"):
+            engine.query(test_case["context_query"])
+        else:
+            # Clear history for independent tests (unless it's a follow-up)
+            # Note: In pytest parametrization, order isn't guaranteed unless we force it.
+            # But for this simple case, we assume independence except where context is explicitly set.
+            # Ideally, we should clear history before every test that ISN'T a follow-up.
+            # Since we use the same engine instance, we should clear it.
+            # But wait, how do we distinguish?
+            # Better: Clear history at start, then run context query if needed.
+            engine.clear_history()
+            if test_case.get("context_query"):
+                 # Re-run context query to set state
+                 engine.query(test_case["context_query"])
+    
+        start_time = time.time()
+        response = engine.query(test_case["query"], n_results=4)
+        duration = time.time() - start_time
+    
+        # 1. Check Response Time
+        assert duration <= test_case["max_time"], f"Response took {duration:.2f}s > {test_case['max_time']}s"
+    
+        response_lower = response.lower()
+    
+        # 2. Check Required Content
+        if test_case.get("type") == "hallucination_check":
+            # Special case: Require ANY of the phrases
+            match_found = any(req.lower() in response_lower for req in test_case["must_contain"])
+            assert match_found, f"Response didn't refuse properly. Expected one of: {test_case['must_contain']}. \nGot: {response}"
+        else:
+            # Standard case: Require ALL phrases
+            for required in test_case.get("must_contain", []):
+>               assert required.lower() in response_lower, f"Missing required phrase: '{required}'. \nGot: {response}"
+E               AssertionError: Missing required phrase: 'Christopher Kanan'. 
+E                 Got: I don't have specific information about that in my database. I recommend checking the RIT Computing website or contacting the department.
+E               assert 'christopher kanan' in "i don't have specific information about that in my database. i recommend checking the rit computing website or contacting the department."
+E                +  where 'christopher kanan' = <built-in method lower of str object at 0x10b043e70>()
+E                +    where <built-in method lower of str object at 0x10b043e70> = 'Christopher Kanan'.lower
+
+tests/test_canary.py:102: AssertionError
+---------------------------- Captured stdout setup -----------------------------
+📦 Initializing vector store...
+✓ Vector store ready (0 documents)
+✓ Ollama ready (6 models available)
+Using model: tigerbuddy:latest
+✓ RAG Engine initialized (Skills loaded)
+------------------------------ Captured log setup ------------------------------
+WARNING  transformers_modules.nomic_hyphen_ai.nomic_hyphen_bert_hyphen_2048.7710840340a098cfb869c4f65e87cf2b1b70caca.modeling_hf_nomic_bert:modeling_hf_nomic_bert.py:466 <All keys matched successfully>
+----------------------------- Captured stdout call -----------------------------
+Conversation history cleared
+Intent: faculty_lookup (confidence: 0.80)
+Retrieved 0 chunks, kept 0 after filtering (thresh=0.52)
+______________________ test_canary_scenario[topic_search] ______________________
+
+engine = <src.chatbot.rag_engine.RAGEngine object at 0x17f95e600>
+test_case = {'id': 2, 'max_time': 10.0, 'must_contain': ['machine learning'], 'must_not_contain': ['Result 1:', 'professor:', 'research_area:'], ...}
+
+    @pytest.mark.parametrize("test_case", CANARY_TESTS, ids=lambda x: f"{x['type']}")
+    def test_canary_scenario(engine, test_case):
+        """Run a parametrized canary test scenario"""
+    
+        # Setup context if needed
+        if test_case.get("context_query"):
+            engine.query(test_case["context_query"])
+        else:
+            # Clear history for independent tests (unless it's a follow-up)
+            # Note: In pytest parametrization, order isn't guaranteed unless we force it.
+            # But for this simple case, we assume independence except where context is explicitly set.
+            # Ideally, we should clear history before every test that ISN'T a follow-up.
+            # Since we use the same engine instance, we should clear it.
+            # But wait, how do we distinguish?
+            # Better: Clear history at start, then run context query if needed.
+            engine.clear_history()
+            if test_case.get("context_query"):
+                 # Re-run context query to set state
+                 engine.query(test_case["context_query"])
+    
+        start_time = time.time()
+        response = engine.query(test_case["query"], n_results=4)
+        duration = time.time() - start_time
+    
+        # 1. Check Response Time
+        assert duration <= test_case["max_time"], f"Response took {duration:.2f}s > {test_case['max_time']}s"
+    
+        response_lower = response.lower()
+    
+        # 2. Check Required Content
+        if test_case.get("type") == "hallucination_check":
+            # Special case: Require ANY of the phrases
+            match_found = any(req.lower() in response_lower for req in test_case["must_contain"])
+            assert match_found, f"Response didn't refuse properly. Expected one of: {test_case['must_contain']}. \nGot: {response}"
+        else:
+            # Standard case: Require ALL phrases
+            for required in test_case.get("must_contain", []):
+>               assert required.lower() in response_lower, f"Missing required phrase: '{required}'. \nGot: {response}"
+E               AssertionError: Missing required phrase: 'machine learning'. 
+E                 Got: I don't have specific information about that in my database. I recommend checking the RIT Computing website or contacting the department.
+E               assert 'machine learning' in "i don't have specific information about that in my database. i recommend checking the rit computing website or contacting the department."
+E                +  where 'machine learning' = <built-in method lower of str object at 0x10b0480f0>()
+E                +    where <built-in method lower of str object at 0x10b0480f0> = 'machine learning'.lower
+
+tests/test_canary.py:102: AssertionError
+----------------------------- Captured stdout call -----------------------------
+Conversation history cleared
+Intent: topic_search (confidence: 0.80)
+Retrieved 0 chunks, kept 0 after filtering (thresh=0.72)
+_______________________ test_canary_scenario[follow_up] ________________________
+
+engine = <src.chatbot.rag_engine.RAGEngine object at 0x17f95e600>
+test_case = {'context_query': 'Who is Christopher Kanan?', 'id': 3, 'max_time': 10.0, 'must_contain': ['@rit.edu'], ...}
+
+    @pytest.mark.parametrize("test_case", CANARY_TESTS, ids=lambda x: f"{x['type']}")
+    def test_canary_scenario(engine, test_case):
+        """Run a parametrized canary test scenario"""
+    
+        # Setup context if needed
+        if test_case.get("context_query"):
+            engine.query(test_case["context_query"])
+        else:
+            # Clear history for independent tests (unless it's a follow-up)
+            # Note: In pytest parametrization, order isn't guaranteed unless we force it.
+            # But for this simple case, we assume independence except where context is explicitly set.
+            # Ideally, we should clear history before every test that ISN'T a follow-up.
+            # Since we use the same engine instance, we should clear it.
+            # But wait, how do we distinguish?
+            # Better: Clear history at start, then run context query if needed.
+            engine.clear_history()
+            if test_case.get("context_query"):
+                 # Re-run context query to set state
+                 engine.query(test_case["context_query"])
+    
+        start_time = time.time()
+        response = engine.query(test_case["query"], n_results=4)
+        duration = time.time() - start_time
+    
+        # 1. Check Response Time
+        assert duration <= test_case["max_time"], f"Response took {duration:.2f}s > {test_case['max_time']}s"
+    
+        response_lower = response.lower()
+    
+        # 2. Check Required Content
+        if test_case.get("type") == "hallucination_check":
+            # Special case: Require ANY of the phrases
+            match_found = any(req.lower() in response_lower for req in test_case["must_contain"])
+            assert match_found, f"Response didn't refuse properly. Expected one of: {test_case['must_contain']}. \nGot: {response}"
+        else:
+            # Standard case: Require ALL phrases
+            for required in test_case.get("must_contain", []):
+>               assert required.lower() in response_lower, f"Missing required phrase: '{required}'. \nGot: {response}"
+E               AssertionError: Missing required phrase: '@rit.edu'. 
+E                 Got: I don't have specific information about that in my database. I recommend checking the RIT Computing website or contacting the department.
+E               assert '@rit.edu' in "i don't have specific information about that in my database. i recommend checking the rit computing website or contacting the department."
+E                +  where '@rit.edu' = <built-in method lower of str object at 0x10b048230>()
+E                +    where <built-in method lower of str object at 0x10b048230> = '@rit.edu'.lower
+
+tests/test_canary.py:102: AssertionError
+----------------------------- Captured stdout call -----------------------------
+Intent: faculty_lookup (confidence: 0.80)
+Retrieved 0 chunks, kept 0 after filtering (thresh=0.52)
+Intent: contact_info (confidence: 0.85)
+Context awareness: Expanded to 'Who is Christopher Kanan? What's his email?'
+Retrieved 0 chunks, kept 0 after filtering (thresh=0.72)
+=============================== warnings summary ===============================
+../../../.pyenv/versions/3.12.7/lib/python3.12/site-packages/dateutil/tz/tz.py:37
+  /Users/anurag/.pyenv/versions/3.12.7/lib/python3.12/site-packages/dateutil/tz/tz.py:37: DeprecationWarning: datetime.datetime.utcfromtimestamp() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.fromtimestamp(timestamp, datetime.UTC).
+    EPOCH = datetime.datetime.utcfromtimestamp(0)
+
+../../../.pyenv/versions/3.12.7/lib/python3.12/site-packages/pytz/tzinfo.py:27
+  /Users/anurag/.pyenv/versions/3.12.7/lib/python3.12/site-packages/pytz/tzinfo.py:27: DeprecationWarning: datetime.datetime.utcfromtimestamp() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.fromtimestamp(timestamp, datetime.UTC).
+    _epoch = datetime.utcfromtimestamp(0)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_canary.py::test_canary_scenario[faculty_lookup] - Assertion...
+FAILED tests/test_canary.py::test_canary_scenario[topic_search] - AssertionEr...
+FAILED tests/test_canary.py::test_canary_scenario[follow_up] - AssertionError...
+=================== 3 failed, 2 passed, 2 warnings in 7.73s ====================

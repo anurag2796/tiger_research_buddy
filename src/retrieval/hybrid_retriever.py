@@ -1,201 +1,172 @@
-import networkx as nx
-from typing import List, Dict, Any, Tuple
-from enum import Enum
-import hashlib
+"""
+Hybrid Retriever combining Vector Search (ChromaDB) and Keyword Search (BM25).
+"""
+
+from typing import List, Dict, Any, Optional
+import numpy as np
+from rank_bm25 import BM25Okapi
 from rich.console import Console
-from .entity_extraction import EntityExtractor  # We'll create this helper
+
+from ..database.vector_store import VectorStore, process_data_into_documents
 
 console = Console()
 
-class QueryType(Enum):
-    FACTOID = "factoid"      # "What is Zero-Shot Learning?"
-    ENTITY = "entity"        # "Who works on X?"
-    RELATIONAL = "relational"# "Compare A and B"
-    EXPLORATORY = "exploratory" # "What's new in Y?"
-
 class HybridRetriever:
     """
-    Adaptive retrieval engine that routes queries to the optimal strategy
-    based on intent (Sequential vs Parallel).
+    Hybrid Retriever that combines Vector Search and BM25 using Reciprocal Rank Fusion (RRF).
     """
     
-    # Keywords for heuristic classification (Fast, no LLM)
-    ENTITY_KEYWORDS = [
-        "who", "which faculty", "researcher", "author", "professor", 
-        "expert", "lab", "team", "person", "faculty"
-    ]
-    FACTOID_KEYWORDS = [
-        "what is", "define", "explain", "how does", "describe", 
-        "concept", "meaning", "definition"
-    ]
-    COMPARE_KEYWORDS = ["compare", "difference", "versus", "vs", "similarities"]
-    
-    def __init__(self, vector_db, graph_path: str):
-        self.vector_db = vector_db
-        console.print(f"[cyan]Loading Knowledge Graph for Retrieval...[/]")
+    def __init__(self, vector_store: VectorStore, documents: Optional[List[Dict]] = None):
+        """
+        Initialize the HybridRetriever.
         
-        # Load JSON graph instead of GML
-        import json
-        from networkx.readwrite import node_link_graph
-        from pathlib import Path
+        Args:
+            vector_store: The VectorStore instance (ChromaDB wrapper).
+            documents: List of documents to index for BM25. If None, valid documents 
+                      will be loaded from the vector store's source file if possible,
+                      or an empty index will be created.
+        """
+        self.vector_store = vector_store
+        self.bm25 = None
+        self.bm25_corpus = []
+        self.bm25_documents = [] # Keep reference to original docs to return content
         
-        json_path = Path(graph_path).with_suffix('.json')
-        with open(json_path, 'r') as f:
-            data = json.load(f)
-        self.graph = node_link_graph(data)
+        if documents:
+            self.index_bm25(documents)
+            
+    def index_bm25(self, documents: List[Dict]):
+        """
+        Build the BM25 index from a list of documents.
+        """
+        console.print(f"[bold blue]Building BM25 index for {len(documents)} documents...[/]")
         
-        console.print(f"[green]Graph Loaded: {self.graph.number_of_nodes()} nodes[/]")
+        self.bm25_documents = documents
         
-        # Initialize fast entity extractor (Graph Index)
-        self.entity_extractor = EntityExtractor(self.graph)
+        # Tokenize corpus for BM25
+        # We use a simple whitespace tokenizer here, but could be more sophisticated
+        self.bm25_corpus = [doc["content"].lower().split() for doc in documents]
+        
+        self.bm25 = BM25Okapi(self.bm25_corpus)
+        console.print(f"[green]✓ BM25 index ready[/]")
+        
+    def _search_bm25(self, query: str, k: int = 50) -> List[Dict]:
+        """
+        Perform BM25 search.
+        """
+        if not self.bm25:
+            return []
+            
+        tokenized_query = query.lower().split()
+        
+        # BM25 returns scores for all documents
+        scores = self.bm25.get_scores(tokenized_query)
+        
+        # Get top k indices
+        top_n_indices = np.argsort(scores)[::-1][:k]
+        
+        results = []
+        for idx in top_n_indices:
+            if scores[idx] > 0: # Only include relevant results
+                 doc = self.bm25_documents[idx].copy()
+                 doc["score"] = scores[idx]
+                 results.append(doc)
+                 
+        return results
+        
+    def _search_vector(self, query: str, k: int = 50) -> List[Dict]:
+        """
+        Perform Vector search using ChromaDB.
+        """
+        results = self.vector_store.search(query, n_results=k)
+        return results
 
-    def classify_query(self, query: str) -> QueryType:
+    def hybrid_search(self, query: str, k: int = 50, rrf_k: int = 60) -> List[Dict]:
         """
-        Classifies query intent using keyword heuristics.
-        Returns: QueryType
-        """
-        query_lower = query.lower()
+        Perform Hybrid Search using Reciprocal Rank Fusion (RRF).
         
-        if any(kw in query_lower for kw in self.FACTOID_KEYWORDS):
-            return QueryType.FACTOID
-        elif any(kw in query_lower for kw in self.ENTITY_KEYWORDS):
-            return QueryType.ENTITY
-        elif any(kw in query_lower for kw in self.COMPARE_KEYWORDS):
-            return QueryType.RELATIONAL
-        else:
-            return QueryType.EXPLORATORY
-
-    def retrieve(self, query: str, limit: int = 20) -> Dict[str, Any]:
+        Args:
+            query: Search query string.
+            k: Number of final results to return.
+            rrf_k: Constant for RRF formula (default 60).
+            
+        Returns:
+            List of reranked documents.
         """
-        Main entry point. Routes to specific retrieval strategy.
-        """
-        query_type = self.classify_query(query)
-        console.print(f"[bold blue]Query Type Classified: {query_type.value}[/]")
+        # 1. Get results from both retrievers
+        vector_results = self._search_vector(query, k=50) # Get top 50 from vector
+        bm25_results = self._search_bm25(query, k=50)   # Get top 50 from BM25
         
-        if query_type == QueryType.FACTOID:
-            # Parallel: Speed matters for definitions
-            return self._parallel_retrieve(query, limit)
-        else:
-            # Sequential: Precision matters for research/entity queries
-            return self._sequential_retrieve(query, limit)
-
-    def _sequential_retrieve(self, query: str, limit: int) -> Dict[str, Any]:
-        """
-        Graph-First Strategy:
-        1. Extract entities from query (using Graph Index)
-        2. Traverse graph specific hops (Paper -> Concept -> Paper)
-        3. Vector search (filtered/boosted by graph context)
-        """
-        # Step 1: Fast Entity Extraction
-        entities = self.entity_extractor.extract(query)
-        console.print(f"[dim]Extracted Entities: {[e['label'] for e in entities]}[/]")
+        # 2. Combine using RRF
+        # Map doc_id -> RRF score
+        doc_scores = {}
         
-        graph_docs = []
-        exclude_ids = set()
-
-        # Step 2: Graph Traversal (Targeting Faculty & Papers)
-        if entities:
-            # If we found concepts/faculty in query, get their neighborhood
-            # for 1-2 hops.
-            for entity in entities:
-                node_id = entity['id']
-                # Get neighbors (Papers written by Faculty, or Papers mentoring Concept)
-                # Handle directed graph: we want both precursors (Papers -> Concept) and successors
-                if self.graph.is_directed():
-                    neighbors = list(self.graph.predecessors(node_id)) + list(self.graph.successors(node_id))
-                else:
-                    neighbors = list(self.graph.neighbors(node_id))
+        # Helper to process results
+        def process_results(results, weight=1.0):
+            for rank, doc in enumerate(results):
+                doc_id = doc.get("id")
+                if not doc_id:
+                    continue
+                    
+                # RRF Formula: 1 / (k + rank)
+                score = 1 / (rrf_k + rank + 1)
                 
-                for n in neighbors:
-                    node_data = self.graph.nodes[n]
-                    if node_data.get('type') == 'paper':
-                        # 2-hop retrieval: Find authors of this paper
-                        authors = []
-                        # Check neighbors of the paper for faculty
-                        if self.graph.is_directed():
-                            paper_neighbors = list(self.graph.predecessors(n)) + list(self.graph.successors(n))
-                        else:
-                            paper_neighbors = self.graph.neighbors(n)
-                            
-                        for pn in paper_neighbors:
-                            p_data = self.graph.nodes[pn]
-                            if p_data.get('type') == 'faculty':
-                                author_name = p_data.get('name', p_data.get('label', 'Unknown'))
-                                authors.append(author_name)
-                                
-                                # Add Faculty node explicitly to results if not already present
-                                if pn not in exclude_ids:
-                                    # Create a rich text representation for the LLM
-                                    bio = p_data.get('bio', '') or "No bio available."
-                                    dept = p_data.get('department', '') or "Unknown Dept"
-                                    interests = p_data.get('research_interests', [])
-                                    if isinstance(interests, list):
-                                        interests = ", ".join(interests)
-                                    
-                                    faculty_doc = {
-                                        "id": pn,
-                                        "text": f"Professor: {author_name}\nDepartment: {dept}\nBio: {bio}\nInterests: {interests}",
-                                        "metadata": {
-                                            "type": "faculty_profile",
-                                            "source_node": entity['label'],
-                                            "title": author_name
-                                        },
-                                        "score": 1.2 # Boost faculty score
-                                    }
-                                    graph_docs.append(faculty_doc)
-                                    exclude_ids.add(pn)
-                        
-                        author_str = f" (Authored by: {', '.join(authors)})" if authors else ""
-                        
-                        doc = {
-                            "id": n,
-                            "text": f"Paper: {node_data.get('label', '')}{author_str}",
-                            "metadata": {
-                                "type": "research_paper", 
-                                "source_node": entity['label'],
-                                "authors": authors,
-                                "title": node_data.get('label', '')
-                            },
-                            "score": 1.0
-                        }
-                        graph_docs.append(doc)
-                        exclude_ids.add(n)
+                if doc_id not in doc_scores:
+                    doc_scores[doc_id] = {
+                        "doc": doc,
+                        "score": 0.0,
+                        "vector_rank": None,
+                        "bm25_rank": None
+                    }
+                
+                doc_scores[doc_id]["score"] += score
+                
+                # specific rank tracking (optional, for debugging)
+                if weight == 1.0: # Vector results (assumption)
+                     # We can't strictly know source here if calling generic process, 
+                     # so let's do it explicitly in loop below
+                     pass
 
-        # Step 3: Vector Search (Supplement)
-        # We query vector DB but exclude what we already found in graph?
-        # Or better: Get vector results and merge strategies later (Fusion phase).
-        # For now, let's get raw vector results.
-        vector_docs = self.vector_db.search(query, limit=limit)
+        # Process Vector Results
+        for rank, doc in enumerate(vector_results):
+            doc_id = doc.get("id")
+            if not doc_id: continue
+            
+            score = 1 / (rrf_k + rank + 1)
+            
+            if doc_id not in doc_scores:
+                doc_scores[doc_id] = {"doc": doc, "score": 0.0, "vector_rank": rank, "bm25_rank": None}
+            else:
+                 doc_scores[doc_id]["doc"].update(doc) # Merge metadata if needed
+                 doc_scores[doc_id]["vector_rank"] = rank
+                 
+            doc_scores[doc_id]["score"] += score
+            
+        # Process BM25 Results
+        for rank, doc in enumerate(bm25_results):
+            doc_id = doc.get("id")
+            if not doc_id: continue
+            
+            score = 1 / (rrf_k + rank + 1)
+            
+            if doc_id not in doc_scores:
+                doc_scores[doc_id] = {"doc": doc, "score": 0.0, "vector_rank": None, "bm25_rank": rank}
+            else:
+                doc_scores[doc_id]["bm25_rank"] = rank
+                # Keep the content from the source that might be better? 
+                # Usually vector store has structure, bm25 doc is from same source file.
+                
+            doc_scores[doc_id]["score"] += score
+
+        # 3. Sort by combined score
+        sorted_results = sorted(doc_scores.values(), key=lambda x: x["score"], reverse=True)
         
-        return {
-            "strategy": "sequential",
-            "graph_results": graph_docs[:limit],
-            "vector_results": vector_docs,
-            "entities": entities
-        }
-
-    def _parallel_retrieve(self, query: str, limit: int) -> Dict[str, Any]:
-        """
-        Parallel Strategy:
-        Run Vector Search and simple Graph Concept lookup in parallel.
-        """
-        # Simple graph lookup (just matches)
-        entities = self.entity_extractor.extract(query)
-        graph_docs = []
-        for entity in entities:
-             # Just add the entity node itself as a result
-             graph_docs.append({
-                 "id": entity['id'],
-                 "text": entity['label'], 
-                 "metadata": self.graph.nodes[entity['id']],
-                 "score": 1.0
-             })
-
-        vector_docs = self.vector_db.search(query, limit=limit)
-        
-        return {
-            "strategy": "parallel",
-            "graph_results": graph_docs,
-            "vector_results": vector_docs,
-            "entities": entities
-        }
+        # 4. Format output
+        final_results = []
+        for item in sorted_results[:k]:
+            doc = item["doc"]
+            doc["rrf_score"] = item["score"]
+            doc["vector_rank"] = item["vector_rank"]
+            doc["bm25_rank"] = item["bm25_rank"]
+            final_results.append(doc)
+            
+        return final_results

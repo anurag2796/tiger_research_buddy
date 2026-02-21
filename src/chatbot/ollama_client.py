@@ -9,8 +9,10 @@ from rich.console import Console
 
 console = Console()
 
+from ..utils.config import LLMConfig
+
 # Default model - lightweight and fast
-DEFAULT_MODEL = "tigerbuddy"
+DEFAULT_MODEL = LLMConfig.CHAT_MODEL
 
 # Check if ollama is available
 try:
@@ -116,6 +118,26 @@ class OllamaClient:
 
 
     
+    async def generate_async(
+        self, 
+        prompt: str, 
+        context: Optional[str] = None,
+        system_prompt: Optional[str] = None,
+        **kwargs
+    ) -> str:
+        """Generate a response asynchronously (non-blocking)."""
+        import asyncio
+        if not self._initialized:
+            self.initialize()
+            
+        return await asyncio.to_thread(
+            self.generate,
+            prompt=prompt,
+            context=context,
+            system_prompt=system_prompt,
+            **kwargs
+        )
+
     def generate(
         self, 
         prompt: str, 
@@ -148,7 +170,7 @@ class OllamaClient:
             # Set default options if not provided
             options = kwargs.get("options", {})
             if "num_ctx" not in options:
-                options["num_ctx"] = 8192 # Increase context to 8k
+                options["num_ctx"] = LLMConfig.CONTEXT_WINDOW
             kwargs["options"] = options
             
             response = ollama.chat(

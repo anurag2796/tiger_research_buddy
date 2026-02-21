@@ -1,17 +1,21 @@
-"""Google Scholar crawler for faculty publications."""
+"""Google Scholar crawler for faculty publications with Entity Resolution and Multithreading."""
 
 import json
 import time
 import os
-from typing import Optional
+import concurrent.futures
+from typing import Optional, List, Dict
 from pathlib import Path
 
 from rich.console import Console
-from rich.progress import Progress, SpinnerColumn, TextColumn
+from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskID
 
 from ..utils.config import DATA_DIR
+from ..utils.db_logger import setup_db_logging, generate_trace_id
+from ..knowledge_graph.entity_resolver import EntityResolver
 
 console = Console()
+logger = setup_db_logging("ScholarCrawler")
 
 # Try to import scholarly, handle if not installed
 try:
@@ -33,9 +37,12 @@ except ImportError:
 class ScholarCrawler:
     """Crawler for Google Scholar professor profiles."""
     
-    def __init__(self, use_proxy: bool = False):
+    def __init__(self, use_proxy: bool = False, max_workers: int = 4):
         self.use_proxy = use_proxy
+        self.max_workers = max_workers
         self.serpapi_key = os.getenv("SERPAPI_KEY")
+        self.resolver = EntityResolver(DATA_DIR)
+        
         self._setup_scholarly()
         
         if self.serpapi_key and SERPAPI_AVAILABLE:
@@ -74,6 +81,7 @@ class ScholarCrawler:
         try:
             # Search with affiliation filter
             query = f"{name} {affiliation}"
+            logger.debug(f"Performing scholarly search for: {query}")
             search_query = scholarly.search_author(query)
             
             # Get first result
@@ -82,6 +90,7 @@ class ScholarCrawler:
                 return self._extract_author_info(author)
                 
         except Exception as e:
+            logger.error(f"Scholar search failed for {name}: {e}")
             console.print(f"[yellow]Scholar search failed for {name}: {e}[/]")
         
         return None
@@ -126,15 +135,17 @@ class ScholarCrawler:
         
         # Format publications
         publications = []
-        for art in articles[:10]:  # Limit to 10
+        for art in articles[:20]:  # Limit increased to 20
             publications.append({
                 "title": art.get("title", ""),
                 "year": art.get("year", ""),
                 "citations": art.get("cited_by", {}).get("value", 0),
-                "venue": art.get("publication", "")
+                "venue": art.get("publication", ""),
+                "link": art.get("link", "")
             })
             
         return {
+            "scholar_id": author_id,
             "name": author.get("name", ""),
             "affiliation": author.get("affiliations", ""),
             "email_domain": author.get("email", ""),
@@ -152,6 +163,7 @@ class ScholarCrawler:
             author = scholarly.fill(author)
             
             return {
+                "scholar_id": author.get("scholar_id", ""),
                 "name": author.get("name", ""),
                 "affiliation": author.get("affiliation", ""),
                 "email_domain": author.get("email_domain", ""),
@@ -159,7 +171,7 @@ class ScholarCrawler:
                 "citations": author.get("citedby", 0),
                 "h_index": author.get("hindex", 0),
                 "i10_index": author.get("i10index", 0),
-                "publications": self._get_publications(author, limit=10)
+                "publications": self._get_publications(author, limit=20)
             }
         except Exception as e:
             console.print(f"[yellow]Could not fill author details: {e}[/]")
@@ -170,7 +182,7 @@ class ScholarCrawler:
                 "publications": []
             }
 
-    def _get_publications(self, author: dict, limit: int = 10) -> list[dict]:
+    def _get_publications(self, author: dict, limit: int = 20) -> list[dict]:
         """Extract top publications from author."""
         publications = []
         
@@ -188,43 +200,77 @@ class ScholarCrawler:
         
         return publications
 
-    def enrich_faculty_data(self, faculty: list[dict], delay: float = 5.0) -> list[dict]:
-        """Add Google Scholar data to faculty list."""
+    def _process_single_faculty(self, prof: dict) -> Optional[dict]:
+        """Process a single faculty member (for threading)."""
+        name = prof.get("name", "")
+        dept = prof.get("department", "RIT")
+        
+        if not name:
+            return None
+            
+        # 1. Resolve Entity first
+        canonical_id = self.resolver.resolve_faculty(name, dept)
+        prof["id"] = canonical_id  # Inject canonical ID
+        
+        # 2. Search Scholar
+        try:
+            logger.debug(f"Processing scholar data for: {name}")
+            scholar_data = self.search_author(name, affiliation="RIT")
+            if scholar_data:
+                logger.debug(f"Successfully retrieved scholar data for {name}")
+                return scholar_data
+        except Exception as e:
+            logger.error(f"Error processing {name}: {e}")
+            console.print(f"[red]Error processing {name}: {e}[/]")
+            
+        return None
+
+    def enrich_faculty_data(self, faculty: list[dict]) -> list[dict]:
+        """
+        Add Google Scholar data to faculty list using Multithreading.
+        """
         if not SCHOLARLY_AVAILABLE and not (self.serpapi_key and SERPAPI_AVAILABLE):
             console.print("[yellow]Skipping Scholar enrichment (no tools available)[/]")
             return faculty
         
-        console.print("[bold blue]📚 Fetching Google Scholar data...[/]")
-        if not self.serpapi_key:
-            console.print("[dim]Using scholarly (rate limited)...[/]")
-        else:
-            console.print("[dim]Using SerpApi...[/]")
+        mode = "SerpApi" if self.serpapi_key else "Scholarly"
+        console.print(f"[bold blue]📚 Fetching Google Scholar data using {mode} ({self.max_workers} threads)...[/]")
+        
+        # Map original objects by name/id to update them later
+        # But realized we want to return the updated list.
+        
+        total = len(faculty)
+        completed = 0
         
         with Progress(
             SpinnerColumn(),
+            BarColumn(),
             TextColumn("[progress.description]{task.description}"),
+            TextColumn("({task.completed}/{task.total})"),
             console=console
         ) as progress:
-            task = progress.add_task(
-                "Searching scholars...",
-                total=len(faculty)
-            )
+            task = progress.add_task("enriching", total=total)
             
-            for prof in faculty:
-                name = prof.get("name", "")
-                if name:
-                    scholar_data = self.search_author(name)
-                    if scholar_data:
-                        prof["scholar"] = scholar_data
-                    
-                    # Rate limiting (less needed for SerpApi but good practice)
-                    if not self.serpapi_key:
-                        time.sleep(delay)
-                    else:
-                        time.sleep(1) # Slower delay for SerpApi
+            with concurrent.futures.ThreadPoolExecutor(max_workers=self.max_workers) as executor:
+                # Submit all tasks
+                future_to_prof = {
+                    executor.submit(self._process_single_faculty, prof): prof 
+                    for prof in faculty
+                }
                 
-                progress.advance(task)
-        
+                for future in concurrent.futures.as_completed(future_to_prof):
+                    prof = future_to_prof[future]
+                    try:
+                        scholar_data = future.result()
+                        if scholar_data:
+                            prof["scholar"] = scholar_data
+                            # console.print(f"[green]✓ Found data for {prof['name']}[/]")
+                    except Exception as exc:
+                        logger.error(f"Thread exception for {prof['name']}: {exc}")
+                        console.print(f"[red]Exception for {prof['name']}: {exc}[/]")
+                    
+                    progress.advance(task)
+                    
         return faculty
 
     def save_scholar_data(self, data: list[dict], filename: str = "scholar_data.json") -> Path:
@@ -238,6 +284,7 @@ class ScholarCrawler:
 
 def enrich_with_scholar(faculty: list[dict]) -> list[dict]:
     """Convenience function to enrich faculty with scholar data."""
-    crawler = ScholarCrawler()
+    trace_id = generate_trace_id()
+    logger.info(f"Starting Google Scholar Enrichment. Trace ID: {trace_id}")
+    crawler = ScholarCrawler(max_workers=5)
     return crawler.enrich_faculty_data(faculty)
-

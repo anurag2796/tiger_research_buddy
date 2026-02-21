@@ -28,7 +28,181 @@ TigerResearchBuddy is an intelligent research collaboration platform that helps 
 - **Analyzer Mode**: Technical, data-focused analyst
 - **Critique Mode**: Constructive critical reviewer
 
-## 🚀 Quick Start
+## � How the App Works
+
+TigerResearchBuddy uses a **hybrid RAG (Retrieval-Augmented Generation)** architecture combining vector search with knowledge graph traversal to provide intelligent research assistance.
+
+### Architecture Overview
+
+```mermaid
+graph TD
+    User[User Query] --> QueryEngine[Query Engine]
+    
+    subgraph "Data Ingestion Pipeline"
+        Crawlers[RIT Web Crawlers] --> RawData[Raw Research Data]
+        PDFs[Research Papers] --> Distiller[DeepDistiller]
+        Distiller --> Cards[Research Cards L3]
+        Cards --> KG[Knowledge Graph Builder]
+        RawData --> VectorDB
+    end
+    
+    subgraph "Retrieval Layer"
+        QueryEngine --> Expand[Query Expansion]
+        Expand --> VectorSearch[Vector Search]
+        Expand --> GraphSearch[Graph Traversal]
+        VectorSearch --> LanceDB[(LanceDB/ChromaDB)]
+        GraphSearch --> TigerBrain[(TigerBrain Graph)]
+    end
+    
+    subgraph "Generation Layer"
+        LanceDB --> Context[Combined Context]
+        TigerBrain --> Context
+        Context --> LLM[LLM Ollama/Gemini]
+        LLM --> Response[AI Response]
+    end
+    
+    Response --> User
+```
+
+### Data Flow: From Paper to Answer
+
+#### 1️⃣ **Data Collection Phase**
+
+The system gathers research data from multiple sources:
+
+- **Web Crawling** (`src/crawlers/`)
+  - `rit_crawler.py`: Scrapes faculty profiles from RIT college websites
+  - `smart_crawler.py`: LLM-powered intelligent extraction of research areas
+  - `extended_sources.py`: Crawls research centers, news, PhD directories
+  
+- **Paper Acquisition** (`src/crawlers/paper_downloader.py`)
+  - Downloads papers from ArXiv and Semantic Scholar
+  - Matches papers to faculty members
+  - Stores PDFs locally in `data/papers/`
+
+#### 2️⃣ **Deep Processing Phase**
+
+Raw data is transformed into structured knowledge:
+
+- **PDF Distillation** (`src/processors/pdf_distiller.py`)
+  - **DeepDistiller**: Vision-first extraction using VLM (Vision Language Model)
+  - Generates "Research Cards" (Level 3) with:
+    - Core technical concepts
+    - Methodologies and datasets
+    - Key findings and contributions
+    - Related work connections
+  
+- **Knowledge Graph Construction** (`src/knowledge_graph/`)
+  - `graph_builder.py`: Creates nodes for Faculty, Papers, Concepts, Methods
+  - `entity_resolver.py`: Deduplicates and merges similar entities
+  - Builds edges representing relationships (AUTHORED_BY, CITES, STUDIES)
+  - Exports to NetworkX graph stored as `data/tiger_brain.json`
+
+- **Data Mining** (`src/knowledge_graph/data_mining.py`)
+  - **Topic Modeling**: Discovers latent research themes using LDA
+  - **Association Rules**: Finds frequent topic patterns (e.g., "AI + Computer Vision")
+  - **Clustering**: Groups similar papers by content
+
+#### 3️⃣ **Indexing Phase**
+
+Processed data is loaded into dual storage systems:
+
+- **Vector Database** (`src/database/`)
+  - **ChromaDB** (default): Fast semantic search via embeddings
+  - **LanceDB** (v2): Columnar storage for large-scale data
+  - **PostgreSQL** (optional): Full production deployment
+  - Text chunks embedded using `sentence-transformers/all-MiniLM-L6-v2`
+  
+- **Knowledge Graph Storage**
+  - In-memory NetworkX graph for fast traversal
+  - Serialized as JSON/GML for persistence
+
+#### 4️⃣ **Query Processing Phase**
+
+When a user asks a question:
+
+1. **Intent Classification** (`src/chatbot/intent_classifier.py`)
+   - Determines query type: faculty_search, paper_lookup, concept_explanation, etc.
+   
+2. **Query Expansion** (`src/chatbot/query_engine.py`)
+   - Expands "machine learning" → ["machine learning", "ML", "neural networks", "deep learning"]
+   - Uses semantic similarity to broaden search
+
+3. **Hybrid Retrieval** (`src/retrieval/hybrid_retriever.py`)
+   - **Vector Search**: Finds top-k most similar document chunks (cosine similarity)
+   - **Graph Search**: 
+     - Identifies concept nodes matching query
+     - Traverses edges to find related Faculty, Papers, Methods
+     - Example: "Zero-Shot Learning" → Papers → Authored By → Prof. Kanan
+   - Combines both results into unified context
+
+4. **Context Enrichment** (`src/chatbot/query_engine.py`)
+   - Adds graph insights (author collaborations, citation networks)
+   - Injects contact information (emails, office locations)
+
+#### 5️⃣ **Response Generation Phase**
+
+- **LLM Selection**
+  - **Ollama** (offline): Local models like `llama2`, `tigerbuddy:latest`
+  - **Gemini** (online): Google's Gemini API for higher quality
+
+- **RAG Pipeline** (`src/chatbot/rag_engine.py`)
+  - System prompt defines persona (Tiger/Analyzer/Critique)
+  - Retrieved context injected into prompt
+  - LLM generates response grounded in research data
+  
+- **Post-Processing** (`src/chatbot/response_postprocessor.py`)
+  - Formats citations
+  - Adds source links
+  - Validates factual accuracy against retrieved docs
+
+#### 6️⃣ **Visualization & Collaboration**
+
+- **Prism View** (`src/ui/prism_view.py`)
+  - Interactive network graph showing research connections
+  - Visualizes Faculty ↔ Papers ↔ Concepts relationships
+
+- **Collaboration Matcher** (`src/collaboration/matcher.py`)
+  - Matches student research ideas to faculty expertise
+  - Uses vector similarity + keyword matching
+  
+- **Impact Analyzer** (`src/analysis/impact_analyzer.py`)
+  - Scores research ideas on UN SDG alignment
+  - Generates impact summaries
+
+### Entry Points
+
+The application can be accessed through multiple interfaces:
+
+1. **CLI** (`main.py`)
+   ```bash
+   python main.py chat           # Interactive chat (Gemini)
+   python main.py chat-offline   # Offline chat (Ollama)
+   python main.py crawl          # Run data collection
+   python main.py scrape-all     # Full pipeline with distillation
+   ```
+
+2. **Web Interface** (`web_app.py`)
+   ```bash
+   streamlit run web_app.py      # Streamlit UI with Star Wars theme
+   ```
+
+3. **Alternative UI** (`src/ui/app.py`)
+   ```bash
+   streamlit run src/ui/app.py   # TigerStack 2.0 interface
+   ```
+
+### Technology Stack
+
+- **Vector Search**: ChromaDB, LanceDB
+- **Graph Database**: NetworkX (in-memory)
+- **LLMs**: Ollama (local), Google Gemini (API)
+- **Embeddings**: `sentence-transformers/all-MiniLM-L6-v2`
+- **Data Processing**: Pandas, NumPy, scikit-learn
+- **Visualization**: Streamlit, Plotly, NetworkX
+- **Web Scraping**: BeautifulSoup, Selenium
+
+## �🚀 Quick Start
 
 ### Prerequisites
 - Python 3.8+

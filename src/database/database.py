@@ -4,6 +4,7 @@ import sqlite3
 from pathlib import Path
 from typing import Optional
 from contextlib import contextmanager
+import time
 
 from rich.console import Console
 from ..utils.config import DATA_DIR
@@ -162,12 +163,41 @@ def init_database():
                 FOREIGN KEY (faculty_id) REFERENCES faculty(id)
             )
         """)
+
+        # Logs table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS logs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                trace_id TEXT,
+                level TEXT NOT NULL,
+                module TEXT,
+                message TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                meta_json TEXT
+            )
+        """)
+
+        # Process Timings table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS process_timings (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                trace_id TEXT,
+                operation TEXT NOT NULL,
+                duration_seconds REAL,
+                start_time TIMESTAMP,
+                end_time TIMESTAMP,
+                meta_json TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
         
         # Create indexes for performance
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_faculty_name ON faculty(name)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_publications_title ON publications(title)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_tags_name ON tags(name)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_tags_category ON tags(category)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_logs_trace_id ON logs(trace_id)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_process_timings_trace_id ON process_timings(trace_id)")
         
         conn.commit()
     
@@ -305,8 +335,33 @@ class ResearchDatabase:
             cursor = conn.cursor()
             
             stats = {}
-            for table in ["faculty", "publications", "research_areas", "tags"]:
-                cursor.execute(f"SELECT COUNT(*) as count FROM {table}")
-                stats[table] = cursor.fetchone()["count"]
+            for table in ["faculty", "publications", "research_areas", "tags", "logs", "process_timings"]:
+                try:
+                    cursor.execute(f"SELECT COUNT(*) as count FROM {table}")
+                    stats[table] = cursor.fetchone()["count"]
+                except sqlite3.OperationalError:
+                    stats[table] = 0
             
             return stats
+
+    def log_message(self, level: str, module: str, message: str, meta_json: str = None, trace_id: str = None) -> int:
+        """Insert a log message."""
+        with get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "INSERT INTO logs (trace_id, level, module, message, meta_json) VALUES (?, ?, ?, ?, ?)",
+                (trace_id, level, module, message, meta_json)
+            )
+            conn.commit()
+            return cursor.lastrowid
+
+    def log_timing(self, operation: str, duration: float, start_time: str, end_time: str, meta_json: str = None, trace_id: str = None) -> int:
+        """Insert a timing record."""
+        with get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "INSERT INTO process_timings (trace_id, operation, duration_seconds, start_time, end_time, meta_json) VALUES (?, ?, ?, ?, ?, ?)",
+                (trace_id, operation, duration, start_time, end_time, meta_json)
+            )
+            conn.commit()
+            return cursor.lastrowid

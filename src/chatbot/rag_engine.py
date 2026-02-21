@@ -5,11 +5,14 @@ from typing import Optional
 from rich.console import Console
 
 from ..database.vector_store import get_vector_store, VectorStore
+from ..retrieval.hybrid_retriever import HybridRetriever
 from .gemini_client import get_gemini_client, GeminiClient
+from .ollama_client import get_ollama_client, OllamaClient
 from .response_postprocessor import get_postprocessor
-from .intent_classifier import get_intent_classifier, QueryIntent
+from ..utils.db_logger import setup_db_logging, generate_trace_id
 
 console = Console()
+logger = setup_db_logging("RAGEngine")
 
 # System prompt for the chatbot
 # Default fallback prompt
@@ -30,6 +33,8 @@ class RAGEngine:
     ):
         self.vector_store = vector_store or get_vector_store()
         self.gemini_client = gemini_client or get_gemini_client()
+        self.ollama_client = get_ollama_client()
+        self.hybrid_retriever = HybridRetriever(self.vector_store) # Initialize hybrid retriever
         self.conversation_history: list[dict] = []
     
     
@@ -37,6 +42,11 @@ class RAGEngine:
         """Initialize vector store, Gemini client, and load skills."""
         self.vector_store.initialize()
         self.gemini_client.initialize()
+        try:
+            self.ollama_client.initialize()
+        except Exception as e:
+            logger.error(f"Ollama client init warning: {e}")
+            console.print(f"[yellow]Ollama client init warning: {e}[/]")
         self.system_prompt = self._load_system_prompt()
         console.print("[green]✓ RAG Engine initialized (Skills loaded)[/]")
 
@@ -48,67 +58,63 @@ class RAGEngine:
             if skills_path.exists():
                 return skills_path.read_text()
         except Exception as e:
+            logger.error(f"Could not load skills.md: {e}")
             console.print(f"[yellow]Could not load skills.md: {e}[/]")
         return DEFAULT_SYSTEM_PROMPT
 
     
     def query(self, user_query: str, n_results: int = 5) -> str:
-        """Process a user query using RAG with intent classification and post-processing."""
-        
-        # Step 0: Classify intent
-        classifier = get_intent_classifier()
-        intent, confidence = classifier.classify(user_query)
-        console.print(f"[dim]Intent: {intent.value} (confidence: {confidence:.2f})[/]")
-        
-        # Step 1: Handle off-topic queries
-        if classifier.should_refuse(intent):
-            refusal_message = classifier.get_refusal_message()
-            self.conversation_history.append({"role": "user", "content": user_query})
-            self.conversation_history.append({"role": "assistant", "content": refusal_message})
-            return refusal_message
+        """Process a user query using RAG."""
+        trace_id = generate_trace_id()
+        logger.info(f"Processing RAG query: {user_query} (Trace ID: {trace_id})")
         
         # Step 2: Advanced RAG - Query Expansion & Context
         search_query = self._expand_query(user_query)
         
-        # Optimize n_results based on intent
-        # Faculty lookup only needs top 1-2 usually, topic search might need more
-        num_results = 3 if intent == QueryIntent.FACULTY_LOOKUP else n_results
+        # Step 3: Retrieve relevant documents using Hybrid Search
+        results = self.hybrid_retriever.hybrid_search(search_query, k=n_results * 2) # Get more to allow filtering
         
-        # Step 3: Retrieve relevant documents
-        results = self.vector_store.search(search_query, n_results=num_results)
-        
-        # Determine dynamic threshold based on intent
-        # Faculty lookup needs strict threshold to prevent hallucinations
-        # Other queries (topic, contact) can be looser to find relevant context
-        if intent == QueryIntent.FACULTY_LOOKUP:
-            current_threshold = 0.52  # Strict: Only exact person matches
-        else:
-            current_threshold = 0.72  # Loose: Allow topic/contact context
+        current_threshold = 0.65  # General threshold
             
-        # Filter results by distance
-        filtered_results = [
-            r for r in results 
-            if r.get('distance', 0) < current_threshold
-        ]
+        # Filter results by distance if they came from vector search (distances are usually smaller for better matches in Chroma)
+        # Note: HybridRetriever now returns docs with 'rrf_score'. Higher is better. 
+        # We can either filter on rrf_score or distance if available.
+        # RRF scores are typically small (e.g., 0.01-0.03 range), so we just take the top-N directly.
+        filtered_results = results[:n_results]
         
-        console.print(f"[dim]Retrieved {len(results)} chunks, kept {len(filtered_results)} after filtering (thresh={current_threshold})[/]")
+        console.print(f"[dim]Hybrid Search retrieved {len(results)} chunks, kept top {len(filtered_results)}[/]")
         
         # Step 4: Build context from refined results
         context = self._build_context(filtered_results)
         
-        # If no relevant context found after filtering, fallback immediately
-        if not filtered_results and intent != QueryIntent.GENERAL_HELP:
+        # If no relevant context found after filtering
+        if not filtered_results:
              fallback_msg = "I don't have specific information about that in my database. I recommend checking the RIT Computing website or contacting the department."
              self.conversation_history.append({"role": "user", "content": user_query})
              self.conversation_history.append({"role": "assistant", "content": fallback_msg})
              return fallback_msg
         
         # Step 5: Generate response with LLM
-        raw_response = self.gemini_client.generate(
-            prompt=user_query,
-            context=context,
-            system_prompt=self.system_prompt
-        )
+        try:
+            raw_response = self.gemini_client.generate(
+                prompt=user_query,
+                context=context,
+                system_prompt=self.system_prompt
+            )
+            if raw_response.startswith("Sorry, I encountered an error:"):
+                raise Exception(raw_response)
+        except Exception as e:
+            logger.warning(f"Gemini API failed or errored: {e}. Falling back to Ollama.")
+            console.print(f"[yellow]Gemini API failed limit checks. Falling back to Ollama...[/]")
+            try:
+                raw_response = self.ollama_client.generate(
+                    prompt=user_query,
+                    context=context,
+                    system_prompt=self.system_prompt
+                )
+            except Exception as ollama_e:
+                logger.error(f"Ollama generation also failed: {ollama_e}")
+                raw_response = "I encountered an error generating the response. Please try again."
         
         # Step 6: Post-process response to remove artifacts
         postprocessor = get_postprocessor()
@@ -152,7 +158,7 @@ class RAGEngine:
     
     def search_only(self, query: str, n_results: int = 5) -> list[dict]:
         """Perform semantic search without generation."""
-        return self.vector_store.search(query, n_results=n_results)
+        return self.hybrid_retriever.hybrid_search(query, k=n_results)
     
     def clear_history(self):
         """Clear conversation history."""

@@ -1,19 +1,21 @@
 """Graph-enhanced query engine for intelligent chatbot responses."""
 
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 from .ollama_client import get_ollama_client
-from ..knowledge_graph.builder import build_knowledge_graph
+from ..knowledge_graph.graph_store import GraphStore
 from ..knowledge_graph.queries import GraphQueries
-from ..knowledge_graph.analytics import GraphAnalytics
-from ..knowledge_graph.data_mining import DataMining
+from ..utils.config import GRAPH_DB_PATH
+from ..utils.timer import Timer
+from ..utils.db_logger import setup_db_logging
 
+logger = setup_db_logging("GraphQueryEngine")
 
 class GraphEnhancedQueryEngine:
     """Enhanced query engine that combines vector search with knowledge graph."""
     
     def __init__(self):
         self.client = get_ollama_client()
-        self.graph = None
+        self.store = None
         self.queries = None
         self.analytics = None
         self.data_mining = None
@@ -22,11 +24,14 @@ class GraphEnhancedQueryEngine:
     def _initialize_graph(self):
         """Load knowledge graph and initialize query interfaces."""
         try:
-            self.graph = build_knowledge_graph()
-            self.queries = GraphQueries(self.graph)
-            self.analytics = GraphAnalytics(self.graph)
-            self.data_mining = DataMining()
+            self.store = GraphStore(GRAPH_DB_PATH)
+            self.queries = GraphQueries(self.store)
+            
+            # Analytics and DataMining might need refactoring too, disabling for now to ensure stability
+            # self.analytics = GraphAnalytics(self.graph) 
+            # self.data_mining = DataMining()
         except Exception as e:
+            logger.error(f"Could not initialize knowledge graph: {e}")
             print(f"Warning: Could not initialize knowledge graph: {e}")
     
     def expand_query(self, query: str) -> str:
@@ -50,65 +55,73 @@ class GraphEnhancedQueryEngine:
             return query
             
         try:
-            expansion = self.client.generate(prompt, system_prompt="You are a keyword generator.")
+            with Timer("LLM Query Expansion", use_rich=False):
+                expansion = self.client.generate(prompt, system_prompt="You are a keyword generator.")
             # Simple cleaning
             expanded = f"{query} {expansion.strip()}"
+            logger.debug(f"Expanded query: {expanded}")
             return expanded
         except Exception as e:
+            logger.error(f"Query expansion failed: {e}")
             print(f"Query expansion failed: {e}")
             return query
     
     def get_graph_insights(self, query: str) -> Dict[str, any]:
         """Extract insights from knowledge graph based on query."""
-        if not self.graph:
+        if not self.store:
             return {}
         
-        insights = {}
-        query_lower = query.lower()
-        
-        # Detect query intent
-        is_asking_about_faculty = any(word in query_lower for word in ["who", "faculty", "professor", "researcher", "expert"])
-        is_asking_about_topics = any(word in query_lower for word in ["research", "work on", "study", "topic"])
-        is_asking_about_collaboration = any(word in query_lower for word in ["collaborate", "collaboration", "work with", "partner"])
-        
-        # Try to find mentioned faculty
-        name_candidates = self._extract_names(query)
-        for name in name_candidates:
-            faculty_id = self.queries.find_faculty_by_name(name)
-            if faculty_id:
-                insights["faculty_id"] = faculty_id
-                insights["faculty_expertise"] = self.queries.get_faculty_expertise(faculty_id)
-                insights["faculty_papers"] = self.queries.get_faculty_papers(faculty_id)
-                break
-        
-        # Find topics mentioned
-        topics_found = []
-        for topic in query_lower.split():
-            if len(topic) > 3:  #Skip short words
-                experts = self.queries.find_experts_in_topic(topic, top_k=5)
-                if experts:
-                    topics_found.append({
-                        "topic": topic,
-                        "experts": experts
-                    })
-        
-        if topics_found:
-            insights["topics"] = topics_found
-        
-        # Get research clusters if asking about collaborations
-        if is_asking_about_collaboration:
-            clusters = self.queries.find_research_clusters(min_size=2)
-            if clusters:
-                insights["research_clusters"] = clusters[:3]  # Top 3 clusters
-        
-        # Get influential researchers
-        if is_asking_about_faculty or "influential" in query_lower or "leading" in query_lower:
-            influencers = self.analytics.get_influential_researchers(top_k=5)
-            if influencers:
-                insights["influential_researchers"] = influencers
-        
-        return insights
-    
+        try:
+            with Timer("Graph Insights Extraction", use_rich=False):
+                insights = {}
+                query_lower = query.lower()
+            
+            # Detect query intent
+            is_asking_about_faculty = any(word in query_lower for word in ["who", "faculty", "professor", "researcher", "expert"])
+            is_asking_about_topics = any(word in query_lower for word in ["research", "work on", "study", "topic"])
+            is_asking_about_collaboration = any(word in query_lower for word in ["collaborate", "collaboration", "work with", "partner"])
+            
+            # Try to find mentioned faculty
+            name_candidates = self._extract_names(query)
+            for name in name_candidates:
+                faculty_id = self.queries.find_faculty_by_name(name)
+                if faculty_id:
+                    insights["faculty_id"] = faculty_id
+                    insights["faculty_expertise"] = self.queries.get_faculty_expertise(faculty_id)
+                    insights["faculty_papers"] = self.queries.get_faculty_papers(faculty_id)
+                    break
+            
+            # Find topics mentioned
+            topics_found = []
+            for topic in query_lower.split():
+                if len(topic) > 3:  #Skip short words
+                    experts = self.queries.find_experts_in_topic(topic, top_k=5)
+                    if experts:
+                        topics_found.append({
+                            "topic": topic,
+                            "experts": experts
+                        })
+            
+            if topics_found:
+                insights["topics"] = topics_found
+            
+            # Get research clusters if asking about collaborations
+            if is_asking_about_collaboration:
+                clusters = self.queries.find_research_clusters(min_size=2)
+                if clusters:
+                    insights["research_clusters"] = clusters[:3]  # Top 3 clusters
+            
+            # Get influential researchers (Analytics temporarily disabled)
+            # if is_asking_about_faculty or "influential" in query_lower or "leading" in query_lower:
+            #     influencers = self.analytics.get_influential_researchers(top_k=5)
+            #     if influencers:
+            #         insights["influential_researchers"] = influencers
+            
+            return insights
+        except Exception as e:
+            logger.error(f"Graph insights extraction failed: {e}")
+            return {}
+            
     def get_data_mining_insights(self) -> Dict[str, any]:
         """Get general data mining insights (topics, patterns)."""
         if not self.data_mining:
@@ -121,17 +134,17 @@ class GraphEnhancedQueryEngine:
             topics = self.data_mining.discover_topics_lda(n_topics=5, n_words=5)
             if topics:
                 insights["research_themes"] = topics
-        except:
-            pass
+        except Exception as e:
+            logger.error(f"Data mining LDA failed: {e}")
         
         # Get key phrases
         try:
             phrases = self.data_mining.extract_key_phrases(top_k=10)
             if phrases:
                 insights["key_research_areas"] = [phrase for phrase, score in phrases]
-        except:
-            pass
-        
+        except Exception as e:
+            logger.error(f"Data mining keywords failed: {e}")
+            
         return insights
     
     def enrich_context(self, query: str, vector_results: List[Dict]) -> str:

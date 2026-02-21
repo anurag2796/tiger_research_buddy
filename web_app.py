@@ -10,6 +10,10 @@ sys.path.append(os.getcwd())
 
 from src.database import get_vector_store
 from src.chatbot.ollama_client import get_ollama_client
+from src.utils.db_logger import setup_db_logging, PerformanceTimer as Timer
+
+# Setup Logger
+logger = setup_db_logging("WebApp")
 
 # Page config
 st.set_page_config(
@@ -21,6 +25,7 @@ st.set_page_config(
 
 # Star Wars Theme Assets & CSS
 def get_base64_image(image_path):
+    logger.info(f"Loading asset: {image_path}")
     try:
         import base64
         with open(image_path, "rb") as img_file:
@@ -192,11 +197,12 @@ st.markdown(f"""
 @st.cache_resource
 def load_resources():
     try:
-        store = get_vector_store()
-        store.initialize()
-        
-        client = get_ollama_client()
-        client.initialize()
+        with Timer("Initializing Resources", use_rich=False):
+            store = get_vector_store()
+            store.initialize()
+            
+            client = get_ollama_client()
+            client.initialize()
         return store, client
     except Exception as e:
         st.error(f"Failed to initialize: {e}")
@@ -289,34 +295,48 @@ if prompt := st.chat_input("Ask about research opportunities..."):
     with st.chat_message("user"):
         st.markdown(prompt)
     
+    # Log user query
+    logger.info(f"User Query: {prompt}", extra={"meta": {"persona": st.session_state.persona}})
+    
     # Generate response
     with st.chat_message("assistant"):
+        # Stop Button Placeholder (Top of message for visibility)
+        stop_btn_placeholder = st.empty()
         message_placeholder = st.empty()
         full_response = ""
         
         if store and client:
             with st.spinner("Searching knowledge base..."):
-                # RAG: Search
-                from src.chatbot.query_engine import QueryEngine
-                query_engine = QueryEngine()
-                expanded_query = query_engine.expand_query(prompt)
+                # Chitchat Guard
+                is_chitchat = len(prompt.split()) < 3 and any(w in prompt.lower().split() for w in ["hi", "hello", "hey", "thanks", "bye", "good"])
                 
-                results = store.search(expanded_query, n_results=15)
-                
-                # Build base context
-                context_parts = [r.get("content", "") for r in results]
-                
-                # ADD KNOWLEDGE GRAPH ENRICHMENT
+                context = ""
+                results = []
                 graph_insights = None
-                try:
-                    graph_insights = query_engine.get_graph_insights(prompt)
-                    graph_enrichment = query_engine.enrich_context(prompt, results)
-                    if graph_enrichment:
-                        context_parts.append(f"\n### Knowledge Graph Insights:{graph_enrichment}")
-                except Exception as e:
-                    print(f"Graph enrichment skipped: {e}")
-                
-                context = "\n\n".join(context_parts)
+                expanded_query = prompt
+
+                if not is_chitchat:
+                    # RAG: Search
+                    from src.chatbot.query_engine import QueryEngine
+                    query_engine = QueryEngine()
+                    expanded_query = query_engine.expand_query(prompt)
+                    
+                    with Timer("Vector Search", use_rich=False):
+                        results = store.search(expanded_query, n_results=15)
+                    
+                    # Build base context
+                    context_parts = [r.get("content", "") for r in results]
+                    
+                    # ADD KNOWLEDGE GRAPH ENRICHMENT
+                    try:
+                        graph_insights = query_engine.get_graph_insights(prompt)
+                        graph_enrichment = query_engine.enrich_context(prompt, results)
+                        if graph_enrichment:
+                            context_parts.append(f"\n### Knowledge Graph Insights:{graph_enrichment}")
+                    except Exception as e:
+                        print(f"Graph enrichment skipped: {e}")
+                    
+                    context = "\n\n".join(context_parts)
                 
                 # RAG: Generate
                 # Load System Prompts
@@ -333,42 +353,53 @@ if prompt := st.chat_input("Ask about research opportunities..."):
                     Be helpful, accurate, and encouraging."""
                 
                 # Add specific formatting rules
-                system_prompt += f"""
-
-Context from knowledge base:
-{context}
-
----
-CRITICAL RESPONSE RULES (FOLLOW EXACTLY):
-
-1. **NO HALLUCINATION**: Only use facts from the Context above. If Context is empty or doesn't answer the question, say "I don't have information about that in my database."
-
-2. **NO LARGE HEADERS**: Don't use # or ## headers in your response. Use normal paragraphs with **bold** for emphasis.
-
-3. **FORMATTING**:
-   - Keep responses 2-4 short paragraphs
-   - Use **bold** for faculty names: **Professor John Smith**
-   - Use *italics* for paper titles: *Deep Learning Paper*  
-   - Use bullet points for lists
-   - Include email/office when available
-
-4. **ACCURACY**: If Context mentions multiple people, don't mix them up. Verify names match exactly.
-
-5. **USER QUESTION**: {prompt}
-
-Respond naturally and helpfully based ONLY on the Context above.
-"""
+                if is_chitchat:
+                     system_prompt += "\n\nUSER IS GREETING YOU. Respond naturally, briefly, and politely. Do not make up facts."
+                else:
+                    system_prompt += f"""
+    
+    Context from knowledge base:
+    {context}
+    
+    ---
+    CRITICAL RESPONSE RULES (FOLLOW EXACTLY):
+    
+    1. **NO HALLUCINATION**: Only use facts from the Context above. If Context is empty or doesn't answer the question, say "I don't have information about that in my database."
+    
+    2. **NO LARGE HEADERS**: Don't use # or ## headers in your response. Use normal paragraphs with **bold** for emphasis.
+    
+    3. **FORMATTING**:
+       - Keep responses 2-4 short paragraphs
+       - Use **bold** for faculty names: **Professor John Smith**
+       - Use *italics* for paper titles: *Deep Learning Paper*  
+       - Use bullet points for lists
+       - Include email/office when available
+    
+    4. **ACCURACY**: If Context mentions multiple people, don't mix them up. Verify names match exactly.
+    
+    5. **USER QUESTION**: {prompt}
+    
+    Respond naturally and helpfully based ONLY on the Context above.
+    """
                 
-                # Stream response (simulated streaming from Ollama if simple, or just wait)
-                response = client.generate(prompt, context=context, system_prompt=system_prompt)
-                
-                # Simulate typing effect for the video demo 'feel'
-                for chunk in response.split():
-                    full_response += chunk + " "
-                    time.sleep(0.02)
-                    message_placeholder.markdown(full_response + "▌")
-                
-                message_placeholder.markdown(full_response)
+                # Stream response
+                with Timer("LLM Response Generation", use_rich=False):
+                    stop_btn = stop_btn_placeholder.button("⏹️ Stop Generation", key="stop_gen")
+                    
+                    # Create generator
+                    stream = client.generate_stream(prompt, context=context, system_prompt=system_prompt)
+                    
+                    for chunk in stream:
+                        full_response += chunk
+                        message_placeholder.markdown(full_response + "▌")
+                        
+                        # Note: Streamlit doesn't support immediate interruption via button during a loop easily 
+                        # without experimental reruns or session state hacks, 
+                        # but rendering the button beforehand allows the user to click it.
+                        # If clicked, the script reruns and this loop is aborted in the new run.
+                    
+                    message_placeholder.markdown(full_response)
+                    stop_btn_placeholder.empty()
                 
                 # 🧠 BOT THINKING SECTION
                 with st.expander("🧠 Bot Thinking Process", expanded=False):
