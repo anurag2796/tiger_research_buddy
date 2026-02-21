@@ -6,7 +6,8 @@ from typing import Optional
 
 from rich.console import Console
 
-from ..utils.config import CHROMA_DIR, DATA_DIR, COLLECTION_NAME, EMBEDDING_MODEL
+from ..utils.config import CrawlConfig, RESTRICTED_CONFIG, EMBEDDING_MODEL, DATA_DIR
+from ..utils.timer import Timer
 
 console = Console()
 
@@ -28,17 +29,35 @@ def _get_embedding_function():
     """Lazy load embedding function."""
     global _embedding_function
     if _embedding_function is None:
-        from chromadb.utils import embedding_functions
-        _embedding_function = embedding_functions.SentenceTransformerEmbeddingFunction(
-            model_name=EMBEDDING_MODEL
-        )
+        try:
+            from chromadb import EmbeddingFunction, Documents, Embeddings
+            from sentence_transformers import SentenceTransformer
+            
+            class TigerEmbeddingFunction(EmbeddingFunction):
+                def __init__(self, model_name):
+                    self.model = SentenceTransformer(model_name, trust_remote_code=True)
+                    
+                def __call__(self, input: Documents) -> Embeddings:
+                    embeddings = self.model.encode(list(input))
+                    return embeddings.tolist()
+            
+            _embedding_function = TigerEmbeddingFunction(EMBEDDING_MODEL)
+            console.print("[green]Initialized custom embedding function (trust_remote_code=True)[/]")
+            
+        except ImportError:
+            # Fallback (likely will fail for nomic but works for others)
+            from chromadb.utils import embedding_functions
+            _embedding_function = embedding_functions.SentenceTransformerEmbeddingFunction(
+                model_name=EMBEDDING_MODEL
+            )
     return _embedding_function
 
 
 class VectorStore:
     """Vector database for semantic search over research data."""
     
-    def __init__(self):
+    def __init__(self, config: CrawlConfig = RESTRICTED_CONFIG):
+        self.config = config
         self.client = None
         self.collection = None
         self._initialized = False
@@ -50,12 +69,12 @@ class VectorStore:
             
         console.print("[bold blue]📦 Initializing vector store...[/]")
         
-        chromadb = _get_chromadb()
-        self.client = chromadb.PersistentClient(path=str(CHROMA_DIR))
-        
         # Get or create collection
+        chromadb = _get_chromadb()
+        self.client = chromadb.PersistentClient(path=str(self.config.CHROMA_DIR))
+        
         self.collection = self.client.get_or_create_collection(
-            name=COLLECTION_NAME,
+            name=self.config.COLLECTION_NAME,
             embedding_function=_get_embedding_function(),
             metadata={"description": "RIT research data"}
         )
@@ -93,11 +112,13 @@ class VectorStore:
             metadatas.append(clean_metadata)
         
         # Upsert to handle duplicates
-        self.collection.upsert(
-            ids=ids,
-            documents=contents,
-            metadatas=metadatas
-        )
+        # Upsert to handle duplicates
+        with Timer(f"Upserting {len(documents)} docs to Chroma", use_rich=False):
+            self.collection.upsert(
+                ids=ids,
+                documents=contents,
+                metadatas=metadatas
+            )
         
         console.print(f"[green]✓ Added {len(documents)} documents to vector store[/]")
 
@@ -124,6 +145,49 @@ Status: {idea.status}"""
             }
         }])
     
+    def add_research_cards(self, cards: list[dict]):
+        """Add distilled Research Cards to vector store."""
+        documents = []
+        seen_ids = set()
+        
+        for card in cards:
+            if "card_id" not in card:
+                continue
+            
+            card_id = str(card["card_id"])
+            if card_id in seen_ids:
+                continue
+            seen_ids.add(card_id)
+                
+            bib = card.get("bibliographic_data", {})
+            core = card.get("core_content", {})
+            kg = card.get("knowledge_graph", {})
+            
+            # Construct rich semantic content
+            content = f"""Title: {bib.get('title')}
+Domain: {bib.get('primary_domain')}
+Novelty: {core.get('novelty_claim')}
+Methodology: {core.get('key_methodology')}
+Outcomes: {', '.join(core.get('outcomes', []))}
+Concepts: {', '.join([n.get('label', '') for n in kg.get('nodes', [])])}
+Abstract: {core.get('full_text_markdown', '')[:1000]}..."""
+
+            documents.append({
+                "id": card_id,
+                "content": content,
+                "metadata": {
+                    "doc_type": "research_card",
+                    "title": bib.get("title", ""),
+                    "year": str(bib.get("year", "")),
+                    "domain": bib.get("primary_domain", ""),
+                    "authors": json.dumps(bib.get("authors", []))
+                }
+            })
+            
+        if documents:
+            console.print(f"[bold blue]📦 Indexing {len(documents)} Research Cards...[/]")
+            self.add_documents(documents)
+
     def search(self, query: str, n_results: int = 5, doc_type: Optional[str] = None) -> list[dict]:
         """Search for similar documents."""
         if not self._initialized:
@@ -158,9 +222,9 @@ Status: {idea.status}"""
         if self._initialized and self.collection:
             # Delete the collection and recreate
             chromadb = _get_chromadb()
-            self.client.delete_collection(COLLECTION_NAME)
+            self.client.delete_collection(self.config.COLLECTION_NAME)
             self.collection = self.client.create_collection(
-                name=COLLECTION_NAME,
+                name=self.config.COLLECTION_NAME,
                 embedding_function=_get_embedding_function()
             )
             console.print("[yellow]Cleared vector store[/]")
@@ -172,29 +236,14 @@ Status: {idea.status}"""
         
         return {
             "total_documents": self.collection.count(),
-            "collection_name": COLLECTION_NAME
+            "collection_name": self.config.COLLECTION_NAME
         }
 
 
-def load_data_to_vectorstore(data_file: str = "rit_data.json") -> VectorStore:
-    """Load crawled data into vector store with tags."""
+def process_data_into_documents(data: dict):
+    """Process raw data into document format for vector store using a generator."""
     from ..utils.tag_generator import generate_tags_for_professor, generate_tags_for_research_area, generate_tags_for_publication
     
-    filepath = DATA_DIR / data_file
-    
-    if not filepath.exists():
-        console.print(f"[red]Data file not found: {filepath}[/]")
-        console.print("[yellow]Run 'python main.py crawl' first[/]")
-        return None
-    
-    with open(filepath) as f:
-        data = json.load(f)
-    
-    store = VectorStore()
-    store.initialize()
-    store.clear()  # Start fresh
-    
-    documents = []
     seen_ids = set()
     
     # Add research areas with tags
@@ -218,7 +267,7 @@ Tags: {', '.join(tag_names) if tag_names else 'computing, research'}
 Faculty in this area: {', '.join(faculty_names) if faculty_names else 'See individual profiles'}
 URL: {area.get('url', '')}"""
         
-        documents.append({
+        yield {
             "id": doc_id,
             "content": content,
             "metadata": {
@@ -228,7 +277,7 @@ URL: {area.get('url', '')}"""
                 "college": area.get("college", ""),
                 "tags": json.dumps(tag_names)
             }
-        })
+        }
     
     # Add faculty with tags
     for prof in data.get("faculty", []):
@@ -266,7 +315,7 @@ Recent Publications: {', '.join(p.get('title', '')[:100] for p in pubs[:5]) if p
 Profile URL: {prof.get('profile_url', '')}
 College: {prof.get('college', '')}"""
         
-        documents.append({
+        yield {
             "id": doc_id,
             "content": content,
             "metadata": {
@@ -279,7 +328,7 @@ College: {prof.get('college', '')}"""
                 "h_index": str(h_index),
                 "college": prof.get("college", "")
             }
-        })
+        }
         
         # Also add publications as separate documents
         for i, pub in enumerate(pubs[:5]):  # Top 5 publications per professor
@@ -303,7 +352,8 @@ Venue: {pub.get('venue', 'Unknown')}
 Citations: {pub.get('citations', 0)}
 Tags: {', '.join(pub_tag_names) if pub_tag_names else 'research'}"""
             
-            documents.append({
+            
+            yield {
                 "id": pub_id,
                 "content": pub_content,
                 "metadata": {
@@ -315,21 +365,79 @@ Tags: {', '.join(pub_tag_names) if pub_tag_names else 'research'}"""
                     "tags": json.dumps(pub_tag_names),
                     "college": prof.get("college", "")
                 }
-            })
+            }
+
+
+def load_data_to_vectorstore(config: CrawlConfig = RESTRICTED_CONFIG) -> VectorStore:
+    """Load crawled data into vector store with tags."""
+    filepath = config.OUTPUT_FILE
     
-    console.print(f"[bold blue]📦 Adding {len(documents)} documents to vector store...[/]")
-    store.add_documents(documents)
+    if not filepath.exists():
+        console.print(f"[red]Data file not found: {filepath}[/]")
+        console.print("[yellow]Run 'python main.py crawl' first[/]")
+        return None
+    
+    with open(filepath) as f:
+        data = json.load(f)
+    
+    store = VectorStore(config)
+    store.initialize()
+    store.clear()  # Start fresh
+    
+    BATCH_SIZE = 100
+    batch = []
+    count = 0
+    
+    with Timer("Processing data for vector store", use_rich=False):
+        for doc in process_data_into_documents(data):
+            batch.append(doc)
+            if len(batch) >= BATCH_SIZE:
+                 store.add_documents(batch)
+                 count += len(batch)
+                 batch = []
+                 console.print(f"[dim]Processed {count} documents...[/]")
+        
+        # Add remaining
+        if batch:
+            store.add_documents(batch)
+            count += len(batch)
+            
+    console.print(f"[bold blue]📦 Total {count} documents added to vector store.[/]")
     return store
 
+
+def ingest_research_cards(config: CrawlConfig = RESTRICTED_CONFIG) -> VectorStore:
+    """Ingest distilled research cards into vector store."""
+    cards_dir = DATA_DIR / "research_cards"
+    if not cards_dir.exists():
+        console.print(f"[yellow]No research cards found in {cards_dir}[/]")
+        return None
+        
+    store = get_vector_store(config)
+    store.initialize()
+    
+    cards = []
+    for card_file in cards_dir.glob("*.json"):
+        try:
+            with open(card_file) as f:
+                card = json.load(f)
+                cards.append(card)
+        except Exception:
+            pass
+            
+    if cards:
+        store.add_research_cards(cards)
+        
+    return store
 
 
 # Global instance
 _vector_store: Optional[VectorStore] = None
 
 
-def get_vector_store() -> VectorStore:
+def get_vector_store(config: CrawlConfig = RESTRICTED_CONFIG) -> VectorStore:
     """Get the global vector store instance."""
     global _vector_store
     if _vector_store is None:
-        _vector_store = VectorStore()
+        _vector_store = VectorStore(config)
     return _vector_store
