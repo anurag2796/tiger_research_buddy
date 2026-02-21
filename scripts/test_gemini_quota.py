@@ -1,0 +1,1 @@
+import sys; sys.path.append("."); from src.utils.gemini_client import GeminiClient; import json; c = GeminiClient(); print(json.dumps(c.generate_json("List 1 color in JSON object: {\"color\": \"red\"}"), indent=2))
