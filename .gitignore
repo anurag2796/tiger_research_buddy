@@ -1,8 +1,16 @@
-# ─── Python ──────────────────────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────────────────────────
+# Python (github.com/github/gitignore/blob/main/Python.gitignore)
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[cod]
+*.py[codz]
 *$py.class
+
+# C extensions
 *.so
+
+# Distribution / packaging
 .Python
 build/
 develop-eggs/
@@ -16,29 +24,107 @@ parts/
 sdist/
 var/
 wheels/
+share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
 MANIFEST
+*.manifest
+*.spec
 
-# ─── Environment & Secrets ───────────────────────────────────────────────────
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py.cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Translations
+*.mo
+*.pot
+
+# Django / Flask / Scrapy
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+instance/
+.webassets-cache
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# Environments
 .env
+.envrc
 .venv/
-venv/
 env/
-# Keep the example for onboarding
-!.env.example
+venv/
+ENV/
+env.bak/
+venv.bak/
+__pypackages__/
 
-# ─── IDE ─────────────────────────────────────────────────────────────────────
+# Spyder / Rope
+.spyderproject
+.spyproject
+.ropeproject
+
+# Mypy / Pyre / Pytype
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+cython_debug/
+
+# Ruff / other linters
+.ruff_cache/
+.pypirc
+
+# Streamlit secrets (keep .streamlit/ config but not secrets)
+.streamlit/secrets.toml
+
+# macOS
+.DS_Store
+**/.DS_Store
+Thumbs.db
+
+# IDE
 .idea/
 .vscode/
 *.swp
 *.swo
-.DS_Store
-**/.DS_Store
 
-# ─── Data — Downloaded / Generated (do NOT commit) ──────────────────────────
-# PDFs and research papers
+# ──────────────────────────────────────────────────────────────────────────────
+# TigerResearchBuddy — Project-specific
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Secrets — keep example for onboarding
+.env
+!.env.example
+
+# --- Downloaded & Generated Data (large, machine-generated) ------------------
 data/pdfs/
 data/papers/
 data/publications/
@@ -46,16 +132,16 @@ data/research_cards/
 data/faculty_profiles/
 data/research_areas/
 data/viz/
+data/debug_failures/
+data/debug_*/
 
-# Restricted mode data
+# Restricted-mode equivalents
 data/restricted/pdfs/
 data/restricted/papers/
 data/restricted/publications/
 data/restricted/research_cards/
-data/restricted/faculty_profiles/
-data/restricted/research_areas/
 
-# Crawler output JSON (large, user-generated)
+# Crawler output JSON
 data/rit_data.json
 data/rit_data_v2.json
 data/rit_data_test.json
@@ -63,15 +149,13 @@ data/extended_data.json
 data/comprehensive_data.json
 data/entity_mappings.json
 data/target_urls.json
-
-# Restricted mode JSON outputs
 data/restricted/rit_data_restricted.json
 
 # Crawl checkpoints
 data/crawler_checkpoint_*.json
 data/restricted/crawler_checkpoint_*.json
 
-# Knowledge graph exports (can be huge — 10-20MB)
+# Knowledge graph exports (can be 5–20 MB each)
 data/site_graph.gml
 data/tiger_brain.gml
 data/tiger_brain.json
@@ -79,7 +163,7 @@ data/tiger_brain_refined.gml
 data/tiger_brain_viz.html
 data/knowledge_graph.pkl
 
-# Databases
+# --- Databases ---------------------------------------------------------------
 data/tiger_research.db
 data/chroma/
 data/chroma_test/
@@ -88,31 +172,23 @@ data/kuzu_db/
 data/restricted/chroma/
 data/restricted/lancedb/
 
-# Cache directories (Marker-PDF, docproc, etc.)
+# --- Caches ------------------------------------------------------------------
 data/cache/
 .cache/
 
-# Debug artifacts
-data/debug_failures/
-data/debug_*/
-
-# Temporary dagster dirs (created by pipeline runs)
+# --- Runtime artifacts -------------------------------------------------------
+# Dagster temp dirs
 .tmp_dagster_home_*/
 
-# Backup directories
+# Data backups
 data_backup_*/
 
-# ─── Logs ────────────────────────────────────────────────────────────────────
-*.log
+# Logs
 logs/
-data/full_pipeline.log
 data/*.log
+data/full_pipeline.log
 
-# ─── OS ──────────────────────────────────────────────────────────────────────
-Thumbs.db
-*.tmp
-
-# ─── Keep empty data directories (tracked via .gitkeep) ─────────────────────
+# --- Keep empty directory structure for fresh clones -------------------------
 !data/.gitkeep
 !data/restricted/.gitkeep
 !data/taxonomies/
