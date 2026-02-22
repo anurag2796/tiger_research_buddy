@@ -1,6 +1,6 @@
 # 08 - Current Challenges & Known Limitations
 
-**Last Updated:** February 20, 2026  
+**Last Updated:** February 22, 2026  
 **Status:** Active Issues List
 
 ---
@@ -8,17 +8,65 @@
 ## Table of Contents
 
 1. [Executive Summary](#executive-summary)
-2. [Technical Challenges](#technical-challenges)
-3. [Data Quality Issues](#data-quality-issues)
-4. [User Experience Limitations](#user-experience-limitations)
-5. [Hardware & Resource Constraints](#hardware--resource-constraints)
-6. [Test Environment Specifications](#test-environment-specifications)
+2. [Pipeline Run Post-Mortem (Feb 21 2026)](#pipeline-run-post-mortem-feb-21-2026)
+3. [Technical Challenges](#technical-challenges)
+4. [Data Quality Issues](#data-quality-issues)
+5. [User Experience Limitations](#user-experience-limitations)
+6. [Hardware & Resource Constraints](#hardware--resource-constraints)
+7. [Test Environment Specifications](#test-environment-specifications)
 
 ---
 
 ## Executive Summary
 
 TigerBrain v2.2 delivers fast local-first research assistance through its Hybrid RAG architecture, 6-stage pipeline, and the apple_fast PDF engine. However, three primary challenge areas remain: **LLM inference latency**, **entity resolution accuracy at scale**, and **the absence of conversational memory**. This document details these limitations and their current mitigations.
+
+---
+
+## Pipeline Run Post-Mortem (Feb 21 2026)
+
+**Trace ID:** `1ca0f6aa-5307-47ca-bdce-ad3bb00eec93`  
+**Stats:** 1,001 profiles crawled → 17,037 papers downloaded → 1,468 cards distilled (~8.6% success rate)
+
+### Summary Table
+
+| Stage | Status | Error Count | Root Cause |
+|---|---|---|---|
+| 1. SmartCrawler | ⚠️ Partial | 54 ERRORs | Binary files (`.docx`, `.zip`, `.jpg`) decoded as UTF-8 |
+| 2. ScholarCrawler | ❌ Broken | 34 ERRORs | Thread-safety race — `dict changed size during iteration` |
+| 3. PaperDownloader | ⚠️ Partial | 18,054 ERRORs | 404s + vision bug (`'str' has no attribute 'get_image'`) |
+| 4. DeepDistiller | ⚠️ Partial | 5,197 ERRORs | PDF recursion depth limit + `meta tensor` PyTorch bug |
+| 5. Vector Indexer | ❌ HARD FAIL | Stage crashed | `torch.nn.Module.to()` on meta tensor — vector store is **empty** |
+| 6. Knowledge Graph | ✅ OK | 0 | Completed successfully — 6,708 nodes, 129,172 edges |
+| RAGEngine | ⚠️ Warning | 3 WARNINGs | Free-tier Gemini quota exhausted; fell back to Ollama |
+
+### Failure Details
+
+#### ❌ Stage 5 — Vector Indexer Hard Crash (P0)
+The embedding model was initialized as a PyTorch **meta tensor** (shape-only, no weights) then moved with `.to(device)` — an illegal operation. Stage crashed in ~2 seconds. **The vector store is empty; RAG retrieval is non-functional.**
+> **Fix:** Replace `.to(device)` with `.to_empty(device)` followed by proper weight loading (`load_state_dict`).
+
+#### ❌ Stage 2 — ScholarCrawler Race Condition (P0)
+A shared Python `dict` is mutated by one thread while another iterates it — `RuntimeError: dictionary changed size during iteration`. All 34 affected faculty threads crashed. Scholar enrichment returned **0 enriched** this run.
+> **Fix:** Wrap shared dict mutations in a `threading.Lock()`.
+
+#### ⚠️ Stage 4 — DeepDistiller (Two Bugs) (P1)
+- **`RecursionError: maximum recursion depth exceeded`** — PDF parser hits Python's default recursion cap on deeply nested/malformed PDF object trees. Thousands of files silently skipped.
+  > **Fix:** Call `sys.setrecursionlimit(5000)` before extraction, or switch to `pymupdf`/`pdfplumber` (non-recursive parsers).
+- **`'str' object has no attribute 'get_image'`** — vision extraction is passed a raw file path string instead of a `Page` object. All multimodal annotations are silently broken.
+  > **Fix:** Identify the call site passing a `str` to the image extractor and correct the type.
+
+#### ⚠️ Stage 3 — PaperDownloader (P2)
+Mass 404 errors on ArXiv URLs (`arxiv.org/pdf/<id>v<N>`) — versioned PDFs that no longer exist. Vision extraction also failing (same `'str' has no 'get_image'` bug as Stage 4).
+> **Fix:** Add fallback URL strategy (try `v1` if `vN` returns 404); fix vision type bug.
+
+#### ⚠️ Stage 1 — SmartCrawler Binary Files (P3)
+Crawler attempts to decode binary responses (`.docx`, `.zip`, `.jpeg`, `.pptx`) as UTF-8 text. These are admin/template files — low impact on faculty data, but adds noise.
+> **Fix:** Check `Content-Type` response header; skip non-`text/html` responses.
+
+#### ⚠️ RAGEngine — Gemini Quota (P4)
+Free-tier `gemini-2.0-flash` quota exhausted on 3 occasions during the RAG verification run. System correctly fell back to Ollama — non-fatal.
+> **Fix:** Upgrade to a paid API key or add smarter per-minute backoff.
 
 ---
 
@@ -81,9 +129,9 @@ TigerBrain v2.2 delivers fast local-first research assistance through its Hybrid
 
 ### 1. PDF Distillation Edge Cases
 
-**Problem:** `DeepDistiller` occasionally fails on heavily scanned PDFs, ancient two-column layouts, or math-heavy papers.  
-**Symptoms:** Garbled tables, merged text across columns, missing key findings.  
-**Status:** Significantly mitigated in v2.2 — the `apple_fast` engine with Surya layout analysis handles most problem cases. 245× speedup for digital-native PDFs.  
+**Problem:** `DeepDistiller` fails on deeply nested PDF object trees (recursion), malformed page objects for vision extraction, and certain PDFs that trigger the PyTorch meta-tensor bug.  
+**Symptoms:** `RecursionError`, `'str' object has no attribute 'get_image'`, `Cannot copy out of meta tensor`. Only 1,468 / 17,037 papers successfully distilled in the Feb 21 2026 run (~8.6%).  
+**Status:** ❌ Active — three separate bugs identified in the Feb 21 run (see Post-Mortem above).  
 **Remaining risk:** Very old scanned documents (pre-1990) — consider `--engine marker` for those.
 
 ### 2. Crawler Coverage Gaps

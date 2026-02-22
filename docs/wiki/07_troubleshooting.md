@@ -1,6 +1,6 @@
 # 07 - Troubleshooting
 
-**Last Updated:** February 20, 2026  
+**Last Updated:** February 22, 2026  
 **Purpose:** Common issues, debugging techniques, and step-by-step solutions
 
 ---
@@ -136,10 +136,36 @@ ollama serve &    # Start Ollama
 
 ---
 
+### Stage 1 (Crawl) — `'utf-8' codec can't decode byte` errors on binary files
+
+**Cause:** SmartCrawler fetches all URLs and attempts to decode responses as UTF-8 text. Binary responses (`.docx`, `.doc`, `.zip`, `.jpeg`, `.pptx`) are not UTF-8 decodable.  
+**Impact:** Low — these are admin/template documents, not faculty research pages. Faculty profile data is unaffected.  
+**Fix:** Check the `Content-Type` header before decoding:
+```python
+response = requests.get(url)
+if 'text/html' not in response.headers.get('Content-Type', ''):
+    return  # skip binary files
+text = response.content.decode('utf-8', errors='ignore')
+```
+
+---
+
 ### Stage 2 (Scholar) returns 0 enriched
 
-**Cause:** Google Scholar rate-limiting or block.  
-**Fix:** Increase crawl delay and retry:
+**Cause A — Thread-safety race condition (confirmed Feb 21 2026):** A shared dict is mutated by one thread while another iterates it → `RuntimeError: dictionary changed size during iteration`. All threads for affected faculty crash and no enrichment is saved.
+
+**Fix A:**
+```python
+# Wrap shared dict mutations in a lock
+import threading
+_lock = threading.Lock()
+
+with _lock:
+    shared_dict[key] = value
+```
+
+**Cause B — Google Scholar rate-limiting or block.**  
+**Fix B:** Increase crawl delay and retry:
 ```bash
 # Edit .env or config.py:
 CRAWL_DELAY = 3.0   # Up from 1.0
@@ -166,6 +192,58 @@ ollama show tigerbuddy --modelfile | grep num_ctx
 # Should output: num_ctx 8192
 ```
 If not: rebuild the model from `Modelfile.tigerbuddy`.
+
+---
+
+### Stage 4 (Distill) — `RecursionError: maximum recursion depth exceeded` on PDF read
+
+**Cause:** The PDF parser (`pypdf`/`pdfminer`) uses deep recursion on complex or malformed PDF object trees and hits Python's default limit.  
+**Diagnosis:** Look for `Error reading <filename>.pdf: maximum recursion depth exceeded` in DB logs.
+```bash
+sqlite3 data/tiger_research.db "SELECT COUNT(*) FROM logs WHERE level='ERROR' AND message LIKE '%maximum recursion%';"
+```
+**Fix:**
+```python
+import sys
+sys.setrecursionlimit(5000)   # Add before PDF extraction loop
+```
+Or switch to a non-recursive parser:
+```bash
+pip install pymupdf   # fitz — non-recursive, much faster
+```
+
+---
+
+### Stage 4 (Distill) — `'str' object has no attribute 'get_image'`
+
+**Cause:** The vision extraction call receives a raw file-path `str` instead of a `Page` object. All multimodal image annotations are silently skipped.  
+**Diagnosis:**
+```bash
+sqlite3 data/tiger_research.db "SELECT COUNT(*) FROM logs WHERE message LIKE \"%'str' object has no attribute 'get_image'%\";"
+```
+**Fix:** Locate the call site in `DeepDistiller` that calls the image extractor and ensure you're passing the `page` object (e.g. a `fitz.Page` or `pypdf.PageObject`), not the file path string.
+
+---
+
+### Stage 5 (Index) — `Cannot copy out of meta tensor; no data!`
+
+**Cause:** The embedding model was initialized with `torch.device("meta")` (lazy / shape-only tensor with no actual weights) and then moved with `.to(device)`. PyTorch does not allow data copying from a meta tensor.  
+**Symptoms:** Stage crashes in ~2 seconds; vector store is completely empty; RAG retrieval returns nothing.  
+**Diagnosis:**
+```bash
+sqlite3 data/tiger_research.db "SELECT message FROM logs WHERE message LIKE '%meta tensor%' LIMIT 3;"
+```
+**Fix:**
+```python
+# WRONG
+model = ModelClass()   # initializes on meta device
+model = model.to(device)
+
+# CORRECT
+model = ModelClass()
+model = model.to_empty(device)         # allocate storage without copying
+model.load_state_dict(torch.load(weights_path, map_location=device))  # load weights
+```
 
 ---
 
