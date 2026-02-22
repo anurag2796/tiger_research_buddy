@@ -51,17 +51,42 @@ class DeepDistiller:
         
     @log_timing("Extract Text from PDF")
     async def extract_text_async(self, pdf_path: Path) -> str:
-        """Extract high-quality markdown from PDF using VisionCrawler (Async Wrapper)."""
+        """Extract high-quality markdown from PDF using VisionCrawler (Async Wrapper).
+
+        Vision type guard: VisionCrawler.convert() is expected to return a dict
+        with a 'content' key, but on certain failure paths (e.g. a backend that
+        raises internally and returns a str error) it can return a bare string.
+        Calling .get('content') on a str raises:
+            'str' object has no attribute 'get_image'
+        We guard against this explicitly and log the anomaly so it's traceable.
+        """
         import asyncio
         try:
             # Run blocking extraction in thread pool
             with Timer(f"Extracting text from {pdf_path.name}", use_rich=False):
                 result = await asyncio.to_thread(self.vision_crawler.convert, str(pdf_path))
-            return result.get("content", "")
+
+            # Type guard: result must be a dict
+            if isinstance(result, dict):
+                return result.get("content", "")
+            elif isinstance(result, str):
+                # Backend returned a raw string (likely an error message or raw text)
+                logger.warning(
+                    f"Vision extraction returned str instead of dict for {pdf_path.name}. "
+                    f"Using raw string directly. Preview: {result[:80]!r}"
+                )
+                return result
+            else:
+                logger.error(
+                    f"Vision extraction returned unexpected type {type(result).__name__} "
+                    f"for {pdf_path.name}. Skipping."
+                )
+                return ""
         except Exception as e:
             logger.error(f"Error reading {pdf_path.name}: {e}")
             console.print(f"[red]Error reading {pdf_path.name}: {e}[/]")
             return ""
+
 
     @log_timing("Extract Text from PDF")
     def extract_text(self, pdf_path: Path) -> str:

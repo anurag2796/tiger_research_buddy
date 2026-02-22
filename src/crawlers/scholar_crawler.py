@@ -200,48 +200,68 @@ class ScholarCrawler:
         
         return publications
 
-    def _process_single_faculty(self, prof: dict) -> Optional[dict]:
-        """Process a single faculty member (for threading)."""
+    def _process_single_faculty(self, args: tuple) -> tuple:
+        """Process a single faculty member (for threading).
+
+        Args:
+            args: (index, prof_dict) tuple — we pass the index so the main
+                  thread can apply results without iterating the shared list.
+
+        Returns:
+            (index, updated_prof_copy, scholar_data) — the worker never
+            mutates the original prof dict; only the main thread writes back.
+        """
+        idx, prof = args
         name = prof.get("name", "")
         dept = prof.get("department", "RIT")
-        
+
         if not name:
-            return None
-            
-        # 1. Resolve Entity first
-        canonical_id = self.resolver.resolve_faculty(name, dept)
-        prof["id"] = canonical_id  # Inject canonical ID
-        
+            return idx, prof, None
+
+        # Build a shallow copy so we never touch the shared list element
+        updated = dict(prof)
+
+        # 1. Resolve canonical entity ID
+        try:
+            canonical_id = self.resolver.resolve_faculty(name, dept)
+            updated["id"] = canonical_id
+        except Exception as e:
+            logger.error(f"Entity resolution failed for {name}: {e}")
+
         # 2. Search Scholar
+        scholar_data = None
         try:
             logger.debug(f"Processing scholar data for: {name}")
             scholar_data = self.search_author(name, affiliation="RIT")
             if scholar_data:
                 logger.debug(f"Successfully retrieved scholar data for {name}")
-                return scholar_data
         except Exception as e:
             logger.error(f"Error processing {name}: {e}")
             console.print(f"[red]Error processing {name}: {e}[/]")
-            
-        return None
+
+        return idx, updated, scholar_data
 
     def enrich_faculty_data(self, faculty: list[dict]) -> list[dict]:
         """
         Add Google Scholar data to faculty list using Multithreading.
+
+        Thread-safety: workers never mutate the shared `faculty` list.
+        Each worker receives a (index, prof) tuple and returns
+        (index, updated_copy, scholar_data).  Only the main thread applies
+        the results, avoiding the 'dictionary changed size during iteration'
+        RuntimeError that was seen when workers wrote directly to `prof`.
         """
         if not SCHOLARLY_AVAILABLE and not (self.serpapi_key and SERPAPI_AVAILABLE):
             console.print("[yellow]Skipping Scholar enrichment (no tools available)[/]")
             return faculty
-        
+
         mode = "SerpApi" if self.serpapi_key else "Scholarly"
         console.print(f"[bold blue]📚 Fetching Google Scholar data using {mode} ({self.max_workers} threads)...[/]")
-        
-        # Map original objects by name/id to update them later
-        # But realized we want to return the updated list.
-        
+
         total = len(faculty)
-        completed = 0
-        
+        # work_items maps future → index so the main thread can write by index
+        enriched_count = 0
+
         with Progress(
             SpinnerColumn(),
             BarColumn(),
@@ -250,27 +270,33 @@ class ScholarCrawler:
             console=console
         ) as progress:
             task = progress.add_task("enriching", total=total)
-            
+
+            # Pass (idx, prof) tuples — workers return (idx, updated, scholar)
+            work_items = [(i, prof) for i, prof in enumerate(faculty)]
+
             with concurrent.futures.ThreadPoolExecutor(max_workers=self.max_workers) as executor:
-                # Submit all tasks
-                future_to_prof = {
-                    executor.submit(self._process_single_faculty, prof): prof 
-                    for prof in faculty
+                future_to_idx = {
+                    executor.submit(self._process_single_faculty, item): item[0]
+                    for item in work_items
                 }
-                
-                for future in concurrent.futures.as_completed(future_to_prof):
-                    prof = future_to_prof[future]
+
+                for future in concurrent.futures.as_completed(future_to_idx):
+                    idx = future_to_idx[future]
                     try:
-                        scholar_data = future.result()
+                        ret_idx, updated_prof, scholar_data = future.result()
+                        # Main thread is the sole writer — no race
+                        faculty[ret_idx] = updated_prof
                         if scholar_data:
-                            prof["scholar"] = scholar_data
-                            # console.print(f"[green]✓ Found data for {prof['name']}[/]")
+                            faculty[ret_idx]["scholar"] = scholar_data
+                            enriched_count += 1
                     except Exception as exc:
-                        logger.error(f"Thread exception for {prof['name']}: {exc}")
-                        console.print(f"[red]Exception for {prof['name']}: {exc}[/]")
-                    
+                        name = faculty[idx].get("name", f"index {idx}")
+                        logger.error(f"Thread exception for {name}: {exc}")
+                        console.print(f"[red]Exception for {name}: {exc}[/]")
+
                     progress.advance(task)
-                    
+
+        console.print(f"[green]✓ Scholar enrichment complete — {enriched_count}/{total} faculty enriched.[/]")
         return faculty
 
     def save_scholar_data(self, data: list[dict], filename: str = "scholar_data.json") -> Path:

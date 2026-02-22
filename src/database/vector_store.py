@@ -36,11 +36,21 @@ def _get_embedding_function():
             class TigerEmbeddingFunction(EmbeddingFunction):
                 def __init__(self, model_name):
                     self.model = SentenceTransformer(model_name, trust_remote_code=True)
-                    
+                    # Force-materialize weights from PyTorch meta device.
+                    # Models loaded with trust_remote_code=True can defer weight
+                    # initialization to a lazy meta tensor. If the first real encode()
+                    # call happens inside ChromaDB it triggers an illegal `.to(device)`
+                    # on a meta tensor → "Cannot copy out of meta tensor; no data!".
+                    # Running a warmup encode here forces materialization safely.
+                    try:
+                        self.model.encode(["warmup"], convert_to_numpy=True)
+                    except Exception:
+                        pass  # warmup failure is non-fatal; real errors surface on first use
+
                 def __call__(self, input: Documents) -> Embeddings:
                     embeddings = self.model.encode(list(input))
                     return embeddings.tolist()
-            
+
             _embedding_function = TigerEmbeddingFunction(EMBEDDING_MODEL)
             console.print("[green]Initialized custom embedding function (trust_remote_code=True)[/]")
             

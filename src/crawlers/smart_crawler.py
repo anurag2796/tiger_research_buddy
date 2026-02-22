@@ -161,22 +161,33 @@ class SmartCrawler:
                  console.print(f"[yellow]JSON Parse Error for {url}[/]")
             return None
 
+    # Content types we treat as crawlable text
+    _TEXT_CONTENT_TYPES = ("text/html", "text/plain", "application/xhtml", "application/json")
+
     @log_timing("Fetch Page")
     async def fetch_page(self, session, url: str) -> Optional[str]:
-        """Fetch page content with retries."""
+        """Fetch page content with retries.
+
+        Binary responses (docx, zip, jpeg, pptx, …) are silently skipped by
+        checking the Content-Type header before decoding.  This prevents the
+        'utf-8 codec can't decode byte' errors that flooded the logs.
+        """
         retries = 3
         for i in range(retries):
             try:
                 async with session.get(url, timeout=15) as response:
-                    if response.status == 200:
-                        return await response.text()
-                    else:
+                    if response.status != 200:
                         return None
+                    ct = response.headers.get("Content-Type", "")
+                    if not any(t in ct for t in self._TEXT_CONTENT_TYPES):
+                        # Binary file (docx, zip, jpeg, pptx, …) — not crawlable
+                        return None
+                    return await response.text(errors="replace")
             except Exception as e:
                 if i == retries - 1:
                     logger.error(f"Failed to fetch {url}: {e}")
                     console.print(f"[red]Failed to fetch {url}: {e}[/]")
-                await asyncio.sleep(1 * (i + 1)) # Exponential backoff
+                await asyncio.sleep(1 * (i + 1))  # Exponential backoff
         return None
 
     async def process_url(self, session, url: str, progress, task_id):

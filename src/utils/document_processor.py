@@ -1,6 +1,7 @@
 
 import os
 import io
+import sys
 import json
 import time
 import hashlib
@@ -198,47 +199,68 @@ class DocumentProcessor:
         self.doc_langs = ["en"] # Default to English
 
     def process_pdf(self, pdf_path: str) -> Dict[str, Any]:
+        """Convert a PDF to structured text and table output.
+
+        Recursion guard: PyMuPDF can hit Python's default recursion limit on
+        PDFs with circular or deeply-nested cross-reference trees. We raise
+        the limit locally for this call and catch per-page RecursionErrors so
+        that a single bad page doesn't discard the whole document.
+        """
         # Hash including file, config, versions
         file_hash = stable_file_hash(pdf_path)
         config_hash = hashlib.md5(json.dumps(self.cfg.__dict__, sort_keys=True, default=str).encode()).hexdigest()
         cache_key = f"{file_hash}_{self.cfg.engine_version}_{config_hash}"
-        
+
         cached = self.cache.get(cache_key)
         if cached is not None:
             return cached
 
         t0 = time.time()
-        
+
         # Select Backend
         if self.cfg.pdf_backend == "pypdfium2":
             adapter = PdfiumAdapter()
         else:
             adapter = FitzAdapter()
-            
+
         adapter.open(pdf_path)
-        
+
         pages_out = []
+        # Raise recursion limit locally for this document only; restore after.
+        _prev_limit = sys.getrecursionlimit()
+        sys.setrecursionlimit(max(_prev_limit, 5000))
         try:
             for i in range(adapter.get_page_count()):
-                page_out = self._process_page(adapter, i, pdf_path)
+                try:
+                    page_out = self._process_page(adapter, i, pdf_path)
+                except RecursionError:
+                    # Malformed PDF with circular object references — skip this
+                    # page but keep processing the rest of the document.
+                    page_out = {
+                        "page": i,
+                        "text": "",
+                        "text_source": "error",
+                        "tables": []
+                    }
                 pages_out.append(page_out)
         finally:
+            sys.setrecursionlimit(_prev_limit)
             adapter.close()
-            
+
         out = {
             "pdf_path": pdf_path,
             "doc_pages": len(pages_out),
             "elapsed_s": round(time.time() - t0, 3),
             "pages": pages_out,
             "metadata": {
-                "languages": ["en"], # Placeholder or inferred
+                "languages": ["en"],
                 "page_count": len(pages_out),
-                "ocr_stats": {} # Populate if needed
+                "ocr_stats": {}
             },
-            # Construct a "marker-compatible" content string
-            "content": "\n\n".join([p["text"] or "" for p in pages_out])
+            # Construct a "marker-compatible" content string (skip error pages)
+            "content": "\n\n".join([p["text"] for p in pages_out if p["text"]])
         }
-        
+
         self.cache.set(cache_key, out)
         return out
 
