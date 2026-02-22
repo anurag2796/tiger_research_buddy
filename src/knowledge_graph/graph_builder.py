@@ -89,28 +89,30 @@ class GraphBuilder:
                     elif isinstance(a, dict) and "name" in a:
                         normalized_authors.append(a["name"])
 
-                # Resolve authors to canonical IDs
+                # Resolve authors to canonical IDs using resolve_faculty
+                # (resolve_author does not exist on EntityResolver — resolve_faculty
+                # is the correct method for mapping author names to canonical IDs)
                 for author_name in normalized_authors:
-                    # Context for resolution
-                    affiliation = card.get("institution", "")
-                    coauthors = [a for a in normalized_authors if a != author_name]
-                    
-                    # Resolve!
-                    canonical_id = self.entity_resolver.resolve_author(
-                        author_name, affiliation, coauthors
+                    # Resolve using faculty resolver (handles fuzzy/phonetic matching)
+                    canonical_id = self.entity_resolver.resolve_faculty(
+                        author_name, department=card.get("institution", "")
                     )
-                    
-                    canonical_name = self.entity_resolver.get_canonical_name(canonical_id)
-                    
+
+                    # Look up display name from canonical_entities; fall back to raw name
+                    canonical_name = (
+                        self.entity_resolver.canonical_entities
+                        .get(canonical_id, {})
+                        .get("canonical_name", author_name)
+                    )
+
                     # Ensure Canonical Node Exists in Graph
                     if not self.graph.has_node(canonical_id):
                         self.graph.add_node(
-                            canonical_id, 
-                            type="faculty", 
+                            canonical_id,
+                            type="faculty",
                             label=canonical_name,
-                            # We can try to hydrate more info from existing site graph nodes if they match
                         )
-                    
+
                     # Link Paper -> Canonical Author
                     self.graph.add_edge(canonical_id, paper_id, type="AUTHORED", weight=1.0)
 
