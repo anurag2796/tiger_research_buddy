@@ -321,7 +321,22 @@ class PaperDownloader:
                 table_strategy=getattr(self.config, 'TABLE_STRATEGY', 'auto'),
                 render_dpi=96
             )
-            return result.get("content", "")
+            # Type guard: VisionCrawler can return a bare str on certain failure paths.
+            # Calling .get() on a str raises AttributeError: 'str' object has no attribute 'get'.
+            if isinstance(result, dict):
+                return result.get("content", "")
+            elif isinstance(result, str):
+                logger.warning(
+                    f"Vision extraction returned str instead of dict for {pdf_path.name}. "
+                    f"Using raw string. Preview: {result[:80]!r}"
+                )
+                return result
+            else:
+                logger.error(
+                    f"Vision extraction returned unexpected type {type(result).__name__} "
+                    f"for {pdf_path.name}. Falling back to PyMuPDF."
+                )
+                raise ValueError(f"Unexpected VisionCrawler return type: {type(result)}")
         except Exception as e:
             logger.error(f"Vision extraction failed for {pdf_path.name}: {e}")
             console.print(f"[red]Vision extraction failed for {pdf_path.name}: {e}[/]")

@@ -335,63 +335,32 @@ Response:"""
             }
         }
 
-        # Provide the full text to the model (or handle via recursive summarization if needed)
-        safe_text = text
+        # 1. Early-Exit Filter: Don't burn LLM compute on garbage OCR
+        if not text or len(text.strip()) < 200:
+            console.print(f"[yellow]Skipping distillation for {filename}: Text too short ({len(text)} chars)[/]")
+            return None
+            
+        # 2. Context Truncation: Hard-limit to ~15k characters (~3k tokens)
+        # This focuses the LLM on Abstract/Intro/Methods and prevents catastrophic
+        # JSON truncation errors that occur when the model hits max_tokens mid-generation.
+        safe_text = text[:15000]
 
         domain_hint = ""
         if domain and domain != "Other":
-            domain_hint = f"IMPORTANT: This is a '{domain}' paper. Extract entities (Theorems, Methods, Concepts) SPECIFIC to {domain}."
+            domain_hint = f"IMPORTANT: This paper belongs to the '{domain}' domain. Extract entities (Theorems, Methods, Concepts) SPECIFIC to {domain}."
+            
+        # 3. Load Schema and Extraction Rules
+        schema_path = self.config.BASE_DIR / "data" / "prompts" / "distiller_schema.md"
+        try:
+            with open(schema_path) as f:
+                schema_rules = f.read()
+        except FileNotFoundError:
+            schema_rules = "You are a Research Assistant. Extract paper data into valid JSON."
 
         prompt = f"""
-        You are a Senior Research Scientist.
-        Distill the following research paper (provided in Markdown) into a structured JSON 'TigerCard 2.0'.
+        {schema_rules}
         
         {domain_hint}
-        
-        CRITICAL: Output MUST be valid JSON (no markdown fences) matching this EXACT schema:
-        
-        Target JSON Schema:
-        {json.dumps(schema, indent=2)}
-        
-        ### ONE-SHOT EXAMPLE ###
-        Input:
-        # Deep Residual Learning for Image Recognition
-        ## Abstract
-        We present a residual learning framework...
-        
-        Output:
-        {{
-          "card_id": "paper_deep_residual_learning_for_image_recognition",
-          "bibliographic_data": {{
-            "title": "Deep Residual Learning for Image Recognition",
-            "authors": ["Kaiming He", "Xiangyu Zhang", "Shaoqing Ren", "Jian Sun"],
-            "year": 2016,
-            "venue": "CVPR",
-            "primary_domain": "cs.CV"
-          }},
-          "core_content": {{
-            "novelty_claim": "Introduces residual learning framework to ease training of deep networks.",
-            "key_methodology": "Reformulate layers as learning residual functions with reference to layer inputs.",
-            "limitations": "Deeper networks are harder to train without residual connections.",
-            "outcomes": ["First place in ILSVRC 2015 classification task", "3.57% error on ImageNet test set"]
-          }},
-          "knowledge_graph": {{
-            "nodes": [
-              {{"id": "residual_learning", "label": "Residual Learning", "type": "Method"}},
-              {{"id": "vanishing_gradient", "label": "Vanishing Gradient", "type": "Concept"}}
-            ],
-            "edges": [
-              {{"source": "residual_learning", "target": "vanishing_gradient", "relation": "SOLVES"}}
-            ]
-          }}
-        }}
-        ### END EXAMPLE ###
-        
-        Ontology Rules:
-        - **Concept**: Core idea (e.g. "Attention").
-        - **Theorem**: Named rule (e.g. "Bayes Theorem").
-        - **Method**: Technique (e.g. "Dropout").
-        - **Metric**: Benchmark (e.g. "Accuracy").
         
         --- PAPER MARKDOWN ---
         {safe_text}

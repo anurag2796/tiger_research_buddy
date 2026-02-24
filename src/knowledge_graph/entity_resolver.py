@@ -147,7 +147,9 @@ class EntityResolver:
         # Blocking: Optimization (Optional for now, straightforward loop is fine for <2k entities)
         # For huge datasets, block by first letter of last name.
         
-        for entity in self.canonical_entities.values():
+        # Convert values to list to prevent "dictionary changed size during iteration"
+        # when running in multithreaded environments (like ScholarCrawler).
+        for entity in list(self.canonical_entities.values()):
             canonical = entity['canonical_name']
             
             # 1. Token Set Ratio (good for "Smith, J" vs "John Smith")
@@ -165,7 +167,7 @@ class EntityResolver:
             if department and entity.get('department'):
                 if fuzz.token_set_ratio(department, entity['department']) > 85:
                     final_score += 5  # Small boost for same department
-
+                    
             # Special Heuristic: Force strict penalty if first names are fully written but differ
             parts_raw = raw_name.split()
             parts_can = canonical.split()

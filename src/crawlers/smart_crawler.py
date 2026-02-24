@@ -107,24 +107,30 @@ class SmartCrawler:
             "name": "Full Name",
             "title": "Academic Title",
             "department": "Department Name",
+            "college": "College Name (e.g. Golisano College of Computing and Information Sciences)",
+            "lab_name": "Name of directed research lab or group (if any)",
             "email": "Email",
             "bio": "Professional Bio",
             "research_interests": ["List", "of", "interests"],
             "education": ["List", "of", "degrees"],
-            "publications": ["List", "of", "recent publications (titles)"]
+            "courses_taught": ["List", "of", "course names/numbers taught"],
+            "publications": ["List", "of", "recent publications (titles)"],
+            "awards": ["List", "of", "notable awards/grants"]
         }
         
+        # Load rules from prompt file
+        rules_path = self.config.BASE_DIR / "data" / "prompts" / "crawler_extraction_rules.md"
+        try:
+            with open(rules_path) as f:
+                instruction_text = f.read()
+        except FileNotFoundError:
+            instruction_text = "You are a Data Extraction Engine. Extract faculty profile data from the text below into strictly valid JSON."
+            
         prompt = f"""
-        You are a Data Extraction Engine.
-        Extract faculty profile data from the text below into strictly valid JSON.
+        {instruction_text}
         
         Target Schema:
         {json.dumps(schema, indent=2)}
-        
-        Rules:
-        1. Output ONLY valid JSON.
-        2. If this is NOT a faculty profile (e.g. a directory listing or generic page), return null.
-        3. Be precise.
         
         --- TEXT ---
         {text_content}

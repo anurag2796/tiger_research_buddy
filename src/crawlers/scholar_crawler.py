@@ -290,7 +290,18 @@ class ScholarCrawler:
                             faculty[ret_idx]["scholar"] = scholar_data
                             enriched_count += 1
                     except Exception as exc:
-                        name = faculty[idx].get("name", f"index {idx}")
+                        # Workaround: future_to_idx stores the whole tuple (idx, prof), not just idx
+                        # So `idx` here is actually the tuple!
+                        # Let's unpack the future_to_idx value properly to get the index.
+                        
+                        try:
+                            # Actually, future_to_idx is populated via `executor.submit(...): item[0]`
+                            # so `idx` is just the integer index. Let's make sure.
+                            real_idx = int(idx)
+                            name = faculty[real_idx].get("name", f"index {real_idx}")
+                        except (TypeError, ValueError, IndexError):
+                            name = f"unknown idx '{idx}'"
+                            
                         logger.error(f"Thread exception for {name}: {exc}")
                         console.print(f"[red]Exception for {name}: {exc}[/]")
 
