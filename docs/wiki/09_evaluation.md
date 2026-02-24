@@ -1,6 +1,6 @@
 # 09 - Evaluation & Testing
 
-**Last Updated:** February 20, 2026  
+**Last Updated:** February 23, 2026  
 **Purpose:** Systematic evaluation framework, test query dataset, scoring templates, and testing workflows for TigerBrain
 
 ---

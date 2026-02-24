@@ -1,6 +1,6 @@
 # 04 - Configuration
 
-**Last Updated:** February 20, 2026  
+**Last Updated:** February 23, 2026  
 **Purpose:** Complete configuration reference for all system parameters
 
 ---
@@ -138,16 +138,19 @@ ollama run tigerbuddy "Say hello"   # Quick smoke test
 
 ---
 
-## Prompt Templates
+## Prompt Templates (V2 Architecture)
 
 **Location:** `data/prompts/`
 
-| File | Persona | Tone |
-|------|---------|------|
-| `role.md` | Tiger (default) | Encouraging, student-friendly |
-| `analyzer.md` | Analyzer | Technical, data-focused |
-| `critique.md` | Critique | Critical, challenges assumptions |
-| `chain_of_density.md` | CoD meta-prompt | Recursive summarization |
+In version 2.0, all prompts have been refactored under the "Strict Grounding" architecture to prevent LLM hallucination and ensure output verifiability. Each file includes an Identity, Absolute Laws, and a mandatory Socratic/Formatted Output structure.
+
+| File | Persona | Structural Constraints |
+|------|---------|-----------------------|
+| `role.md` | Tiger (default) | Strict grounding to `<Context>`. Forces explicit inline citations. |
+| `skills.md` | Few-Shot Examples | Uses `[Thought Process]` blocks to evaluate metrics before outputting answers. |
+| `analyzer.md` | Quantitative Eval | Forces outputs into markdown tables. Never invents missing numerical data. |
+| `critique.md` | Devil's Advocate | Forces the "Sandwich" Protocol (Validate, Tear-Down, Path Forward). |
+| `chain_of_density.md` | CoD Synthesizer | Strict JSON output only. Forces extraction of specific metrics or entities. |
 
 **Switching Personas at Runtime (web app sidebar):**
 ```python
@@ -157,22 +160,20 @@ client.set_persona("critique")   # tiger | analyzer | critique
 
 **Persona loading is cached** — switching doesn't reload the entire model.
 
-**Example role.md structure:**
+**Architectural Example (`role.md` snippet):**
 ```markdown
-# Role: TigerResearchBuddy
+# Role: TigerResearchBuddy 🐅 (System Prompt)
 
-## Identity
-You are an AI Research Advisor for RIT Golisano College.
+## THE THREE ABSOLUTE LAWS 🛡️
+1. **STRICT GROUNDING:** You MUST NOT answer questions using your internal baseline knowledge. Every claim must trace to the `<Context>`.
+2. **EXPLICIT CITATION:** When citing a professor's research, use explicit inline references.
+3. **SCOPE BOUNDARIES:** Firmly decline requests to write homework or answer non-RIT queries.
 
-## Constraints
-1. NO HALLUCINATIONS — only answer from provided context.
-2. CITE SOURCES — always attribute to specific faculty/papers.
-3. PROFESSIONAL — friendly but academically precise.
-
-## Response Format
+## Response Architecture 📝
 1. Direct Answer
-2. Key Faculty / Papers
-3. Suggested Next Steps
+2. Evidence/Details (Bullet Points)
+3. Accessibility (Feynman Technique)
+4. Actionable Next Step
 ```
 
 ---

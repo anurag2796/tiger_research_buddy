@@ -1,7 +1,19 @@
 # 02 - Code Reference
 
-**Last Updated:** February 20, 2026  
+**Last Updated:** February 23, 2026  
 **Purpose:** Complete module-by-module code walkthrough
+
+---
+
+## Recent Patch Notes (Feb 22–23, 2026)
+
+| Module | File | Change | Bug # |
+|--------|------|--------|---------|
+| `DeepDistiller` | `processors/pdf_distiller.py` | `extract_text_async()` wrapped in full `try/except`; `isinstance(result, dict)` type guard added at L70–84 | Bug 1, 5 |
+| `VectorStore` | `database/vector_store.py` | `TigerEmbeddingFunction.__init__()` runs warmup encode to force meta-tensor materialization | Bug 2 |
+| `PaperDownloader` | `crawlers/paper_downloader_v3.py` | `download_pdf()` has 3-retry loop; `_is_author_match()` enforces first-name equality; `extract_text()` L318–337 has `isinstance` type guard | Bug 3, 4, 7 |
+| `ScholarCrawler` | `crawlers/scholar_crawler.py` | `enrich_faculty_data()` uses index-based writes — workers return `(idx, copy, data)`, never mutate shared list | Bug 6 |
+| Prompts | `data/prompts/*.md` | Anti-hallucination guards, structured output rules, and chain-of-density summarization added across `role.md`, `analyzer.md`, `critique.md`, `skills.md`, `chain_of_density.md` | — |
 
 ---
 
@@ -188,12 +200,15 @@ with open("data/rit_data_v2.json", "w") as f:
 
 **Purpose:** ChromaDB wrapper for semantic search over faculty and research data.
 
+> **Feb 22 Patch:** `TigerEmbeddingFunction.__init__()` now runs a warmup encode (`self.model.encode(["warmup"])`) after model load. This forces PyTorch to materialize meta-tensor weights in the main thread before any ChromaDB internal thread calls `encode()`. Without this, the first real call would crash with `Cannot copy out of meta tensor; no data!` and leave the vector store empty.
+
 #### `VectorStore`
 ```python
 class VectorStore:
     """Vector database for semantic search over research data."""
     
-    def __init__(self):
+    def __init__(self, config: CrawlConfig = RESTRICTED_CONFIG):
+        self.config = config
         self.client = None
         self.collection = None
         self._initialized = False

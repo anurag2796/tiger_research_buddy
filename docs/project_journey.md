@@ -440,6 +440,15 @@ Resolved a `NameError` caused by a missing `QueryEngine` import in `web_app.py`.
 
 ---
 
+### Prompt Engineering (V2.0 Architecture)
+A major refactor was performed on all AI prompt templates (`data/prompts/*.md`) to aggressively mitigate LLM hallucinations and enforce output verifiability. This included:
+- **Strict Grounding:** Explicitly commanding the LLM to only answer from the provided `<Context>` and to declare missing information otherwise.
+- **Explicit Citation Rules:** Forcing the LLM to state exactly where it found evidence within the generated response.
+- **Defensive Structures:** Enforcing strict 'Sandwich' protocol (Validate, Tear-Down, Suggest) for critiques and mandatory markdown tables for metric comparisons to prevent data invention.
+- **Chain of Density Polish:** Banning markdown wrappers around JSON outputs and forcing strict metric extraction during synthesis.
+
+---
+
 ## 14. Challenges, Bugs & How We Fixed Them
 
 ### Codebase Analysis (February 10, 2026)

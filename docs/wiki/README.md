@@ -1,7 +1,7 @@
 # 🐅 TigerBrain: Complete System Documentation
 
-**Version:** 2.2.0 (Fast-by-Default)  
-**Last Updated:** February 20, 2026  
+**Version:** 2.3.0 (Pipeline Hardened)  
+**Last Updated:** February 23, 2026  
 **Status:** Active Development  
 
 ---
@@ -42,6 +42,44 @@ This is the master documentation hub for the TigerBrain system. Documentation is
 1. Read [API Reference](./03_api_reference.md)
 2. Review [Configuration](./04_configuration.md) for endpoints
 3. Check [Troubleshooting](./07_troubleshooting.md) for common issues
+
+---
+
+## 🟢 Current System State (Feb 23, 2026)
+
+> This section is the **single source of truth** for an LLM reading this wiki. Start here.
+
+### Pipeline Status
+
+| Stage | Status | Notes |
+|-------|--------|-------|
+| 1. SmartCrawler | ✅ Stable | Content-type guard for binary files applied |
+| 2. ScholarCrawler | ✅ Stable | Thread-safe index-based write pattern implemented |
+| 3. PaperDownloader | ✅ Stable | Author match, retry logic, vision type guard all patched |
+| 4. DeepDistiller | ✅ Stable | Recursion + vision type guard patched; `apple_fast` engine default |
+| 5. Vector Indexer | ✅ Stable | Meta-tensor warmup fix applied; ChromaDB populates correctly |
+| 6. Knowledge Graph | ✅ Stable | Builds successfully; 6,708 nodes, 129,172 edges from full run |
+| RAG Engine | ✅ Functional | Hybrid Vector + BM25 + Graph retrieval working |
+| Web App (Streamlit) | ✅ Functional | `streamlit run web_app.py` — queries working |
+
+### Recently Changed (last 3 days)
+
+| Date | Change | File |
+|------|--------|------|
+| Feb 23 | Vision type guard patched (Bug 7 — 17,623 errors fixed) | `paper_downloader_v3.py` L318–337 |
+| Feb 23 | Log/DB forensic analysis — all 7 bugs verified | `docs/wiki/08_current_challenges.md` |
+| Feb 22 | 5 bugs fixed (meta-tensor, dict race, recursion, author match, binary decode) | Multiple `src/` files |
+| Feb 22 | Prompt files refactored (anti-hallucination guards, structured output rules) | `data/prompts/*.md` |
+| Feb 22 | `run_pipeline.py` orchestrator finalized with all skip flags | `run_pipeline.py` |
+
+### Open Issues
+
+| Priority | Issue | Status |
+|----------|-------|--------|
+| Medium | First-initial author ambiguity ("J. Smith" still matches all J. Smiths) | Open — phonetic matching planned |
+| Medium | SmartCrawler binary file guard (content-type check) untested post-patch | Needs regression test |
+| Low | Distillation throughput: ~55s/paper at concurrency=3; ~3h for full corpus | Performance — not a blocker |
+| Low | No conversational memory in chat (each query is stateless) | Planned Phase 5 |
 
 ---
 
@@ -111,28 +149,31 @@ python run_pipeline.py --skip-crawl --skip-scholar --skip-download  # Resume fro
 ## 📖 Document Summaries
 
 ### 01 - Architecture
-Full system design spanning six layers: Presentation, Application, Intelligence, Data, and Ingestion. Covers the TigerStack philosophy, the Hybrid RAG pattern, technology stack decisions (why NetworkX, why ChromaDB, why Ollama), and the v0.1 → v2.2 evolution history.
+Full system design spanning six layers: Presentation, Application, Intelligence, Data, and Ingestion. Covers the TigerStack philosophy (NetworkX + ChromaDB + Ollama), the Hybrid RAG pattern, technology stack decisions, and the v0.1 → v2.3 evolution history.
 
 ### 02 - Code Reference
-Module-by-module code walkthrough covering every major class and method across `src/`. Key modules: `SmartCrawler`, `VectorStore`, `GraphBuilder`, `HybridRetriever`, `ResponseSynthesizer`, `OllamaClient`.
+Module-by-module code walkthrough covering every major class and method across `src/`. Key modules: `SmartCrawler`, `ScholarCrawler`, `PaperDownloader`, `DeepDistiller`, `VectorStore`, `GraphBuilder`, `HybridRetriever`, `ResponseSynthesizer`, `OllamaClient`. Includes current patch notes per module.
 
 ### 03 - API Reference
-Formal public API for all major classes. Parameter specifications, return types, error handling, and usage examples. APIs: `VectorStore`, `HybridRetriever`, `GraphBuilder`, `OllamaClient`, `ResponseSynthesizer`.
+Formal public API for all major classes. Parameter specifications, return types, error handling, and usage examples.
 
 ### 04 - Configuration
-Multi-layered config system: `.env` environment variables, `src/utils/config.py` (CrawlConfig with restricted/full mode), Ollama Modelfile, prompt templates, PDF pipeline engine options (`apple_fast` vs `marker`).
+Multi-layered config system: `.env` environment variables, `CrawlConfig` (restricted/full mode), Ollama Modelfile, prompt templates in `data/prompts/`, PDF pipeline engine options.
 
 ### 05 - Data Pipeline
-Six-stage pipeline from raw web crawl to a queryable knowledge graph. Covers SmartCrawler's LLM parsing, DeepDistiller's TigerCard 2.0 schema, entity resolution with canonical IDs, graph assembly steps, and quality assurance.
+Six-stage pipeline from raw web crawl to queryable knowledge graph. Covers SmartCrawler's LLM parsing, DeepDistiller's TigerCard 2.0 schema, entity resolution, graph assembly, and quality assurance.
 
 ### 06 - Deployment
 Three deployment targets: Local Development, Single-Server Production (systemd service), and Docker/Docker Compose. Includes monitoring, backup scripts, and systemd watchdog configuration.
 
 ### 07 - Troubleshooting
-Quick diagnostic scripts, common error fixes (Ollama not running, graph not found, port conflicts), performance profiling, data quality debugging (duplicate nodes, vector search irrelevant results), and step-by-step component isolation.
+Quick diagnostic scripts, common error fixes with **current patch status**, performance profiling, data quality debugging, and step-by-step component isolation. Bug fixes from Feb 22–23 are marked ✅ Fixed.
 
 ### 08 - Challenges
-Active limitations: LLM inference latency (15–45s on unquantized), context window limits (8k ceiling), graph traversal explosion on multi-hop queries, entity resolution ambiguity, and no conversational memory. Hardware specs table and known workarounds.
+Pipeline post-mortem (Feb 21 run), **bug fix status table** (6/7 fixed as of Feb 23), active technical limitations (LLM latency, multi-hop graph queries, no conversational memory), and performance data from the `process_timings` DB table.
+
+### 09 - Evaluation
+Response evaluation framework, 100-query test dataset, scoring templates, and testing workflows.
 
 ---
 

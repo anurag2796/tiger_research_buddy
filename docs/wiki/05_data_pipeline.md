@@ -1,6 +1,6 @@
 # 05 - Data Pipeline
 
-**Last Updated:** February 20, 2026  
+**Last Updated:** February 23, 2026  
 **Purpose:** Deep dive into all six stages of the data ingestion pipeline
 
 ---
@@ -129,7 +129,7 @@ def crawl_bfs(self):
 Augment faculty profiles with real-time Google Scholar metrics: citation count, h-index, recent papers list.
 
 ### Multithreaded Execution
-Scholar enrichment uses a thread pool to process multiple faculty members concurrently, significantly reducing overall crawl time.
+Scholar enrichment uses a `ThreadPoolExecutor`. Workers receive `(idx, prof)` tuples, process independently, and return `(idx, updated_copy, scholar_data)`. **Only the main thread writes results back** via `faculty[idx] = updated_copy` — this was a critical thread-safety fix applied Feb 22 (Bug 6: `dictionary changed size during iteration`).
 
 ### Output (added to each faculty entry)
 ```json
@@ -150,8 +150,11 @@ Scholar enrichment uses a thread pool to process multiple faculty members concur
 ### Purpose
 Pull full-text PDFs from ArXiv and Semantic Scholar for each faculty member's papers.
 
-### Author Matching (Critical)
-`PaperDownloaderV3` uses `_is_author_match()` to verify that discovered papers actually belong to the right faculty member before downloading. Last-name-only collisions are **rejected** — a bug fix applied in February 2026.
+### Author Matching (Bug 4 — Fixed Feb 22)
+`PaperDownloader` uses `_is_author_match()` to prevent downloading papers by the wrong person. The fix enforces: if both faculty name and paper author have full first names (length > 1), they must match exactly. A proactive assertion loop then re-checks all accepted papers and removes any that fail.
+
+### Vision Type Guard (Bug 7 — Fixed Feb 23)
+`extract_text()` now has an `isinstance(result, dict)` guard. If `VisionCrawler.convert()` returns a raw string (error path), the string is used as-is with a WARNING log rather than crashing with `AttributeError: 'str' object has no attribute 'get'`.
 
 ### Output
 - **Directory:** `data/publications/` (or `data/restricted/publications/` in restricted mode)
@@ -168,6 +171,8 @@ max_per_faculty = config.PAPER_LIMIT_PER_FACULTY   # Default: 10 in full mode, 3
 
 ### Purpose
 Convert raw academic PDFs into structured **TigerCard 2.0** JSON — the "Research Cards" that power the knowledge graph and vector index.
+
+> **Feb 22 Patches:** (1) `extract_text_async()` fully wrapped in `try/except` — `RecursionError` on malformed PDFs is caught and returns `""` instead of crashing. (2) `isinstance(result, dict)` type guard added — if `VisionCrawler` returns a string, it's used as raw text with a warning.
 
 ### Fast-by-Default: apple_fast Engine (v2.2)
 
@@ -296,6 +301,25 @@ class GraphBuilder:
 
 ### Output
 **File:** `data/tiger_brain.json` (node-link JSON format for NetworkX)
+
+---
+
+## Prompt Templates (`data/prompts/`)
+
+The LLM behavior in every stage is controlled by five prompt markdown files. These were refactored Feb 22 to add anti-hallucination guards and structured output rules.
+
+| File | Used By | Purpose |
+|------|---------|---------|
+| `role.md` | `OllamaClient` | System persona — TigerBuddy's identity, tone, and hard refusal rules |
+| `analyzer.md` | `ResponseSynthesizer` | Instructs the LLM to reason step-by-step over retrieved context before answering |
+| `critique.md` | Post-processing (optional) | Self-critique pass — checks response for hallucinations and unsupported claims |
+| `skills.md` | `SmartCrawler` | HTML extraction guidance — what fields to extract, what to ignore |
+| `chain_of_density.md` | `DeepDistiller` | Iterative compression: summarize → densify → verify, minimizing hallucinated content |
+
+**Anti-hallucination rules enforced in all prompts:**
+- `CITE SOURCES from context only. If not in context, say "I don't have that information."`
+- `Do NOT fabricate paper titles, author names, or citation counts.`
+- Output format constraints (e.g., JSON-only for distillation, markdown headers for synthesis).
 
 ---
 

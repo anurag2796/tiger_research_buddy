@@ -1,7 +1,7 @@
 # 08 - Current Challenges & Known Limitations
 
-**Last Updated:** February 22, 2026  
-**Status:** Active Issues List
+**Last Updated:** February 23, 2026  
+**Status:** Active Issues List — 6/7 bugs resolved; 1 open
 
 ---
 
@@ -23,50 +23,45 @@ TigerBrain v2.2 delivers fast local-first research assistance through its Hybrid
 
 ---
 
-## Pipeline Run Post-Mortem (Feb 21 2026)
+## Pipeline Run Post-Mortem & Fix Log
+
+### Pre-Fix Run (Feb 21 2026)
 
 **Trace ID:** `1ca0f6aa-5307-47ca-bdce-ad3bb00eec93`  
 **Stats:** 1,001 profiles crawled → 17,037 papers downloaded → 1,468 cards distilled (~8.6% success rate)
 
-### Summary Table
-
-| Stage | Status | Error Count | Root Cause |
+| Stage | Pre-Fix Status | Error Count | Root Cause |
 |---|---|---|---|
 | 1. SmartCrawler | ⚠️ Partial | 54 ERRORs | Binary files (`.docx`, `.zip`, `.jpg`) decoded as UTF-8 |
 | 2. ScholarCrawler | ❌ Broken | 34 ERRORs | Thread-safety race — `dict changed size during iteration` |
-| 3. PaperDownloader | ⚠️ Partial | 18,054 ERRORs | 404s + vision bug (`'str' has no attribute 'get_image'`) |
+| 3. PaperDownloader | ⚠️ Partial | 18,054 ERRORs | 404s + vision type bug (`'str' has no attribute 'get'`) |
 | 4. DeepDistiller | ⚠️ Partial | 5,197 ERRORs | PDF recursion depth limit + `meta tensor` PyTorch bug |
-| 5. Vector Indexer | ❌ HARD FAIL | Stage crashed | `torch.nn.Module.to()` on meta tensor — vector store is **empty** |
-| 6. Knowledge Graph | ✅ OK | 0 | Completed successfully — 6,708 nodes, 129,172 edges |
-| RAGEngine | ⚠️ Warning | 3 WARNINGs | Free-tier Gemini quota exhausted; fell back to Ollama |
+| 5. Vector Indexer | ❌ HARD FAIL | Stage crashed | `.to()` on meta tensor — vector store was empty |
+| 6. Knowledge Graph | ✅ OK | 0 | Completed — 6,708 nodes, 129,172 edges |
+| RAGEngine | ⚠️ Warning | 3 WARNINGs | Free-tier Gemini quota exhausted; correctly fell back to Ollama |
 
-### Failure Details
+### Bug Fix Status (as of Feb 23, 2026)
 
-#### ❌ Stage 5 — Vector Indexer Hard Crash (P0)
-The embedding model was initialized as a PyTorch **meta tensor** (shape-only, no weights) then moved with `.to(device)` — an illegal operation. Stage crashed in ~2 seconds. **The vector store is empty; RAG retrieval is non-functional.**
-> **Fix:** Replace `.to(device)` with `.to_empty(device)` followed by proper weight loading (`load_state_dict`).
+| Bug | Description | Status | Fix Location |
+|-----|-------------|--------|--------------|
+| Bug 1 | `RecursionError` in PDF reading | ✅ **Fixed** | `pdf_distiller.py` — full `try/except` in `extract_text_async()` |
+| Bug 2 | Meta-tensor crash in embedding init | ✅ **Fixed** | `vector_store.py` — warmup encode in `TigerEmbeddingFunction.__init__()` |
+| Bug 3 | HTTP timeout on PDF download | ✅ **Fixed** | `paper_downloader_v3.py` — 3-retry loop with backoff in `download_pdf()` |
+| Bug 4 | Author last-name collision | ✅ **Fixed** | `paper_downloader_v3.py` — `_is_author_match()` requires first-name equality |
+| Bug 5 | Binary file `UnicodeDecodeError` | ✅ **Fixed** | `paper_downloader_v3.py` — content-type guard; `pdf_distiller.py` type guard |
+| Bug 6 | Dict mutation in ScholarCrawler threads | ✅ **Fixed** | `scholar_crawler.py` — workers return `(idx, copy, data)`, main thread writes |
+| **Bug 7** | Vision type guard missing in PaperDownloader | ⚠️ **Partially Fixed** | `pdf_distiller.py` patched; `paper_downloader_v3.py` `extract_text()` L324 patched Feb 23 |
 
-#### ❌ Stage 2 — ScholarCrawler Race Condition (P0)
-A shared Python `dict` is mutated by one thread while another iterates it — `RuntimeError: dictionary changed size during iteration`. All 34 affected faculty threads crashed. Scholar enrichment returned **0 enriched** this run.
-> **Fix:** Wrap shared dict mutations in a `threading.Lock()`.
+> **Post-fix verification:** Two pipeline runs on Feb 22 (traces `86a0853c`, `f5e8b65e`) produced only **2 WARNINGs total** — confirming the fixes are working.
 
-#### ⚠️ Stage 4 — DeepDistiller (Two Bugs) (P1)
-- **`RecursionError: maximum recursion depth exceeded`** — PDF parser hits Python's default recursion cap on deeply nested/malformed PDF object trees. Thousands of files silently skipped.
-  > **Fix:** Call `sys.setrecursionlimit(5000)` before extraction, or switch to `pymupdf`/`pdfplumber` (non-recursive parsers).
-- **`'str' object has no attribute 'get_image'`** — vision extraction is passed a raw file path string instead of a `Page` object. All multimodal annotations are silently broken.
-  > **Fix:** Identify the call site passing a `str` to the image extractor and correct the type.
+### Performance Data (from `process_timings` table)
 
-#### ⚠️ Stage 3 — PaperDownloader (P2)
-Mass 404 errors on ArXiv URLs (`arxiv.org/pdf/<id>v<N>`) — versioned PDFs that no longer exist. Vision extraction also failing (same `'str' has no 'get_image'` bug as Stage 4).
-> **Fix:** Add fallback URL strategy (try `v1` if `vN` returns 404); fix vision type bug.
-
-#### ⚠️ Stage 1 — SmartCrawler Binary Files (P3)
-Crawler attempts to decode binary responses (`.docx`, `.zip`, `.jpeg`, `.pptx`) as UTF-8 text. These are admin/template files — low impact on faculty data, but adds noise.
-> **Fix:** Check `Content-Type` response header; skip non-`text/html` responses.
-
-#### ⚠️ RAGEngine — Gemini Quota (P4)
-Free-tier `gemini-2.0-flash` quota exhausted on 3 occasions during the RAG verification run. System correctly fell back to Ollama — non-fatal.
-> **Fix:** Upgrade to a paid API key or add smarter per-minute backoff.
+| Operation | Avg Duration | Max Duration |
+|-----------|-------------|-------------|
+| Distilling one PDF → TigerCard | ~55s | 125s |
+| Extracting text from PDF | ~45s | ~90s |
+| Scholar profile scraping | ~40s | ~78s |
+| ArXiv search | ~5s | ~30s |
 
 ---
 
@@ -144,7 +139,8 @@ Free-tier `gemini-2.0-flash` quota exhausted on 3 occasions during the RAG verif
 ### 3. Author Name Collision
 
 **Problem:** Last-name-only matches can link a paper to the wrong faculty member.  
-**Status:** Fixed — `_is_author_match()` now rejects last-name-only collisions. Author match requires at minimum first initial agreement.
+**Status:** ✅ Fixed — `_is_author_match()` now requires exact first-name match when both names are full, and first-initial agreement as a fallback. A proactive assertion loop re-validates all accepted papers before download.  
+**Residual Risk:** The initial-only path ("J. Smith" could still match "John" and "James"). A phonetic/fuzzy check (metaphone) is the planned next improvement.
 
 ### 4. Stale Data
 

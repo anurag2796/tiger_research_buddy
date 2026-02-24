@@ -1,6 +1,6 @@
 # 07 - Troubleshooting
 
-**Last Updated:** February 22, 2026  
+**Last Updated:** February 23, 2026  
 **Purpose:** Common issues, debugging techniques, and step-by-step solutions
 
 ---
@@ -152,17 +152,9 @@ text = response.content.decode('utf-8', errors='ignore')
 
 ### Stage 2 (Scholar) returns 0 enriched
 
-**Cause A — Thread-safety race condition (confirmed Feb 21 2026):** A shared dict is mutated by one thread while another iterates it → `RuntimeError: dictionary changed size during iteration`. All threads for affected faculty crash and no enrichment is saved.
+**Cause A — Thread-safety race condition (✅ Fixed Feb 22 2026):** A shared dict was mutated by worker threads while other threads iterated it → `RuntimeError: dictionary changed size during iteration`.
 
-**Fix A:**
-```python
-# Wrap shared dict mutations in a lock
-import threading
-_lock = threading.Lock()
-
-with _lock:
-    shared_dict[key] = value
-```
+**Applied Fix:** `scholar_crawler.py` — `enrich_faculty_data()` now passes `(idx, prof)` tuples to workers. Workers return `(idx, updated_copy, scholar_data)` and **only the main thread writes back** via `faculty[ret_idx] = updated_prof`. Zero shared-dict mutation from worker threads.
 
 **Cause B — Google Scholar rate-limiting or block.**  
 **Fix B:** Increase crawl delay and retry:
@@ -214,35 +206,27 @@ pip install pymupdf   # fitz — non-recursive, much faster
 
 ---
 
-### Stage 4 (Distill) — `'str' object has no attribute 'get_image'`
+### Stage 4 (Distill) — `'str' object has no attribute 'get_image'` / `'str' object has no attribute 'get'`
 
-**Cause:** The vision extraction call receives a raw file-path `str` instead of a `Page` object. All multimodal image annotations are silently skipped.  
+**Cause:** `VisionCrawler.convert()` can return a raw `str` (error message or raw text) on failure paths instead of the expected `dict`. Calling `.get("content")` or `.get_image()` on a `str` raises `AttributeError`.  
+**Status:** ✅ **Fixed** — `pdf_distiller.py` L70–84 and `paper_downloader_v3.py` L318–337 both now have an `isinstance(result, dict)` type guard with three branches (dict → extract, str → warn + use raw, other → error + fallback to PyMuPDF).  
 **Diagnosis:**
 ```bash
-sqlite3 data/tiger_research.db "SELECT COUNT(*) FROM logs WHERE message LIKE \"%'str' object has no attribute 'get_image'%\";"
+sqlite3 data/tiger_research.db "SELECT COUNT(*) FROM logs WHERE level='ERROR' AND message LIKE '%str%get%';"
+# Should now return 0 on new runs
 ```
-**Fix:** Locate the call site in `DeepDistiller` that calls the image extractor and ensure you're passing the `page` object (e.g. a `fitz.Page` or `pypdf.PageObject`), not the file path string.
 
 ---
 
 ### Stage 5 (Index) — `Cannot copy out of meta tensor; no data!`
 
-**Cause:** The embedding model was initialized with `torch.device("meta")` (lazy / shape-only tensor with no actual weights) and then moved with `.to(device)`. PyTorch does not allow data copying from a meta tensor.  
-**Symptoms:** Stage crashes in ~2 seconds; vector store is completely empty; RAG retrieval returns nothing.  
-**Diagnosis:**
+**Cause:** The `SentenceTransformer` model loaded with `trust_remote_code=True` uses lazy meta-tensor initialization. Moving it with `.to(device)` before weights are materialized crashes PyTorch.  
+**Symptoms:** Stage crashed in ~2 seconds; vector store completely empty; RAG retrieval returned nothing.  
+**Status:** ✅ **Fixed** — `vector_store.py` `TigerEmbeddingFunction.__init__()` now runs a warmup encode (`self.model.encode(["warmup"], convert_to_numpy=True)`) immediately after model load. This forces weight materialization in the main thread before any ChromaDB internal thread runs inference.  
+**Diagnosis (for future regression):**
 ```bash
-sqlite3 data/tiger_research.db "SELECT message FROM logs WHERE message LIKE '%meta tensor%' LIMIT 3;"
-```
-**Fix:**
-```python
-# WRONG
-model = ModelClass()   # initializes on meta device
-model = model.to(device)
-
-# CORRECT
-model = ModelClass()
-model = model.to_empty(device)         # allocate storage without copying
-model.load_state_dict(torch.load(weights_path, map_location=device))  # load weights
+sqlite3 data/tiger_research.db "SELECT COUNT(*) FROM logs WHERE message LIKE '%meta tensor%';"
+# Should be 0 on runs after Feb 22 2026
 ```
 
 ---
