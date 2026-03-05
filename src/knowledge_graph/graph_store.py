@@ -99,12 +99,16 @@ class GraphStore:
         MERGE (f:Faculty {name: $name})
         SET f.title = $title, f.email = $email, f.department = $department, f.research_interests = $research_interests
         """
+        interests = faculty.get("research_interests", "")
+        if isinstance(interests, list):
+            interests = ", ".join(interests)
+
         self.conn.execute(query, {
             "name": faculty.get("name", "Unknown"),
             "title": faculty.get("title", ""),
             "email": faculty.get("email", ""),
             "department": faculty.get("department", ""),
-            "research_interests": faculty.get("research_interests", "")
+            "research_interests": interests
         })
 
     def add_paper(self, paper: Dict):

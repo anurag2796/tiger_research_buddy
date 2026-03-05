@@ -1,0 +1,25 @@
+{
+    "domains": {
+        "cs.AI": "Artificial Intelligence",
+        "cs.CL": "Computation and Language (NLP)",
+        "cs.CV": "Computer Vision",
+        "cs.LG": "Machine Learning",
+        "cs.RO": "Robotics",
+        "cs.SE": "Software Engineering",
+        "cs.CR": "Cryptography and Security",
+        "cs.DS": "Data Structures and Algorithms",
+        "math.CO": "Combinatorics",
+        "math.OC": "Optimization and Control",
+        "physics.optics": "Optics",
+        "q-bio.NC": "Neurons and Cognition",
+        "stat.ML": "Machine Learning (Statistics)",
+        "cs.HC": "Human-Computer Interaction",
+        "cs.CY": "Computers and Society",
+        "cs.SI": "Social and Information Networks"
+    },
+    "fallbacks": [
+        "General Computer Science",
+        "General Mathematics",
+        "General Physics"
+    ]
+}

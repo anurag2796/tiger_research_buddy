@@ -14,7 +14,10 @@ Target Schema:
   "core_content": {
     "novelty_claim": "One sentence describing the core novelty.",
     "key_methodology": "Brief description of the method.",
-    "outcomes": ["Finding 1", "Finding 2"]
+    "outcomes": ["Finding 1", "Finding 2"],
+    "visual_elements": [
+      {"type": "Table", "page": 0, "bbox": [0,0,0,0], "markdown": "| col1 | col2 |\n|---|---|\n| a | b |"}
+    ]
   },
   "knowledge_graph": {
     "nodes": [
@@ -31,3 +34,4 @@ Rules:
 2. The `abstract` field MUST be filled. Look for sections titled "Abstract".
 3. The `arxiv_id` should be extracted from URLs or headers if present (e.g. "arXiv:1234.5678").
 4. Keep the JSON clean and well-formed.
+5. The `visual_elements` field is optional and populated externally by VLM target prompting. Do not fabricate it.

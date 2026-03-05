@@ -4,6 +4,7 @@ import io
 import sys
 import json
 import time
+import logging
 import hashlib
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Tuple, Union
@@ -12,8 +13,11 @@ from abc import ABC, abstractmethod
 from PIL import Image
 
 # ---- Surya (OCR + layout) ----
-# ---- Surya (OCR + layout) ----
-SURYA_AVAILABLE = False
+try:
+    from surya.layout import LayoutPredictor
+    SURYA_AVAILABLE = True
+except ImportError:
+    SURYA_AVAILABLE = False
 
 # ---- GMFT (tables) ----
 try:
@@ -190,10 +194,27 @@ class DocumentProcessor:
         self.det_processor = None
         self.layout_model = None
         self.layout_processor = None
-                
+
+        # Surya layout predictor for bounding-box detection of tables/figures
+        self.layout_predictor = None
+        if SURYA_AVAILABLE:
+            try:
+                self.layout_predictor = LayoutPredictor()
+            except Exception as e:
+                logging.getLogger(__name__).warning(f"Surya initialization failed: {e}")
+                pass  # Graceful fallback — layout detection disabled
+
         if GMFT_AVAILABLE and self.cfg.table_mode != "off":
-            self.gmft_detector = AutoTableDetector()
-            self.gmft_formatter = AutoTableFormatter()
+            try:
+                self.gmft_detector = AutoTableDetector()
+                self.gmft_formatter = AutoTableFormatter()
+            except Exception as e:
+                logging.getLogger(__name__).warning(f"GMFT initialization failed: {e}")
+                self.gmft_detector = None
+                self.gmft_formatter = None
+        else:
+            self.gmft_detector = None
+            self.gmft_formatter = None
             
         self._doc_tables_cache = {}
         self.doc_langs = ["en"] # Default to English
@@ -240,6 +261,14 @@ class DocumentProcessor:
                         "page": i,
                         "text": "",
                         "text_source": "error",
+                        "tables": []
+                    }
+                except Exception as e:
+                    logging.getLogger(__name__).warning(f"Error processing page {i}: {e}")
+                    page_out = {
+                        "page": i,
+                        "text": "",
+                        "text_source": "error_catchall",
                         "tables": []
                     }
                 pages_out.append(page_out)
@@ -296,57 +325,36 @@ class DocumentProcessor:
             except Exception:
                 final_text = raw_text or ""
 
-        # 3. Table Gate
+        # 3. Table Gate (legacy GMFT path)
         tables = []
         run_tables = False
         if self.cfg.table_mode != "off":
-            
             if self.cfg.table_mode == "force":
                 run_tables = True
             elif self.cfg.table_mode == "auto":
-                # L1: Heuristic
                 heuristic_pass = self._heuristic_table_check(final_text)
                 if heuristic_pass:
-                    # L2: Bypass Surya Layout detection, assume heuristic passes directly to table extraction
                     run_tables = True
-            
-            # L3: Extraction
-            if run_tables and GMFT_AVAILABLE:
-                # GMFT needs full doc path usually, or we can crop images?
-                # AutoTableDetector.extract(path) extracts from all pages.
-                # Efficient usage: extract(path, page_hashes/numbers?)
-                # GMFT extract(path) returns all tables.
-                # To be efficient we might need to be careful.
-                # Actually GMFT's extract methods operate on the PDF file mostly.
-                # For per-page, we can filter the result of a doc-level call (expensive to call repeatedly)
-                # OR we implement a per-page extraction if GMFT supports it.
-                # Looking at GMFT docs in memory: extract(doc)
-                pass 
-                
-        # For the sake of "fast", calling GMFT on the whole doc for every page is bad.
-        # But GMFT is fast. 
-        # Better strategy: We can't easily run GMFT on just one page without reloading doc.
-        # We will defer table extraction to a bulk pass? 
-        # Or just accept the cost. 
-        # Actually, if we are in "process_page" loop, we might want to collect table candidates and run once?
-        # Re-reading prompt: "Use GMFT for tables... only if enabled... and gated".
-        # If we call GMFT extract on the file, it parses the whole file. 
-        # So we should probably gate the *document* or cache the GMFT result if we run it.
-        # But we want to run it only if *specific pages* need it.
-        
-        # Decision: We will run GMFT on the specific page if possible, or just accept that "Table Mode" might trigger doc-wide extraction once and cache it.
-        # Let's implement a 'lazy' table extractor in the main loop or here.
-        
-        # To keep it simple for this class: 
-        # We'll punt table extraction to a helper that takes the page number.
+
         if run_tables:
             tables = self._extract_tables_gmft(pdf_path, page_idx)
+
+        # 4. Surya Layout Detection — isolate Table/Figure bounding boxes
+        # Returns cropped PIL images for downstream VLM target prompting.
+        layout_blocks = []
+        if self.layout_predictor is not None:
+            # Render page image if we haven't already (digital pages skip OCR render)
+            if pil_img is None:
+                pil_img = adapter.render_page(page_idx, self.cfg.render_dpi)
+
+            layout_blocks = self._detect_layout_blocks(pil_img, page_idx)
 
         return {
             "page": page_idx,
             "text": final_text,
             "text_source": text_source,
-            "tables": tables
+            "tables": tables,
+            "layout_blocks": layout_blocks,
         }
 
     def _heuristic_table_check(self, text: str) -> bool:
@@ -373,7 +381,7 @@ class DocumentProcessor:
 
 
     def _extract_tables_gmft(self, pdf_path: str, page_idx: int) -> List[Dict]:
-        if not GMFT_AVAILABLE: return []
+        if not GMFT_AVAILABLE or not getattr(self, "gmft_detector", None): return []
         # optimization: store gmft results in self temporarily?
         # For now, simplistic call (overhead warning)
         # Proper way: GMFT can accept a specific page? 
@@ -385,18 +393,90 @@ class DocumentProcessor:
              # This runs on whole doc. 
              # If we only want to run it if *this* page needs it, 
              # we accept the hit on the first "table-like" page.
-             tables = self.gmft_detector.extract(pdf_path)
-             self._doc_tables_cache[pdf_path] = tables
+             try:
+                 from gmft.pdf_bindings import PyPDFium2Document
+                 doc = PyPDFium2Document(pdf_path)
+                 tables = []
+                 for page in doc:
+                     tables.extend(self.gmft_detector.extract(page))
+                 self._doc_tables_cache[pdf_path] = tables
+                 doc.close()
+             except Exception as e:
+                 logging.getLogger(__name__).warning(f"GMFT extraction failed: {e}")
+                 self._doc_tables_cache[pdf_path] = []
         
         all_tables = self._doc_tables_cache[pdf_path]
         page_tables = [t for t in all_tables if getattr(t, "page_num", -1) == page_idx] # GMFT uses 0-indexed? Check docs. Usually 0-based in python wrappers.
         
         out = []
         for t in page_tables:
-            ft = self.gmft_formatter.extract(t)
             try:
+                ft = self.gmft_formatter.extract(t)
                 csv = ft.df().to_csv(index=False)
                 out.append({"csv": csv, "bbox": getattr(t, "bbox", [])})
-            except:
+            except Exception as e:
+                logging.getLogger(__name__).warning(f"GMFT formatting failed for table on page {page_idx}: {e}")
                 pass
         return out
+
+    # ---- Surya-based layout block detection ----
+
+    def _detect_layout_blocks(
+        self, page_image: Image.Image, page_idx: int
+    ) -> List[Dict[str, Any]]:
+        """Run Surya layout prediction and crop Table/Figure regions.
+
+        Bounding-box coordinates are clamped to the actual page dimensions so
+        that partially-offscreen elements never cause a PIL crop error.
+
+        Returns a list of dicts, each containing:
+            type          – "Table" or "Figure"
+            bbox          – [x0, y0, x1, y1] in pixel coords
+            page          – 0-indexed page number
+            cropped_image – PIL.Image of the isolated region
+        """
+        if self.layout_predictor is None:
+            return []
+
+        TARGET_LABELS = {"Table", "Figure", "Picture", "Chart"}
+        page_w, page_h = page_image.size
+        blocks: List[Dict[str, Any]] = []
+
+        try:
+            predictions = self.layout_predictor([page_image])
+            # Surya returns a list (one per input image); take the first.
+            page_pred = predictions[0]
+
+            for block in page_pred.bboxes:
+                label = block.label
+                if label not in TARGET_LABELS:
+                    continue
+
+                # Normalize label to the two canonical types
+                canonical_type = "Table" if label == "Table" else "Figure"
+
+                # Raw bbox from Surya: [x0, y0, x1, y1] in pixel space
+                raw = block.bbox
+                x0 = max(0, min(int(raw[0]), page_w))
+                y0 = max(0, min(int(raw[1]), page_h))
+                x1 = max(0, min(int(raw[2]), page_w))
+                y1 = max(0, min(int(raw[3]), page_h))
+
+                # Skip degenerate boxes (zero-area after clamping)
+                if x1 <= x0 or y1 <= y0:
+                    continue
+
+                cropped = page_image.crop((x0, y0, x1, y1))
+
+                blocks.append({
+                    "type": canonical_type,
+                    "bbox": [x0, y0, x1, y1],
+                    "page": page_idx,
+                    "cropped_image": cropped,
+                })
+
+        except Exception:
+            # Layout prediction failed for this page — degrade gracefully.
+            pass
+
+        return blocks

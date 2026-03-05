@@ -192,3 +192,5 @@ data/full_pipeline.log
 !data/.gitkeep
 !data/restricted/.gitkeep
 !data/taxonomies/
+
+tests/output/

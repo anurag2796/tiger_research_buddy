@@ -50,20 +50,20 @@ class GraphQueries:
     
     def get_faculty_expertise(self, faculty_name: str) -> List[Dict]:
         """Get research topics/areas for a faculty member."""
-        # Mentions Topic
+        # WorksOn Topic
         query_topics = """
-        MATCH (f:Faculty)-[r:Mentions]->(t:Topic)
+        MATCH (f:Faculty)-[r:WorksOn]->(t:Topic)
         WHERE f.name = $name
         RETURN t.name, 'topic', r.weight
         ORDER BY r.weight DESC
         LIMIT 10
         """
-        # WorksOn Concept
+        # Mentions Concept via Authored Papers
         query_concepts = """
-        MATCH (f:Faculty)-[r:WorksOn]->(c:Concept)
+        MATCH (f:Faculty)-[:Authored]->(p:Paper)-[:Mentions]->(c:Concept)
         WHERE f.name = $name
-        RETURN c.name, 'concept', r.weight
-        ORDER BY r.weight DESC
+        RETURN c.name, 'concept', count(p) as weight
+        ORDER BY weight DESC
         LIMIT 10
         """
         
@@ -85,35 +85,36 @@ class GraphQueries:
     
     def find_experts_in_topic(self, topic: str, top_k: int = 10) -> List[Dict]:
         """Find faculty who work on a specific topic or concept."""
-        # KuzuDB doesn't fully support OR in label filtering in WHERE clause easily in all versions.
-        # Using UNION is safer.
-        
-        query = """
-        MATCH (f:Faculty)-[r]->(n:Topic)
-        WHERE lower(n.name) CONTAINS lower($topic)
-        RETURN f.name, f.department, r.weight as w
-        UNION ALL
-        MATCH (f:Faculty)-[r]->(n:Concept)
+        # Queries split to avoid KuzuDB UNION ALL type casting/aggregation complexity
+        query_topics = """
+        MATCH (f:Faculty)-[r:WorksOn]->(n:Topic)
         WHERE lower(n.name) CONTAINS lower($topic)
         RETURN f.name, f.department, r.weight as w
         """
         
-        # We need to aggregate manually since UNION ALL returns rows
-        # Actually Kuzu might not support aggregation over UNION directly in subquery easily.
-        # Let's just fetch and aggregate in Python for simplicity and robustness.
-        
-        results = self.store.execute(query, {"topic": topic})
+        query_concepts = """
+        MATCH (f:Faculty)-[:Authored]->(p:Paper)-[:Mentions]->(n:Concept)
+        WHERE lower(n.name) CONTAINS lower($topic)
+        RETURN f.name, f.department, count(p) as w
+        """
         
         faculty_weights = {}
         faculty_depts = {}
         
-        while results.has_next():
-            row = results.get_next()
-            name = row[0]
-            dept = row[1]
-            weight = row[2]
+        # Execute Topics query
+        res_t = self.store.execute(query_topics, {"topic": topic})
+        while res_t.has_next():
+            row = res_t.get_next()
+            name, dept, weight = row[0], row[1], row[2]
+            faculty_weights[name] = faculty_weights.get(name, 0) + float(weight)
+            faculty_depts[name] = dept
             
-            faculty_weights[name] = faculty_weights.get(name, 0) + weight
+        # Execute Concepts query
+        res_c = self.store.execute(query_concepts, {"topic": topic})
+        while res_c.has_next():
+            row = res_c.get_next()
+            name, dept, weight = row[0], row[1], row[2]
+            faculty_weights[name] = faculty_weights.get(name, 0) + float(weight)
             faculty_depts[name] = dept
             
         experts = []

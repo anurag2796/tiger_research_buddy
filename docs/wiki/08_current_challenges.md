@@ -105,10 +105,10 @@ TigerBrain v2.2 delivers fast local-first research assistance through its Hybrid
 
 ### 4. Entity Resolution Ambiguity
 
-**Problem:** Synonymous concepts are treated as separate graph nodes.  
-**Examples:** "Flash Memory" and "NAND Flash" — separate nodes, so queries for one miss papers using the other.  
+**Problem:** Synonymous concepts are treated as separate graph nodes, and abbreviated author names cause duplicates.  
+**Examples:** "Flash Memory" and "NAND Flash" — separate nodes, so queries for one miss papers using the other. "C. Kanan" and "Christopher Kanan" — previously failed to merge if initial penalty triggered.  
 **Cause:** `EntityResolver` uses fuzzy string matching (TheFuzz), which is sensitive to phrasing but not semantics.  
-**Status:** Threshold raised to 90% similarity. Embedding-based semantic merging is planned for Phase 5.
+**Status:** ⚠️ Partially Mitigated — We upgraded `EntityResolver` to use a **Relational-Aware Tiered Approach**. For ambiguous fuzzy matches (80-95%), it now checks the Jaccard similarity of their 1-hop NetworkX neighborhoods. If overlap > 0.4, they merge. Embedding-based semantic merging for concepts is still planned for Phase 5.
 
 ---
 

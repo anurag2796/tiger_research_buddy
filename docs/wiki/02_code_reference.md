@@ -465,6 +465,9 @@ The `EntityResolver` handles name variations:
 
 ```python
 class EntityResolver:
+    def __init__(self, data_dir: Path, graph: Optional[nx.DiGraph] = None, jaccard_threshold: float = 0.4):
+        # ...
+
     def resolve_faculty(self, name: str) -> Optional[str]:
         # 1. Try exact match
         canonical = self.canonical_map.get(name.lower())
@@ -473,14 +476,24 @@ class EntityResolver:
         
         # 2. Fuzzy matching (TheFuzz)
         matches = process.extract(name, self.all_names, limit=1)
-        if matches and matches[0][1] > 90:  # 90% similarity
-            return self.canonical_map[matches[0][0]]
+        if not matches: return None
         
-        # 3. Try last name only
-        last_name = name.split()[-1]
-        for full_name, canonical_id in self.canonical_map.items():
-            if last_name.lower() in full_name:
-                return canonical_id
+        score = matches[0][1]
+        
+        # Tier 1: Very high confidence
+        if score > 95: return self.canonical_map[matches[0][0]]
+        
+        # Tier 2: Relational-Aware fallback (Ambiguous zone)
+        if score > 80 and self.graph:
+            # Check Jaccard similarity of 1-hop NetworkX neighborhoods
+            # If >= 0.4, confirm merge. Else keep distinct.
+            pass
+            
+        # Tier 3: Legacy fallback (no graph)
+        if score > 90: return self.canonical_map[matches[0][0]]
+        
+        # Try last name only as final fallback
+        # ...
         
         return None
 ```

@@ -340,16 +340,21 @@ class EntityResolver:
         if canonical:
             return canonical
 
-        # Step 2: Fuzzy match at 90% similarity threshold (TheFuzz library)
+        # Step 2: Fuzzy matching (TheFuzz)
         matches = process.extract(name, self.all_names, limit=1)
-        if matches and matches[0][1] > 90:
+        if not matches: return None
+        score = matches[0][1]
+
+        # Tier 1: Very high string confidence
+        if score > 95: return self.canonical_map[matches[0][0]]
+
+        # Tier 2: Relational-Aware fallback (Ambiguous zone)
+        # Calculates Jaccard similarity of 1-hop NetworkX neighborhoods
+        if score > 80 and self.graph and Jaccard(name, canonical) >= 0.4:
             return self.canonical_map[matches[0][0]]
 
-        # Step 3: Last-name only heuristic (low confidence, logged)
-        last_name = name.split()[-1]
-        for full_name, canonical_id in self.canonical_map.items():
-            if last_name.lower() in full_name:
-                return canonical_id
+        # Tier 3: Legacy fallback (no graph attached)
+        if score > 90: return self.canonical_map[matches[0][0]]
 
         return None   # No match — paper not linked to any faculty node
 ```

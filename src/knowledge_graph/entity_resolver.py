@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Set
 from fuzzywuzzy import process, fuzz
 import jellyfish  # For phonetic matching
+import networkx as nx
 from rich.console import Console
 from ..utils.schema import Faculty, Publication
 
@@ -15,9 +16,12 @@ class EntityResolver:
     Handles 'J. Smith' vs 'John Smith' using context-aware fuzzy matching.
     """
     
-    def __init__(self, data_dir: Path):
+    def __init__(self, data_dir: Path, graph: Optional[nx.DiGraph] = None,
+                 jaccard_threshold: float = 0.4):
         self.data_dir = data_dir
         self.mappings_file = self.data_dir / "entity_mappings.json"
+        self.graph = graph
+        self.jaccard_threshold = jaccard_threshold
         
         # Load existing mappings or initialize
         self.canonical_map: Dict[str, str] = {}  # {alias_name: canonical_id}
@@ -84,6 +88,21 @@ class EntityResolver:
         except:
             return False
 
+    # --- Graph-Context Helpers (Relational-Aware Resolution) ---
+
+    def _get_neighbor_ids(self, node_name: str) -> Set[str]:
+        """Return the set of 1-hop neighbor node IDs from the attached graph."""
+        if self.graph is None or node_name not in self.graph:
+            return set()
+        return set(self.graph.neighbors(node_name))
+
+    @staticmethod
+    def _jaccard_similarity(set_a: Set[str], set_b: Set[str]) -> float:
+        """Standard Jaccard index: |A ∩ B| / |A ∪ B|."""
+        if not set_a and not set_b:
+            return 0.0
+        return len(set_a & set_b) / len(set_a | set_b)
+
     def resolve_faculty(self, raw_name: str, department: str = None) -> str:
         """
         Resolve a faculty name to a canonical ID with advanced matching.
@@ -97,23 +116,38 @@ class EntityResolver:
         if clean_name in self.canonical_map:
             return self.canonical_map[clean_name]
 
-        # 2. Fuzzy / Phonetic Match
+        # 2. Fuzzy / Phonetic / Graph-Context Match
         if self.canonical_entities:
             best_match_id, score = self._find_best_match(clean_name, department)
-            
-            # Thresholds
-            # High confidence: >90 fuzzy score
-            # Medium confidence + Phonetic: >80 fuzzy + phonetic match
+            canonical = self.canonical_entities[best_match_id]['canonical_name']
             
             is_match = False
-            if score > 90:
-                is_match = True
-            elif score > 80:
-                # Check phonetic
-                canonical = self.canonical_entities[best_match_id]['canonical_name']
-                if self._phonetic_match(clean_name, canonical):
+
+            if self.graph is not None:
+                # --- Relational-aware path (graph attached) ---
+                # Scores above 95 auto-merge even without graph confirmation.
+                if score > 95:
                     is_match = True
-                    console.print(f"[dim]Phonetic match found: {clean_name} ~= {canonical}[/]")
+                elif score > 80:
+                    # Ambiguous zone: let the graph topology decide.
+                    neighbors_a = self._get_neighbor_ids(clean_name)
+                    neighbors_b = self._get_neighbor_ids(canonical)
+                    jaccard = self._jaccard_similarity(neighbors_a, neighbors_b)
+                    console.print(
+                        f"[dim]Graph check: {clean_name} vs {canonical} "
+                        f"| Jaccard={jaccard:.2f} (threshold={self.jaccard_threshold})[/]"
+                    )
+                    if jaccard >= self.jaccard_threshold:
+                        is_match = True
+                    # else: keep distinct — graph says they're different people
+            else:
+                # --- Legacy path (no graph) — original thresholds preserved ---
+                if score >= 85:
+                    is_match = True
+                elif score > 80:
+                    if self._phonetic_match(clean_name, canonical):
+                        is_match = True
+                        console.print(f"[dim]Phonetic match found: {clean_name} ~= {canonical}[/]")
 
             if is_match:
                 # Link alias
@@ -168,15 +202,20 @@ class EntityResolver:
                 if fuzz.token_set_ratio(department, entity['department']) > 85:
                     final_score += 5  # Small boost for same department
                     
-            # Special Heuristic: Force strict penalty if first names are fully written but differ
+            # Special Heuristic: Force strict penalty if first names are fully written but differ.
+            # Skip the penalty when either name looks like an initial (e.g. "C.", "J", "A.").
             parts_raw = raw_name.split()
             parts_can = canonical.split()
             if len(parts_raw) >= 2 and len(parts_can) >= 2:
                 raw_first = parts_raw[0].lower()
                 can_first = parts_can[0].lower()
-                if len(raw_first) > 1 and len(can_first) > 1 and raw_first != can_first:
-                    # e.g., "Christopher Kanan" != "Charles Kanan"
-                    final_score = min(final_score, 60) # Penalty ensures they don't merge
+                raw_is_initial = len(raw_first.rstrip('.')) <= 1
+                can_is_initial = len(can_first.rstrip('.')) <= 1
+                if not raw_is_initial and not can_is_initial and raw_first != can_first:
+                    # Don't penalize if they are phonetically identical or highly similar (typos)
+                    if not self._phonetic_match(raw_first, can_first) and fuzz.ratio(raw_first, can_first) < 80:
+                        # e.g., "Christopher Kanan" != "Charles Kanan"
+                        final_score = min(final_score, 60)  # Penalty ensures they don't merge
 
             candidates.append((entity['id'], min(final_score, 100)))
 

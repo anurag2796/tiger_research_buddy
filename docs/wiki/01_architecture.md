@@ -341,9 +341,11 @@ Vector similarity (0–1) and BM25 scores are on incompatible scales. RRF uses r
 ```python
 class EntityResolver:
     def resolve_faculty(self, name: str) -> Optional[str]:
-        # 1. Exact match in canonical map
-        # 2. Fuzzy match at 90% similarity threshold
-        # 3. Last-name heuristic fallback
+        # Tier 1: Exact string match or highly confident fuzzy match (>95%)
+        # Tier 2 (Relational-Aware): Ambiguous fuzzy match (80-95%) -> check graph context
+        #   - Calculate Jaccard similarity of NetworkX 1-hop neighborhoods
+        #   - Merge if Jaccard >= 0.4
+        # Tier 3 (Legacy): Phonetic heuristic fallback if no graph is attached
         return canonical_id  # e.g., "faculty_christopher_kanan"
 ```
 

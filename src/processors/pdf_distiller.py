@@ -13,6 +13,7 @@ from ..chatbot.gemini_client import get_gemini_client
 from ..utils.config import DATA_DIR, GEMINI_API_KEY, LLMConfig
 from ..utils.db_logger import setup_db_logging, log_timing, PerformanceTimer as Timer
 from ..crawlers.vision_crawler import VisionCrawler
+from .vlm_target_extractor import VLMTargetExtractor
 import fitz  # PyMuPDF - used for page image extraction only
 
 logger = setup_db_logging("DeepDistiller")
@@ -45,6 +46,10 @@ class DeepDistiller:
                 console.print("[green]VLM validation enabled (Gemini)[/]")
             except Exception as e:
                 console.print(f"[yellow]VLM validation unavailable: {e}[/]")
+        
+        # VLM Target Extractor for bounding-box-isolated tables/figures.
+        # Uses Ollama multimodal (local); swap backend="remote" for GPU server.
+        self.target_extractor = VLMTargetExtractor(backend="local", model="llava")
         
         # Load faculty database for author pre-resolution
         self.faculty_db = self._load_faculty_db()
@@ -87,6 +92,32 @@ class DeepDistiller:
             console.print(f"[red]Error reading {pdf_path.name}: {e}[/]")
             return ""
 
+    async def _extract_with_layout(self, pdf_path: Path) -> Tuple[str, List[Dict]]:
+        """Extract text AND layout blocks (Table/Figure crops) from a PDF.
+
+        Returns (content_text, layout_blocks) where layout_blocks is a list
+        of dicts with 'type', 'bbox', 'page', 'cropped_image' keys.  If the
+        engine doesn't produce layout blocks (e.g. Marker) the list is empty.
+        """
+        try:
+            result = await asyncio.to_thread(
+                self.vision_crawler.convert, str(pdf_path)
+            )
+        except Exception as e:
+            logger.error(f"Error reading {pdf_path.name}: {e}")
+            return "", []
+
+        if isinstance(result, dict):
+            text = result.get("content", "")
+            # Collect layout_blocks across all pages
+            layout_blocks = []
+            for page in result.get("pages", []):
+                layout_blocks.extend(page.get("layout_blocks", []))
+            return text, layout_blocks
+        elif isinstance(result, str):
+            return result, []
+        else:
+            return "", []
 
     @log_timing("Extract Text from PDF")
     def extract_text(self, pdf_path: Path) -> str:
@@ -303,9 +334,63 @@ Response:"""
         except Exception:
             return None
 
+    def _extract_visual_elements(
+        self, layout_blocks: List[Dict]
+    ) -> List[Dict]:
+        """Run VLM target prompting on each cropped Table/Figure region.
+
+        Returns a list of dicts suitable for the TigerCard 2.0 schema:
+            {"type": "Table"|"Figure", "page": int, "bbox": list, "markdown": str}
+        """
+        elements = []
+        for block in layout_blocks:
+            cropped = block.get("cropped_image")
+            if cropped is None:
+                continue
+
+            element_type = block.get("type", "Figure")
+            try:
+                md = self.target_extractor.extract(cropped, element_type)
+            except Exception as e:
+                logger.warning(
+                    f"VLM target extraction failed for {element_type} "
+                    f"on page {block.get('page')}: {e}"
+                )
+                md = ""
+
+            if md.strip():
+                elements.append({
+                    "type": element_type,
+                    "page": block.get("page", 0),
+                    "bbox": block.get("bbox", []),
+                    "markdown": md,
+                })
+                console.print(
+                    f"[green]  ✓ Target-extracted {element_type} on page "
+                    f"{block.get('page', '?')} ({len(md)} chars)[/]"
+                )
+
+        return elements
+
     @log_timing("Distill Paper")
-    async def distill_async(self, text: str, filename: str, domain: str = "", pdf_path: Optional[Path] = None, metadata: Dict = None) -> Optional[Dict]:
-        """Generate a Research Card using Qwen (Async)."""
+    async def distill_async(
+        self,
+        text: str,
+        filename: str,
+        domain: str = "",
+        pdf_path: Optional[Path] = None,
+        metadata: Dict = None,
+        layout_blocks: Optional[List[Dict]] = None,
+    ) -> Optional[Dict]:
+        """Generate a Research Card using Qwen (Async).
+
+        Parameters
+        ----------
+        layout_blocks : list[dict], optional
+            Cropped Table/Figure images from Surya layout detection.
+            When provided, each block is sent through VLM target prompting
+            and the extracted Markdown is appended to the card.
+        """
         import asyncio
         
         # Schema definition (same as before)
@@ -345,12 +430,36 @@ Response:"""
         # JSON truncation errors that occur when the model hits max_tokens mid-generation.
         safe_text = text[:15000]
 
+        # ── VLM Target Prompting on cropped visual elements ──────────────
+        visual_elements: List[Dict] = []
+        if layout_blocks:
+            console.print(
+                f"[cyan]  🔬 Running VLM target prompting on "
+                f"{len(layout_blocks)} layout block(s)...[/]"
+            )
+            visual_elements = await asyncio.to_thread(
+                self._extract_visual_elements, layout_blocks
+            )
+
+            # Inject extracted table/figure markdown into the LLM context
+            # so the distiller can reference accurate data when building the card.
+            if visual_elements:
+                ve_section = "\n\n--- EXTRACTED VISUAL ELEMENTS ---\n"
+                for ve in visual_elements:
+                    ve_section += (
+                        f"\n### {ve['type']} (Page {ve['page']})\n"
+                        f"{ve['markdown']}\n"
+                    )
+                ve_section += "\n--- END VISUAL ELEMENTS ---\n"
+                safe_text += ve_section
+
         domain_hint = ""
         if domain and domain != "Other":
             domain_hint = f"IMPORTANT: This paper belongs to the '{domain}' domain. Extract entities (Theorems, Methods, Concepts) SPECIFIC to {domain}."
             
         # 3. Load Schema and Extraction Rules
-        schema_path = self.config.BASE_DIR / "data" / "prompts" / "distiller_schema.md"
+        from ..utils.config import DATA_DIR
+        schema_path = DATA_DIR.parent / "data" / "prompts" / "distiller_schema.md"
         try:
             with open(schema_path) as f:
                 schema_rules = f.read()
@@ -446,6 +555,10 @@ Response:"""
                                 markdown_text = markdown_text.replace(table_text, corrected)
                                 card["core_content"]["full_text_markdown"] = markdown_text
                 
+                # Attach VLM-extracted visual elements to TigerCard 2.0
+                if visual_elements:
+                    card.setdefault("core_content", {})["visual_elements"] = visual_elements
+                
                 return card
 
         except Exception as e:
@@ -530,8 +643,8 @@ Response:"""
                 progress.advance(task)
                 return
 
-            # 1. Read (Async)
-            text = await self.extract_text_async(pdf_path)
+            # 1. Read with layout detection (Async)
+            text, layout_blocks = await self._extract_with_layout(pdf_path)
             if len(text) < 100:
                 progress.advance(task)
                 return
@@ -550,9 +663,15 @@ Response:"""
             progress.update(task, description=f"Classifying {pdf_path.name[:20]}...")
             domain = await self.classify_domain_async(text)
             
-            # 4. Distill (Async)
+            # 4. Distill with visual context (Async)
             progress.update(task, description=f"Distilling {pdf_path.name[:20]}...")
-            card = await self.distill_async(text, pdf_path.name, domain=domain, pdf_path=pdf_path, metadata=metadata)
+            card = await self.distill_async(
+                text, pdf_path.name,
+                domain=domain,
+                pdf_path=pdf_path,
+                metadata=metadata,
+                layout_blocks=layout_blocks,
+            )
 
             if card:
                 with open(output_path, "w") as f:

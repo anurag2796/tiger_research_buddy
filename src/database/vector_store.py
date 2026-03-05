@@ -30,36 +30,33 @@ def _get_embedding_function():
     global _embedding_function
     if _embedding_function is None:
         try:
-            from chromadb import EmbeddingFunction, Documents, Embeddings
-            from sentence_transformers import SentenceTransformer
-            
-            class TigerEmbeddingFunction(EmbeddingFunction):
-                def __init__(self, model_name):
-                    self.model = SentenceTransformer(model_name, trust_remote_code=True)
-                    # Force-materialize weights from PyTorch meta device.
-                    # Models loaded with trust_remote_code=True can defer weight
-                    # initialization to a lazy meta tensor. If the first real encode()
-                    # call happens inside ChromaDB it triggers an illegal `.to(device)`
-                    # on a meta tensor → "Cannot copy out of meta tensor; no data!".
-                    # Running a warmup encode here forces materialization safely.
-                    try:
-                        self.model.encode(["warmup"], convert_to_numpy=True)
-                    except Exception:
-                        pass  # warmup failure is non-fatal; real errors surface on first use
-
-                def __call__(self, input: Documents) -> Embeddings:
-                    embeddings = self.model.encode(list(input))
-                    return embeddings.tolist()
-
-            _embedding_function = TigerEmbeddingFunction(EMBEDDING_MODEL)
-            console.print("[green]Initialized custom embedding function (trust_remote_code=True)[/]")
-            
-        except ImportError:
-            # Fallback (likely will fail for nomic but works for others)
+            # Try to load the desired model first
             from chromadb.utils import embedding_functions
-            _embedding_function = embedding_functions.SentenceTransformerEmbeddingFunction(
-                model_name=EMBEDDING_MODEL
-            )
+            import torch
+            try:
+                # Attempt to use SentenceTransformer directly to see if it survives initialization
+                from sentence_transformers import SentenceTransformer
+                device = "cpu" if torch.backends.mps.is_available() else None
+                _model = SentenceTransformer(EMBEDDING_MODEL, trust_remote_code=True, device=device)
+                
+                # If it didn't throw NotImplementedError, wrap it for ChromaDB
+                from chromadb import EmbeddingFunction, Documents, Embeddings
+                class SafeTigerEmbeddingFunction(EmbeddingFunction):
+                    def __init__(self, model):
+                        self.model = model
+                    def __call__(self, input: Documents) -> Embeddings:
+                        return self.model.encode(list(input)).tolist()
+                
+                _embedding_function = SafeTigerEmbeddingFunction(_model)
+                console.print(f"[green]Initialized {EMBEDDING_MODEL} embedding function (trust_remote_code=True)[/]")
+            except NotImplementedError:
+                # Catch the "Cannot copy out of meta tensor; no data!" macOS MPS bug
+                console.print(f"[yellow]PyTorch meta tensor issue detected on macOS. Falling back to default ONNX embeddings.[/]")
+                _embedding_function = embedding_functions.DefaultEmbeddingFunction()
+                
+        except ImportError as e:
+            console.print(f"[red]Failed to import chromadb or sentence-transformers: {e}[/]")
+            raise
     return _embedding_function
 
 
@@ -323,6 +320,8 @@ Google Scholar Citations: {citations}
 H-Index: {h_index}
 Recent Publications: {', '.join(p.get('title', '')[:100] for p in pubs[:5]) if pubs else 'Not available'}
 Profile URL: {prof.get('profile_url', '')}
+Email: {prof.get('email', '')}
+Office: {prof.get('office', '')}
 College: {prof.get('college', '')}"""
         
         yield {
@@ -333,6 +332,8 @@ College: {prof.get('college', '')}"""
                 "name": prof["name"],
                 "title": prof.get("title", ""),
                 "url": prof.get("profile_url", ""),
+                "email": prof.get("email", ""),
+                "office": prof.get("office", ""),
                 "tags": json.dumps(tag_names),
                 "citations": str(citations),
                 "h_index": str(h_index),
