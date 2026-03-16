@@ -27,7 +27,7 @@ import networkx as nx
 
 from ..database import get_vector_store, VectorStore
 from ..database.models import Idea
-from ..utils.config import DATA_DIR
+from ..utils.config import DATA_DIR, FULL_CONFIG
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,7 @@ class IdeaMatcher:
     """Matches student ideas with faculty using semantic + graph signals."""
 
     def __init__(self):
-        self.store: VectorStore = get_vector_store()
+        self.store: VectorStore = get_vector_store(FULL_CONFIG)
         self._nx_graph: Optional[nx.Graph] = None
 
     # ------------------------------------------------------------------
@@ -102,6 +102,9 @@ class IdeaMatcher:
                     }
 
         # Graceful degradation — graph absent or no tags resolved.
+        for rank, doc in enumerate(semantic_results):
+            doc["rrf_score"] = round(1.0 / (60 + rank + 1), 6)
+            
         return {
             "collaborators": semantic_results,
             "related_ideas": self.find_related_ideas(query),

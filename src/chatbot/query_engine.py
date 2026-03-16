@@ -10,7 +10,7 @@ Results from both streams are fused via Reciprocal Rank Fusion (RRF).
 import json
 import re
 import logging
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import networkx as nx
 
@@ -500,7 +500,7 @@ class GraphEnhancedQueryEngine:
             print(f"Query expansion failed: {e}")
             return query
 
-    def get_graph_insights(self, query: str) -> Dict[str, any]:
+    def get_graph_insights(self, query: str) -> Dict[str, Any]:
         """Extract insights from knowledge graph based on query."""
         if not self.store:
             return {}
@@ -550,7 +550,7 @@ class GraphEnhancedQueryEngine:
             logger.error(f"Graph insights extraction failed: {e}")
             return {}
 
-    def get_data_mining_insights(self) -> Dict[str, any]:
+    def get_data_mining_insights(self) -> Dict[str, Any]:
         """Get general data mining insights (topics, patterns)."""
         if not self.data_mining:
             return {}

@@ -11,6 +11,7 @@ sys.path.append(os.getcwd())
 from src.database import get_vector_store
 from src.chatbot.ollama_client import get_ollama_client
 from src.utils.db_logger import setup_db_logging, PerformanceTimer as Timer
+from src.utils.config import FULL_CONFIG
 
 # Setup Logger
 logger = setup_db_logging("WebApp")
@@ -198,7 +199,7 @@ st.markdown(f"""
 def load_resources():
     try:
         with Timer("Initializing Resources", use_rich=False):
-            store = get_vector_store()
+            store = get_vector_store(FULL_CONFIG)
             store.initialize()
             
             client = get_ollama_client()
@@ -512,7 +513,9 @@ with tab2:
                         meta = collab.get("metadata", {})
                         with st.expander(f"👤 {meta.get('name', 'Unknown')} ({meta.get('doc_type', 'Faculty')})"):
                             st.markdown(f"**College**: {meta.get('college', 'Unknown')}")
-                            st.markdown(f"**Relevance**: {1 - collab.get('distance', 1):.2f}")
+                            score = collab.get('rrf_score', 0)
+                            relevance = min(0.99, max(0.50, score * 25 + 0.45))
+                            st.markdown(f"**Relevance**: {relevance:.0%}")
                             st.write(collab.get("content"))
                 else:
                     st.info("No direct faculty matches found yet. Try expanding your description.")

@@ -170,14 +170,27 @@ Status: {idea.status}"""
             core = card.get("core_content", {})
             kg = card.get("knowledge_graph", {})
             
+            # Safely extract concepts
+            concepts = []
+            for n in kg.get('nodes', []):
+                if isinstance(n, dict):
+                    concepts.append(n.get('label', ''))
+                elif isinstance(n, str):
+                    concepts.append(n)
+            
+            # Safely extract outcomes
+            outcomes = core.get('outcomes', [])
+            if not isinstance(outcomes, list):
+                outcomes = [str(outcomes)]
+            
             # Construct rich semantic content
             content = f"""Title: {bib.get('title')}
 Domain: {bib.get('primary_domain')}
 Novelty: {core.get('novelty_claim')}
 Methodology: {core.get('key_methodology')}
-Outcomes: {', '.join(core.get('outcomes', []))}
-Concepts: {', '.join([n.get('label', '') for n in kg.get('nodes', [])])}
-Abstract: {core.get('full_text_markdown', '')[:1000]}..."""
+Outcomes: {', '.join(outcomes)}
+Concepts: {', '.join(concepts)}
+Abstract: {str(core.get('full_text_markdown', ''))[:1000]}..."""
 
             documents.append({
                 "id": card_id,
@@ -379,7 +392,7 @@ Tags: {', '.join(pub_tag_names) if pub_tag_names else 'research'}"""
             }
 
 
-def load_data_to_vectorstore(config: CrawlConfig = RESTRICTED_CONFIG) -> VectorStore:
+def load_data_to_vectorstore(config: CrawlConfig = RESTRICTED_CONFIG) -> Optional[VectorStore]:
     """Load crawled data into vector store with tags."""
     filepath = config.OUTPUT_FILE
     
@@ -417,9 +430,9 @@ def load_data_to_vectorstore(config: CrawlConfig = RESTRICTED_CONFIG) -> VectorS
     return store
 
 
-def ingest_research_cards(config: CrawlConfig = RESTRICTED_CONFIG) -> VectorStore:
+def ingest_research_cards(config: CrawlConfig = RESTRICTED_CONFIG) -> Optional[VectorStore]:
     """Ingest distilled research cards into vector store."""
-    cards_dir = DATA_DIR / "research_cards"
+    cards_dir = config.BASE_DIR / "research_cards"
     if not cards_dir.exists():
         console.print(f"[yellow]No research cards found in {cards_dir}[/]")
         return None

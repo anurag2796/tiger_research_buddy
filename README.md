@@ -235,12 +235,24 @@ streamlit run web_app.py
 
 The application will open in your browser at `http://localhost:8501`
 
+## 📖 Documentation
+
+For comprehensive information about the system architecture, core modules, algorithms, and setup instructions, please visit the [Project Wiki](docs/wiki/).
+
+- **[System Architecture](docs/wiki/01_system_architecture.md)** - High-level overview of the Two-Lobe Brain
+- **[Algorithm Deep Dives](docs/wiki/10_algorithms_deepdive.md)** - Explanations of RRF, Entity Resolution, and VLM validation
+- **[Detailed Setup & Usage](docs/wiki/11_usage_and_setup.md)** - Exhaustive command-line configuration options
+- **[Project Journey & History](docs/project_journey.md)** - The chronological history and architecture review of the project
+
 ## 📁 Project Structure
 
 ```
 tiger_research_buddy/
 ├── main.py                 # CLI interface
 ├── web_app.py             # Streamlit web interface
+├── docs/
+│   ├── wiki/              # Comprehensive documentation wiki
+│   └── project_journey.md # Project history and rationale
 ├── src/
 │   ├── chatbot/           # AI chat components
 │   │   ├── ollama_client.py
@@ -327,12 +339,7 @@ Edit `src/utils/config.py` to customize:
 
 ## 🚧 Roadmap
 
-See `docs/future_roadmap_ideas.md` for planned features:
-- AI Synergy Reports
-- Resource & Equipment Matching
-- Cross-Pollination Agent
-- 3D Prism visualization
-- Automated Grant Scouting
+See the [V2 Roadmap](docs/wiki/tigerbrain_v2_roadmap.md) and [Project Journey](docs/project_journey.md) for planned features and historical context.
 
 ## 📝 License
 

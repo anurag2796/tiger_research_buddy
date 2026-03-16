@@ -1,7 +1,7 @@
 # TigerResearchBuddy: The Project Journey
 
-**Last Updated:** February 20, 2026  
-**Covers:** Project inception → v2.2 (Fast-by-Default), evaluation framework, external architecture reviews
+**Last Updated:** March 2026  
+**Covers:** Project inception → v2.2 (Fast-by-Default), evaluation framework, architecture reviews, documentation overhaul
 
 ---
 
@@ -23,6 +23,8 @@
 14. [Challenges, Bugs & How We Fixed Them](#14-challenges-bugs--how-we-fixed-them)
 15. [Brainstorming & Ideas Captured Along the Way](#15-brainstorming--ideas-captured-along-the-way)
 16. [Future Roadmap](#16-future-roadmap)
+17. [External Architecture Review: Bottlenecks & Recommendations (Feb 2026)](#17-external-architecture-review-bottlenecks--recommendations-feb-2026)
+18. [Documentation Overhaul & Baseline Completion (March 2026)](#18-documentation-overhaul--baseline-completion-march-2026)
 
 ---
 
@@ -461,6 +463,8 @@ A formal audit identified **23 distinct issues** across 7 categories.
 | Missing 8k Context | Schema hallucinations in LLM extraction | Added `num_ctx: 8192` to all schema calls |
 | Dependency Mismatches | `chromadb==0.4.22` required vs `1.4.1` installed | Upgraded dependencies; synced requirements |
 | Author Filter Bug | Papers with last-name collisions bypassed filter | Fixed `_is_author_match` logic |
+| Pipeline Redundancy | 1002 items processed for 307 unique faculties | Added strict `src/utils/dedup.py` memory layer |
+| False Distillation Starts | Terminated parses restart from 0 | Auto-skips existing JSON cards (Checkpoint Resumption) |
 
 #### High Priority (Partially Fixed)
 | Issue | Problem | Status |
@@ -473,6 +477,8 @@ A formal audit identified **23 distinct issues** across 7 categories.
 - **PDF multi-column layouts:** Resolved by v2.2 `apple_fast` engine with Surya layout analysis.
 - **Crawler traps:** Manual delays + user-agent rotation.
 - **Duplicate nodes:** `EntityResolver` fuzzy matching at 90% threshold + canonical ID system.
+- **Relevance UI Display:** Bounded raw vector distances (-3000%) into clear 50-99% RRF presentation tags.
+- **Thread-safe Metrics:** Thread locks block concurrent dict/counter mutations during high-velocity scraping.
 
 ### Known Remaining Issues
 - No conversational memory (user must repeat context).
@@ -538,10 +544,6 @@ The `KnowledgeDaemon` is a background agent to solve the stale-data problem:
 - [ ] Cross-university collaboration discovery.
 - [ ] Automated grant opportunity scouting.
 - [ ] Mobile-responsive UI or progressive web app.
-
----
-
-17. [External Architecture Review: Bottlenecks & Recommendations (Feb 2026)](#17-external-architecture-review-bottlenecks--recommendations-feb-2026)
 
 ---
 
@@ -635,6 +637,22 @@ _Generated: 2026-02-11 — Full bottleneck analysis for TigerBrain 2.0 (Hybrid R
 2. **Graph edge weights** — score by co-occurrence + citation count; cap per-hop expansion.
 3. **Eval + CI gate** — 200-question eval suite + Langfuse traces + PR score threshold.
 4. **Conversation memory** — entity carry-forward across turns.
+
+---
+
+## 18. Documentation Overhaul & Baseline Completion (March 2026)
+
+**Date:** March 2026 | **Status:** ✅ Complete
+
+### Objective
+Formalize the system logic, mathematically explain complex algorithms, and provide strict usage guidelines to transform the project from a "working prototype" into a maintainable, extensible platform.
+
+### What Was Delivered
+A full audit of the codebase led to the consolidation and expansion of `docs/wiki/`, guaranteeing it directly matches the **v2.2 Fast-by-Default** and **V2 strict Prompting** architectures.
+
+- **`10_algorithms_deepdive.md`**: Mathematically documented the Reciprocal Rank Fusion ($1 / (60 + rank)$) logic, the Entity Resolution Jaccard neighborhoods, and the VLM async-batching design.
+- **`11_usage_and_setup.md`**: Formalized deployment flags (e.g. `--engine apple_fast`) and pipeline control arguments (`--skip-scholar`), removing ambiguity around how to run localized extraction loops safely.
+- **Cross-Verification:** Audited prompt schemas, API interfaces, and deployment pipelines. The NotebookLM knowledge representation file (`notebookllm_source.txt`) was officially regenerated, fully preparing the project to be handed over to a broader lab/team setting.
 
 ---
 

@@ -11,7 +11,7 @@ class ImpactAnalyzer:
         """
         Generates an impact score and SDG alignment.
         """
-        if not self.client.initialized:
+        if not self.client._initialized:
             self.client.initialize()
             
         prompt = f"""

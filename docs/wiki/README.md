@@ -1,7 +1,7 @@
 # 🐅 TigerBrain: Complete System Documentation
 
-**Version:** 2.3.0 (Pipeline Hardened)  
-**Last Updated:** February 23, 2026  
+**Version:** 2.4.0 (Robust Pipeline & Active UI)  
+**Last Updated:** March 9, 2026  
 **Status:** Active Development  
 
 ---
@@ -45,7 +45,7 @@ This is the master documentation hub for the TigerBrain system. Documentation is
 
 ---
 
-## 🟢 Current System State (Feb 23, 2026)
+## 🟢 Current System State (Mar 9, 2026)
 
 > This section is the **single source of truth** for an LLM reading this wiki. Start here.
 
@@ -66,7 +66,10 @@ This is the master documentation hub for the TigerBrain system. Documentation is
 
 | Date | Change | File |
 |------|--------|------|
-| Feb 23 | Vision type guard patched (Bug 7 — 17,623 errors fixed) | `paper_downloader_v3.py` L318–337 |
+| Mar 9 | Faculty Deduplication (1002 -> 307); Rate limiting adaptors | `src/utils/dedup.py`, `config.py` |
+| Mar 9 | Thread-safe counters & PDF checkpoint resumption | `paper_downloader_v3.py`, `pdf_distiller.py` |
+| Mar 9 | RRF Graph Scoring bounds bounded to 50-99% & Web App fixes | `matcher.py`, `prism_view.py`, `web_app.py` |
+| Feb 23 | Vision type guard patched (Bugs 1-7 Fixed) | `paper_downloader_v3.py` L318–337 |
 | Feb 23 | Log/DB forensic analysis — all 7 bugs verified | `docs/wiki/08_current_challenges.md` |
 | Feb 22 | 5 bugs fixed (meta-tensor, dict race, recursion, author match, binary decode) | Multiple `src/` files |
 | Feb 22 | Prompt files refactored (anti-hallucination guards, structured output rules) | `data/prompts/*.md` |
@@ -170,7 +173,7 @@ Three deployment targets: Local Development, Single-Server Production (systemd s
 Quick diagnostic scripts, common error fixes with **current patch status**, performance profiling, data quality debugging, and step-by-step component isolation. Bug fixes from Feb 22–23 are marked ✅ Fixed.
 
 ### 08 - Challenges
-Pipeline post-mortem (Feb 21 run), **bug fix status table** (6/7 fixed as of Feb 23), active technical limitations (LLM latency, multi-hop graph queries, no conversational memory), and performance data from the `process_timings` DB table.
+Pipeline post-mortem (Feb 21 run), **bug fix status table** (All 7 bugs fixed as of Mar 9), active technical limitations (LLM latency, multi-hop graph queries, no conversational memory), and performance data from the `process_timings` DB table.
 
 ### 09 - Evaluation
 Response evaluation framework, 100-query test dataset, scoring templates, and testing workflows.
@@ -220,4 +223,4 @@ When contributing to TigerBrain:
 ---
 
 **Built with ❤️ at RIT** 🐅  
-*Last updated: February 20, 2026*
+*Last updated: March 9, 2026*

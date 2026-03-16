@@ -35,6 +35,57 @@ from rich import box
 
 console = Console()
 
+
+# ─── Faculty Deduplication ────────────────────────────────────────────────────
+
+def deduplicate_faculty(faculty: list[dict]) -> list[dict]:
+    """Merge duplicate faculty entries by name, combining list fields.
+
+    The crawler stores one entry per (faculty, research_area_page), so faculty
+    appearing on multiple pages get duplicated.  This merges them into a single
+    entry per unique name, unioning research_interests, publications, etc.
+    """
+    merged: dict[str, dict] = {}   # key = lowercase name
+
+    # Fields whose values should be merged (union of lists)
+    LIST_FIELDS = [
+        "research_interests", "research_areas", "publications",
+        "courses", "education", "awards", "links",
+    ]
+
+    for entry in faculty:
+        name = entry.get("name", "").strip()
+        if not name:
+            continue
+        key = name.lower()
+
+        if key not in merged:
+            # First occurrence — deep-copy to avoid mutation
+            merged[key] = {k: (list(v) if isinstance(v, list) else v)
+                           for k, v in entry.items()}
+        else:
+            # Merge list fields via order-preserving union
+            existing = merged[key]
+            for field in LIST_FIELDS:
+                old_vals = existing.get(field, [])
+                new_vals = entry.get(field, [])
+                if isinstance(old_vals, list) and isinstance(new_vals, list):
+                    seen = {str(v).lower() for v in old_vals}
+                    for v in new_vals:
+                        if str(v).lower() not in seen:
+                            old_vals.append(v)
+                            seen.add(str(v).lower())
+                    existing[field] = old_vals
+            # Keep the longer bio / description
+            for text_field in ["bio", "description", "title"]:
+                old_txt = existing.get(text_field, "") or ""
+                new_txt = entry.get(text_field, "") or ""
+                if len(new_txt) > len(old_txt):
+                    existing[text_field] = new_txt
+
+    result = list(merged.values())
+    return result
+
 # ─── Stage result tracking ───────────────────────────────────────────────────
 
 class StageResult:
@@ -217,16 +268,18 @@ def stage_distill(config, result: StageResult):
         return
 
     try:
+        cards_dir = config.BASE_DIR / "research_cards"
         distiller = DeepDistiller(
             pdf_dir=pdf_dir,
-            faculty_db_path=config.OUTPUT_FILE
+            faculty_db_path=config.OUTPUT_FILE,
+            output_dir=cards_dir,
+            max_pages=config.PDF_MAX_PAGES
         )
         distiller.process_all()
         elapsed = time.perf_counter() - t0
 
-        cards_dir = Path("data/research_cards")
         n_cards = len(list(cards_dir.glob("*.json"))) if cards_dir.exists() else 0
-        success(f"{n_cards} Research Cards distilled → data/research_cards/")
+        success(f"{n_cards} Research Cards distilled → {cards_dir}/")
         result.mark_done(f"{n_cards} cards", elapsed)
     except Exception as e:
         elapsed = time.perf_counter() - t0
@@ -255,7 +308,7 @@ def stage_index(config, result: StageResult):
             warn("No faculty JSON found — skipping faculty indexing")
 
         # 5b. Ingest distilled Research Cards
-        cards_dir = Path("data/research_cards")
+        cards_dir = config.BASE_DIR / "research_cards"
         if cards_dir.exists() and list(cards_dir.glob("*.json")):
             store = ingest_research_cards(config)
             if store:
@@ -276,27 +329,26 @@ def stage_index(config, result: StageResult):
 
 # ─── Stage 6: Build Knowledge Graph (optional) ───────────────────────────────
 
-def stage_graph(result: StageResult):
+def stage_graph(config, result: StageResult):
     """Build the knowledge graph from crawled data and Research Cards."""
     from src.knowledge_graph.graph_builder import GraphBuilder
     t0 = time.perf_counter()
 
-    site_graph_path = Path("data/site_graph.gml")
-    if not site_graph_path.exists():
-        warn("data/site_graph.gml not found — graph build skipped")
+    builder = GraphBuilder(config=config)
+    if not builder.site_graph_path.exists():
+        warn(f"{builder.site_graph_path} not found — graph build skipped")
         warn("This file is generated during the Crawl stage (Stage 1)")
         result.mark_skipped("No site_graph.gml")
         return
 
     try:
-        builder = GraphBuilder()
         builder.load_site_graph()
         builder.load_faculty_data()
         builder.merge_research_cards()
         builder.export()
         elapsed = time.perf_counter() - t0
 
-        graph_path = Path("data/tiger_brain.gml")
+        graph_path = Path("data/tiger_brain.json")
         success(f"Knowledge graph built → {graph_path}")
         result.mark_done("graph exported", elapsed)
     except Exception as e:
@@ -330,8 +382,15 @@ Examples:
     parser.add_argument("--skip-distill",  action="store_true", help="Skip Stage 4: PDF distillation")
     parser.add_argument("--skip-index",    action="store_true", help="Skip Stage 5: Vector store indexing")
     parser.add_argument("--skip-graph",    action="store_true", help="Skip Stage 6: Knowledge graph")
+    
+    parser.add_argument("--resume", action="store_true", help="Resume from last checkpoint (skips crawl/scholar/download)")
 
     args = parser.parse_args()
+    
+    if args.resume:
+        args.skip_crawl = True
+        args.skip_scholar = True
+        args.skip_download = True
 
     # ── Load config ──────────────────────────────────────────────────────────
     from src.utils.config import RESTRICTED_CONFIG, FULL_CONFIG
@@ -369,13 +428,22 @@ Examples:
                 data = json.load(f)
             console.print(f"[dim]Loaded existing data: {len(data.get('faculty', []))} faculty[/]")
         else:
-            warn(f"Warning: {config.OUTPUT_FILE} not found — downstream stages may fail")
+            warn(f"Warning: {config.OUTPUT_FILE} not found — downstream stages still may fail")
     else:
         data = stage_crawl(config, r_crawl)
         if r_crawl.status == "failed":
             console.print("[red]Stage 1 failed. Cannot continue — aborting.[/]")
             print_summary(results)
             return
+
+    # Apply faculty deduplication to the loaded/crawled data
+    if data and data.get("faculty"):
+        from src.utils.dedup import deduplicate_faculty
+        original_count = len(data["faculty"])
+        data["faculty"] = deduplicate_faculty(data["faculty"])
+        dedup_count = len(data["faculty"])
+        if original_count > dedup_count:
+            console.print(f"[cyan]Deduped {original_count} → {dedup_count} unique faculty[/]")
 
     # ── Stage 2: Scholar Enrichment ──────────────────────────────────────────
     stage_banner(2, "Google Scholar Enrichment")
@@ -415,7 +483,7 @@ Examples:
         warn("Skipped by --skip-graph flag")
         r_graph.mark_skipped("--skip-graph")
     else:
-        stage_graph(r_graph)
+        stage_graph(config, r_graph)
 
     # ── Summary ───────────────────────────────────────────────────────────────
     print_summary(results)

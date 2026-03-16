@@ -77,5 +77,5 @@ async def test_extract_profile_data(mock_config):
     crawler.llm_client.generate.assert_called_with(
         ANY, 
         system_prompt="You are a JSON extractor.", 
-        options={"num_ctx": 8192}
+        options={"num_ctx": 8192, "temperature": 0.2, "num_predict": -1}
     )

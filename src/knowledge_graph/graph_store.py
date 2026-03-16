@@ -75,7 +75,7 @@ class GraphStore:
             # Table might already exist
             pass
 
-    def _create_rel_table(self, name: str, src: str, dst: str, properties: Dict[str, str] = None):
+    def _create_rel_table(self, name: str, src: str, dst: str, properties: Optional[Dict[str, str]] = None):
         try:
             props_str = ""
             if properties:
@@ -85,7 +85,7 @@ class GraphStore:
         except Exception as e:
             pass
 
-    def execute(self, query: str, parameters: Dict[str, Any] = None):
+    def execute(self, query: str, parameters: Optional[Dict[str, Any]] = None):
         """Execute a Cypher query."""
         return self.conn.execute(query, parameters)
 

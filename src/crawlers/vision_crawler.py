@@ -187,8 +187,9 @@ class VisionCrawler:
                 render_dpi=kwargs.get("render_dpi", 96)
             )
             self.processor = DocumentProcessor(cfg)
-            
-        return self.processor.process_pdf(pdf_path)
+
+        max_pages = kwargs.get("max_pages", 0)
+        return self.processor.process_pdf(pdf_path, max_pages=max_pages)
 
     def _convert_marker(self, pdf_path: str, skip_tables: bool) -> Dict[str, Any]:
         """Original Marker-PDF conversion logic."""

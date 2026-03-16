@@ -1,17 +1,27 @@
 import json
 import networkx as nx
 from pathlib import Path
+from typing import Optional
 from rich.console import Console
 from rich.progress import track
 from src.knowledge_graph.entity_resolver import EntityResolver
+from src.utils.config import CrawlConfig, DATA_DIR
 
 console = Console()
 
 class GraphBuilder:
-    def __init__(self, data_dir: str = "data"):
+    def __init__(self, data_dir: str = "data", config: Optional[CrawlConfig] = None):
         self.data_dir = Path(data_dir)
-        self.site_graph_path = self.data_dir / "site_graph.gml"
-        self.cards_dir = self.data_dir / "research_cards"
+        self.config = config
+        # Use config-aware paths if available, else fall back to data_dir defaults
+        if config:
+            self.site_graph_path = config.BASE_DIR / "site_graph.gml"
+            self.cards_dir = config.BASE_DIR / "research_cards"
+            self.faculty_json_path = config.OUTPUT_FILE
+        else:
+            self.site_graph_path = self.data_dir / "site_graph.gml"
+            self.cards_dir = self.data_dir / "research_cards"
+            self.faculty_json_path = self.data_dir / "rit_data_v2.json"
         self.output_path = self.data_dir / "tiger_brain.gml"
         self.graph = nx.Graph()
         self.entity_resolver = EntityResolver(self.data_dir)
@@ -29,7 +39,7 @@ class GraphBuilder:
 
     def load_faculty_data(self):
         """Enrich graph with Faculty nodes from RIT Data JSON."""
-        json_path = self.data_dir / "rit_data_v2.json"
+        json_path = self.faculty_json_path
         
         try:
             with open(json_path, "r") as f:

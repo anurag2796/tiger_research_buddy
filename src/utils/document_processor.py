@@ -219,13 +219,17 @@ class DocumentProcessor:
         self._doc_tables_cache = {}
         self.doc_langs = ["en"] # Default to English
 
-    def process_pdf(self, pdf_path: str) -> Dict[str, Any]:
+    def process_pdf(self, pdf_path: str, max_pages: int = 0) -> Dict[str, Any]:
         """Convert a PDF to structured text and table output.
 
         Recursion guard: PyMuPDF can hit Python's default recursion limit on
         PDFs with circular or deeply-nested cross-reference trees. We raise
         the limit locally for this call and catch per-page RecursionErrors so
         that a single bad page doesn't discard the whole document.
+
+        Args:
+            pdf_path: Path to the PDF file.
+            max_pages: Maximum number of pages to process.  0 = no limit.
         """
         # Hash including file, config, versions
         file_hash = stable_file_hash(pdf_path)
@@ -251,7 +255,12 @@ class DocumentProcessor:
         _prev_limit = sys.getrecursionlimit()
         sys.setrecursionlimit(max(_prev_limit, 5000))
         try:
-            for i in range(adapter.get_page_count()):
+            total_pages = adapter.get_page_count()
+            pages_to_process = min(total_pages, max_pages) if max_pages > 0 else total_pages
+            if pages_to_process < total_pages:
+                logging.getLogger(__name__).info(
+                    f"Processing {pages_to_process}/{total_pages} pages (max_pages={max_pages})")
+            for i in range(pages_to_process):
                 try:
                     page_out = self._process_page(adapter, i, pdf_path)
                 except RecursionError:
@@ -347,7 +356,15 @@ class DocumentProcessor:
             if pil_img is None:
                 pil_img = adapter.render_page(page_idx, self.cfg.render_dpi)
 
-            layout_blocks = self._detect_layout_blocks(pil_img, page_idx)
+            # Guard: skip layout prediction for very large page images.
+            # Surya's native backend can SIGTRAP on dense/oversized images.
+            w, h = pil_img.size
+            if w * h <= 10_000_000:  # 10 megapixels
+                layout_blocks = self._detect_layout_blocks(pil_img, page_idx)
+            else:
+                logging.getLogger(__name__).warning(
+                    f"Skipping layout detection on page {page_idx} "
+                    f"({w}x{h}px = {w*h/1e6:.1f}MP) — too large for safe processing")
 
         return {
             "page": page_idx,

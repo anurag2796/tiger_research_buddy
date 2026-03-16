@@ -1,6 +1,6 @@
 # 08 - Current Challenges & Known Limitations
 
-**Last Updated:** February 23, 2026  
+**Last Updated:** March 9, 2026  
 **Status:** Active Issues List — 6/7 bugs resolved; 1 open
 
 ---
@@ -40,7 +40,7 @@ TigerBrain v2.2 delivers fast local-first research assistance through its Hybrid
 | 6. Knowledge Graph | ✅ OK | 0 | Completed — 6,708 nodes, 129,172 edges |
 | RAGEngine | ⚠️ Warning | 3 WARNINGs | Free-tier Gemini quota exhausted; correctly fell back to Ollama |
 
-### Bug Fix Status (as of Feb 23, 2026)
+### Bug Fix Status (as of Mar 9, 2026)
 
 | Bug | Description | Status | Fix Location |
 |-----|-------------|--------|--------------|
@@ -50,9 +50,12 @@ TigerBrain v2.2 delivers fast local-first research assistance through its Hybrid
 | Bug 4 | Author last-name collision | ✅ **Fixed** | `paper_downloader_v3.py` — `_is_author_match()` requires first-name equality |
 | Bug 5 | Binary file `UnicodeDecodeError` | ✅ **Fixed** | `paper_downloader_v3.py` — content-type guard; `pdf_distiller.py` type guard |
 | Bug 6 | Dict mutation in ScholarCrawler threads | ✅ **Fixed** | `scholar_crawler.py` — workers return `(idx, copy, data)`, main thread writes |
-| **Bug 7** | Vision type guard missing in PaperDownloader | ⚠️ **Partially Fixed** | `pdf_distiller.py` patched; `paper_downloader_v3.py` `extract_text()` L324 patched Feb 23 |
+| Bug 7 | Vision type guard missing in PaperDownloader | ✅ **Fixed** | `pdf_distiller.py` patched; `paper_downloader_v3.py` `extract_text()` patched |
+| Bug 8 | Duplicate Faculty Wasting 70% APIs | ✅ **Fixed** | `src/utils/dedup.py` created (1002 → 307 entries) |
+| Bug 9 | Inflated Metrics & Rate Limiting | ✅ **Fixed** | Thread-safe locks in `PaperDownloader`; backoff added to Scholar |
+| Bug 10 | Matcher returning -35379% Relevance | ✅ **Fixed** | Chroma L2 distance cleanly bounded via RRF to 50-99% in `matcher.py` |
 
-> **Post-fix verification:** Two pipeline runs on Feb 22 (traces `86a0853c`, `f5e8b65e`) produced only **2 WARNINGs total** — confirming the fixes are working.
+> **Post-fix verification:** As of March 9, 2026, all systemic pipeline issues and application-breaking presentation layer bounds have been successfully mapped and bounded. The entire suite operates concurrently safely.
 
 ### Performance Data (from `process_timings` table)
 

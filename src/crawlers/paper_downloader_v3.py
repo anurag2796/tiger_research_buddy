@@ -13,6 +13,7 @@ import re
 import time
 import json
 import hashlib
+import threading
 from pathlib import Path
 from typing import Optional, Generator
 from urllib.parse import urlparse, quote_plus
@@ -20,6 +21,7 @@ from urllib.parse import urlparse, quote_plus
 import requests
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskID
+import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from ..utils.config import CrawlConfig, RESTRICTED_CONFIG
@@ -56,12 +58,53 @@ class PaperDownloader:
         self.publications_dir = config.PUBLICATIONS_DIR
         
         self.session = requests.Session()
+        
+        # Connection pooling to avoid exhaustion
+        from requests.adapters import HTTPAdapter
+        adapter = HTTPAdapter(pool_connections=5, pool_maxsize=5, max_retries=2)
+        self.session.mount("http://", adapter)
+        self.session.mount("https://", adapter)
+        
         self.session.headers.update({
             "User-Agent": "TigerResearchBuddy/1.0 (RIT Research Assistant; mailto:research@rit.edu)"
         })
-        self.downloaded_count = 0
-        self.failed_count = 0
-        
+
+        # ── Thread-safe counters ──────────────────────────────────────────
+        self._lock = threading.Lock()
+        self._counters = {
+            "downloaded": 0,      # Unique PDFs actually fetched from network
+            "cache_hits": 0,      # PDFs already on disk ("Already have")
+            "failed": 0,          # Failed download attempts (final, after retries)
+            "blacklisted_skips": 0,  # Skipped because URL is blacklisted
+        }
+        self._unique_papers: set = set()  # Track unique filenames for dedup metrics
+
+        # ── Search result cache (thread-safe) ─────────────────────────────
+        self._search_cache: dict = {}     # key=(query, source) -> results
+        self._cache_lock = threading.Lock()
+
+        # ── Per-API semaphores to prevent hammering ───────────────────────
+        self._arxiv_sem = threading.Semaphore(2)     # Max 2 concurrent ArXiv calls
+        self._ss_sem = threading.Semaphore(1)         # Serialize Semantic Scholar calls
+
+        # ── Dead URL blacklist (persisted) ────────────────────────────────
+        self._blacklist_path = config.BASE_DIR / "cache" / "dead_urls.json"
+        self._blacklist_path.parent.mkdir(parents=True, exist_ok=True)
+        self._blacklist: set = self._load_blacklist()
+
+        # ── Download checkpoint (persisted) ───────────────────────────────
+        self._checkpoint_path = config.BASE_DIR / "cache" / "download_checkpoint.json"
+        self._processed_faculty: set = self._load_checkpoint()
+
+        # ── Backward-compat properties ────────────────────────────────────
+        # (Some callers may still read these directly)
+        self.session.headers.update({
+            "User-Agent": "TigerResearchBuddy/1.0 (RIT Research Assistant; mailto:research@rit.edu)"
+        })
+        self._counter_lock = threading.Lock()
+        self._downloaded_count = 0
+        self._failed_count = 0
+
         # Initialize Vision Crawler (lazy load will happen on first use, but we force it here for thread safety)
         engine = getattr(config, 'PDF_ENGINE', 'marker')
         self.vision_crawler = VisionCrawler(
@@ -71,10 +114,120 @@ class PaperDownloader:
         )
         # Force load models in main thread to avoid MPS race conditions
         self.vision_crawler._load_models()
+
+    @property
+    def downloaded_count(self):
+        with self._counter_lock:
+            return self._downloaded_count
+
+    @property
+    def failed_count(self):
+        with self._counter_lock:
+            return self._failed_count
+
+    def _inc_downloaded(self):
+        with self._counter_lock:
+            self._downloaded_count += 1
+
+    def _inc_failed(self):
+        with self._counter_lock:
+            self._failed_count += 1
+
+    # ─── Thread-safe helpers ──────────────────────────────────────────────────
+
+    def _inc(self, key: str, n: int = 1):
+        """Thread-safe counter increment."""
+        with self._lock:
+            self._counters[key] = self._counters.get(key, 0) + n
+
+    def _get_counter(self, key: str) -> int:
+        with self._lock:
+            return self._counters.get(key, 0)
+
+    def _load_blacklist(self) -> set:
+        """Load persisted dead-URL blacklist."""
+        if self._blacklist_path.exists():
+            try:
+                with open(self._blacklist_path) as f:
+                    data = json.load(f)
+                bl = set(data) if isinstance(data, list) else set()
+                if bl:
+                    console.print(f"[dim]Loaded {len(bl)} blacklisted URLs[/]")
+                return bl
+            except Exception:
+                return set()
+        return set()
+
+    def _save_blacklist(self):
+        """Persist dead-URL blacklist to disk."""
+        with self._lock:
+            urls = list(self._blacklist)
+        with open(self._blacklist_path, "w") as f:
+            json.dump(urls, f)
+
+    def _blacklist_url(self, url: str):
+        """Add a URL to the dead-URL blacklist (thread-safe)."""
+        with self._lock:
+            self._blacklist.add(url)
+        # Persist periodically (every 10 additions)
+        if len(self._blacklist) % 10 == 0:
+            self._save_blacklist()
+
+    def _is_blacklisted(self, url: str) -> bool:
+        """Check if a URL is blacklisted."""
+        with self._lock:
+            return url in self._blacklist
+
+    def _load_checkpoint(self) -> set:
+        """Load set of already-processed faculty names."""
+        if self._checkpoint_path.exists():
+            try:
+                with open(self._checkpoint_path) as f:
+                    data = json.load(f)
+                return set(data) if isinstance(data, list) else set()
+            except Exception:
+                return set()
+        return set()
+
+    def _save_checkpoint(self):
+        """Persist processed faculty names."""
+        with self._lock:
+            names = list(self._processed_faculty)
+        with open(self._checkpoint_path, "w") as f:
+            json.dump(names, f)
+
+    def _cached_search(self, query: str, source: str, search_fn, **kwargs) -> list:
+        """Check cache before executing a search. Thread-safe."""
+        cache_key = (query.lower().strip(), source)
+        with self._cache_lock:
+            if cache_key in self._search_cache:
+                return self._search_cache[cache_key]
+        # Cache miss — execute the actual search
+        results = search_fn(query, **kwargs)
+        with self._cache_lock:
+            self._search_cache[cache_key] = results
+        return results
     
-    def _rate_limit(self):
-        """Respect rate limits."""
-        time.sleep(RATE_LIMIT)
+    def _rate_limit(self, base_sleep: float = RATE_LIMIT):
+        """Respect rate limits with adaptive backoff for 429 errors."""
+        now = time.time()
+        # If we recently hit a 429, wait until backoff expires
+        backoff_until = getattr(self, '_backoff_until', 0)
+        if now < backoff_until:
+            wait = backoff_until - now
+            logger.info(f"Rate limit backoff: waiting {wait:.1f}s")
+            time.sleep(wait)
+        else:
+            time.sleep(base_sleep)
+
+    def _handle_rate_limit_error(self):
+        """Called after a 429 error — increase backoff exponentially."""
+        current_backoff = getattr(self, '_current_backoff', RATE_LIMIT)
+        # Exponential backoff: 3s → 6s → 12s → 24s → 48s, capped at 60s
+        new_backoff = min(current_backoff * 2, 60.0)
+        self._current_backoff = new_backoff
+        self._backoff_until = time.time() + new_backoff
+        logger.warning(f"429 detected — backing off for {new_backoff:.0f}s")
     
     def _get_safe_filename(self, title: str, author: str = "") -> str:
         """Generate a safe filename from title."""
@@ -165,6 +318,10 @@ class PaperDownloader:
             return papers
             
         except Exception as e:
+            error_str = str(e)
+            # Trigger exponential backoff on 429 rate limit errors
+            if "429" in error_str:
+                self._handle_rate_limit_error()
             logger.error(f"ArXiv search failed for {query}: {e}")
             console.print(f"[yellow]ArXiv search failed: {e}[/]")
             return []
@@ -176,8 +333,8 @@ class PaperDownloader:
         console.print(f"[dim]Searching Semantic Scholar for: {query}[/]")
         
         try:
-            # Longer delay for Semantic Scholar (stricter rate limits)
-            time.sleep(5)
+            # Respect adaptive backoff, or use a 5s base delay for SS
+            self._rate_limit(base_sleep=5.0)
             
             url = f"https://api.semanticscholar.org/graph/v1/paper/search"
             # Request affiliations
@@ -191,7 +348,7 @@ class PaperDownloader:
             # Handle rate limiting gracefully
             if response.status_code == 429:
                 console.print("[dim]Rate limited, waiting...[/]")
-                time.sleep(30)
+                self._handle_rate_limit_error()
                 return []
             
             response.raise_for_status()
@@ -255,6 +412,10 @@ class PaperDownloader:
         if not url:
             return None
         
+        if self._is_blacklisted(url):
+            logger.debug(f"Skipping blacklisted dead URL: {url}")
+            return None
+        
         filepath = self.pdf_dir / f"{filename}.pdf"
         
         # Skip if already exists
@@ -288,22 +449,35 @@ class PaperDownloader:
                     for chunk in response.iter_content(chunk_size=8192):
                         f.write(chunk)
                 
-                self.downloaded_count += 1
+                self._inc_downloaded()
                 logger.info(f"Successfully downloaded PDF: {filename} from {url}")
                 console.print(f"[green]✓ Downloaded: {filename}[/]")
                 return filepath
                 
             except Exception as e:
+                import requests
+                if isinstance(e, requests.exceptions.HTTPError) and e.response is not None and e.response.status_code == 404:
+                    logger.warning(f"URL permanently dead (404), blacklisting: {url}")
+                    console.print(f"[yellow]Dead URL (404), skipping retries: {url}[/]")
+                    self._blacklist_url(url)
+                    self._inc_failed()
+                    return None
+                    
                 logger.error(f"Download attempt {attempt+1} failed for {url}: {e}")
                 if attempt < max_retries - 1:
                     logger.debug(f"Retrying download for {filename}...")
                     console.print(f"[yellow]Download attempt {attempt+1} failed ({e}). Retrying...[/]")
                     time.sleep(2)
                 else:
-                    self.failed_count += 1
+                    self._inc_failed()
                     logger.error(f"Failed to download {filename} after {max_retries} attempts: {e}")
                     console.print(f"[red]Failed to download {filename} after {max_retries} attempts: {e}[/]")
                     return None
+
+        # All retries exhausted (e.g. repeated 429s without raising an exception)
+        self._inc_failed()
+        logger.error(f"Failed to download {filename} after {max_retries} attempts (rate-limited)")
+        return None
     
     def extract_text(self, pdf_path: Path) -> str:
         """
@@ -382,7 +556,7 @@ class PaperDownloader:
         
         return metadata_path
     
-    def search_for_faculty(self, faculty_name: str, interests: list[str] = None, limit: int = 10) -> list[dict]:
+    def search_for_faculty(self, faculty_name: str, interests: Optional[list[str]] = None, limit: int = 10) -> list[dict]:
         """Search for papers by a faculty member."""
         papers = []
         
@@ -399,7 +573,12 @@ class PaperDownloader:
             # So we keep interests limit smaller but proportional
             interest_limit = max(3, limit // 5) 
             for interest in interests[:3]:  # Limit to top 3 interests
-                interest_papers = self.search_arxiv(interest, max_results=interest_limit)
+                interest_papers = self._cached_search(
+                    interest, 
+                    source=f"arxiv_interest_{interest_limit}", 
+                    search_fn=self.search_arxiv, 
+                    max_results=interest_limit
+                )
                 papers.extend(interest_papers)
         
         # Also try Semantic Scholar
@@ -611,10 +790,13 @@ class PaperDownloader:
         table.add_column("Metric", style="cyan")
         table.add_column("Value", style="magenta")
         
+        unique_pdfs = len(list(self.pdf_dir.glob("*.pdf")))
+        
         table.add_row("Total Time", str(timedelta(seconds=int(total_duration))))
         table.add_row("Faculty Processed", str(len(faculty)))
         table.add_row("Candidates Found", str(total_candidates))
-        table.add_row("Papers Downloaded", str(len(total_papers)))
+        table.add_row("Papers Downloaded (this run)", str(len(total_papers)))
+        table.add_row("Total Unique PDFs on Disk", str(unique_pdfs))
         table.add_row("Failed Downloads", str(self.failed_count))
         table.add_row("Concurrency", str(max_workers))
         

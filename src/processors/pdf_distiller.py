@@ -27,12 +27,14 @@ class DeepDistiller:
     Now powered by Vision-First Ingestion (Marker-PDF).
     """
 
-    def __init__(self, pdf_dir: Path = None, faculty_db_path: Path = None):
+    def __init__(self, pdf_dir: Path = None, faculty_db_path: Path = None,
+                 output_dir: Path = None, max_pages: int = 0):
         # Allow full config-aware overrides; fall back to global defaults
         self.pdf_dir = pdf_dir if pdf_dir is not None else DATA_DIR / "pdfs"
-        self.output_dir = DATA_DIR / "research_cards"
+        self.output_dir = output_dir if output_dir is not None else DATA_DIR / "research_cards"
         self.output_dir.mkdir(exist_ok=True)
         self._faculty_db_path = faculty_db_path  # Override for faculty JSON
+        self.max_pages = max_pages  # 0 = no limit
         
         self.llm_client = OllamaClient(model=LLMConfig.PIPELINE_MODEL)
         # Initialize Vision Crawler with accelerated engine
@@ -101,7 +103,8 @@ class DeepDistiller:
         """
         try:
             result = await asyncio.to_thread(
-                self.vision_crawler.convert, str(pdf_path)
+                self.vision_crawler.convert, str(pdf_path),
+                max_pages=self.max_pages
             )
         except Exception as e:
             logger.error(f"Error reading {pdf_path.name}: {e}")
@@ -635,8 +638,11 @@ Response:"""
                 
         return new_card
 
-    async def process_one_pdf(self, pdf_path: Path, semaphore: asyncio.Semaphore, progress, task):
+    async def process_one_pdf(self, pdf_path: Path, semaphore: asyncio.Semaphore, progress, task, state: dict = None):
         """Process a single PDF with semaphore control."""
+        if state is not None and "pause_event" in state:
+            await state["pause_event"].wait()
+
         async with semaphore:
             output_path = self.output_dir / f"{pdf_path.stem}_card.json"
             if output_path.exists():
@@ -651,7 +657,7 @@ Response:"""
             
             # 2. Load Metadata (if available)
             metadata = {}
-            meta_path = DATA_DIR / "papers" / f"{pdf_path.stem}.json"
+            meta_path = self.pdf_dir.parent / "papers" / f"{pdf_path.stem}.json"
             if meta_path.exists():
                 try:
                     with open(meta_path, "r") as f:
@@ -688,11 +694,35 @@ Response:"""
             console.print(f"[yellow]No PDFs found in {self.pdf_dir}[/]")
             return
 
+        already_done = sum(1 for p in pdfs if (self.output_dir / f"{p.stem}_card.json").exists())
+        remaining = len(pdfs) - already_done
+        console.print(f"[cyan]📊 {already_done}/{len(pdfs)} already processed, {remaining} remaining[/]")
+        if remaining == 0:
+            console.print("[green]All PDFs already distilled. Nothing to do.[/]")
+            return
+
         console.print(f"[bold blue]⚗️ Starting Async Deep Distillation on {len(pdfs)} papers...[/]")
         
         # Limit concurrency to 3-5 to avoid OOM or LLM thrashing
         concurrency = 3
         semaphore = asyncio.Semaphore(concurrency)
+        
+        state = {"pause_event": asyncio.Event()}
+        state["pause_event"].set()
+        
+        async def cooldown_manager():
+            try:
+                while True:
+                    await asyncio.sleep(30 * 60)
+                    console.print(f"\n[bold yellow]🌡️  Cooling down laptop for 5 minutes...[/]")
+                    state["pause_event"].clear()
+                    await asyncio.sleep(5 * 60)
+                    state["pause_event"].set()
+                    console.print(f"[bold green]🧊 Cooldown complete, resuming distillation.[/]")
+            except asyncio.CancelledError:
+                pass
+
+        manager_task = asyncio.create_task(cooldown_manager())
         
         with Progress(
             SpinnerColumn(),
@@ -703,10 +733,22 @@ Response:"""
         ) as progress:
             task = progress.add_task("Distilling...", total=len(pdfs))
             
-            tasks = [self.process_one_pdf(p, semaphore, progress, task) for p in pdfs]
-            await asyncio.gather(*tasks)
+            tasks = [self.process_one_pdf(p, semaphore, progress, task, state) for p in pdfs]
+            # return_exceptions=True prevents one PDF failure from aborting the batch
+            results = await asyncio.gather(*tasks, return_exceptions=True)
 
-        console.print(f"[green]✅ Distillation complete. Cards saved to {self.output_dir}[/]")
+        manager_task.cancel()
+
+        # Log any per-PDF failures that were captured instead of crashing
+        failed = 0
+        for i, r in enumerate(results):
+            if isinstance(r, Exception):
+                failed += 1
+                logger.error(f"PDF processing failed for {pdfs[i].name}: {r}")
+                console.print(f"[red]✗ Failed: {pdfs[i].name} — {r}[/]")
+
+        ok = len(pdfs) - failed
+        console.print(f"[green]✅ Distillation complete. {ok}/{len(pdfs)} succeeded. Cards saved to {self.output_dir}[/]")
 
     def process_all(self):
         """Process all PDFs (Synchronous Wrapper)."""

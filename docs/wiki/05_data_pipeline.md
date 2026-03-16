@@ -1,6 +1,6 @@
 # 05 - Data Pipeline
 
-**Last Updated:** February 23, 2026  
+**Last Updated:** March 9, 2026  
 **Purpose:** Deep dive into all six stages of the data ingestion pipeline
 
 ---

@@ -95,10 +95,10 @@ RESTRICTED_CONFIG = CrawlConfig(
 
 FULL_CONFIG = CrawlConfig(
     mode="full",
-    max_profiles=1000, # Approximate max
-    concurrency=10,    # Higher concurrency for full run
-    crawl_delay=1.0,
-    paper_limit=1000,
+    max_profiles=1000,          # Fetch up to 1000 faculty profiles
+    concurrency=3,             # Fast processing (but throttled from 10 to avoid 429s)
+    crawl_delay=1.0,           # Polite delay between faculty pages
+    paper_limit=1000,           # Max papers per faculty member
     start_urls=list(COLLEGE_URLS.values()),
     pdf_max_pages=50
 )
