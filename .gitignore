@@ -162,12 +162,15 @@ data/tiger_brain.json
 data/tiger_brain_refined.gml
 data/tiger_brain_viz.html
 data/knowledge_graph.pkl
+data/restricted/site_graph.gml
+data/restricted/tiger_brain.gml
 
 # --- Databases ---------------------------------------------------------------
 data/tiger_research.db
 data/chroma/
 data/chroma_test/
 data/lancedb/
+data/kuzu_db*
 data/kuzu_db/
 data/restricted/chroma/
 data/restricted/lancedb/
@@ -194,3 +197,7 @@ data/full_pipeline.log
 !data/taxonomies/
 
 tests/output/
+
+# --- Temporary Dumps ---
+notebookllm_source.txt
+frontend_dump_for_figma.txt

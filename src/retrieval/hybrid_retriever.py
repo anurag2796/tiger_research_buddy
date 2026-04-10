@@ -131,6 +131,13 @@ class HybridRetriever:
             doc_id = doc.get("id")
             if not doc_id: continue
             
+            # ChromaDB usually returns distance. If it's too high (low similarity), skip it.
+            # E.g. L2 distance > 1.4 or Cosine distance > 0.5 depending on config.
+            # By default nomic-embed-text uses cosine distance where 0 is identical and >1 is unrelated.
+            dist = doc.get("distance")
+            if dist is not None and float(dist) > 1.0:
+                continue
+            
             score = 1 / (rrf_k + rank + 1)
             
             if doc_id not in doc_scores:

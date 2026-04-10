@@ -119,11 +119,11 @@ COLLECTION_NAME = "rit_research"
 class LLMConfig:
     """Centralized configuration for LLM interactions."""
     # Dual Model Strategy
-    CHAT_MODEL = "llama3:latest"        # Fast, for interactive use
+    CHAT_MODEL = "llama3.2:latest"        # Fast, for interactive use
     PIPELINE_MODEL = "tigerbuddy:latest" # Large, for offline processing (crawling/distillation)
     
     MODEL_NAME = CHAT_MODEL    # Default to chat model for general usage
-    CONTEXT_WINDOW = 8192      # 8k context
+    CONTEXT_WINDOW = 16384     # Expanded to 16k for M4 Max headroom
     TEMPERATURE = 0.2          # Low temp for factual extraction
     TIMEOUT = 120              # Seconds
     

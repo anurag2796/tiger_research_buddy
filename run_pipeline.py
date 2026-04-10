@@ -297,26 +297,29 @@ def stage_index(config, result: StageResult):
 
     doc_count = 0
     try:
-        # 5a. Ingest faculty/research-area profiles
-        if config.OUTPUT_FILE.exists():
-            store = load_data_to_vectorstore(config)
-            if store:
-                stats = store.get_stats()
-                doc_count = stats.get("total_documents", 0)
-                success(f"Faculty data indexed: {doc_count} documents in Chroma")
-        else:
-            warn("No faculty JSON found — skipping faculty indexing")
-
-        # 5b. Ingest distilled Research Cards
-        cards_dir = config.BASE_DIR / "research_cards"
-        if cards_dir.exists() and list(cards_dir.glob("*.json")):
-            store = ingest_research_cards(config)
-            if store:
-                stats = store.get_stats()
-                doc_count = stats.get("total_documents", 0)
-                success(f"Research Cards indexed — total docs: {doc_count}")
-        else:
-            warn("No Research Cards found — skipping card indexing")
+        import filelock
+        lock_path = config.BASE_DIR / ".pipeline.lock"
+        with filelock.FileLock(lock_path):
+            # 5a. Ingest faculty/research-area profiles
+            if config.OUTPUT_FILE.exists():
+                store = load_data_to_vectorstore(config)
+                if store:
+                    stats = store.get_stats()
+                    doc_count = stats.get("total_documents", 0)
+                    success(f"Faculty data indexed: {doc_count} documents in Chroma")
+            else:
+                warn("No faculty JSON found — skipping faculty indexing")
+    
+            # 5b. Ingest distilled Research Cards
+            cards_dir = config.BASE_DIR / "research_cards"
+            if cards_dir.exists() and list(cards_dir.glob("*.json")):
+                store = ingest_research_cards(config)
+                if store:
+                    stats = store.get_stats()
+                    doc_count = stats.get("total_documents", 0)
+                    success(f"Research Cards indexed — total docs: {doc_count}")
+            else:
+                warn("No Research Cards found — skipping card indexing")
 
         elapsed = time.perf_counter() - t0
         result.mark_done(f"{doc_count} total docs", elapsed)

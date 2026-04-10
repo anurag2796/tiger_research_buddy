@@ -32,6 +32,8 @@ class OllamaClient:
         self._initialized = False
         self._available_models = []
         self._persona_prompts = {}
+        
+        self._async_lock = None
     
     def set_persona(self, persona: str):
         """Change the active persona (tiger, analyzer, critique)."""
@@ -125,18 +127,56 @@ class OllamaClient:
         system_prompt: Optional[str] = None,
         **kwargs
     ) -> str:
-        """Generate a response asynchronously (non-blocking)."""
+        """Generate a response asynchronously (non-blocking) with proper cancellation support."""
         import asyncio
+        from ollama import AsyncClient
+        
         if not self._initialized:
             self.initialize()
             
-        return await asyncio.to_thread(
-            self.generate,
-            prompt=prompt,
-            context=context,
-            system_prompt=system_prompt,
-            **kwargs
-        )
+        # Build the full prompt
+        messages = []
+        
+        # Use persona-specific prompt if no custom system_prompt
+        if not system_prompt:
+            system_prompt = self._load_persona_prompt()
+        
+        if system_prompt:
+            messages.append({"role": "system", "content": system_prompt})
+        
+        user_content = ""
+        if context:
+            user_content += f"Context:\n{context}\n\n"
+        user_content += prompt
+        
+        messages.append({"role": "user", "content": user_content})
+        
+        try:
+            # Set default options if not provided
+            options = kwargs.get("options", {})
+            if "num_ctx" not in options:
+                options["num_ctx"] = LLMConfig.CONTEXT_WINDOW
+            if "temperature" not in options:
+                options["temperature"] = LLMConfig.TEMPERATURE
+            kwargs["options"] = options
+            
+            if self._async_lock is None:
+                self._async_lock = asyncio.Semaphore(1)
+                
+            async with self._async_lock:
+                client = AsyncClient()
+                response = await client.chat(
+                    model=self.model,
+                    messages=messages,
+                    **kwargs
+                )
+                return response['message']['content']
+        except asyncio.CancelledError:
+            console.print("[yellow]Async generation cancelled by client disconnect.[/]")
+            raise
+        except Exception as e:
+            console.print(f"[red]Ollama async error: {e}[/]")
+            return f"Sorry, I encountered an error: {str(e)}"
 
     def generate(
         self, 
@@ -171,6 +211,8 @@ class OllamaClient:
             options = kwargs.get("options", {})
             if "num_ctx" not in options:
                 options["num_ctx"] = LLMConfig.CONTEXT_WINDOW
+            if "temperature" not in options:
+                options["temperature"] = LLMConfig.TEMPERATURE
             kwargs["options"] = options
             
             response = ollama.chat(
