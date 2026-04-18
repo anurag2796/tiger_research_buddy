@@ -16,7 +16,11 @@
 
 set -euo pipefail
 
-PROJECT_DIR="$HOME/tiger_research_buddy"
+if [ -d ".git" ]; then
+    PROJECT_DIR="$(pwd)"
+else
+    PROJECT_DIR="$(pwd)/tiger_research_buddy"
+fi
 BRANCH="orin"
 
 echo "═══════════════════════════════════════════════════════════"
