@@ -2,7 +2,7 @@ import threading
 import time
 import pytest
 from unittest.mock import MagicMock, patch
-from src.crawlers.paper_downloader_v3 import PaperDownloader
+from src.crawlers.paper_downloader import PaperDownloader
 import requests
 
 class TestPaperDownloaderCounters:
@@ -97,8 +97,8 @@ class TestPaperDownloaderBlacklist:
         downloader._rate_limit = MagicMock()
         
         # Bypass logging and console 
-        with patch('src.crawlers.paper_downloader_v3.logger'), \
-             patch('src.crawlers.paper_downloader_v3.console'):
+        with patch('src.crawlers.paper_downloader.logger'), \
+             patch('src.crawlers.paper_downloader.console'):
              
              # Attempt download
              result = downloader.download_pdf("http://dead.link/paper.pdf", "test_paper")

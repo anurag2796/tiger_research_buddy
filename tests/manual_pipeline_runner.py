@@ -12,13 +12,13 @@ try:
     print("Loaded defs")
     
     # Check imports
-    if 'src.crawlers.paper_downloader_v3' in sys.modules:
-        m = sys.modules['src.crawlers.paper_downloader_v3']
+    if 'src.crawlers.paper_downloader' in sys.modules:
+        m = sys.modules['src.crawlers.paper_downloader']
         print(f"PaperDownloader (V3) loaded from: {m.__file__}")
     else:
         print("PaperDownloader (V3) NOT in sys.modules yet")
         # Force import
-        import src.crawlers.paper_downloader_v3 as pd
+        import src.crawlers.paper_downloader as pd
         print(f"PaperDownloader (V3) force loaded from: {pd.__file__}")
 
     job_def = defs.get_job_def("full_pipeline")

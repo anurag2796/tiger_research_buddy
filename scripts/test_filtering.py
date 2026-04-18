@@ -51,7 +51,7 @@ def test_filtering():
         def __exit__(self, *args): pass
         
     # Patch Timer in the imported module/class context
-    import src.crawlers.paper_downloader_v3 as pd_module
+    import src.crawlers.paper_downloader as pd_module
     pd_module.Timer = MockTimer
     
     from rich.progress import Progress

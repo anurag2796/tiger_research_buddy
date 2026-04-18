@@ -106,7 +106,7 @@ async def _test_restricted_crawl_async():
             
         # 4. Download
         print("\nDownloading Papers...")
-        from src.crawlers.paper_downloader_v3 import PaperDownloader
+        from src.crawlers.paper_downloader import PaperDownloader
         downloader = PaperDownloader()
         # Limit to 1 paper per faculty for test speed
         # Ensure we pass the enriched data

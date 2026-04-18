@@ -88,7 +88,7 @@ def crawl(skip_scholar: bool):
     console.print("[dim]Searching ArXiv for faculty research papers...[/]")
     
     try:
-        from src.crawlers.paper_downloader_v3 import PaperDownloader, index_downloaded_papers
+        from src.crawlers.paper_downloader import PaperDownloader, index_downloaded_papers
         
         downloader = PaperDownloader()
         papers = downloader.download_faculty_papers(data, max_per_faculty=2)

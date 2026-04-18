@@ -1,4 +1,4 @@
-from src.crawlers.paper_downloader_v3 import PaperDownloader
+from src.crawlers.paper_downloader import PaperDownloader
 
 def debug_mismatch():
     d = PaperDownloader()

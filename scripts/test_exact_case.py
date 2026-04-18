@@ -1,6 +1,6 @@
 import sys
 sys.path.append(".")
-from src.crawlers.paper_downloader_v3 import PaperDownloader
+from src.crawlers.paper_downloader import PaperDownloader
 
 d = PaperDownloader()
 
