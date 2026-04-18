@@ -178,7 +178,11 @@ def downscale_pil(im: Image.Image, max_px: int) -> Image.Image:
 
 class DocumentProcessor:
     """
-    Apple Silicon Optimized PDF Pipeline.
+    Hardware-Aware PDF Processing Pipeline.
+
+    Supports macOS (MPS), Jetson (CUDA), and CPU-only environments.
+    Layout detection (Surya) is disabled on edge devices with < 16 GB
+    unified memory to prevent OOM during batch distillation.
     """
     def __init__(self, cfg: ProcessorConfig):
         self.cfg = cfg
@@ -195,14 +199,29 @@ class DocumentProcessor:
         self.layout_model = None
         self.layout_processor = None
 
-        # Surya layout predictor for bounding-box detection of tables/figures
+        # Surya layout predictor for bounding-box detection of tables/figures.
+        # Disabled on edge devices where VRAM is shared with the LLM (Jetson Orin).
         self.layout_predictor = None
         if SURYA_AVAILABLE:
+            # Guard: skip Surya on Jetson / low-memory platforms to avoid OOM.
+            # The Surya LayoutPredictor loads a ~400MB ViT model onto GPU.
+            _skip_layout = False
             try:
-                self.layout_predictor = LayoutPredictor()
-            except Exception as e:
-                logging.getLogger(__name__).warning(f"Surya initialization failed: {e}")
-                pass  # Graceful fallback — layout detection disabled
+                from ..utils.hardware import HW_PROFILE
+                if HW_PROFILE.platform.startswith("linux") and HW_PROFILE.chat_concurrency <= 1:
+                    _skip_layout = True
+                    logging.getLogger(__name__).info(
+                        "Surya layout detection disabled on edge device to conserve VRAM"
+                    )
+            except ImportError:
+                pass  # hardware module not available; proceed with Surya
+
+            if not _skip_layout:
+                try:
+                    self.layout_predictor = LayoutPredictor()
+                except Exception as e:
+                    logging.getLogger(__name__).warning(f"Surya initialization failed: {e}")
+                    pass  # Graceful fallback — layout detection disabled
 
         if GMFT_AVAILABLE and self.cfg.table_mode != "off":
             try:

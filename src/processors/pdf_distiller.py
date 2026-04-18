@@ -38,8 +38,16 @@ class DeepDistiller:
         self.max_pages = max_pages  # 0 = no limit
         
         self.llm_client = OllamaClient(model=LLMConfig.PIPELINE_MODEL)
-        # Initialize Vision Crawler with accelerated engine
-        self.vision_crawler = VisionCrawler(engine="apple_fast")
+        # Initialize Vision Crawler with hardware-aware engine selection:
+        # - macOS (MPS): use 'apple_fast' for Surya/GMFT pipeline
+        # - Jetson/Linux (CUDA): use 'apple_fast' with pymupdf backend (Surya supports CUDA)
+        # - CPU fallback: use 'marker' if available, else 'apple_fast' with pymupdf
+        _engine = "apple_fast" if HW_PROFILE.pdf_engine == "pymupdf" else "marker"
+        self.vision_crawler = VisionCrawler(
+            engine=_engine,
+            pdf_backend=HW_PROFILE.pdf_engine,
+            render_dpi=96 if HW_PROFILE.platform.startswith("linux") else 144,
+        )
         
         # VLM client for validation (if API key available)
         self.vlm_client = None
@@ -734,19 +742,24 @@ Response:"""
         state = {"pause_event": asyncio.Event()}
         state["pause_event"].set()
         
-        async def cooldown_manager():
-            try:
-                while True:
-                    await asyncio.sleep(30 * 60)
-                    console.print(f"\n[bold yellow]🌡️  Cooling down laptop for 5 minutes...[/]")
-                    state["pause_event"].clear()
-                    await asyncio.sleep(5 * 60)
-                    state["pause_event"].set()
-                    console.print(f"[bold green]🧊 Cooldown complete, resuming distillation.[/]")
-            except asyncio.CancelledError:
-                pass
+        # Cooldown manager: only active on macOS laptops where thermal throttling
+        # is a real concern during sustained batch processing.
+        # On Jetson Orin (active cooling) or desktop Linux, skip entirely.
+        manager_task = None
+        if HW_PROFILE.platform == "macos":
+            async def cooldown_manager():
+                try:
+                    while True:
+                        await asyncio.sleep(30 * 60)
+                        console.print(f"\n[bold yellow]🌡️  Cooling down laptop for 5 minutes...[/]")
+                        state["pause_event"].clear()
+                        await asyncio.sleep(5 * 60)
+                        state["pause_event"].set()
+                        console.print(f"[bold green]🧊 Cooldown complete, resuming distillation.[/]")
+                except asyncio.CancelledError:
+                    pass
 
-        manager_task = asyncio.create_task(cooldown_manager())
+            manager_task = asyncio.create_task(cooldown_manager())
         
         with Progress(
             SpinnerColumn(),
@@ -761,7 +774,8 @@ Response:"""
             # return_exceptions=True prevents one PDF failure from aborting the batch
             results = await asyncio.gather(*tasks, return_exceptions=True)
 
-        manager_task.cancel()
+        if manager_task:
+            manager_task.cancel()
 
         # Log any per-PDF failures that were captured instead of crashing
         failed = 0
