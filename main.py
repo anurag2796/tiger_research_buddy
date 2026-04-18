@@ -88,7 +88,7 @@ def crawl(skip_scholar: bool):
     console.print("[dim]Searching ArXiv for faculty research papers...[/]")
     
     try:
-        from src.crawlers.paper_downloader import PaperDownloader, index_downloaded_papers
+        from src.crawlers.paper_downloader_v3 import PaperDownloader, index_downloaded_papers
         
         downloader = PaperDownloader()
         papers = downloader.download_faculty_papers(data, max_per_faculty=2)
@@ -333,57 +333,24 @@ Be helpful, accurate, and encouraging about research careers."""
 
 @cli.command("crawl-extended")
 def crawl_extended():
-    """Crawl extended RIT sources (news, labs, PhD research)."""
+    """[NOT YET IMPLEMENTED] Crawl extended RIT sources (news, labs, PhD research)."""
     console.print(Panel.fit(
-        "[bold orange1]🐅 Extended Crawler[/]\n"
-        "Gathering additional RIT research data...",
-        border_style="orange1"
-    ))
-    
-    from src.crawlers import crawl_extended_sources, add_extended_to_vectorstore
-    
-    # Crawl extended sources
-    data = crawl_extended_sources()
-    
-    # Add to vector store
-    console.print("\n[bold]Adding to vector database...[/]")
-    add_extended_to_vectorstore()
-    
-    console.print(Panel.fit(
-        f"[bold green]✓ Extended crawl complete![/]\n\n"
-        f"Research centers: {len(data.get('research_centers', []))}\n"
-        f"News articles: {len(data.get('news', []))}\n"
-        f"PhD research topics: {len(data.get('phd_research', []))}",
-        border_style="green"
+        "[bold yellow]⚠️ Not Implemented[/]\n"
+        "Extended crawler is planned but not yet available.\n"
+        "Use 'python main.py crawl' for the standard pipeline.",
+        border_style="yellow"
     ))
 
 
 @cli.command("crawl-phd")
 def crawl_phd():
-    """Crawl RIT PhD student directory."""
+    """[NOT YET IMPLEMENTED] Crawl RIT PhD student directory."""
     console.print(Panel.fit(
-        "[bold orange1]🎓 PhD Student Crawler[/]\n"
-        "Finding current PhD students and their research...",
-        border_style="orange1"
+        "[bold yellow]⚠️ Not Implemented[/]\n"
+        "PhD student crawler is planned but not yet available.\n"
+        "Use 'python main.py crawl' for the standard pipeline.",
+        border_style="yellow"
     ))
-    
-    from src.crawlers import crawl_phd_students, add_phd_to_vectorstore
-    
-    # Crawl students
-    students = crawl_phd_students()
-    
-    if students:
-        # Add to vector store
-        console.print("\n[bold]Indexing PhD students...[/]")
-        add_phd_to_vectorstore()
-        
-        console.print(Panel.fit(
-            f"[bold green]✓ PhD crawl complete![/]\n\n"
-            f"Students found: {len(students)}",
-            border_style="green"
-        ))
-    else:
-        console.print("[red]No students found. Check your internet connection or the RIT website structure.[/]")
 
 
 @cli.command("crawl-papers")
@@ -451,36 +418,53 @@ def full_setup():
         border_style="orange1"
     ))
     
-    from src.crawlers import crawl_rit, crawl_extended_sources, add_extended_to_vectorstore
+    from src.crawlers import run_smart_crawl, enrich_with_scholar
     from src.crawlers import download_all_papers, index_downloaded_papers
-    from src.database import load_data_to_vectorstore
+    from src.database.vector_store import load_data_to_vectorstore
+    from src.utils.config import RESTRICTED_CONFIG
+    import json
     
-    # Step 1: Crawl RIT
-    console.print("\n[bold cyan]Step 1/4: Crawling RIT website...[/]")
-    data = crawl_rit(crawl_profiles=True)
+    # Step 1: Crawl RIT Computing
+    console.print("\n[bold cyan]Step 1/3: Crawling RIT Computing website...[/]")
+    try:
+        faculty = run_smart_crawl(max_profiles=15)
+        data = {"faculty": faculty}
+    except Exception as e:
+        console.print(f"[red]SmartCrawler failed: {e}[/]")
+        return
+    
+    # Enrich with Scholar
+    if data.get("faculty"):
+        try:
+            data["faculty"] = enrich_with_scholar(data["faculty"])
+        except Exception as e:
+            console.print(f"[yellow]Scholar enrichment skipped: {e}[/]")
+    
+    # Save data
+    outfile = RESTRICTED_CONFIG.OUTPUT_FILE
+    try:
+        with open(outfile, 'w') as f:
+            json.dump(data, f, indent=2)
+    except Exception as e:
+        console.print(f"[red]Failed to save data: {e}[/]")
     
     # Step 2: Build vector store
-    console.print("\n[bold cyan]Step 2/4: Building vector database...[/]")
+    console.print("\n[bold cyan]Step 2/3: Building vector database...[/]")
     load_data_to_vectorstore()
     
-    # Step 3: Extended crawl
-    console.print("\n[bold cyan]Step 3/4: Extended data collection...[/]")
-    crawl_extended_sources()
-    add_extended_to_vectorstore()
-    
-    # Step 4: Download papers
-    console.print("\n[bold cyan]Step 4/4: Downloading research papers...[/]")
+    # Step 3: Download papers
+    console.print("\n[bold cyan]Step 3/3: Downloading research papers...[/]")
     papers = download_all_papers(max_per_faculty=2)
     if papers:
         index_downloaded_papers()
     
     from src.database import get_vector_store
     store = get_vector_store()
+    store.initialize()
     stats = store.get_stats()
     
     console.print(Panel.fit(
         f"[bold green]✓ Full setup complete![/]\n\n"
-        f"Research areas: {len(data.get('research_areas', []))}\n"
         f"Faculty: {len(data.get('faculty', []))}\n"
         f"Papers downloaded: {len(papers) if papers else 0}\n"
         f"Total documents: {stats['total_documents']}",
@@ -503,60 +487,62 @@ def scrape_all(max_papers: int):
         border_style="orange1"
     ))
     
-    from src.crawlers import crawl_rit, crawl_extended_sources, add_extended_to_vectorstore
-    from src.crawlers import download_all_papers
+    from src.crawlers import run_smart_crawl, enrich_with_scholar, download_all_papers
     from src.processors.pdf_distiller import DeepDistiller
-    from src.database import load_data_to_vectorstore
-    
-    # Run specialized crawl phases
+    from src.database.vector_store import load_data_to_vectorstore
+    from src.utils.config import RESTRICTED_CONFIG
+    import json
     
     # 1. RIT Profiles
-    console.print("\n[bold cyan]Phase 1: RIT Profiles...[/]")
-    data = crawl_rit(crawl_profiles=True)
+    console.print("\n[bold cyan]Phase 1: RIT Computing Profiles...[/]")
+    try:
+        faculty = run_smart_crawl(max_profiles=15)
+        data = {"faculty": faculty}
+    except Exception as e:
+        console.print(f"[red]SmartCrawler failed: {e}[/]")
+        return
     
-    # 2. Extended Sources
-    console.print("\n[bold cyan]Phase 2: Extended Sources...[/]")
-    crawl_extended_sources()
+    # Enrich with Google Scholar
+    if data.get("faculty"):
+        try:
+            data["faculty"] = enrich_with_scholar(data["faculty"])
+        except Exception as e:
+            console.print(f"[yellow]Scholar enrichment skipped: {e}[/]")
     
-    # 3. Papers (Download)
-    console.print("\n[bold cyan]Phase 3: Downloading Papers...[/]")
+    # Save data
+    outfile = RESTRICTED_CONFIG.OUTPUT_FILE
+    with open(outfile, 'w') as f:
+        json.dump(data, f, indent=2)
+    
+    # 2. Papers (Download)
+    console.print("\n[bold cyan]Phase 2: Downloading Papers...[/]")
     papers = download_all_papers(max_per_faculty=max_papers)
     
-    # 4. Papers (Distill with DeepDistiller Gen 2)
-    console.print("\n[bold cyan]Phase 4: Distilling Papers (Level 3)...[/]")
-    distiller = DeepDistiller()
-    distiller.process_all()
+    # 3. Papers (Distill with DeepDistiller Gen 2)
+    console.print("\n[bold cyan]Phase 3: Distilling Papers (Level 3)...[/]")
+    try:
+        distiller = DeepDistiller()
+        distiller.process_all()
+    except Exception as e:
+        console.print(f"[yellow]Distillation skipped: {e}[/]")
     
-    # 5. Index everything
-    console.print("\n[bold cyan]Phase 5: Indexing...[/]")
+    # 4. Index everything
+    console.print("\n[bold cyan]Phase 4: Indexing...[/]")
     load_data_to_vectorstore()
-    add_extended_to_vectorstore()
     
     # Stats
     from src.database import get_vector_store
     store = get_vector_store()
+    store.initialize()
     stats = store.get_stats()
     
-    # Build a result dict for the success message
-    data["stats"] = {
-        "faculty_count": len(data.get("faculty", [])),
-        "papers_found": len(papers) if papers else 0,
-        "papers_downloaded": len(papers) if papers else 0,
-        "unique_tags": stats.get("total_documents", 0)  # Approximation
-    }
-    
-    if data:
-        console.print(Panel.fit(
-            f"[bold green]✓ Comprehensive scrape complete![/]\n\n"
-            f"Faculty with contacts: {data['stats']['faculty_count']}\n"
-            f"Papers discovered: {data['stats']['papers_found']}\n"
-            f"Papers distilled (Level 3): {data['stats']['papers_downloaded']}\n"
-            f"Unique research tags: {data['stats']['unique_tags']}\n"
-            f"Total documents: {stats['total_documents']}",
-            border_style="green"
-        ))
-    else:
-        console.print("[red]Comprehensive scrape failed. Run 'crawl' first.[/]")
+    console.print(Panel.fit(
+        f"[bold green]✓ Comprehensive scrape complete![/]\n\n"
+        f"Faculty: {len(data.get('faculty', []))}\n"
+        f"Papers downloaded: {len(papers) if papers else 0}\n"
+        f"Total documents: {stats['total_documents']}",
+        border_style="green"
+    ))
 
 
 @cli.command("crawl-smart")
@@ -570,10 +556,9 @@ def crawl_smart(start_url: str, max_profiles: int):
         border_style="orange1"
     ))
     
-    from src.crawlers.smart_crawler import SmartCrawler
+    from src.crawlers.smart_crawler import run_smart_crawl
     
-    crawler = SmartCrawler()
-    crawler.crawl_directory(start_url=start_url, max_profiles=max_profiles)
+    run_smart_crawl(start_url=start_url, max_profiles=max_profiles)
 
 @cli.command("distill-papers")
 def distill_papers():

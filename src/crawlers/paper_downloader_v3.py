@@ -378,15 +378,19 @@ class PaperDownloader:
                                 has_rit_affiliation = True
                                 break
                 
-                # Strict Filter: Must have RIT/Rochester affiliation OR allow if explicitly searched?
-                # For now, let's mark it but keep it if matches name well.
-                # Actually, user wants to avoid "John Smith" ambiguity.
-                # So if name is common and NO affiliation match, skip or deprioritize.
-                
-                # Heuristic: If query matches author name, we trust SS ranking usually,
-                # BUT if we see explicit affiliations and NONE match RIT, it's suspicious.
-                # Semantic Scholar affiliations are often empty though.
-                # Compromise: Keep if strong name match.
+                # Strict Filter: If we see explicit affiliations on the paper
+                # but NONE match RIT, skip it to avoid common-name ambiguity.
+                # Semantic Scholar affiliations are often empty, so we only
+                # reject when affiliations ARE present but don't match RIT.
+                has_any_affiliation = any(
+                    a.get("affiliations") for a in paper.get("authors", [])
+                )
+                if has_any_affiliation and not has_rit_affiliation:
+                    logger.debug(
+                        f"Skipping '{paper.get('title', '')}' — "
+                        f"authors have affiliations but none match RIT"
+                    )
+                    continue
                 
                 papers.append({
                     "title": paper.get("title", ""),
@@ -804,7 +808,7 @@ class PaperDownloader:
         return total_papers
 
 
-def download_all_papers(config: CrawlConfig = RESTRICTED_CONFIG):
+def download_all_papers(config: CrawlConfig = RESTRICTED_CONFIG, max_per_faculty: int = None):
     """Main function to download research papers."""
     # Generate a unique trace ID for this entire crawler run
     trace_id = generate_trace_id()
@@ -821,8 +825,9 @@ def download_all_papers(config: CrawlConfig = RESTRICTED_CONFIG):
         rit_data = json.load(f)
     
     # Download papers
+    paper_limit = max_per_faculty if max_per_faculty is not None else config.PAPER_LIMIT_PER_FACULTY
     downloader = PaperDownloader(config)
-    papers = downloader.download_faculty_papers(rit_data, config.PAPER_LIMIT_PER_FACULTY)
+    papers = downloader.download_faculty_papers(rit_data, paper_limit)
     
     # Save summary
     summary_file = config.PUBLICATIONS_DIR / "download_summary.json"

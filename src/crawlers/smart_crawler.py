@@ -71,8 +71,15 @@ class SmartCrawler:
         soup = BeautifulSoup(html_content, "lxml")
         links = []
         
-        # Paths we care about for Computing college
-        valid_paths = ["/computing/", "/directory/", "/people/", "/research/", "/faculty-staff"]
+        # Paths we care about — strictly scoped to Computing/GCCIS
+        # /directory/ and /people/ alone are too broad (they match engineering, science, etc.)
+        valid_paths = [
+            "/computing/",               # Main computing pages
+            "/computing/directory/",      # Faculty directory under computing
+            "/computing/people/",         # People pages under computing
+            "/computing/faculty-staff",   # Faculty-staff listings
+            "/computing/research",        # Research pages
+        ]
         
         for a in soup.find_all("a", href=True):
             href = a['href']
@@ -215,16 +222,23 @@ class SmartCrawler:
                     self.visited.add(link)
                     self.queue.append(link)
             
-            # Analyze Profile
-            if "/directory/" in url or "/people/" in url:
+            # Analyze Profile — only trigger on Computing directory/people pages
+            if "/computing/directory/" in url or "/computing/people/" in url:
                 with Timer(f"Extracting Profile {url}", use_rich=False) as timer:
                     data = await self.extract_profile_data(url, clean_text)
                 extract_duration = timer.duration or 0
                 
                 if data:
-                    self.scraped_data.append(data)
-                    progress.advance(task_id)
-                    console.print(f"[green]✓ Extracted: {data.get('name')} in {extract_duration:.2f}s[/]")
+                    # Post-extraction college validation: reject non-CS profiles
+                    college = (data.get("college") or data.get("department") or "").lower()
+                    cs_keywords = ["computing", "golisano", "gccis", "computer science",
+                                   "software engineering", "information", "cybersecurity"]
+                    if any(kw in college for kw in cs_keywords) or not college:
+                        self.scraped_data.append(data)
+                        progress.advance(task_id)
+                        console.print(f"[green]✓ Extracted: {data.get('name')} in {extract_duration:.2f}s[/]")
+                    else:
+                        console.print(f"[yellow]⊘ Skipped {data.get('name')} — college '{college}' is not CS/Computing[/]")
                     
             total_duration = time.perf_counter() - start_time
             logger.info(f"Processed {url} in {total_duration:.2f}s")
