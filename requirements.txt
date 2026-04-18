@@ -2,6 +2,8 @@
 
 # Web Crawling
 requests==2.31.0
+aiohttp>=3.9.3
+aiofiles>=23.2.1
 beautifulsoup4==4.12.3
 lxml==5.1.0
 
@@ -12,6 +14,7 @@ google-search-results==2.4.2
 # AI & Embeddings
 google-generativeai==0.3.2
 sentence-transformers>=2.5.0      # >=2.5.0 required for nomic-embed-text-v1.5 (X4 fix)
+einops>=0.7.0                     # Required by nomic-embed-text
 chromadb==0.4.22
 ollama==0.1.6
 Pillow==10.2.0
@@ -32,8 +35,13 @@ pandas==2.2.0
 
 # Knowledge Graph & Data Mining
 networkx==3.2.1
+kuzu>=0.0.10
 scikit-learn==1.4.0
 mlxtend==0.23.0
+jellyfish==1.0.3
+
+# Document Processing
+pymupdf>=1.23.0
 
 # Web App
 streamlit==1.31.1

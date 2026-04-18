@@ -652,8 +652,10 @@ def extract_tags_from_text(text: str, min_confidence: float = 0.5) -> list[tuple
     
     for category, category_data in TAG_TAXONOMY.items():
         for tag in category_data["tags"]:
-            # Convert tag to searchable pattern
-            search_pattern = tag.replace("-", r"[\s\-]?")
+            # Escape regex special characters first (like the ++ in c++)
+            escaped_tag = re.escape(tag)
+            # Re-allow flexible spacing for hyphens
+            search_pattern = r"\b" + escaped_tag.replace(r"\-", r"[\s\-]?") + r"\b"
             
             # Check if tag appears in text
             if re.search(search_pattern, text_lower):
