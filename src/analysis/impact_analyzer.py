@@ -1,20 +1,51 @@
-from ..chatbot.ollama_client import get_ollama_client
+"""SDG Impact Analyzer with Pydantic validation and retry logic.
+
+Fix 7: Replaces silent failure (returning score=0) with:
+  - Pydantic ImpactSchema for structured validation
+  - re.search-based JSON extraction (no brace-counting surgery)
+  - Retry loop (max 2 attempts) with JSON-mode forcing
+  - RuntimeError on final failure so the API returns HTTP 500
+"""
+
 import json
+import re
+import logging
+from typing import List
+
+from pydantic import BaseModel, Field, ValidationError
+from rich.console import Console
+
+from ..chatbot.ollama_client import get_ollama_client
+
+console = Console()
+logger = logging.getLogger(__name__)
+
+
+# ---------------------------------------------------------------------------
+# Pydantic schema for validated impact output
+# ---------------------------------------------------------------------------
+
+class ImpactSchema(BaseModel):
+    """Validated schema for impact analysis results."""
+    score: float = Field(ge=0, le=10, description="Impact score 1-10")
+    sdgs: List[str] = Field(default_factory=list, description="UN SDG alignments")
+    summary: str = Field(default="", description="Why this research matters")
+
+
+# ---------------------------------------------------------------------------
+# Analyzer
+# ---------------------------------------------------------------------------
 
 class ImpactAnalyzer:
     """Analyzes the potential impact of research ideas."""
-    
+
+    MAX_RETRIES = 2
+
     def __init__(self):
         self.client = get_ollama_client()
-        
-    def analyze_impact(self, title: str, description: str) -> dict:
-        """
-        Generates an impact score and SDG alignment.
-        """
-        if not self.client._initialized:
-            self.client.initialize()
-            
-        prompt = f"""
+
+    def _build_prompt(self, title: str, description: str) -> str:
+        return f"""
         Analyze the following research idea for potential societal impact.
         Title: {title}
         Description: {description}
@@ -31,96 +62,84 @@ class ImpactAnalyzer:
             "summary": "This research addresses critical food security issues..."
         }}
         """
-        
+
+    def _extract_and_validate(self, response: str) -> ImpactSchema:
+        """Extract JSON from LLM response and validate via Pydantic.
+
+        Uses regex to isolate the JSON object, then Pydantic to validate.
+        Raises ValueError on failure (caller handles retry).
+        """
+        # Attempt 1: direct parse
         try:
-            response = self.client.generate(prompt, system_prompt="You are an impact analyst. Output JSON only.")
-            
-            # Robust JSON extraction
+            return ImpactSchema(**json.loads(response.strip()))
+        except (json.JSONDecodeError, ValidationError):
+            pass
+
+        # Attempt 2: regex extraction
+        match = re.search(r'\{.*\}', response, re.DOTALL)
+        if match:
             try:
-                # Try direct parse first in case it's clean
-                return json.loads(response.strip())
-            except json.JSONDecodeError:
-                # Fallback to brace depth-tracking extraction
-                start_idx = response.find("{")
-                if start_idx != -1:
-                    brace_count = 0
-                    end_idx = -1
-                    for i, char in enumerate(response[start_idx:]):
-                        if char == "{":
-                            brace_count += 1
-                        elif char == "}":
-                            brace_count -= 1
-                            if brace_count == 0:
-                                end_idx = start_idx + i
-                                break
-                    if end_idx != -1:
-                        try:
-                            return json.loads(response[start_idx:end_idx+1])
-                        except json.JSONDecodeError:
-                            print("Brace match found JSON object but could not be parsed.")
-                
-                print("Failed to find valid JSON in LLM response.")
-                return {"score": 0, "sdgs": [], "summary": "Invalid JSON response from model.", "error": "parse_error"}
-                
-        except Exception as e:
-            print(f"Impact analysis failed: {e}")
-            return {"score": 0, "sdgs": [], "summary": "Could not analyze impact.", "error": str(e)}
+                data = json.loads(match.group())
+                return ImpactSchema(**data)
+            except (json.JSONDecodeError, ValidationError) as e:
+                raise ValueError(f"JSON found but validation failed: {e}") from e
+
+        raise ValueError(f"No valid JSON in response: {response[:200]}")
+
+    def analyze_impact(self, title: str, description: str) -> dict:
+        """Generates an impact score and SDG alignment (sync, with retry).
+
+        Raises RuntimeError on final failure instead of returning score=0.
+        """
+        if not self.client._initialized:
+            self.client.initialize()
+
+        prompt = self._build_prompt(title, description)
+        last_error = None
+
+        for attempt in range(1, self.MAX_RETRIES + 1):
+            try:
+                response = self.client.generate(
+                    prompt,
+                    system_prompt="You are an impact analyst. Output JSON only.",
+                    options={"format": "json", "temperature": 0.1},
+                )
+                result = self._extract_and_validate(response)
+                return result.model_dump()
+            except (ValueError, Exception) as e:
+                last_error = e
+                logger.warning(f"Impact analysis attempt {attempt}/{self.MAX_RETRIES} failed: {e}")
+
+        raise RuntimeError(
+            f"Impact analysis failed after {self.MAX_RETRIES} attempts. "
+            f"Last error: {last_error}"
+        )
 
     async def analyze_impact_async(self, title: str, description: str) -> dict:
-        """
-        Generates an impact score and SDG alignment asynchronously.
+        """Generates an impact score and SDG alignment (async, with retry).
+
+        Raises RuntimeError on final failure instead of returning score=0.
         """
         if not self.client._initialized:
             self.client.initialize()
-            
-        prompt = f"""
-        Analyze the following research idea for potential societal impact.
-        Title: {title}
-        Description: {description}
-        
-        Task:
-        1. Assign an "Impact Score" from 1-10 (10 being high global impact).
-        2. Identify relevant UN Sustainable Development Goals (SDGs).
-        3. Write a 1-sentence summary of why it matters.
-        
-        Output JSON format ONLY:
-        {{
-            "score": 8.5,
-            "sdgs": ["Goal 2: Zero Hunger", "Goal 13: Climate Action"],
-            "summary": "This research addresses critical food security issues..."
-        }}
-        """
-        
-        try:
-            response = await self.client.generate_async(prompt, system_prompt="You are an impact analyst. Output JSON only.")
-            
-            # Robust JSON extraction
+
+        prompt = self._build_prompt(title, description)
+        last_error = None
+
+        for attempt in range(1, self.MAX_RETRIES + 1):
             try:
-                # Try direct parse first in case it's clean
-                return json.loads(response.strip())
-            except json.JSONDecodeError:
-                # Fallback to brace depth-tracking extraction
-                start_idx = response.find("{")
-                if start_idx != -1:
-                    brace_count = 0
-                    end_idx = -1
-                    for i, char in enumerate(response[start_idx:]):
-                        if char == "{":
-                            brace_count += 1
-                        elif char == "}":
-                            brace_count -= 1
-                            if brace_count == 0:
-                                end_idx = start_idx + i
-                                break
-                    if end_idx != -1:
-                        try:
-                            return json.loads(response[start_idx:end_idx+1])
-                        except json.JSONDecodeError:
-                            print("Brace match found JSON object but could not be parsed.")
-                
-                print("Failed to find valid JSON in LLM response.")
-                return {"score": 0, "sdgs": [], "summary": "Invalid JSON response from model.", "error": "parse_error"}
-                
-        except Exception as e:
-            print(f"Impact analysis failed: {e}")
-            return {"score": 0, "sdgs": [], "summary": "Could not analyze impact.", "error": str(e)}
+                response = await self.client.generate_async(
+                    prompt,
+                    system_prompt="You are an impact analyst. Output JSON only.",
+                    options={"format": "json", "temperature": 0.1},
+                )
+                result = self._extract_and_validate(response)
+                return result.model_dump()
+            except (ValueError, Exception) as e:
+                last_error = e
+                logger.warning(f"Impact analysis async attempt {attempt}/{self.MAX_RETRIES} failed: {e}")
+
+        raise RuntimeError(
+            f"Impact analysis failed after {self.MAX_RETRIES} attempts. "
+            f"Last error: {last_error}"
+        )

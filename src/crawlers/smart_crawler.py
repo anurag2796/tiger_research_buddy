@@ -92,13 +92,6 @@ class SmartCrawler:
                     
         return links
 
-    async def extract_profile_data(self, url: str, text_content: str) -> Optional[dict]:
-        """Use Qwen to extract profile JSON (Async wrapper)."""
-        # ... (Rest of method is same, but I need to include it or carefully replace)
-        # Using replace_file_content I must replace the exact block.
-        # But this instruction is to update extract_links and process_url. 
-        # I should use multi_replace.
-        pass # Placeholder for actual tool call logic below
 
     @log_timing("Extract Profile Data")
     async def extract_profile_data(self, url: str, text_content: str) -> Optional[dict]:

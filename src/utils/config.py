@@ -1,11 +1,16 @@
 """Configuration management for TigerResearchBuddy."""
 
 import os
+import sys
 from pathlib import Path
 from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
+
+# Hardware profile — import AFTER dotenv so env overrides are loaded first.
+# Circular-import safe: hardware.py has no imports from this module.
+from .hardware import HW_PROFILE  # noqa: E402
 
 # Project paths
 PROJECT_ROOT = Path(__file__).parent.parent.parent
@@ -21,6 +26,11 @@ GRAPH_DB_PATH = DATA_DIR / "kuzu_db"
 # API Configuration
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
+
+# CORS — comma-separated origins; defaults to wildcard only if env var unset.
+ALLOWED_ORIGINS: list[str] = [
+    o.strip() for o in os.getenv("ALLOWED_ORIGINS", "*").split(",") if o.strip()
+]
 
 # Crawling Configuration
 # RIT Colleges Research Pages
@@ -55,8 +65,8 @@ class CrawlConfig:
         self.START_URLS = start_urls
         self.PDF_MAX_PAGES = pdf_max_pages
         
-        # PDF Pipeline Configuration
-        self.PDF_ENGINE = "apple_fast"  # apple_fast, marker
+        # PDF Pipeline Configuration — driven by HardwareProfile, not hardcoded.
+        self.PDF_ENGINE = HW_PROFILE.pdf_engine   # B5 + X-platform fix
         self.PDF_BACKEND = "pymupdf"    # pymupdf, pypdfium2
         self.TABLE_STRATEGY = "auto"    # auto, off, force
         
@@ -123,13 +133,15 @@ class LLMConfig:
     PIPELINE_MODEL = "tigerbuddy:latest" # Large, for offline processing (crawling/distillation)
     
     MODEL_NAME = CHAT_MODEL    # Default to chat model for general usage
-    CONTEXT_WINDOW = 16384     # Expanded to 16k for M4 Max headroom
+    # Context window is hardware-aware: 16384 on M4 Max, 8192 on Jetson Orin.
+    # Override with LLM_CONTEXT_WINDOW env var.
+    CONTEXT_WINDOW = HW_PROFILE.context_window  # X1 fix
     TEMPERATURE = 0.2          # Low temp for factual extraction
     TIMEOUT = 120              # Seconds
     
-    # Generation options
+    # Generation options — built from the hardware-aware context window.
     DEFAULT_OPTIONS = {
-        "num_ctx": CONTEXT_WINDOW,
+        "num_ctx": HW_PROFILE.context_window,  # X1 fix
         "temperature": TEMPERATURE,
         "num_predict": -1      # infinite generation
     }

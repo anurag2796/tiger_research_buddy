@@ -11,17 +11,21 @@ google-search-results==2.4.2
 
 # AI & Embeddings
 google-generativeai==0.3.2
-sentence-transformers==2.3.1
+sentence-transformers>=2.5.0      # >=2.5.0 required for nomic-embed-text-v1.5 (X4 fix)
 chromadb==0.4.22
 ollama==0.1.6
 Pillow==10.2.0
 fuzzywuzzy==0.18.0
 python-Levenshtein==0.25.0
 
+# Retrieval
+rank_bm25>=0.2.2                   # Required by HybridRetriever (was missing from requirements)
+
 # Utilities
 python-dotenv==1.0.1
 rich==13.7.0
 click==8.1.7
+filelock>=3.13.0                   # Used in api.py for pipeline lock
 
 # Data handling
 pandas==2.2.0
@@ -34,3 +38,12 @@ mlxtend==0.23.0
 # Web App
 streamlit==1.31.1
 streamlit-agraph==0.0.45
+
+# FastAPI (backend)
+fastapi>=0.100.0
+uvicorn>=0.24.0
+
+# Long-term Memory (Tier 2 — optional, recommended on M4 Max only)
+# Install with: pip install lancedb pyarrow
+# lancedb>=0.5.0
+# pyarrow>=14.0.0

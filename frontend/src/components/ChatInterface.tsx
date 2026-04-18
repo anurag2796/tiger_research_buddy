@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import axios from "axios";
 import { Send, Bot, User, Loader2, Trash2, StopCircle } from "lucide-react";
 
 export interface Source {
@@ -69,33 +68,97 @@ export default function ChatInterface({
     setLoading(true);
 
     // Create a new AbortController for this request
-    abortControllerRef.current = new AbortController();
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
+    // Add an empty assistant message that we'll stream tokens into
+    setMessages((prev) => [...prev, { role: "assistant", content: "", sources: [] }]);
 
     try {
-      const res = await axios.post(
-        "http://localhost:8000/api/chat", 
-        {
-          query: userMsg,
-          use_cod: false,
-          persona: persona
-        },
-        { signal: abortControllerRef.current.signal }
-      );
+      const res = await fetch("http://localhost:8000/api/chat/stream", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: userMsg, use_cod: false, persona }),
+        signal: controller.signal,
+      });
 
-      const { response, sources } = res.data;
-      setMessages((prev) => [...prev, { role: "assistant", content: response, sources }]);
-      
-      if (sources && sources.length > 0) {
-        onSourcesChange(sources);
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ detail: "Unknown error" }));
+        throw new Error(err.detail || `HTTP ${res.status}`);
+      }
+
+      const reader = res.body?.getReader();
+      const decoder = new TextDecoder();
+
+      if (!reader) throw new Error("No response body");
+
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+
+        // Process complete SSE events (delimited by \n\n)
+        const events = buffer.split("\n\n");
+        buffer = events.pop() || ""; // Keep incomplete tail
+
+        for (const event of events) {
+          const line = event.trim();
+          if (!line.startsWith("data: ")) continue;
+          const payload = line.slice(6); // strip "data: "
+
+          if (payload === "[DONE]") {
+            // Stream finished
+            break;
+          }
+
+          if (payload.startsWith("[SOURCES]")) {
+            // Parse sources event
+            try {
+              const sourceData = JSON.parse(payload.slice(9));
+              const sources = sourceData.sources || [];
+              // Update the last message with sources
+              setMessages((prev) => {
+                const updated = [...prev];
+                updated[updated.length - 1] = { ...updated[updated.length - 1], sources };
+                return updated;
+              });
+              if (sources.length > 0) onSourcesChange(sources);
+            } catch { /* ignore parse errors */ }
+            continue;
+          }
+
+          // Token event
+          try {
+            const { token } = JSON.parse(payload);
+            if (token) {
+              setMessages((prev) => {
+                const updated = [...prev];
+                const last = updated[updated.length - 1];
+                updated[updated.length - 1] = { ...last, content: last.content + token };
+                return updated;
+              });
+            }
+          } catch { /* ignore malformed events */ }
+        }
       }
     } catch (error: any) {
-       if (axios.isCancel(error)) {
-           console.log("Request canceled by user");
-           // Handled by stopGenerating
-       } else {
-           console.error(error);
-           setMessages((prev) => [...prev, { role: "assistant", content: "Error: Failed to fetch response from API. Please ensure the backend is running." }]);
-       }
+      if (error.name === "AbortError") {
+        console.log("Request canceled by user");
+        // Message already in state from stopGenerating
+      } else {
+        console.error(error);
+        setMessages((prev) => {
+          const updated = [...prev];
+          updated[updated.length - 1] = {
+            role: "assistant",
+            content: `Error: ${error.message || "Failed to fetch response from API. Please ensure the backend is running."}`,
+          };
+          return updated;
+        });
+      }
     } finally {
       setLoading(false);
       abortControllerRef.current = null;

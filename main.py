@@ -41,6 +41,7 @@ def crawl(skip_scholar: bool):
     
     from src.crawlers import enrich_with_scholar, run_smart_crawl
     from src.utils.config import RESTRICTED_CONFIG
+    from src.database.vector_store import load_data_to_vectorstore  # B1 fix: was missing
     import json
     
     # 1. Verification of API Keys

@@ -8,6 +8,7 @@ from rank_bm25 import BM25Okapi
 from rich.console import Console
 
 from ..database.vector_store import VectorStore, process_data_into_documents
+from .reranker import CrossEncoderReranker
 
 console = Console()
 
@@ -30,6 +31,7 @@ class HybridRetriever:
         self.bm25 = None
         self.bm25_corpus = []
         self.bm25_documents = [] # Keep reference to original docs to return content
+        self._reranker: CrossEncoderReranker | None = None
         
         if documents:
             self.index_bm25(documents)
@@ -80,7 +82,7 @@ class HybridRetriever:
         results = self.vector_store.search(query, n_results=k)
         return results
 
-    def hybrid_search(self, query: str, k: int = 50, rrf_k: int = 60) -> List[Dict]:
+    def hybrid_search(self, query: str, k: int = 50, rrf_k: int = 60, rerank: bool = False) -> List[Dict]:
         """
         Perform Hybrid Search using Reciprocal Rank Fusion (RRF).
         
@@ -88,6 +90,7 @@ class HybridRetriever:
             query: Search query string.
             k: Number of final results to return.
             rrf_k: Constant for RRF formula (default 60).
+            rerank: If True, apply cross-encoder reranking after RRF fusion.
             
         Returns:
             List of reranked documents.
@@ -169,11 +172,21 @@ class HybridRetriever:
         
         # 4. Format output
         final_results = []
-        for item in sorted_results[:k]:
+        for item in sorted_results[:k if not rerank else 30]:
             doc = item["doc"]
             doc["rrf_score"] = item["score"]
             doc["vector_rank"] = item["vector_rank"]
             doc["bm25_rank"] = item["bm25_rank"]
             final_results.append(doc)
-            
+
+        # 5. Optional cross-encoder reranking for precision
+        if rerank and final_results:
+            try:
+                if self._reranker is None:
+                    self._reranker = CrossEncoderReranker()
+                final_results = self._reranker.rerank(query, final_results, top_k=k)
+            except Exception as e:
+                console.print(f"[yellow]Reranker unavailable, using RRF order: {e}[/]")
+                final_results = final_results[:k]
+
         return final_results

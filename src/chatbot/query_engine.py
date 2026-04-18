@@ -8,11 +8,14 @@ Results from both streams are fused via Reciprocal Rank Fusion (RRF).
 """
 
 import json
+import os
 import re
 import logging
 from typing import Any, Dict, List, Optional, Tuple
 
+import filelock
 import networkx as nx
+from pydantic import BaseModel, Field, field_validator
 
 from .ollama_client import get_ollama_client
 from ..knowledge_graph.graph_store import GraphStore
@@ -22,8 +25,29 @@ from ..retrieval.hybrid_retriever import HybridRetriever
 from ..utils.config import GRAPH_DB_PATH, DATA_DIR
 from ..utils.timer import Timer
 from ..utils.db_logger import setup_db_logging
+from ..utils.json_utils import extract_and_validate  # replaces manual fence-stripping
 
 logger = setup_db_logging("GraphQueryEngine")
+
+# ---------------------------------------------------------------------------
+#  Typed schema for LLM keyword extraction output.
+#  extract_and_validate() enforces this at parse time — no more silent failures.
+# ---------------------------------------------------------------------------
+class KeywordExtractionSchema(BaseModel):
+    """Pydantic schema for dual-keyword LLM output validation."""
+    high_level_keywords: List[str] = Field(default_factory=list)
+    low_level_keywords: List[str] = Field(default_factory=list)
+
+    # Fix 8: Coerce bare strings → lists at parse time so Pydantic never
+    # rejects valid-but-misformatted LLM output.
+    @field_validator('high_level_keywords', 'low_level_keywords', mode='before')
+    @classmethod
+    def coerce_string_to_list(cls, v):
+        if isinstance(v, str):
+            # Split comma-separated strings; strip whitespace from each item
+            parts = [s.strip() for s in v.split(',') if s.strip()]
+            return parts if parts else [v.strip()]
+        return v
 
 # ---------------------------------------------------------------------------
 #  System prompt that forces Ollama to return strictly valid JSON.
@@ -78,6 +102,9 @@ class GraphEnhancedQueryEngine:
 
         # NetworkX graph for ego-graph traversals — loaded lazily
         self._nx_graph: Optional[nx.Graph] = None
+        # Fix 6: TTL cache — only re-read when file mtime changes
+        self._graph_last_modified: float = 0.0
+        self._lock_path = DATA_DIR / ".graph.lock"
 
         self._initialize_graph()
 
@@ -109,29 +136,44 @@ class GraphEnhancedQueryEngine:
     def _load_networkx_graph(self) -> Optional[nx.Graph]:
         """Load the NetworkX graph exported by GraphBuilder (node-link JSON).
 
-        The graph lives at ``data/tiger_brain.json`` and is produced by
-        ``GraphBuilder.export()`` in the knowledge-graph pipeline.
+        Fix 6: Uses mtime-based TTL caching and filelock to prevent
+        RuntimeError from concurrent mutation during pipeline rebuilds.
         """
-        if self._nx_graph is not None:
-            return self._nx_graph
-
         graph_path = DATA_DIR / "tiger_brain.json"
         if not graph_path.exists():
             logger.warning(f"NetworkX graph not found at {graph_path}")
             return None
 
+        # TTL check: skip re-read if file hasn't changed since last load
         try:
-            with open(graph_path) as f:
-                data = json.load(f)
-            self._nx_graph = nx.node_link_graph(data)
-            logger.info(
-                f"Loaded NetworkX graph: {self._nx_graph.number_of_nodes()} nodes, "
-                f"{self._nx_graph.number_of_edges()} edges"
+            current_mtime = os.path.getmtime(graph_path)
+        except OSError:
+            return self._nx_graph  # stat failed; return whatever we have
+
+        if self._nx_graph is not None and current_mtime == self._graph_last_modified:
+            return self._nx_graph
+
+        # File changed (or first load) — acquire lock and re-read
+        try:
+            with filelock.FileLock(self._lock_path, timeout=5):
+                with open(graph_path) as f:
+                    data = json.load(f)
+                self._nx_graph = nx.node_link_graph(data)
+                self._graph_last_modified = current_mtime
+                logger.info(
+                    f"Loaded NetworkX graph: {self._nx_graph.number_of_nodes()} nodes, "
+                    f"{self._nx_graph.number_of_edges()} edges"
+                )
+                return self._nx_graph
+        except filelock.Timeout:
+            logger.warning(
+                "Graph file is locked (pipeline rebuild in progress). "
+                "Returning stale cached graph."
             )
             return self._nx_graph
         except Exception as e:
             logger.error(f"Failed to load NetworkX graph: {e}")
-            return None
+            return self._nx_graph
 
     # ------------------------------------------------------------------
     #  Dual-Level Keyword Extraction (Task 2, Requirement 1 + 6)
@@ -164,36 +206,15 @@ class GraphEnhancedQueryEngine:
     ) -> Dict[str, List[str]]:
         """Parse the LLM response into the expected keyword dict.
 
-        Handles several common failure modes:
-          - Markdown fences around JSON
-          - Trailing prose after the JSON object
-          - Completely unparseable output
+        Uses extract_and_validate() with KeywordExtractionSchema — no regex
+        fence-stripping, no string surgery.  Falls back gracefully on failure.
         """
-        text = raw.strip()
+        result = extract_and_validate(raw, KeywordExtractionSchema)
+        if result is not None:
+            return self._validate_keywords(result.model_dump(), original_query)
 
-        # Strip markdown code fences if the model added them anyway
-        text = re.sub(r"^```(?:json)?\s*", "", text)
-        text = re.sub(r"\s*```\s*$", "", text)
-
-        # Attempt 1: direct parse
-        try:
-            parsed = json.loads(text)
-            return self._validate_keywords(parsed, original_query)
-        except json.JSONDecodeError:
-            pass
-
-        # Attempt 2: find the first { … } block in the output
-        match = re.search(r"\{.*\}", text, re.DOTALL)
-        if match:
-            try:
-                parsed = json.loads(match.group())
-                return self._validate_keywords(parsed, original_query)
-            except json.JSONDecodeError:
-                pass
-
-        # Attempt 3: give up and use fallback
         logger.warning(
-            f"Malformed keyword JSON from LLM (falling back): {text[:200]}"
+            "Malformed keyword JSON from LLM (falling back): %s", raw[:200]
         )
         return self._keyword_fallback(original_query)
 

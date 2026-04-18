@@ -82,6 +82,9 @@ class IdeaMatcher:
         semantic_results = self.find_collaborators(query, n_results=20)
 
         # --- Graph centrality path (async) ---
+        topology_degraded = False
+        topology_reason = ""
+
         graph = self._load_graph()
         if graph is not None and idea.tags:
             concept_nodes = self._resolve_concept_nodes(idea.tags, graph)
@@ -100,15 +103,34 @@ class IdeaMatcher:
                         "collaborators": fused,
                         "related_ideas": self.find_related_ideas(query),
                     }
+                else:
+                    topology_degraded = True
+                    topology_reason = "PageRank returned no faculty scores — graph may be sparse."
+                    logger.warning(topology_reason)
+            else:
+                topology_degraded = True
+                topology_reason = f"None of the idea tags ({idea.tags}) resolved to concept nodes in the graph."
+                logger.warning(topology_reason)
+        elif graph is None:
+            topology_degraded = True
+            topology_reason = "Knowledge graph (tiger_brain.json) not available — using semantic-only matching."
+            logger.warning(topology_reason)
+        elif not idea.tags:
+            topology_degraded = True
+            topology_reason = "No tags provided on the idea — cannot seed PageRank."
 
-        # Graceful degradation — graph absent or no tags resolved.
+        # Graceful degradation — graph absent, no tags resolved, or PageRank empty.
         for rank, doc in enumerate(semantic_results):
             doc["rrf_score"] = round(1.0 / (60 + rank + 1), 6)
             
-        return {
+        result = {
             "collaborators": semantic_results,
             "related_ideas": self.find_related_ideas(query),
         }
+        if topology_degraded:
+            result["_topology_degraded"] = True
+            result["_topology_reason"] = topology_reason
+        return result
 
     # ------------------------------------------------------------------
     # Graph loading

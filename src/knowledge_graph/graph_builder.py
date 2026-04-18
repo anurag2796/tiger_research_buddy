@@ -199,19 +199,22 @@ class GraphBuilder:
                     self.graph.edges[u, v][k] = str(val)
 
     def export(self):
-        """Save the fused graph."""
+        """Save the fused graph (Fix 6: atomic write with file lock)."""
         self.sanitize_graph()
         try:
             # Use JSON format instead of GML to preserve all node attributes
             import json
+            import filelock
             from networkx.readwrite import node_link_data
             
             # Change output path from .gml to .json
             json_path = self.output_path.with_suffix('.json')
+            lock_path = json_path.parent / ".graph.lock"
             
             data = node_link_data(self.graph)
-            with open(json_path, 'w') as f:
-                json.dump(data, f, indent=2)
+            with filelock.FileLock(lock_path):
+                with open(json_path, 'w') as f:
+                    json.dump(data, f, indent=2)
             
             console.print(f"\n[bold green]🐅 TigerBrain Built Successfully![/]")
             console.print(f"Stats: {self.graph.number_of_nodes()} Nodes | {self.graph.number_of_edges()} Edges")

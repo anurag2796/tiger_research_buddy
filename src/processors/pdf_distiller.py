@@ -12,6 +12,7 @@ from ..chatbot.ollama_client import OllamaClient
 from ..chatbot.gemini_client import get_gemini_client
 from ..utils.config import DATA_DIR, GEMINI_API_KEY, LLMConfig
 from ..utils.db_logger import setup_db_logging, log_timing, PerformanceTimer as Timer
+from ..utils.hardware import HW_PROFILE  # X2: for hardware-aware distiller concurrency
 from ..crawlers.vision_crawler import VisionCrawler
 from .vlm_target_extractor import VLMTargetExtractor
 import fitz  # PyMuPDF - used for page image extraction only
@@ -492,27 +493,40 @@ Response:"""
                     options=LLMConfig.DEFAULT_OPTIONS
                 )
             
-            # Clean JSON
-            clean_text = response.replace("```json", "").replace("```", "").strip()
-            
-            start = clean_text.find('{')
-            end = clean_text.rfind('}')
-            if start != -1 and end != -1:
-                clean_text = clean_text[start:end+1]
-            
+            # Fix 9: Fault-tolerant JSON extraction — returns error card on failure
+            # instead of crashing the batch loop.
             card = None
             try:
-                card = json.loads(clean_text)
-            except json.JSONDecodeError:
-                card = self.repair_json(clean_text)
+                # Clean JSON
+                clean_text = response.replace("```json", "").replace("```", "").strip()
+                
+                start = clean_text.find('{')
+                end = clean_text.rfind('}')
+                if start != -1 and end != -1:
+                    clean_text = clean_text[start:end+1]
+                
+                try:
+                    card = json.loads(clean_text)
+                except json.JSONDecodeError:
+                    card = self.repair_json(clean_text)
+            except (json.JSONDecodeError, Exception) as parse_err:
+                logger.error(f"JSON extraction failed for {filename}: {parse_err}")
+                card = None
                 
             if not card:
                 debug_path = DATA_DIR / "debug_failures" / f"failed_{filename}.txt"
                 debug_path.parent.mkdir(exist_ok=True)
                 with open(debug_path, "w") as f:
                     f.write(response)
-                console.print(f"[yellow]JSON Syntax Error. Saved to {debug_path}[/]")
-                return None
+                console.print(f"[yellow]JSON parse failed for {filename}. Returning error card.[/]")
+                # Return structured error card so the batch loop continues
+                return {
+                    "card_id": filename,
+                    "bibliographic_data": {"title": f"Failed: {filename}"},
+                    "core_content": {"error": "JSON extraction failed after repair attempts"},
+                    "knowledge_graph": {"nodes": [], "edges": []},
+                    "source_file": filename,
+                }
             
             # Normalize
             card = self._normalize_card(card)
@@ -567,7 +581,14 @@ Response:"""
         except Exception as e:
             logger.error(f"Distillation error for {filename}: {e}")
             console.print(f"[red]Distillation error for {filename}: {e}[/]")
-            return None
+            # Fix 9: Return error card instead of None so batch loop continues
+            return {
+                "card_id": filename,
+                "bibliographic_data": {"title": f"Failed: {filename}"},
+                "core_content": {"error": str(e)},
+                "knowledge_graph": {"nodes": [], "edges": []},
+                "source_file": filename,
+            }
 
     @log_timing("Distill Paper")
     def distill(self, text: str, filename: str, domain: str = "", pdf_path: Optional[Path] = None) -> Optional[Dict]:
@@ -703,8 +724,11 @@ Response:"""
 
         console.print(f"[bold blue]⚗️ Starting Async Deep Distillation on {len(pdfs)} papers...[/]")
         
-        # Limit concurrency to 3-5 to avoid OOM or LLM thrashing
-        concurrency = 3
+        # X2 fix: concurrency driven by HW_PROFILE.distiller_concurrency
+        # (env var DISTILLER_CONCURRENCY, default 3 on macOS / 1 on Jetson Orin)
+        # This prevents VRAM exhaustion and CPU thrashing on edge hardware.
+        concurrency = HW_PROFILE.distiller_concurrency
+        console.print(f"[dim]Distiller concurrency: {concurrency} slot(s) (platform: {HW_PROFILE.platform})[/]")
         semaphore = asyncio.Semaphore(concurrency)
         
         state = {"pause_event": asyncio.Event()}

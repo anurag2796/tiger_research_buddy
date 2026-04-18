@@ -69,7 +69,34 @@ class GeminiClient:
         except Exception as e:
             console.print(f"[red]Gemini API error: {e}[/]")
             return f"Sorry, I encountered an error: {str(e)}"
-    
+
+    async def generate_async(
+        self,
+        prompt: str,
+        context: Optional[str] = None,
+        system_prompt: Optional[str] = None,
+    ) -> str:
+        """Generate a response asynchronously (offloads blocking call to threadpool)."""
+        from fastapi.concurrency import run_in_threadpool
+
+        if not self._initialized:
+            await run_in_threadpool(self.initialize)
+
+        # Build the full prompt
+        full_prompt = ""
+        if system_prompt:
+            full_prompt += f"{system_prompt}\n\n"
+        if context:
+            full_prompt += f"Context:\n{context}\n\n"
+        full_prompt += f"User Query: {prompt}"
+
+        try:
+            response = await run_in_threadpool(self.model.generate_content, full_prompt)
+            return response.text
+        except Exception as e:
+            console.print(f"[red]Gemini async API error: {e}[/]")
+            return f"Sorry, I encountered an error: {str(e)}"
+
     def chat(self, messages: list[dict]) -> str:
         """Have a multi-turn conversation."""
         if not self._initialized:
@@ -105,13 +132,18 @@ def test_connection() -> bool:
         return False
 
 
-# Global instance
+# Global instance — Fix 5: thread-safe double-checked locking
+import threading
+
 _gemini_client: Optional[GeminiClient] = None
+_gemini_client_lock = threading.Lock()
 
 
 def get_gemini_client() -> GeminiClient:
-    """Get the global Gemini client instance."""
+    """Get the global Gemini client instance (thread-safe)."""
     global _gemini_client
     if _gemini_client is None:
-        _gemini_client = GeminiClient()
+        with _gemini_client_lock:
+            if _gemini_client is None:
+                _gemini_client = GeminiClient()
     return _gemini_client

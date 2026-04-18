@@ -93,11 +93,22 @@ class RAGEngine:
              self.conversation_history.append({"role": "user", "content": user_query})
              self.conversation_history.append({"role": "assistant", "content": fallback_msg})
              return fallback_msg
+             
+        # Inject conversation history into query
+        history_prefix = ""
+        if self.conversation_history:
+            history_str = "\n".join(
+                f"{msg['role'].upper()}: {msg['content']}"
+                for msg in self.conversation_history[-10:]  # Keep last 5 turns (max length 10)
+            )
+            history_prefix = f"\n--- Conversation History ---\n{history_str}\n--- End History ---\n\n"
+        
+        full_prompt = f"{history_prefix}Current Query: {user_query}"
         
         # Step 5: Generate response with LLM
         try:
             raw_response = self.gemini_client.generate(
-                prompt=user_query,
+                prompt=full_prompt,
                 context=context,
                 system_prompt=self.system_prompt
             )
@@ -108,7 +119,7 @@ class RAGEngine:
             console.print(f"[yellow]Gemini API failed limit checks. Falling back to Ollama...[/]")
             try:
                 raw_response = self.ollama_client.generate(
-                    prompt=user_query,
+                    prompt=full_prompt,
                     context=context,
                     system_prompt=self.system_prompt
                 )

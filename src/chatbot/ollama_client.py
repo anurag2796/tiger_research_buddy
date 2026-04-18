@@ -10,6 +10,7 @@ from rich.console import Console
 console = Console()
 
 from ..utils.config import LLMConfig
+from ..utils.hardware import HW_PROFILE
 
 # Default model - lightweight and fast
 DEFAULT_MODEL = LLMConfig.CHAT_MODEL
@@ -89,7 +90,16 @@ class OllamaClient:
             self._initialized = True
             
         except Exception as e:
-            raise RuntimeError(f"Ollama server not running. Start it with: brew services start ollama\nError: {e}")
+            import sys
+            # X3 fix: platform-aware start command
+            start_cmd = (
+                "brew services start ollama"
+                if sys.platform == "darwin"
+                else "sudo systemctl start ollama"
+            )
+            raise RuntimeError(
+                f"Ollama server not running. Start it with: {start_cmd}\nError: {e}"
+            )
 
     def _load_persona_prompt(self) -> str:
         """Load the prompt for the current persona."""
@@ -160,8 +170,13 @@ class OllamaClient:
                 options["temperature"] = LLMConfig.TEMPERATURE
             kwargs["options"] = options
             
+            # B3 fix: Semaphore limit is driven by HW_PROFILE.chat_concurrency
+            # (env var OLLAMA_CHAT_CONCURRENCY, default 2 on macOS / 1 on Linux).
+            # This prevents Orin VRAM panics while letting the M4 Max run 2 concurrent LLM calls.
             if self._async_lock is None:
-                self._async_lock = asyncio.Semaphore(1)
+                limit = HW_PROFILE.chat_concurrency
+                self._async_lock = asyncio.Semaphore(limit)
+                console.print(f"[dim]Ollama async semaphore: {limit} concurrent slot(s)[/]")
                 
             async with self._async_lock:
                 client = AsyncClient()
@@ -177,6 +192,86 @@ class OllamaClient:
         except Exception as e:
             console.print(f"[red]Ollama async error: {e}[/]")
             return f"Sorry, I encountered an error: {str(e)}"
+
+    async def generate_stream_async(
+        self,
+        prompt: str,
+        context: Optional[str] = None,
+        system_prompt: Optional[str] = None,
+        request=None,
+        **kwargs,
+    ):
+        """Async streaming generator with disconnect-aware VRAM release.
+
+        Yields token chunks one at a time.  On each chunk the generator
+        checks ``request.is_disconnected()`` (Starlette Request).  When
+        the frontend aborts (AbortController), the loop breaks and the
+        Ollama AsyncClient releases the GPU VRAM immediately — instead
+        of completing a 15-45 s inference into the void.
+
+        Parameters
+        ----------
+        request : starlette.requests.Request, optional
+            If provided, the generator will poll for client disconnect.
+        """
+        import asyncio
+        from ollama import AsyncClient
+
+        if not self._initialized:
+            self.initialize()
+
+        # Build messages
+        messages = []
+        if not system_prompt:
+            system_prompt = self._load_persona_prompt()
+        if system_prompt:
+            messages.append({"role": "system", "content": system_prompt})
+
+        user_content = ""
+        if context:
+            user_content += f"Context:\n{context}\n\n"
+        user_content += prompt
+        messages.append({"role": "user", "content": user_content})
+
+        # Inject config defaults
+        options = kwargs.pop("options", {})
+        if "num_ctx" not in options:
+            options["num_ctx"] = LLMConfig.CONTEXT_WINDOW
+        if "temperature" not in options:
+            options["temperature"] = LLMConfig.TEMPERATURE
+        kwargs["options"] = options
+
+        # Acquire VRAM semaphore
+        if self._async_lock is None:
+            limit = HW_PROFILE.chat_concurrency
+            self._async_lock = asyncio.Semaphore(limit)
+            console.print(f"[dim]Ollama stream semaphore: {limit} concurrent slot(s)[/]")
+
+        try:
+            async with self._async_lock:
+                client = AsyncClient()
+                stream = await client.chat(
+                    model=self.model,
+                    messages=messages,
+                    stream=True,
+                    **kwargs,
+                )
+                async for chunk in stream:
+                    # Disconnect-aware: if the HTTP client aborted, stop
+                    # inference immediately so Ollama frees the VRAM.
+                    if request is not None and await request.is_disconnected():
+                        console.print("[yellow]Client disconnected — aborting stream to free VRAM.[/]")
+                        break
+
+                    token = chunk.get("message", {}).get("content", "")
+                    if token:
+                        yield token
+        except asyncio.CancelledError:
+            console.print("[yellow]Stream cancelled by client disconnect.[/]")
+            return
+        except Exception as e:
+            console.print(f"[red]Ollama stream error: {e}[/]")
+            yield f"\n\n⚠️ Error: {str(e)}"
 
     def generate(
         self, 
@@ -294,13 +389,18 @@ def test_ollama() -> bool:
         return False
 
 
-# Global instance
+# Global instance — Fix 5: thread-safe double-checked locking
+import threading
+
 _ollama_client: Optional[OllamaClient] = None
+_ollama_client_lock = threading.Lock()
 
 
 def get_ollama_client() -> OllamaClient:
-    """Get the global Ollama client instance."""
+    """Get the global Ollama client instance (thread-safe)."""
     global _ollama_client
     if _ollama_client is None:
-        _ollama_client = OllamaClient()
+        with _ollama_client_lock:
+            if _ollama_client is None:
+                _ollama_client = OllamaClient()
     return _ollama_client

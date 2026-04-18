@@ -8,6 +8,7 @@ from rich.console import Console
 
 from ..utils.config import CrawlConfig, RESTRICTED_CONFIG, EMBEDDING_MODEL, DATA_DIR
 from ..utils.timer import Timer
+from ..utils.hardware import get_embedding_device  # X4 fix: dynamic device detection
 
 console = Console()
 
@@ -26,20 +27,25 @@ def _get_chromadb():
 
 
 def _get_embedding_function():
-    """Lazy load embedding function."""
+    """Lazy load embedding function with hardware-aware device selection.
+
+    Device is determined by ``hardware.get_embedding_device()`` which:
+    - Returns "cpu" on Apple Silicon (MPS has a meta-tensor bug with nomic)
+    - Returns "cuda" on Jetson Orin / any CUDA host
+    - Returns "cpu" as universal fallback
+    Override with the ``EMBEDDING_DEVICE`` env var if needed.
+    """
     global _embedding_function
     if _embedding_function is None:
         try:
-            # Try to load the desired model first
             from chromadb.utils import embedding_functions
-            import torch
             try:
-                # Attempt to use SentenceTransformer directly to see if it survives initialization
                 from sentence_transformers import SentenceTransformer
-                device = "cpu" if torch.backends.mps.is_available() else None
+                # X4 fix: use hardware-aware device, not the inverted MPS check.
+                device = get_embedding_device()
+                console.print(f"[dim]Loading {EMBEDDING_MODEL} on device={device!r}[/]")
                 _model = SentenceTransformer(EMBEDDING_MODEL, trust_remote_code=True, device=device)
                 
-                # If it didn't throw NotImplementedError, wrap it for ChromaDB
                 from chromadb import EmbeddingFunction, Documents, Embeddings
                 class SafeTigerEmbeddingFunction(EmbeddingFunction):
                     def __init__(self, model):
@@ -48,10 +54,10 @@ def _get_embedding_function():
                         return self.model.encode(list(input)).tolist()
                 
                 _embedding_function = SafeTigerEmbeddingFunction(_model)
-                console.print(f"[green]Initialized {EMBEDDING_MODEL} embedding function (trust_remote_code=True)[/]")
+                console.print(f"[green]Initialized {EMBEDDING_MODEL} embedding function (device={device!r})[/]")
             except NotImplementedError:
-                # Catch the "Cannot copy out of meta tensor; no data!" macOS MPS bug
-                console.print(f"[yellow]PyTorch meta tensor issue detected on macOS. Falling back to default ONNX embeddings.[/]")
+                # Catch the "Cannot copy out of meta tensor" MPS bug as a last resort.
+                console.print(f"[yellow]PyTorch meta tensor issue detected. Falling back to default ONNX embeddings.[/]")
                 _embedding_function = embedding_functions.DefaultEmbeddingFunction()
                 
         except ImportError as e:
@@ -455,13 +461,18 @@ def ingest_research_cards(config: CrawlConfig = RESTRICTED_CONFIG) -> Optional[V
     return store
 
 
-# Global instance
+# Global instance — Fix 5: thread-safe double-checked locking
+import threading
+
 _vector_store: Optional[VectorStore] = None
+_vector_store_lock = threading.Lock()
 
 
 def get_vector_store(config: CrawlConfig = RESTRICTED_CONFIG) -> VectorStore:
-    """Get the global vector store instance."""
+    """Get the global vector store instance (thread-safe)."""
     global _vector_store
     if _vector_store is None:
-        _vector_store = VectorStore(config)
+        with _vector_store_lock:
+            if _vector_store is None:
+                _vector_store = VectorStore(config)
     return _vector_store
