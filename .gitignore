@@ -201,3 +201,6 @@ tests/output/
 # --- Temporary Dumps ---
 notebookllm_source.txt
 frontend_dump_for_figma.txt
+
+# Jetson Binary Drivers
+libs/
