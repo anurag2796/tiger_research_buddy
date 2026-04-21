@@ -105,14 +105,19 @@ class PaperDownloader:
         self._downloaded_count = 0
         self._failed_count = 0
 
-        # Initialize Vision Crawler (lazy load will happen on first use, but we force it here for thread safety)
-        engine = getattr(config, 'PDF_ENGINE', 'marker')
+        # Use apple_fast (DocumentProcessor + PyMuPDF) on all platforms.
+        # config.PDF_ENGINE holds the backend name ("pymupdf"), not the VisionCrawler
+        # engine name — passing it directly caused Marker-PDF to load on Jetson,
+        # triggering CUDA assertion errors and memory corruption crashes.
+        import os as _os
+        _distiller_engine = _os.getenv("DISTILLER_ENGINE", "").strip().lower()
+        _vc_engine = "marker" if _distiller_engine == "marker" else "apple_fast"
         self.vision_crawler = VisionCrawler(
-            engine=engine,
-            pdf_backend=getattr(config, 'PDF_BACKEND', 'pymupdf'),
+            engine=_vc_engine,
+            pdf_backend="pymupdf",
             table_strategy=getattr(config, 'TABLE_STRATEGY', 'auto')
         )
-        # Force load models in main thread to avoid MPS race conditions
+        # Force load models in main thread to avoid race conditions
         self.vision_crawler._load_models()
 
     @property

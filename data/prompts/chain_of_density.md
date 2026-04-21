@@ -32,9 +32,8 @@ You must return your final analysis **ONLY** as a raw, valid JSON object.
 
 **Required JSON Schema:**
 {
-  "final_answer": "The dense, heavily compressed, entity-rich final text. Must not exceed 3 sentences.",
-  "missing_entities_added": ["Strictly", "Strings", "Extracted", "From", "Context"],
-  "sources_used": ["List any specific document IDs, line numbers, or faculty names explicitly referenced"]
+  "final_answer": "The dense, entity-rich final answer. Use as many sentences as needed — aim for 2-4 but never sacrifice completeness for brevity.",
+  "missing_entities_added": ["Strictly", "Strings", "Extracted", "From", "Context"]
 }
 
 ---

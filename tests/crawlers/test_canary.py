@@ -77,9 +77,13 @@ def engine():
     
     # Initialize and Load Data
     # This creates the vector store, clears it, and loads data from fixture
+    # ... (existing code)
     store = load_data_to_vectorstore(test_config)
-    
+    print(f"DEBUG: Documents in vector store: {store.collection.count()}")
+
     ollama_client = get_ollama_client()
+    # ...
+
     ollama_client.initialize()
     
     rag_engine = RAGEngine(vector_store=store, gemini_client=ollama_client)

@@ -1,0 +1,12 @@
+import pytest
+from src.utils.config import HW_PROFILE, RESTRICTED_CONFIG, FULL_CONFIG
+
+def test_config_hw_profile():
+    assert HW_PROFILE.is_linux is True
+    assert HW_PROFILE.context_window > 0
+
+def test_config_modes():
+    assert RESTRICTED_CONFIG.mode == "restricted"
+    assert RESTRICTED_CONFIG.max_profiles == 10
+    assert FULL_CONFIG.mode == "full"
+    assert FULL_CONFIG.max_profiles == 1000

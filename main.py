@@ -478,69 +478,100 @@ def full_setup():
 
 @cli.command("scrape-all")
 @click.option("--max-papers", default=10, help="Max papers per faculty member")
-def scrape_all(max_papers: int):
-    """Comprehensive scrape: faculty contacts, papers (Level 3), auto-tagging."""
+@click.option("--max-profiles", default=0, help="Max faculty profiles to crawl (0 = use config default)")
+@click.option("--mode", default="restricted", type=click.Choice(["restricted", "full"]),
+              help="restricted=15 profiles (fast test), full=production crawl for demo")
+def scrape_all(max_papers: int, max_profiles: int, mode: str):
+    """Comprehensive scrape: faculty contacts, papers (Level 3), auto-tagging.
+
+    Use --mode restricted (default) to test the pipeline end-to-end quickly.
+    Use --mode full before the demo to populate the database the API reads from.
+    """
     console.print(Panel.fit(
-        "[bold orange1]🔬 Comprehensive Data Collection[/]\n"
+        f"[bold orange1]🔬 Comprehensive Data Collection[/]\n"
+        f"Mode: [bold]{mode}[/] | Max papers/faculty: {max_papers}\n"
         "Scraping faculty profiles, distilling papers (Level 3), and generating tags...\n"
         "[dim]This will take a while but produces best results![/]",
         border_style="orange1"
     ))
-    
+
     from src.crawlers import run_smart_crawl, enrich_with_scholar, download_all_papers
+    from src.crawlers.paper_downloader import index_downloaded_papers
     from src.processors.pdf_distiller import DeepDistiller
-    from src.database.vector_store import load_data_to_vectorstore
-    from src.utils.config import RESTRICTED_CONFIG
+    from src.database.vector_store import load_data_to_vectorstore, ingest_research_cards
+    from src.utils.config import get_config
     import json
-    
-    # 1. RIT Profiles
-    console.print("\n[bold cyan]Phase 1: RIT Computing Profiles...[/]")
+
+    config = get_config(mode)
+    if max_profiles > 0:
+        config.MAX_PROFILES = max_profiles
+
+    # Phase 1: Crawl faculty profiles
+    console.print(f"\n[bold cyan]Phase 1: RIT Computing Profiles (up to {config.MAX_PROFILES})...[/]")
     try:
-        faculty = run_smart_crawl(max_profiles=15)
+        faculty = run_smart_crawl(max_profiles=config.MAX_PROFILES)
         data = {"faculty": faculty}
     except Exception as e:
         console.print(f"[red]SmartCrawler failed: {e}[/]")
         return
-    
-    # Enrich with Google Scholar
+
     if data.get("faculty"):
         try:
             data["faculty"] = enrich_with_scholar(data["faculty"])
         except Exception as e:
             console.print(f"[yellow]Scholar enrichment skipped: {e}[/]")
-    
-    # Save data
-    outfile = RESTRICTED_CONFIG.OUTPUT_FILE
+
+    outfile = config.OUTPUT_FILE
     with open(outfile, 'w') as f:
         json.dump(data, f, indent=2)
-    
-    # 2. Papers (Download)
+    console.print(f"[green]✓ Saved {len(data['faculty'])} faculty profiles to {outfile}[/]")
+
+    # Phase 2: Download PDFs
     console.print("\n[bold cyan]Phase 2: Downloading Papers...[/]")
-    papers = download_all_papers(max_per_faculty=max_papers)
-    
-    # 3. Papers (Distill with DeepDistiller Gen 2)
+    papers = download_all_papers(config=config, max_per_faculty=max_papers)
+
+    # Phase 3: Distill PDFs → Research Cards
     console.print("\n[bold cyan]Phase 3: Distilling Papers (Level 3)...[/]")
+    cards_dir = config.BASE_DIR / "research_cards"
     try:
-        distiller = DeepDistiller()
+        distiller = DeepDistiller(
+            pdf_dir=config.PDF_DIR,
+            faculty_db_path=config.OUTPUT_FILE,
+            output_dir=cards_dir,
+        )
         distiller.process_all()
     except Exception as e:
         console.print(f"[yellow]Distillation skipped: {e}[/]")
-    
-    # 4. Index everything
-    console.print("\n[bold cyan]Phase 4: Indexing...[/]")
-    load_data_to_vectorstore()
-    
-    # Stats
+
+    # Phase 4a: Index faculty profiles (clears collection first, must be first)
+    console.print("\n[bold cyan]Phase 4a: Indexing faculty profiles...[/]")
+    load_data_to_vectorstore(config)
+
+    # Phase 4b: Index chunked full-text paper extracts
+    console.print("\n[bold cyan]Phase 4b: Indexing paper text chunks...[/]")
+    try:
+        index_downloaded_papers(config=config)
+    except Exception as e:
+        console.print(f"[yellow]Paper chunk indexing skipped: {e}[/]")
+
+    # Phase 4c: Index distilled Research Cards
+    console.print("\n[bold cyan]Phase 4c: Indexing Research Cards...[/]")
+    try:
+        ingest_research_cards(config=config)
+    except Exception as e:
+        console.print(f"[yellow]Research card indexing skipped: {e}[/]")
+
     from src.database import get_vector_store
-    store = get_vector_store()
+    store = get_vector_store(config)
     store.initialize()
     stats = store.get_stats()
-    
+
     console.print(Panel.fit(
-        f"[bold green]✓ Comprehensive scrape complete![/]\n\n"
-        f"Faculty: {len(data.get('faculty', []))}\n"
+        f"[bold green]✓ Full pipeline complete! (mode={mode})[/]\n\n"
+        f"Faculty crawled: {len(data.get('faculty', []))}\n"
         f"Papers downloaded: {len(papers) if papers else 0}\n"
-        f"Total documents: {stats['total_documents']}",
+        f"Total documents indexed: {stats['total_documents']}\n"
+        f"[dim]Collection: {stats['collection_name']}[/]",
         border_style="green"
     ))
 

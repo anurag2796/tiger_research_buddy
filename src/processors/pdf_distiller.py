@@ -38,15 +38,28 @@ class DeepDistiller:
         self.max_pages = max_pages  # 0 = no limit
         
         self.llm_client = OllamaClient(model=LLMConfig.PIPELINE_MODEL)
-        # Initialize Vision Crawler with hardware-aware engine selection:
-        # - macOS (MPS): use 'apple_fast' for Surya/GMFT pipeline
-        # - Jetson/Linux (CUDA): use 'apple_fast' with pymupdf backend (Surya supports CUDA)
-        # - CPU fallback: use 'marker' if available, else 'apple_fast' with pymupdf
-        _engine = "apple_fast" if HW_PROFILE.pdf_engine == "pymupdf" else "marker"
+
+        # Engine selection (override via DISTILLER_ENGINE env var):
+        #   apple_fast  → DocumentProcessor (PyMuPDF + optional Surya layout + GMFT tables)
+        #                 Surya is auto-disabled on Jetson Orin inside DocumentProcessor
+        #                 to avoid VRAM contention with the LLM. Best default for all hardware.
+        #   marker      → Marker-PDF (heavier ML pipeline, higher layout fidelity on Mac/GPU server)
+        #                 Set DISTILLER_ENGINE=marker to enable.
+        import os as _os
+        _engine_override = _os.getenv("DISTILLER_ENGINE", "").strip().lower()
+        if _engine_override == "marker":
+            _engine = "marker"
+        else:
+            _engine = "apple_fast"
+
+        # pdf_backend for apple_fast: use pymupdf on all platforms (fast, no extra deps)
+        _pdf_backend = "pymupdf"
+        _render_dpi = 96 if HW_PROFILE.is_linux else 144
+
         self.vision_crawler = VisionCrawler(
             engine=_engine,
-            pdf_backend=HW_PROFILE.pdf_engine,
-            render_dpi=96 if HW_PROFILE.platform.startswith("linux") else 144,
+            pdf_backend=_pdf_backend,
+            render_dpi=_render_dpi,
         )
         
         # VLM client for validation (if API key available)
@@ -746,7 +759,7 @@ Response:"""
         # is a real concern during sustained batch processing.
         # On Jetson Orin (active cooling) or desktop Linux, skip entirely.
         manager_task = None
-        if HW_PROFILE.platform == "macos":
+        if HW_PROFILE.is_macos:
             async def cooldown_manager():
                 try:
                     while True:

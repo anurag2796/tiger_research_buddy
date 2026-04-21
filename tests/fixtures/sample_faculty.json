@@ -1,0 +1,8 @@
+[
+  {
+    "name": "Test Professor",
+    "email": "test@rit.edu",
+    "department": "Computing",
+    "research_areas": ["Machine Learning", "Computer Vision"]
+  }
+]

@@ -205,13 +205,16 @@ class DocumentProcessor:
         if SURYA_AVAILABLE:
             # Guard: skip Surya on Jetson / low-memory platforms to avoid OOM.
             # The Surya LayoutPredictor loads a ~400MB ViT model onto GPU.
+            # Override by setting ENABLE_SURYA_LAYOUT=true in .env.
             _skip_layout = False
             try:
                 from ..utils.hardware import HW_PROFILE
-                if HW_PROFILE.platform.startswith("linux") and HW_PROFILE.chat_concurrency <= 1:
+                force_enabled = os.getenv("ENABLE_SURYA_LAYOUT", "").strip().lower() == "true"
+                if not force_enabled and HW_PROFILE.platform.startswith("linux") and HW_PROFILE.chat_concurrency <= 1:
                     _skip_layout = True
                     logging.getLogger(__name__).info(
-                        "Surya layout detection disabled on edge device to conserve VRAM"
+                        "Surya layout detection disabled on edge device to conserve VRAM. "
+                        "Set ENABLE_SURYA_LAYOUT=true to override."
                     )
             except ImportError:
                 pass  # hardware module not available; proceed with Surya

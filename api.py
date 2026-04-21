@@ -14,9 +14,15 @@ from pydantic import BaseModel
 sys.path.append(os.getcwd())
 
 from src.database import get_vector_store
+from src.database.vector_store import process_data_into_documents
 from src.database.models import Idea
 from src.chatbot.ollama_client import get_ollama_client
-from src.utils.config import FULL_CONFIG, DATA_DIR, ALLOWED_ORIGINS
+from src.utils.config import FULL_CONFIG, RESTRICTED_CONFIG, DATA_DIR, ALLOWED_ORIGINS
+
+# Use RESTRICTED_CONFIG when full data hasn't been crawled yet.
+# Switch to FULL_CONFIG by setting API_MODE=full in .env.
+import os as _os
+_API_CONFIG = FULL_CONFIG if _os.getenv("API_MODE", "restricted") == "full" else RESTRICTED_CONFIG
 from src.retrieval.hybrid_retriever import HybridRetriever
 from src.generation.synthesizer import ResponseSynthesizer
 from src.collaboration.matcher import IdeaMatcher
@@ -48,15 +54,102 @@ async def lifespan(app: FastAPI):
     print(f"[TigerResearchBuddy] Initializing services... (platform: {HW_PROFILE.platform})")
 
     # Init Vector Store
-    store = get_vector_store(FULL_CONFIG)
+    store = get_vector_store(_API_CONFIG)
     store.initialize()
 
     # Init Ollama (B3: semaphore concurrency is set inside OllamaClient via HW_PROFILE)
     client = get_ollama_client()
     client.initialize()
 
+    # Build BM25 index covering all three document types stored in ChromaDB:
+    # (1) faculty/research_area/publication docs from main data JSON
+    # (2) paper chunks from papers metadata JSONs
+    # (3) research cards from research_cards JSONs
+    import hashlib
+    bm25_docs = []
+    if _API_CONFIG.OUTPUT_FILE.exists():
+        with open(_API_CONFIG.OUTPUT_FILE) as _f:
+            _data = json.load(_f)
+        bm25_docs.extend(process_data_into_documents(_data))
+        print(f"[TigerResearchBuddy] BM25: loaded {len(bm25_docs)} faculty/area docs.")
+    else:
+        print(f"[TigerResearchBuddy] WARNING: {_API_CONFIG.OUTPUT_FILE} not found — faculty BM25 disabled.")
+
+    # Add paper chunks — use same ID scheme as index_downloaded_papers so RRF can fuse with vector results
+    _papers_dir = _API_CONFIG.PAPERS_DIR
+    if _papers_dir.exists():
+        _paper_count = 0
+        for _pfile in _papers_dir.glob("*.json"):
+            try:
+                with open(_pfile) as _pf:
+                    _paper = json.load(_pf)
+                _title = _paper.get("title", "")
+                if not _title:
+                    continue
+                _doc_id = f"paper_{hashlib.md5(_title.encode()).hexdigest()[:12]}"
+                _authors = ", ".join(_paper.get("authors", [])[:5])
+                _content = (
+                    f"Research Paper: {_title}\n"
+                    f"Authors: {_authors}\n"
+                    f"Year: {_paper.get('year', 'Unknown')}\n"
+                    f"Faculty: {_paper.get('faculty', '')}\n"
+                    f"Abstract: {_paper.get('abstract', '')}\n"
+                    f"Excerpt: {_paper.get('extracted_text', '')[:2000]}"
+                )
+                bm25_docs.append({
+                    "id": f"{_doc_id}_chunk0",
+                    "content": _content,
+                    "metadata": {"doc_type": "paper", "title": _title, "authors": _authors},
+                })
+                _paper_count += 1
+            except Exception:
+                pass
+        print(f"[TigerResearchBuddy] BM25: loaded {_paper_count} paper docs.")
+
+    # Add research cards
+    _cards_dir = _API_CONFIG.BASE_DIR / "research_cards"
+    if _cards_dir.exists():
+        _card_count = 0
+        for _cfile in _cards_dir.glob("*.json"):
+            try:
+                with open(_cfile) as _cf:
+                    _card = json.load(_cf)
+                _card_id = str(_card.get("card_id", ""))
+                if not _card_id:
+                    continue
+                _bib = _card.get("bibliographic_data", {})
+                _core = _card.get("core_content", {})
+                _kg = _card.get("knowledge_graph", {})
+                _concepts = [
+                    (n.get("label", "") if isinstance(n, dict) else n)
+                    for n in _kg.get("nodes", [])
+                ]
+                _outcomes = _core.get("outcomes", [])
+                if not isinstance(_outcomes, list):
+                    _outcomes = [str(_outcomes)]
+                _card_content = (
+                    f"Title: {_bib.get('title', '')}\n"
+                    f"Domain: {_bib.get('primary_domain', '')}\n"
+                    f"Novelty: {_core.get('novelty_claim', '')}\n"
+                    f"Methodology: {_core.get('key_methodology', '')}\n"
+                    f"Outcomes: {', '.join(_outcomes)}\n"
+                    f"Concepts: {', '.join(_concepts)}\n"
+                    f"Abstract: {str(_core.get('full_text_markdown', ''))[:1000]}"
+                )
+                bm25_docs.append({
+                    "id": _card_id,
+                    "content": _card_content,
+                    "metadata": {"doc_type": "research_card", "title": _bib.get("title", "")},
+                })
+                _card_count += 1
+            except Exception:
+                pass
+        print(f"[TigerResearchBuddy] BM25: loaded {_card_count} research card docs.")
+
+    print(f"[TigerResearchBuddy] BM25 index: {len(bm25_docs)} total documents loaded.")
+
     # Create Retriever and Synthesizer
-    retriever = HybridRetriever(vector_store=store)
+    retriever = HybridRetriever(vector_store=store, documents=bm25_docs if bm25_docs else None)
     synthesizer = ResponseSynthesizer()
     idea_matcher = IdeaMatcher()
     impact_analyzer = ImpactAnalyzer()

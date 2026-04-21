@@ -384,15 +384,15 @@ Response:
             source_type = meta.get('doc_type', 'unknown')
             
             # Format based on type
+            content = doc.get('content', '')
             if source_type in ['professor', 'faculty_profile']:
-                content = doc.get('content', '')
                 context_entry = f"[{i}] FACULTY PROFILE: {content}"
-            elif source_type in ['publication', 'research_paper']:
-                content = doc.get('content', '')
+            elif source_type in ['publication', 'research_paper', 'paper']:
                 context_entry = f"[{i}] RESEARCH PAPER: {content}"
+            elif source_type == 'research_card':
+                context_entry = f"[{i}] RESEARCH CARD (distilled paper): {content}"
             else:
-                content = doc.get('content', '')[:1000].replace('\n', ' ')
-                context_entry = f"[{i}] SOURCE ({source_type}): {content}"
+                context_entry = f"[{i}] SOURCE ({source_type}): {content[:1000].replace(chr(10), ' ')}"
             
             context_parts.append(context_entry)
             
@@ -420,8 +420,10 @@ Response:
 
             if source_type in ['professor', 'faculty_profile']:
                 context_parts.append(f"[{i}] FACULTY PROFILE: {content}")
-            elif source_type in ['publication', 'research_paper']:
+            elif source_type in ['publication', 'research_paper', 'paper']:
                 context_parts.append(f"[{i}] RESEARCH PAPER: {content}")
+            elif source_type == 'research_card':
+                context_parts.append(f"[{i}] RESEARCH CARD (distilled paper): {content}")
             else:
                 context_parts.append(f"[{i}] SOURCE ({source_type}): {content[:1000].replace(chr(10), ' ')}")
 

@@ -15,6 +15,7 @@ Target Schema:
     "novelty_claim": "One sentence describing the core novelty.",
     "key_methodology": "Brief description of the method.",
     "outcomes": ["Finding 1", "Finding 2"],
+    "full_text_markdown": "A 3-5 paragraph plain-text summary of the paper's full content: problem, method, experiments, results. This is the searchable body used by the retrieval system.",
     "visual_elements": [
       {"type": "Table", "page": 0, "bbox": [0,0,0,0], "markdown": "| col1 | col2 |\n|---|---|\n| a | b |"}
     ]
