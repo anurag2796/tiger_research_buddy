@@ -305,7 +305,8 @@ class ResearchDatabase:
         with get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM faculty WHERE id = ?", (faculty_id,))
-            faculty = dict(cursor.fetchone()) if cursor.fetchone() else None
+            row = cursor.fetchone()
+            faculty = dict(row) if row else None
             
             if faculty:
                 cursor.execute("""

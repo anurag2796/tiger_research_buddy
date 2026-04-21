@@ -3,7 +3,6 @@ import json
 import time
 import asyncio
 import aiohttp
-import aiofiles
 from urllib.parse import urljoin, urlparse
 from typing import Set, Dict, List, Optional
 import networkx as nx

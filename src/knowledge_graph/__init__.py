@@ -11,7 +11,7 @@ from .data_mining import DataMining
 
 __all__ = [
     "KnowledgeGraphBuilder",
-    "build_knowledge_graph"
+    "build_knowledge_graph",
     "GraphQueries",
     "GraphAnalytics",
     "DataMining",
