@@ -23,7 +23,10 @@ class GraphQueries:
         RETURN f.name
         LIMIT 1
         """
-        result = self.store.execute(query, {"name": name})
+        if hasattr(self.store, 'conn'):
+            result = self.store.conn.execute(query, {"name": name})
+        else:
+            result = self.store.execute(query, {"name": name})
         if result.has_next():
             return result.get_next()[0]
         return None
@@ -36,7 +39,10 @@ class GraphQueries:
         RETURN b.name, r.weight
         ORDER BY r.weight DESC
         """
-        results = self.store.execute(query, {"name": faculty_name})
+        if hasattr(self.store, 'conn'):
+            results = self.store.conn.execute(query, {"name": faculty_name})
+        else:
+            results = self.store.execute(query, {"name": faculty_name})
         
         collaborators = []
         while results.has_next():
@@ -70,13 +76,19 @@ class GraphQueries:
         topics = []
         
         # Topics
-        res_t = self.store.execute(query_topics, {"name": faculty_name})
+        if hasattr(self.store, 'conn'):
+            res_t = self.store.conn.execute(query_topics, {"name": faculty_name})
+        else:
+            res_t = self.store.execute(query_topics, {"name": faculty_name})
         while res_t.has_next():
             row = res_t.get_next()
             topics.append({"topic": row[0], "category": row[1], "weight": row[2]})
             
         # Concepts
-        res_c = self.store.execute(query_concepts, {"name": faculty_name})
+        if hasattr(self.store, 'conn'):
+            res_c = self.store.conn.execute(query_concepts, {"name": faculty_name})
+        else:
+            res_c = self.store.execute(query_concepts, {"name": faculty_name})
         while res_c.has_next():
             row = res_c.get_next()
             topics.append({"topic": row[0], "category": row[1], "weight": row[2]})
@@ -102,7 +114,10 @@ class GraphQueries:
         faculty_depts = {}
         
         # Execute Topics query
-        res_t = self.store.execute(query_topics, {"topic": topic})
+        if hasattr(self.store, 'conn'):
+            res_t = self.store.conn.execute(query_topics, {"topic": topic})
+        else:
+            res_t = self.store.execute(query_topics, {"topic": topic})
         while res_t.has_next():
             row = res_t.get_next()
             name, dept, weight = row[0], row[1], row[2]
@@ -110,7 +125,10 @@ class GraphQueries:
             faculty_depts[name] = dept
             
         # Execute Concepts query
-        res_c = self.store.execute(query_concepts, {"topic": topic})
+        if hasattr(self.store, 'conn'):
+            res_c = self.store.conn.execute(query_concepts, {"topic": topic})
+        else:
+            res_c = self.store.execute(query_concepts, {"topic": topic})
         while res_c.has_next():
             row = res_c.get_next()
             name, dept, weight = row[0], row[1], row[2]
@@ -136,7 +154,10 @@ class GraphQueries:
         RETURN p.paper_id, p.title, p.year
         ORDER BY p.year DESC
         """
-        results = self.store.execute(query, {"name": faculty_name})
+        if hasattr(self.store, 'conn'):
+            results = self.store.conn.execute(query, {"name": faculty_name})
+        else:
+            results = self.store.execute(query, {"name": faculty_name})
         
         papers = []
         while results.has_next():
@@ -167,7 +188,10 @@ class GraphQueries:
         RETURN a.name, b.name, c.name
         LIMIT 5
         """
-        results = self.store.execute(query)
+        if hasattr(self.store, 'conn'):
+            results = self.store.conn.execute(query)
+        else:
+            results = self.store.execute(query)
         
         clusters = []
         idx = 0
