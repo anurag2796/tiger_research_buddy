@@ -100,11 +100,17 @@ class EntityExtractor:
         # Strip punctuation for better matching
         query_cleaned = query.translate(str.maketrans('', '', string.punctuation))
         query_lower = query_cleaned.lower()
+
+        # ⚡ Bolt Optimization: Pad the query string once outside the loop
+        # instead of creating a new formatted string on every iteration.
+        # This turns an O(N) string concatenation into an O(1) operation
+        # and significantly speeds up the hot loop.
+        query_lower_padded = f" {query_lower} "
         found_entities = []
         
         # Naive token matching
         for label, node_id in self.index.items():
-            if f" {label} " in f" {query_lower} ":
+            if f" {label} " in query_lower_padded:
                  display_label = (
                      self.graph.nodes[node_id].get('name') or 
                      self.graph.nodes[node_id].get('label') or 
