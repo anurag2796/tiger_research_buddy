@@ -243,21 +243,28 @@ class KnowledgeGraphBuilder:
         """Get graph statistics via Queries."""
         # Simple counts
         nodes = 0
-        edges = 0
         node_types = {}
         edge_types = {}
-        
+
         # Create list as local var to avoid SyntaxError in f-string
         tables = ["Faculty", "Paper", "Concept", "Topic"]
-        for table in tables:
-            r = self.store.execute(f"MATCH (n:{table}) RETURN count(n)").get_next()
-            count = r[0]
+
+        # Optimization: Use UNION ALL to combine multiple count queries into one
+        # This avoids N+1 query pattern for node counts
+        query = " UNION ALL ".join(
+            [f"MATCH (n:{table}) RETURN '{table}' as label, count(n) as count" for table in tables]
+        )
+        results = self.store.execute(query)
+
+        while results.has_next():
+            row = results.get_next()
+            label, count = row[0], row[1]
+            node_types[label] = count
             nodes += count
-            node_types[table] = count
-            
+
         return {
             "nodes": nodes,
-            "edges": "Approximated (Unknown)", # Kuzu doesn't give global edge count easily without iterating all tables
+            "edges": "Approximated (Unknown)",  # Kuzu doesn't give global edge count easily without iterating all tables
             "node_types": node_types,
             "edge_types": edge_types,
         }
