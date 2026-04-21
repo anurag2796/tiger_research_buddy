@@ -1,8 +1,12 @@
 # TigerResearchBuddy - RIT Research Collaboration Platform
 
+
 > **AI-Powered Research Discovery & Collaboration for Rochester Institute of Technology**
 
 ## 🎯 Overview
+
+**TigerResearchBuddy** is an AI-powered research companion built for RIT (Golisano College of Computing) students. It helps you discover faculty advisors, explore ongoing research projects, and find relevant papers — all through a simple chat interface. Under the hood it combines **web scraping**, **vector databases** (RAG), and **local Large Language Models** via Ollama, so your data stays private and the app works fully offline.
+
 
 TigerResearchBuddy is an intelligent research collaboration platform that helps RIT students and faculty discover research opportunities, find collaborators, and explore interdisciplinary connections across departments.
 

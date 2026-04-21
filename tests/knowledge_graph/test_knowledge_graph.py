@@ -15,8 +15,11 @@ def test_graph_queries():
     """Test graph query functionality."""
     console.print("\n[bold cyan]🔍 Testing Graph Queries...[/]\n")
     
-    graph = build_knowledge_graph()
-    queries = GraphQueries(graph)
+    build_knowledge_graph()
+    from src.knowledge_graph.graph_store import GraphStore
+    from src.utils.config import GRAPH_DB_PATH
+    store = GraphStore(GRAPH_DB_PATH)
+    queries = GraphQueries(store)
     
     # Test 1: Find faculty
     faculty_id = queries.find_faculty_by_name("Travis Desell")
