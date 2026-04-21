@@ -1,5 +1,6 @@
 
 import kuzu
+import re
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 import shutil
@@ -66,23 +67,62 @@ class GraphStore:
         self._create_rel_table("About", "Paper", "Topic", properties={"weight": "FLOAT"})
         self._create_rel_table("RelatedTo", "Concept", "Concept", properties={"relation": "STRING", "weight": "FLOAT"})
 
+    def _validate_identifier(self, name: str):
+        """Ensure the identifier is a valid Cypher identifier and safe from injection."""
+        if not re.match(r'^[a-zA-Z][a-zA-Z0-9_]*$', name):
+            raise ValueError(f"Invalid identifier: {name}")
+
+    def _validate_type(self, type_name: str):
+        """Validate KuzuDB data types."""
+        allowed_types = {
+            "STRING", "INT64", "INT32", "INT16", "INT8", "UINT64", "UINT32", "UINT16", "UINT8",
+            "DOUBLE", "FLOAT", "BOOL", "DATE", "TIMESTAMP", "TIMESTAMP_NS", "TIMESTAMP_MS",
+            "TIMESTAMP_SEC", "TIMESTAMP_TZ", "INTERVAL", "INTERNAL_ID"
+        }
+        if type_name.upper() not in allowed_types:
+            raise ValueError(f"Invalid type: {type_name}")
+
     def _create_node_table(self, table_name: str, schema: Dict[str, str], primary_key: str):
         try:
+            self._validate_identifier(table_name)
+            self._validate_identifier(primary_key)
             # Build schema string: "name STRING, age INT64, ..."
-            schema_str = ", ".join([f"{k} {v}" for k, v in schema.items()])
+            schema_parts = []
+            for k, v in schema.items():
+                self._validate_identifier(k)
+                self._validate_type(v)
+                schema_parts.append(f"{k} {v}")
+
+            schema_str = ", ".join(schema_parts)
             self.conn.execute(f"CREATE NODE TABLE IF NOT EXISTS {table_name}({schema_str}, PRIMARY KEY ({primary_key}))")
         except Exception as e:
+            # Re-raise ValueErrors for validation failures
+            if isinstance(e, ValueError):
+                raise e
             # Table might already exist
             pass
 
     def _create_rel_table(self, name: str, src: str, dst: str, properties: Optional[Dict[str, str]] = None):
         try:
+            self._validate_identifier(name)
+            self._validate_identifier(src)
+            self._validate_identifier(dst)
+
             props_str = ""
             if properties:
-                props_str = ", " + ", ".join([f"{k} {v}" for k, v in properties.items()])
+                prop_parts = []
+                for k, v in properties.items():
+                    self._validate_identifier(k)
+                    self._validate_type(v)
+                    prop_parts.append(f"{k} {v}")
+                props_str = ", " + ", ".join(prop_parts)
             
             self.conn.execute(f"CREATE REL TABLE IF NOT EXISTS {name}(FROM {src} TO {dst}{props_str})")
         except Exception as e:
+            # Re-raise ValueErrors for validation failures
+            if isinstance(e, ValueError):
+                raise e
+            # Table might already exist
             pass
 
     def execute(self, query: str, parameters: Optional[Dict[str, Any]] = None):
