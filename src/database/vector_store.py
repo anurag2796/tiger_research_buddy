@@ -34,6 +34,10 @@ def _get_embedding_function():
     - Returns "cuda" on Jetson Orin / any CUDA host
     - Returns "cpu" as universal fallback
     Override with the ``EMBEDDING_DEVICE`` env var if needed.
+
+    A secondary CUDA availability check here ensures we never pass device='cuda'
+    to SentenceTransformer when torch.cuda.is_available() is False, which would
+    cause a hard crash instead of a graceful CPU fallback.
     """
     global _embedding_function
     if _embedding_function is None:
@@ -43,6 +47,21 @@ def _get_embedding_function():
                 from sentence_transformers import SentenceTransformer
                 # X4 fix: use hardware-aware device, not the inverted MPS check.
                 device = get_embedding_device()
+
+                # Fix 2: belt-and-suspenders CUDA validation
+                if device == "cuda":
+                    try:
+                        import torch
+                        if not torch.cuda.is_available():
+                            console.print(
+                                "[yellow]WARNING: EMBEDDING_DEVICE resolved to 'cuda' but "
+                                "torch.cuda.is_available()=False. Falling back to CPU. "
+                                "Reinstall a Jetson-compatible PyTorch wheel to enable GPU.[/]"
+                            )
+                            device = "cpu"
+                    except ImportError:
+                        device = "cpu"
+
                 console.print(f"[dim]Loading {EMBEDDING_MODEL} on device={device!r}[/]")
                 _model = SentenceTransformer(EMBEDDING_MODEL, trust_remote_code=True, device=device)
                 
@@ -125,7 +144,7 @@ class VectorStore:
             metadatas.append(clean_metadata)
         
         # Upsert to handle duplicates
-        # Upsert to handle duplicates
+
         with Timer(f"Upserting {len(documents)} docs to Chroma", use_rich=False):
             self.collection.upsert(
                 ids=ids,
@@ -325,7 +344,8 @@ URL: {area.get('url', '')}"""
         h_index = scholar.get("h_index", "Unknown")
         
         # Get profile data
-        bio = prof.get("bio", "")[:500] if prof.get("bio") else ""
+        bio_val = prof.get("bio", "")
+        bio = str(bio_val)[:500] if bio_val else ""
         research_areas = prof.get("research_areas", [])
         
         content = f"""Professor: {prof['name']}
@@ -337,7 +357,7 @@ Research Areas: {', '.join(research_areas) if research_areas else 'See RIT websi
 Tags: {', '.join(tag_names) if tag_names else 'faculty'}
 Google Scholar Citations: {citations}
 H-Index: {h_index}
-Recent Publications: {', '.join(p.get('title', '')[:100] for p in pubs[:5]) if pubs else 'Not available'}
+Recent Publications: {', '.join(str(p.get('title', ''))[:100] for p in pubs[:5]) if pubs else 'Not available'}
 Profile URL: {prof.get('profile_url', '')}
 Email: {prof.get('email', '')}
 Office: {prof.get('office', '')}

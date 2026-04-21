@@ -1,3 +1,7 @@
+import sys
+from pathlib import Path
+# Add project root to sys.path so 'src' can be found
+sys.path.append(str(Path(__file__).parent.parent))
 
 from src.utils.config import LLMConfig
 from src.crawlers.smart_crawler import SmartCrawler
