@@ -25,12 +25,18 @@ class GraphRefiner:
         
         console.print(f"[cyan]Loading Raw Graph...[/]")
         self.graph = nx.read_gml(self.input_path)
+
+        # Ensure all nodes have a 'type' attribute, defaulting to 'unknown'
+        for n in self.graph.nodes:
+            if "type" not in self.graph.nodes[n]:
+                self.graph.nodes[n]["type"] = "unknown"
+
         console.print(f"[green]Loaded {self.graph.number_of_nodes()} nodes.[/]")
 
     def normalize_concepts(self):
         """Merge synonymous concepts using fuzzy matching."""
-        # Fix: Ensure nodes have 'type' attribute (default to 'unknown' if missing)
-        concepts = [n for n, d in self.graph.nodes(data=True) if d.get("type", "unknown") == "concept"]
+        # All nodes now guaranteed to have 'type' attribute from load_graph()
+        concepts = [n for n, d in self.graph.nodes(data=True) if d.get("type") == "concept"]
         
         console.print(f"[cyan]Analyzing {len(concepts)} concepts for duplicates...[/]")
         
