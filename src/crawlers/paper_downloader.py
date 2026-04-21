@@ -19,9 +19,9 @@ from typing import Optional, Generator
 from urllib.parse import urlparse, quote_plus
 
 import requests
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskID
-import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from ..utils.config import CrawlConfig, RESTRICTED_CONFIG
@@ -247,6 +247,57 @@ class PaperDownloader:
         
         return safe
     
+    @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1.5, min=2, max=10), retry=retry_if_exception_type(requests.RequestException))
+    def _do_search_arxiv(self, search_query: str, max_results: int, is_author: bool, query: str) -> list[dict]:
+        url = f"http://export.arxiv.org/api/query?search_query={search_query}&max_results={max_results}"
+        response = self.session.get(url, timeout=30)
+        response.raise_for_status()
+
+        # Parse XML response
+        from xml.etree import ElementTree as ET
+        root = ET.fromstring(response.content)
+
+        papers = []
+        ns = {'atom': 'http://www.w3.org/2005/Atom'}
+
+        for entry in root.findall('atom:entry', ns):
+            title_elem = entry.find('atom:title', ns)
+            summary_elem = entry.find('atom:summary', ns)
+
+            # Get PDF link
+            pdf_link = None
+            for link in entry.findall('atom:link', ns):
+                if link.get('title') == 'pdf':
+                    pdf_link = link.get('href')
+                    break
+
+            # Get authors
+            authors = []
+            for author in entry.findall('atom:author', ns):
+                name = author.find('atom:name', ns)
+                if name is not None:
+                    authors.append(name.text)
+
+            # Filter by Author Match (Client-side double check)
+            if is_author:
+                # Check if query author is actually in list (fuzzy match)
+                # ArXiv search can be loose
+                query_lower = query.lower()
+                last_name = query_lower.split()[-1]
+                if not any(last_name in a.lower() for a in authors):
+                     continue
+
+            if title_elem is not None:
+                papers.append({
+                    "title": title_elem.text.strip().replace('\n', ' '),
+                    "abstract": summary_elem.text.strip() if summary_elem is not None else "",
+                    "authors": authors,
+                    "pdf_url": pdf_link,
+                    "source": "arxiv"
+                })
+
+        return papers
+
     @log_timing("Search ArXiv")
     def search_arxiv(self, query: str, max_results: int = 10, is_author: bool = False) -> list[dict]:
         """Search ArXiv for papers."""
@@ -258,13 +309,8 @@ class PaperDownloader:
             
             # Format query properly - ArXiv uses specific field prefixes
             if is_author:
-                # Use full name for better precision (e.g. au:del_maestro)
-                # Split by space and join with underscore if multiple parts
                 parts = query.replace(",", "").split()
                 if len(parts) > 1:
-                     # "Tae Oh" -> "au:oh_t" or "au:tae_oh"? ArXiv standard is usually lastname_initial
-                     # But full name search works reasonably well as "au:lastname_firstname"
-                     # Let's try flexible search: au:lastname AND au:firstname
                      lastname = parts[-1]
                      firstname = parts[0]
                      search_query = f"au:{lastname}_{firstname}"
@@ -273,64 +319,87 @@ class PaperDownloader:
             else:
                 search_query = f"all:{quote_plus(query)}"
             
-            url = f"http://export.arxiv.org/api/query?search_query={search_query}&max_results={max_results}"
-            response = self.session.get(url, timeout=30)
-            response.raise_for_status()
+            return self._do_search_arxiv(search_query, max_results, is_author, query)
             
-            # Parse XML response
-            from xml.etree import ElementTree as ET
-            root = ET.fromstring(response.content)
-            
-            papers = []
-            ns = {'atom': 'http://www.w3.org/2005/Atom'}
-            
-            for entry in root.findall('atom:entry', ns):
-                title_elem = entry.find('atom:title', ns)
-                summary_elem = entry.find('atom:summary', ns)
-                
-                # Get PDF link
-                pdf_link = None
-                for link in entry.findall('atom:link', ns):
-                    if link.get('title') == 'pdf':
-                        pdf_link = link.get('href')
-                        break
-                
-                # Get authors
-                authors = []
-                for author in entry.findall('atom:author', ns):
-                    name = author.find('atom:name', ns)
-                    if name is not None:
-                        authors.append(name.text)
-                
-                # Filter by Author Match (Client-side double check)
-                if is_author:
-                    # Check if query author is actually in list (fuzzy match)
-                    # ArXiv search can be loose
-                    query_lower = query.lower()
-                    last_name = query_lower.split()[-1]
-                    if not any(last_name in a.lower() for a in authors):
-                         continue
-                
-                if title_elem is not None:
-                    papers.append({
-                        "title": title_elem.text.strip().replace('\n', ' '),
-                        "abstract": summary_elem.text.strip() if summary_elem is not None else "",
-                        "authors": authors,
-                        "pdf_url": pdf_link,
-                        "source": "arxiv"
-                    })
-            
-            return papers
-            
-        except Exception as e:
-            error_str = str(e)
-            # Trigger exponential backoff on 429 rate limit errors
-            if "429" in error_str:
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 429:
                 self._handle_rate_limit_error()
+            else:
+                logger.error(f"ArXiv search HTTP error for {query}: {e}")
+                console.print(f"[yellow]ArXiv search failed: {e}[/]")
+            return []
+        except Exception as e:
             logger.error(f"ArXiv search failed for {query}: {e}")
             console.print(f"[yellow]ArXiv search failed: {e}[/]")
             return []
     
+    @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=2, min=4, max=20), retry=retry_if_exception_type((requests.RequestException, json.JSONDecodeError)))
+    def _do_search_semantic_scholar(self, query: str, limit: int) -> list[dict]:
+        url = f"https://api.semanticscholar.org/graph/v1/paper/search"
+        # Request affiliations
+        params = {
+            "query": query,
+            "limit": limit,
+            "fields": "title,abstract,authors.name,authors.affiliations,year,citationCount,openAccessPdf"
+        }
+        response = self.session.get(url, params=params, timeout=30)
+
+        # Handle rate limiting explicitly
+        if response.status_code == 429:
+            self._handle_rate_limit_error()
+            response.raise_for_status() # Trigger retry
+
+        response.raise_for_status()
+        data = response.json()
+
+        papers = []
+        for paper in data.get("data", []):
+            pdf_url = None
+            if paper.get("openAccessPdf"):
+                pdf_url = paper["openAccessPdf"].get("url")
+
+            # Process authors and affiliations
+            authors = []
+            has_rit_affiliation = False
+
+            for a in paper.get("authors", []):
+                name = a.get("name", "")
+                authors.append(name)
+
+                # AFFILIATION CHECK
+                affiliations = a.get("affiliations", [])
+                for aff in affiliations:
+                    if isinstance(aff, str):
+                        aff_lower = aff.lower()
+                        if "rochester" in aff_lower or "rit" in aff_lower:
+                            has_rit_affiliation = True
+                            break
+
+            # Strict Filter: If we see explicit affiliations on the paper
+            # but NONE match RIT, skip it to avoid common-name ambiguity.
+            has_any_affiliation = any(
+                a.get("affiliations") for a in paper.get("authors", [])
+            )
+            if has_any_affiliation and not has_rit_affiliation:
+                logger.debug(
+                    f"Skipping '{paper.get('title', '')}' — "
+                    f"affiliations present but no RIT match."
+                )
+                continue
+
+            papers.append({
+                "title": paper.get("title", "").replace("\n", " "),
+                "abstract": paper.get("abstract", "") if paper.get("abstract") else "",
+                "authors": authors,
+                "year": paper.get("year", 0),
+                "citations": paper.get("citationCount", 0),
+                "pdf_url": pdf_url,
+                "source": "semantic_scholar",
+                "paper_id": paper.get("paperId", "")
+            })
+
+        return papers
+
     @log_timing("Search Semantic Scholar")
     def search_semantic_scholar(self, query: str, limit: int = 10) -> list[dict]:
         """Search Semantic Scholar for papers."""
@@ -340,76 +409,18 @@ class PaperDownloader:
         try:
             # Respect adaptive backoff, or use a 5s base delay for SS
             self._rate_limit(base_sleep=5.0)
+            papers = self._do_search_semantic_scholar(query, limit)
             
-            url = f"https://api.semanticscholar.org/graph/v1/paper/search"
-            # Request affiliations
-            params = {
-                "query": query,
-                "limit": limit,
-                "fields": "title,abstract,authors.name,authors.affiliations,year,citationCount,openAccessPdf"
-            }
-            response = self.session.get(url, params=params, timeout=30)
-            
-            # Handle rate limiting gracefully
-            if response.status_code == 429:
-                console.print("[dim]Rate limited, waiting...[/]")
-                self._handle_rate_limit_error()
-                return []
-            
-            response.raise_for_status()
-            
-            data = response.json()
-            papers = []
-            
-            for paper in data.get("data", []):
-                pdf_url = None
-                if paper.get("openAccessPdf"):
-                    pdf_url = paper["openAccessPdf"].get("url")
-                
-                # Process authors and affiliations
-                authors = []
-                has_rit_affiliation = False
-                
-                for a in paper.get("authors", []):
-                    name = a.get("name", "")
-                    authors.append(name)
-                    
-                    # AFFILIATION CHECK
-                    affiliations = a.get("affiliations", [])
-                    for aff in affiliations:
-                        if isinstance(aff, str):
-                            aff_lower = aff.lower()
-                            if "rochester" in aff_lower or "rit" in aff_lower:
-                                has_rit_affiliation = True
-                                break
-                
-                # Strict Filter: If we see explicit affiliations on the paper
-                # but NONE match RIT, skip it to avoid common-name ambiguity.
-                # Semantic Scholar affiliations are often empty, so we only
-                # reject when affiliations ARE present but don't match RIT.
-                has_any_affiliation = any(
-                    a.get("affiliations") for a in paper.get("authors", [])
-                )
-                if has_any_affiliation and not has_rit_affiliation:
-                    logger.debug(
-                        f"Skipping '{paper.get('title', '')}' — "
-                        f"authors have affiliations but none match RIT"
-                    )
-                    continue
-                
-                papers.append({
-                    "title": paper.get("title", ""),
-                    "abstract": paper.get("abstract", ""),
-                    "authors": authors,
-                    "year": paper.get("year"),
-                    "citations": paper.get("citationCount", 0),
-                    "pdf_url": pdf_url,
-                    "source": "semantic_scholar",
-                    "has_rit_affiliation": has_rit_affiliation
-                })
-            
+            console.print(f"[green]Found {len(papers)} papers on Semantic Scholar[/]")
             return papers
-            
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 429:
+                console.print("[dim]Rate limited, giving up...[/]")
+                return []
+            else:
+                logger.error(f"Semantic Scholar search HTTP error for {query}: {e}")
+                console.print(f"[yellow]Semantic Scholar search failed: {e}[/]")
+                return []
         except Exception as e:
             logger.error(f"Semantic Scholar search failed for {query}: {e}")
             console.print(f"[yellow]Semantic Scholar search failed: {e}[/]")

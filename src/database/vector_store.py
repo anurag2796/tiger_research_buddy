@@ -121,6 +121,14 @@ class VectorStore:
         
         if not documents:
             return
+
+        # Hook for hybrid retriever to keep BM25 in sync if rag_engine is running
+        try:
+            from ..chatbot.rag_engine import _rag_engine
+            if _rag_engine is not None and hasattr(_rag_engine, "hybrid_retriever"):
+                _rag_engine.hybrid_retriever.add_documents_to_bm25(documents)
+        except ImportError:
+            pass
         
         ids = []
         contents = []
@@ -285,6 +293,37 @@ Abstract: {str(core.get('full_text_markdown', ''))[:1000]}..."""
         }
 
 
+def chunk_text(text: str, max_chunk_size: int = 1000, overlap: int = 200) -> list[str]:
+    """Split text into overlapping chunks of approx max_chunk_size."""
+    if not text:
+        return []
+    if len(text) <= max_chunk_size:
+        return [text]
+
+    chunks = []
+    # Split by paragraphs first
+    paragraphs = [p for p in text.split('\n\n') if p.strip()]
+
+    current_chunk = ""
+    for p in paragraphs:
+        if len(current_chunk) + len(p) < max_chunk_size:
+            current_chunk += p + "\n\n"
+        else:
+            if current_chunk:
+                chunks.append(current_chunk.strip())
+            # If single paragraph is too large, hard split it
+            if len(p) > max_chunk_size:
+                for i in range(0, len(p), max_chunk_size - overlap):
+                    chunks.append(p[i:i + max_chunk_size])
+                current_chunk = ""
+            else:
+                current_chunk = p + "\n\n"
+
+    if current_chunk:
+        chunks.append(current_chunk.strip())
+
+    return chunks
+
 def process_data_into_documents(data: dict):
     """Process raw data into document format for vector store using a generator."""
     from ..utils.tag_generator import generate_tags_for_professor, generate_tags_for_research_area, generate_tags_for_publication
@@ -293,11 +332,7 @@ def process_data_into_documents(data: dict):
     
     # Add research areas with tags
     for area in data.get("research_areas", []):
-        doc_id = f"area_{area['name'].lower().replace(' ', '_').replace('/', '_')[:50]}"
-        
-        if doc_id in seen_ids:
-            continue
-        seen_ids.add(doc_id)
+        base_id = f"area_{area['name'].lower().replace(' ', '_').replace('/', '_')[:50]}"
         
         # Generate tags
         tags = generate_tags_for_research_area(area)
@@ -306,31 +341,37 @@ def process_data_into_documents(data: dict):
         # Build rich content
         faculty_names = [f.get("name", "") for f in area.get("faculty", [])][:10]
         
-        content = f"""Research Area: {area['name']}
-Description: {area.get('description', 'No description available')}
+        desc = area.get('description', 'No description available')
+        chunks = chunk_text(desc, max_chunk_size=1500)
+
+        for i, chunk in enumerate(chunks):
+            doc_id = f"{base_id}_chunk_{i}"
+            if doc_id in seen_ids:
+                continue
+            seen_ids.add(doc_id)
+
+            content = f"""Research Area: {area['name']}
+Description: {chunk}
 Tags: {', '.join(tag_names) if tag_names else 'computing, research'}
 Faculty in this area: {', '.join(faculty_names) if faculty_names else 'See individual profiles'}
 URL: {area.get('url', '')}"""
-        
-        yield {
-            "id": doc_id,
-            "content": content,
-            "metadata": {
-                "doc_type": "research_area",
-                "name": area["name"],
-                "url": area.get("url", ""),
-                "college": area.get("college", ""),
-                "tags": json.dumps(tag_names)
+
+            yield {
+                "id": doc_id,
+                "content": content,
+                "metadata": {
+                    "doc_type": "research_area",
+                    "name": area["name"],
+                    "url": area.get("url", ""),
+                    "college": area.get("college", ""),
+                    "tags": json.dumps(tag_names),
+                    "chunk": i
+                }
             }
-        }
     
     # Add faculty with tags
     for prof in data.get("faculty", []):
-        doc_id = f"prof_{prof['name'].lower().replace(' ', '_').replace('/', '_')[:50]}"
-        
-        if doc_id in seen_ids:
-            continue
-        seen_ids.add(doc_id)
+        base_id = f"prof_{prof['name'].lower().replace(' ', '_').replace('/', '_')[:50]}"
         
         # Generate tags
         tags = generate_tags_for_professor(prof)
@@ -345,40 +386,51 @@ URL: {area.get('url', '')}"""
         
         # Get profile data
         bio_val = prof.get("bio", "")
-        bio = str(bio_val)[:500] if bio_val else ""
         research_areas = prof.get("research_areas", [])
         
-        content = f"""Professor: {prof['name']}
+        # Abstract all pubs to chunk later if needed, but for prof keep it simple
+        pubs_str = ', '.join(str(p.get('title', ''))[:100] for p in pubs[:5]) if pubs else 'Not available'
+
+        bio_chunks = chunk_text(bio_val if bio_val else "Not available", max_chunk_size=1500)
+
+        for i, chunk in enumerate(bio_chunks):
+            doc_id = f"{base_id}_chunk_{i}"
+            if doc_id in seen_ids:
+                continue
+            seen_ids.add(doc_id)
+
+            content = f"""Professor: {prof['name']}
 Title: {prof.get('title', 'Faculty')}
 Department: {prof.get('department', 'Computing')}
-Bio: {bio if bio else 'Not available'}
+Bio: {chunk}
 Research Interests: {', '.join(interests) if interests else 'Not specified'}
 Research Areas: {', '.join(research_areas) if research_areas else 'See RIT website'}
 Tags: {', '.join(tag_names) if tag_names else 'faculty'}
 Google Scholar Citations: {citations}
 H-Index: {h_index}
-Recent Publications: {', '.join(str(p.get('title', ''))[:100] for p in pubs[:5]) if pubs else 'Not available'}
+Recent Publications: {pubs_str}
 Profile URL: {prof.get('profile_url', '')}
 Email: {prof.get('email', '')}
 Office: {prof.get('office', '')}
 College: {prof.get('college', '')}"""
-        
-        yield {
-            "id": doc_id,
-            "content": content,
-            "metadata": {
-                "doc_type": "professor",
-                "name": prof["name"],
-                "title": prof.get("title", ""),
-                "url": prof.get("profile_url", ""),
-                "email": prof.get("email", ""),
-                "office": prof.get("office", ""),
-                "tags": json.dumps(tag_names),
-                "citations": str(citations),
-                "h_index": str(h_index),
-                "college": prof.get("college", "")
+
+            yield {
+                "id": doc_id,
+                "content": content,
+                "metadata": {
+                    "doc_type": "professor",
+                    "name": prof["name"],
+                    "title": prof.get("title", ""),
+                    "url": prof.get("profile_url", ""),
+                    "email": prof.get("email", ""),
+                    "office": prof.get("office", ""),
+                    "tags": json.dumps(tag_names),
+                    "citations": str(citations),
+                    "h_index": str(h_index),
+                    "college": prof.get("college", ""),
+                    "chunk": i
+                }
             }
-        }
         
         # Also add publications as separate documents
         for i, pub in enumerate(pubs[:5]):  # Top 5 publications per professor
@@ -386,36 +438,43 @@ College: {prof.get('college', '')}"""
             if not pub_title:
                 continue
                 
-            pub_id = f"pub_{prof['name'].lower().replace(' ', '_')[:20]}_{i}"
-            
-            if pub_id in seen_ids:
-                continue
-            seen_ids.add(pub_id)
+            base_pub_id = f"pub_{prof['name'].lower().replace(' ', '_')[:20]}_{i}"
             
             pub_tags = generate_tags_for_publication(pub)
             pub_tag_names = [t[0] for t in pub_tags[:10]]
             
-            pub_content = f"""Publication: {pub_title}
+            pub_desc = pub.get('abstract', '') or pub.get('description', '')
+            pub_chunks = chunk_text(pub_desc, max_chunk_size=1500) if pub_desc else [""]
+
+            for j, chunk in enumerate(pub_chunks):
+                pub_id = f"{base_pub_id}_chunk_{j}"
+
+                if pub_id in seen_ids:
+                    continue
+                seen_ids.add(pub_id)
+
+                pub_content = f"""Publication: {pub_title}
 Author: {prof['name']}
 Year: {pub.get('year', 'Unknown')}
 Venue: {pub.get('venue', 'Unknown')}
 Citations: {pub.get('citations', 0)}
+Abstract/Description: {chunk}
 Tags: {', '.join(pub_tag_names) if pub_tag_names else 'research'}"""
-            
-            
-            yield {
-                "id": pub_id,
-                "content": pub_content,
-                "metadata": {
-                    "doc_type": "publication",
-                    "title": pub_title[:200],
-                    "author": prof["name"],
-                    "year": pub.get("year", ""),
-                    "citations": str(pub.get("citations", 0)),
-                    "tags": json.dumps(pub_tag_names),
-                    "college": prof.get("college", "")
+
+                yield {
+                    "id": pub_id,
+                    "content": pub_content,
+                    "metadata": {
+                        "doc_type": "publication",
+                        "title": pub_title[:200],
+                        "author": prof["name"],
+                        "year": pub.get("year", ""),
+                        "citations": str(pub.get("citations", 0)),
+                        "tags": json.dumps(pub_tag_names),
+                        "college": prof.get("college", ""),
+                        "chunk": j
+                    }
                 }
-            }
 
 
 def load_data_to_vectorstore(config: CrawlConfig = RESTRICTED_CONFIG) -> Optional[VectorStore]:

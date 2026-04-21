@@ -142,6 +142,11 @@ class RAGEngine:
         if not results:
             return "No specific information found in the database."
         
+        from ..utils.hardware import HW_PROFILE
+        # A rough heuristic: 1 token ≈ 4 characters
+        max_chars = HW_PROFILE.context_window * 3
+        current_chars = 0
+
         context_parts = ["Relevant information from RIT Computing:"]
         
         for i, result in enumerate(results, 1):
@@ -149,21 +154,32 @@ class RAGEngine:
             metadata = result.get("metadata", {})
             doc_type = metadata.get("doc_type", "unknown")
             
-            context_parts.append(f"\n--- Result {i} ({doc_type}) ---")
-            context_parts.append(content)
+            part_lines = []
+            part_lines.append(f"\n--- Result {i} ({doc_type}) ---")
+            part_lines.append(content)
             
             # Add metadata fields to context so LLM sees them
             if metadata.get("email"):
-                context_parts.append(f"Email: {metadata['email']}")
+                part_lines.append(f"Email: {metadata['email']}")
             if metadata.get("office"):
-                context_parts.append(f"Office: {metadata['office']}")
+                part_lines.append(f"Office: {metadata['office']}")
             if metadata.get("department"):
-                context_parts.append(f"Department: {metadata['department']}")
+                part_lines.append(f"Department: {metadata['department']}")
             if metadata.get("phone"):
-                context_parts.append(f"Phone: {metadata['phone']}")
+                part_lines.append(f"Phone: {metadata['phone']}")
             
             if metadata.get("url"):
-                context_parts.append(f"URL: {metadata['url']}")
+                part_lines.append(f"URL: {metadata['url']}")
+
+            part_text = "\n".join(part_lines)
+
+            if current_chars + len(part_text) > max_chars:
+                logger.warning(f"Context truncated at result {i} to respect HW_PROFILE.context_window")
+                console.print(f"[yellow]Context truncated to fit in context window ({HW_PROFILE.context_window} tokens)[/yellow]")
+                break
+
+            context_parts.append(part_text)
+            current_chars += len(part_text)
         
         return "\n".join(context_parts)
     

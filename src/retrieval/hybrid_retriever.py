@@ -52,6 +52,29 @@ class HybridRetriever:
         self.bm25 = BM25Okapi(self.bm25_corpus)
         console.print(f"[green]✓ BM25 index ready[/]")
 
+    def add_documents_to_bm25(self, new_documents: List[Dict]):
+        """
+        Dynamically update the BM25 index with new documents.
+        """
+        if not new_documents:
+            return
+
+        if not self.bm25:
+            self.index_bm25(new_documents)
+            return
+
+        console.print(f"[bold blue]Updating BM25 index with {len(new_documents)} new documents...[/]")
+
+        self.bm25_documents.extend(new_documents)
+
+        new_corpus = [re.findall(r'\w+', doc["content"].lower()) for doc in new_documents]
+        self.bm25_corpus.extend(new_corpus)
+
+        # BM25Okapi doesn't support incremental updates natively, so we must rebuild
+        # the index, but we avoid re-tokenizing the existing corpus.
+        self.bm25 = BM25Okapi(self.bm25_corpus)
+        console.print(f"[green]✓ BM25 index updated (total documents: {len(self.bm25_documents)})[/]")
+
     def _search_bm25(self, query: str, k: int = 50) -> List[Dict]:
         """
         Perform BM25 search.
@@ -104,60 +127,52 @@ class HybridRetriever:
         # Map doc_id -> RRF score
         doc_scores = {}
 
-        # Helper to process results
-        def process_results(results, weight=1.0):
-            for rank, doc in enumerate(results):
-                doc_id = doc.get("id")
-                if not doc_id:
-                    continue
+        # Default rank for missing documents in one of the sources
+        # We assume if it didn't make the top 50, it would be around rank 51
+        missing_rank = 50
+        missing_score = 1 / (rrf_k + missing_rank + 1)
 
-                # RRF Formula: 1 / (k + rank)
-                score = 1 / (rrf_k + rank + 1)
+        # Pre-seed all document IDs that were found in either search
+        for doc in vector_results:
+            if doc.get("id"):
+                doc_scores[doc["id"]] = {"doc": doc, "score": 0.0, "vector_rank": None, "bm25_rank": None}
 
+        for doc in bm25_results:
+            doc_id = doc.get("id")
+            if doc_id:
                 if doc_id not in doc_scores:
-                    doc_scores[doc_id] = {
-                        "doc": doc,
-                        "score": 0.0,
-                        "vector_rank": None,
-                        "bm25_rank": None
-                    }
-
-                doc_scores[doc_id]["score"] += score
-
-                # specific rank tracking (optional, for debugging)
-                if weight == 1.0: # Vector results (assumption)
-                    pass
+                    doc_scores[doc_id] = {"doc": doc, "score": 0.0, "vector_rank": None, "bm25_rank": None}
+                else:
+                    # BM25 docs often don't have full metadata if they were built from a reduced corpus.
+                    # Merge to ensure we have the best document representation (usually Vector's).
+                    # Avoid overwriting with missing fields.
+                    for k_key, v_val in doc.items():
+                        if k_key not in doc_scores[doc_id]["doc"]:
+                            doc_scores[doc_id]["doc"][k_key] = v_val
 
         # Process Vector Results
         for rank, doc in enumerate(vector_results):
             doc_id = doc.get("id")
             if not doc_id: continue
-
-            dist = doc.get("distance")
-
-            score = 1 / (rrf_k + rank + 1)
-
-            if doc_id not in doc_scores:
-                doc_scores[doc_id] = {"doc": doc, "score": 0.0, "vector_rank": rank, "bm25_rank": None}
-            else:
-                doc_scores[doc_id]["doc"].update(doc) # Merge metadata if needed
-                doc_scores[doc_id]["vector_rank"] = rank
-
-            doc_scores[doc_id]["score"] += score
+            doc_scores[doc_id]["vector_rank"] = rank
 
         # Process BM25 Results
         for rank, doc in enumerate(bm25_results):
             doc_id = doc.get("id")
             if not doc_id: continue
+            doc_scores[doc_id]["bm25_rank"] = rank
 
-            score = 1 / (rrf_k + rank + 1)
+        # Calculate final RRF scores including penalties for missing ranks
+        for doc_id, info in doc_scores.items():
+            # Vector score
+            v_rank = info["vector_rank"]
+            v_score = 1 / (rrf_k + v_rank + 1) if v_rank is not None else missing_score
 
-            if doc_id not in doc_scores:
-                doc_scores[doc_id] = {"doc": doc, "score": 0.0, "vector_rank": None, "bm25_rank": rank}
-            else:
-                doc_scores[doc_id]["bm25_rank"] = rank
+            # BM25 score
+            b_rank = info["bm25_rank"]
+            b_score = 1 / (rrf_k + b_rank + 1) if b_rank is not None else missing_score
 
-            doc_scores[doc_id]["score"] += score
+            info["score"] = v_score + b_score
 
         # 3. Sort by combined score
         sorted_results = sorted(doc_scores.values(), key=lambda x: x["score"], reverse=True)
