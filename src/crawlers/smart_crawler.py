@@ -3,6 +3,7 @@ import json
 import time
 import asyncio
 import aiohttp
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 from urllib.parse import urljoin, urlparse
 from typing import Set, Dict, List, Optional
 import networkx as nx
@@ -170,6 +171,25 @@ class SmartCrawler:
     _TEXT_CONTENT_TYPES = ("text/html", "text/plain", "application/xhtml", "application/json")
 
     @log_timing("Fetch Page")
+    @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1.5, min=2, max=10), retry=retry_if_exception_type(aiohttp.ClientError))
+    async def _do_fetch_page(self, session, url: str) -> Optional[str]:
+        async with session.get(url, timeout=15) as response:
+            if response.status == 429:
+                raise aiohttp.ClientResponseError(
+                    request_info=response.request_info,
+                    history=response.history,
+                    status=response.status,
+                    message="Rate Limited",
+                    headers=response.headers,
+                )
+            if response.status != 200:
+                return None
+            ct = response.headers.get("Content-Type", "")
+            if not any(t in ct for t in self._TEXT_CONTENT_TYPES):
+                # Binary file (docx, zip, jpeg, pptx, …) — not crawlable
+                return None
+            return await response.text(errors="replace")
+
     async def fetch_page(self, session, url: str) -> Optional[str]:
         """Fetch page content with retries.
 
@@ -177,23 +197,12 @@ class SmartCrawler:
         checking the Content-Type header before decoding.  This prevents the
         'utf-8 codec can't decode byte' errors that flooded the logs.
         """
-        retries = 3
-        for i in range(retries):
-            try:
-                async with session.get(url, timeout=15) as response:
-                    if response.status != 200:
-                        return None
-                    ct = response.headers.get("Content-Type", "")
-                    if not any(t in ct for t in self._TEXT_CONTENT_TYPES):
-                        # Binary file (docx, zip, jpeg, pptx, …) — not crawlable
-                        return None
-                    return await response.text(errors="replace")
-            except Exception as e:
-                if i == retries - 1:
-                    logger.error(f"Failed to fetch {url}: {e}")
-                    console.print(f"[red]Failed to fetch {url}: {e}[/]")
-                await asyncio.sleep(1 * (i + 1))  # Exponential backoff
-        return None
+        try:
+            return await self._do_fetch_page(session, url)
+        except Exception as e:
+            logger.error(f"Failed to fetch {url}: {e}")
+            console.print(f"[red]Failed to fetch {url}: {e}[/]")
+            return None
 
     async def process_url(self, session, url: str, progress, task_id):
         """Process a single URL."""

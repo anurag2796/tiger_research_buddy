@@ -731,6 +731,19 @@ Response:"""
             
             progress.advance(task)
 
+            # Explicit garbage collection to prevent memory leaks during large batch processing
+            import gc
+            gc.collect()
+
+            if HW_PROFILE.has_cuda:
+                import torch
+                if torch.cuda.is_available():
+                    torch.cuda.empty_cache()
+            elif HW_PROFILE.has_mps:
+                import torch
+                if hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
+                    torch.mps.empty_cache()
+
     async def process_all_async(self):
         """Process all PDFs in parallel."""
         import asyncio
