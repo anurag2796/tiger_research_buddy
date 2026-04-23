@@ -563,10 +563,22 @@ def scrape_all(max_papers: int, max_profiles: int, mode: str):
     except Exception as e:
         console.print(f"[yellow]Research card indexing skipped: {e}[/]")
 
-    from src.database import get_vector_store
-    store = get_vector_store(config)
+    from src.database.vector_store import VectorStore
+    store = VectorStore(config)
     store.initialize()
     stats = store.get_stats()
+
+    # Build knowledge graph
+    console.print("\n[bold cyan]Phase 5: Building Knowledge Graph...[/]")
+    try:
+        from src.knowledge_graph.graph_builder import GraphBuilder
+        builder = GraphBuilder(config=config)
+        builder.load_site_graph()
+        builder.load_faculty_data()
+        builder.merge_research_cards()
+        builder.export()
+    except Exception as e:
+        console.print(f"[yellow]Knowledge graph skipped: {e}[/]")
 
     console.print(Panel.fit(
         f"[bold green]✓ Full pipeline complete! (mode={mode})[/]\n\n"
