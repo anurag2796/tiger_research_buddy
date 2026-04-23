@@ -132,6 +132,22 @@ class MemoryModule:
                 except Exception as exc:
                     logger.warning("LanceDB persist failed (non-fatal): %s", exc)
 
+    def add_turn_sync(self, session_id: str, role: str, content: str) -> None:
+        """Append a turn to the sliding window (synchronous version).
+
+        Also persists to LanceDB if long-term memory is enabled.
+        Used by the blocking RAG Engine.
+        """
+        dq = self._get_or_create_deque(session_id)
+        turn = _make_turn(role, content)
+        dq.append(turn)
+
+        if self._lancedb_enabled and self._lancedb_table is not None:
+            try:
+                self._persist_turn(session_id, turn)
+            except Exception as exc:
+                logger.warning("LanceDB persist failed (non-fatal): %s", exc)
+
     def clear_session(self, session_id: str) -> None:
         """Wipe all in-memory history for a session."""
         self._sessions.pop(session_id, None)
@@ -229,6 +245,20 @@ class MemoryModule:
             return results
         except Exception as exc:
             logger.warning("LanceDB semantic recall failed: %s", exc)
+            return []
+
+    def semantic_recall_sync(self, session_id: str, query: str, k: int = 3) -> list[dict]:
+        """Retrieve the *k* most semantically relevant past turns for *query* (synchronous version).
+
+        Only returns results when long-term memory is enabled.
+        """
+        if not self._lancedb_enabled or self._lancedb_table is None or self._embed_fn is None:
+            return []
+
+        try:
+            return self._search_lancedb(session_id, query, k)
+        except Exception as exc:
+            logger.warning("LanceDB semantic recall failed (sync): %s", exc)
             return []
 
     def _search_lancedb(self, session_id: str, query: str, k: int) -> list[dict]:

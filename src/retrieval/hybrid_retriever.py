@@ -106,7 +106,7 @@ class HybridRetriever:
         results = self.vector_store.search(query, n_results=k)
         return results
 
-    def hybrid_search(self, query: str, k: int = 50, rrf_k: int = 60, rerank: bool = False) -> List[Dict]:
+    def hybrid_search(self, query: str, k: int = 50, rrf_k: int = 60, rerank: bool = False, graph_scores: Optional[Dict[str, float]] = None) -> List[Dict]:
         """
         Perform Hybrid Search using Reciprocal Rank Fusion (RRF).
 
@@ -115,6 +115,7 @@ class HybridRetriever:
             k: Number of final results to return.
             rrf_k: Constant for RRF formula (default 60).
             rerank: If True, apply cross-encoder reranking after RRF fusion.
+            graph_scores: Optional dictionary of doc_id or entity name to graph-based score (e.g., PageRank).
 
         Returns:
             List of reranked documents.
@@ -172,7 +173,29 @@ class HybridRetriever:
             b_rank = info["bm25_rank"]
             b_score = 1 / (rrf_k + b_rank + 1) if b_rank is not None else missing_score
 
-            info["score"] = v_score + b_score
+            base_score = v_score + b_score
+
+            # Boost score based on metadata and graph scores
+            doc_metadata = info["doc"].get("metadata", {})
+            boost = 1.0
+
+            # SDG alignment boost
+            sdgs = doc_metadata.get("sdg_alignments", "[]")
+            if sdgs and sdgs != "[]":
+                # Small boost for having SDG alignments
+                boost += 0.05
+
+            # Graph centrality/PageRank boost
+            if graph_scores:
+                # Try matching by doc_id or by name
+                g_score = graph_scores.get(doc_id)
+                if g_score is None and "name" in doc_metadata:
+                    g_score = graph_scores.get(doc_metadata["name"])
+                if g_score:
+                    # Add normalized graph score to the boost
+                    boost += (g_score * 0.2)
+
+            info["score"] = base_score * boost
 
         # 3. Sort by combined score
         sorted_results = sorted(doc_scores.values(), key=lambda x: x["score"], reverse=True)

@@ -115,7 +115,9 @@ class SmartCrawler:
             "education": ["List", "of", "degrees"],
             "courses_taught": ["List", "of", "course names/numbers taught"],
             "publications": ["List", "of", "recent publications (titles)"],
-            "awards": ["List", "of", "notable awards/grants"]
+            "awards": ["List", "of", "notable awards/grants"],
+            "sdg_alignments": ["List", "of", "UN SDGs aligned with their research"],
+            "research_impact": "Summary of real-world research impact"
         }
         
         # Load rules from prompt file
