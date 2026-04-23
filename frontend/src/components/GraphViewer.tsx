@@ -3,6 +3,8 @@
 import { useEffect, useState, useRef } from "react";
 import dynamic from "next/dynamic";
 import axios from "axios";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://192.168.0.8:8000";
 import { Network } from "lucide-react";
 
 // Safe dynamic import for browser-only react-force-graph
@@ -20,7 +22,7 @@ export default function GraphViewer() {
   useEffect(() => {
     const fetchGraph = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/graph");
+        const res = await axios.get(`${API_URL}/api/graph`);
         setData(res.data);
         
         // Auto-center after load

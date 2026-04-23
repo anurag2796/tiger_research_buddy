@@ -225,11 +225,13 @@ def test_ollama():
 @cli.command()
 def stats():
     """Show knowledge base statistics."""
-    from src.database import get_vector_store
-    
-    store = get_vector_store()
+    from src.database.vector_store import VectorStore
+    from src.utils.config import get_config
+    import os
+    cfg = get_config(os.getenv("API_MODE", "restricted"))
+    store = VectorStore(cfg)
     store.initialize()
-    
+
     stats = store.get_stats()
     
     console.print(Panel.fit(

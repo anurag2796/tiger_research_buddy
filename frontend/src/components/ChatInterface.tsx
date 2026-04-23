@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://192.168.0.8:8000";
 import { Send, Bot, User, Loader2, Trash2, StopCircle } from "lucide-react";
 
 export interface Source {
@@ -75,7 +77,7 @@ export default function ChatInterface({
     setMessages((prev) => [...prev, { role: "assistant", content: "", sources: [] }]);
 
     try {
-      const res = await fetch("http://localhost:8000/api/chat/stream", {
+      const res = await fetch(`${API_URL}/api/chat/stream`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: userMsg, use_cod: false, persona }),

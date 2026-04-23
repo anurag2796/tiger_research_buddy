@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import axios from "axios";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://192.168.0.8:8000";
 import { Rocket, Target, Users, Loader2 } from "lucide-react";
 
 interface Collaborator {
@@ -29,7 +31,7 @@ export default function CollaborationHub() {
     
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:8000/api/idea", formData);
+      const res = await axios.post(`${API_URL}/api/idea`, formData);
       setImpact(res.data.impact);
       setCollaborators(res.data.collaborators);
     } catch (err) {

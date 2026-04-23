@@ -453,7 +453,7 @@ Response:"""
         # 2. Context Truncation: Hard-limit to ~15k characters (~3k tokens)
         # This focuses the LLM on Abstract/Intro/Methods and prevents catastrophic
         # JSON truncation errors that occur when the model hits max_tokens mid-generation.
-        safe_text = text[:15000]
+        safe_text = text[:8000]
 
         # ── VLM Target Prompting on cropped visual elements ──────────────
         visual_elements: List[Dict] = []
@@ -506,12 +506,16 @@ Response:"""
         try:
             self.llm_client.initialize()
             # 2. Distill with Async LLM
+            # Use a larger context window for distillation than for chat —
+            # the prompt is ~3-4k tokens and the JSON response can be another
+            # 3-4k tokens, which truncates at the default 8192 limit.
+            distiller_options = {**LLMConfig.DEFAULT_OPTIONS, "num_ctx": 16384}
             with Timer(f"Distilling {filename}", use_rich=False):
                 response = await self.llm_client.generate_async(
-                    prompt, 
+                    prompt,
                     system_prompt="You are a Scientific Knowledge Distiller.",
                     format='json',
-                    options=LLMConfig.DEFAULT_OPTIONS
+                    options=distiller_options
                 )
             
             # Fix 9: Fault-tolerant JSON extraction — returns error card on failure

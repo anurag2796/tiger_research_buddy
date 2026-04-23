@@ -130,7 +130,7 @@ class LLMConfig:
     """Centralized configuration for LLM interactions."""
     # Dual Model Strategy
     CHAT_MODEL = "qwen2.5:7b"          # Better instruction/citation compliance than llama3.1:8b, same speed
-    PIPELINE_MODEL = "gemma4:26b"      # High-quality structured JSON extraction for offline distillation
+    PIPELINE_MODEL = "qwen2.5:7b"      # Fast structured JSON extraction for offline distillation
     
     MODEL_NAME = CHAT_MODEL    # Default to chat model for general usage
     # Context window is hardware-aware: 16384 on M4 Max, 8192 on Jetson Orin.
