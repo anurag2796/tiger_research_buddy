@@ -3,6 +3,7 @@
 from typing import Optional
 
 from rich.console import Console
+import uuid
 
 from ..database.vector_store import get_vector_store, VectorStore
 from ..retrieval.hybrid_retriever import HybridRetriever
@@ -10,6 +11,8 @@ from .gemini_client import get_gemini_client, GeminiClient
 from .ollama_client import get_ollama_client, OllamaClient
 from .response_postprocessor import get_postprocessor
 from ..utils.db_logger import setup_db_logging, generate_trace_id
+from ..utils.hardware import HW_PROFILE
+from ..memory.session_store import MemoryModule
 
 console = Console()
 logger = setup_db_logging("RAGEngine")
@@ -35,7 +38,8 @@ class RAGEngine:
         self.gemini_client = gemini_client or get_gemini_client()
         self.ollama_client = get_ollama_client()
         self.hybrid_retriever = HybridRetriever(self.vector_store) # Initialize hybrid retriever
-        self.conversation_history: list[dict] = []
+        self.memory = MemoryModule(HW_PROFILE)
+        self.session_id = str(uuid.uuid4())
     
     
     def initialize(self):
@@ -90,19 +94,29 @@ class RAGEngine:
         # If no relevant context found after filtering
         if not filtered_results:
              fallback_msg = "I don't have specific information about that in my database. I recommend checking the RIT Computing website or contacting the department."
-             self.conversation_history.append({"role": "user", "content": user_query})
-             self.conversation_history.append({"role": "assistant", "content": fallback_msg})
+             self.memory.add_turn_sync(self.session_id, "user", user_query)
+             self.memory.add_turn_sync(self.session_id, "assistant", fallback_msg)
              return fallback_msg
              
         # Inject conversation history into query
         history_prefix = ""
-        if self.conversation_history:
+        recent_history = self.memory.get_context_window(self.session_id)
+        if recent_history:
             history_str = "\n".join(
                 f"{msg['role'].upper()}: {msg['content']}"
-                for msg in self.conversation_history[-10:]  # Keep last 5 turns (max length 10)
+                for msg in recent_history
             )
             history_prefix = f"\n--- Conversation History ---\n{history_str}\n--- End History ---\n\n"
-        
+
+        # Optional: Add long-term semantic recall
+        recalled_history = self.memory.semantic_recall_sync(self.session_id, user_query, k=2)
+        if recalled_history:
+            recalled_str = "\n".join(
+                f"{msg['role'].upper()}: {msg['content']}"
+                for msg in recalled_history
+            )
+            history_prefix += f"\n--- Relevant Past Context ---\n{recalled_str}\n--- End Past Context ---\n\n"
+
         full_prompt = f"{history_prefix}Current Query: {user_query}"
         
         # Step 5: Generate response with LLM
@@ -132,8 +146,8 @@ class RAGEngine:
         cleaned_response = postprocessor.process(raw_response)
         
         # Update conversation history with cleaned response
-        self.conversation_history.append({"role": "user", "content": user_query})
-        self.conversation_history.append({"role": "assistant", "content": cleaned_response})
+        self.memory.add_turn_sync(self.session_id, "user", user_query)
+        self.memory.add_turn_sync(self.session_id, "assistant", cleaned_response)
         
         return cleaned_response
     
@@ -189,12 +203,12 @@ class RAGEngine:
     
     def clear_history(self):
         """Clear conversation history."""
-        self.conversation_history = []
+        self.memory.clear_session(self.session_id)
         console.print("[dim]Conversation history cleared[/]")
     
     def get_history(self) -> list[dict]:
         """Get conversation history."""
-        return self.conversation_history
+        return self.memory.get_context_window(self.session_id)
 
     def _expand_query(self, query: str) -> str:
         """Use LLM to expand query and resolve context."""
@@ -206,12 +220,13 @@ class RAGEngine:
         
         # Basic context awareness: If query contains "he", "she", "they", "it", append previous subject
         pronouns = ["he", "she", "they", "it", "him", "her", "his"]
-        if any(p in query.lower().split() for p in pronouns) and self.conversation_history:
+        history = self.get_history()
+        if any(p in query.lower().split() for p in pronouns) and history:
              # Find last assistant response to see who we were talking about
-             last_msg = self.conversation_history[-1]
+             last_msg = history[-1]
              if last_msg["role"] == "assistant":
                  # Heuristic: combine with previous user query for context
-                 prev_user = self.conversation_history[-2]["content"] if len(self.conversation_history) >= 2 else ""
+                 prev_user = history[-2]["content"] if len(history) >= 2 else ""
                  expanded_query = f"{prev_user} {query}"
                  console.print(f"[dim]Context awareness: Expanded to '{expanded_query}'[/]")
         

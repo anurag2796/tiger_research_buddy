@@ -44,11 +44,12 @@ class ImpactAnalyzer:
     def __init__(self):
         self.client = get_ollama_client()
 
-    def _build_prompt(self, title: str, description: str) -> str:
+    def _build_prompt(self, title: str, description: str, additional_context: str = "") -> str:
+        context_str = f"\nAdditional Context (Faculty Achievements):\n{additional_context}\n" if additional_context else ""
         return f"""
         Analyze the following research idea for potential societal impact.
         Title: {title}
-        Description: {description}
+        Description: {description}{context_str}
         
         Task:
         1. Assign an "Impact Score" from 1-10 (10 being high global impact).
@@ -86,7 +87,7 @@ class ImpactAnalyzer:
 
         raise ValueError(f"No valid JSON in response: {response[:200]}")
 
-    def analyze_impact(self, title: str, description: str) -> dict:
+    def analyze_impact(self, title: str, description: str, additional_context: str = "") -> dict:
         """Generates an impact score and SDG alignment (sync, with retry).
 
         Raises RuntimeError on final failure instead of returning score=0.
@@ -94,7 +95,7 @@ class ImpactAnalyzer:
         if not self.client._initialized:
             self.client.initialize()
 
-        prompt = self._build_prompt(title, description)
+        prompt = self._build_prompt(title, description, additional_context=additional_context)
         last_error = None
 
         for attempt in range(1, self.MAX_RETRIES + 1):
@@ -115,7 +116,7 @@ class ImpactAnalyzer:
             f"Last error: {last_error}"
         )
 
-    async def analyze_impact_async(self, title: str, description: str) -> dict:
+    async def analyze_impact_async(self, title: str, description: str, additional_context: str = "") -> dict:
         """Generates an impact score and SDG alignment (async, with retry).
 
         Raises RuntimeError on final failure instead of returning score=0.
@@ -123,7 +124,7 @@ class ImpactAnalyzer:
         if not self.client._initialized:
             self.client.initialize()
 
-        prompt = self._build_prompt(title, description)
+        prompt = self._build_prompt(title, description, additional_context=additional_context)
         last_error = None
 
         for attempt in range(1, self.MAX_RETRIES + 1):
