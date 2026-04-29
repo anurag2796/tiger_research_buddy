@@ -1,0 +1,73 @@
+{
+  "card_id": "collaboration_with_conversational_ai_assistants_for_ux_evaluation",
+  "bibliographic_data": {
+    "title": "Collaboration with Conversational AI Assistants for UX Evaluation: Questions and How to Ask them (Voice vs. Text)",
+    "primary_domain": "cs.HC",
+    "authors": [
+      {
+        "name": "Emily Kuang"
+      },
+      {
+        "name": "Ehsan Jahangirzadeh Soure"
+      },
+      {
+        "name": "Mingming Fan"
+      },
+      {
+        "name": "Jian Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Kristen Shinohara",
+        "faculty_id": "Kristen Shinohara",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2023,
+    "abstract": "Usability testing is a frequently employed user-centered design method for detecting usability problems, but analyzing test recordings is tedious, challenging, and time-consuming. UX evaluators must take into account behavioral signals in both the visual and audio channels of usability test recordings while assessing multiple tasks simultaneously at a fast pace. In industry, UX evaluators also have limited time and resources, which could lead to missed information or misinterpreted problems. To address the shortage of human-human collaboration, AI-driven analysis to aid UX evaluators is considered an effective tool, particularly for common usability issues, that could boost the efficiency of UX evaluators and the reliability of results. However, such automated methods did not thoroughly identify problems and could not replace the human reasoning required for application-specific problems. To address these limitations, recent work developed human-AI collaborative tools where UX evaluators can utilize visualizations of ML-driven features to inform their UX analysis. Yet, these non-interactive visualizations provided information regardless of whether they were needed by UX evaluators and fell short in addressing specific questions that UX evaluators may have about observations from the recordings. Thus, we consider that an interactive assistant\u2014in the form of a conversational agent\u2014may provide an opportunity for a Q&A dynamic that presents information on demand and improves analytic efficiency.",
+    "arxiv_id": "arXiv:2303.03638"
+  },
+  "core_content": {
+    "novelty_claim": "The study investigates the types of questions UX evaluators ask during usability test analysis using conversational AI assistants, comparing text and voice modalities.",
+    "key_methodology": "A Wizard-of-Oz design probe study with 20 participants who interacted with simulated AI assistants via text or voice to understand the full range of analysis-related questions.",
+    "outcomes": [
+      "Participants asked for five categories of information: user actions, user mental model, help from the AI assistant, product and task information, and user demographics.",
+      "Text assistants were perceived as significantly more efficient but both modalities were rated equally in satisfaction and trust."
+    ],
+    "full_text_markdown": "Usability testing is a frequently employed user-centered design method for detecting usability problems, but analyzing test recordings is tedious, challenging, and time-consuming. UX evaluators must take into account behavioral signals in both the visual and audio channels of usability test recordings while assessing multiple tasks simultaneously at a fast pace. In industry, UX evaluators also have limited time and resources, which could lead to missed information or misinterpreted problems. To address the shortage of human-human collaboration, AI-driven analysis to aid UX evaluators is considered an effective tool, particularly for common usability issues, that could boost the efficiency of UX evaluators and the reliability of results. However, such automated methods did not thoroughly identify problems and could not replace the human reasoning required for application-specific problems. To address these limitations, recent work developed human-AI collaborative tools where UX evaluators can utilize visualizations of ML-driven features to inform their UX analysis. Yet, these non-interactive visualizations provided information regardless of whether they were needed by UX evaluators and fell short in addressing specific questions that UX evaluators may have about observations from the recordings. Thus, we consider that an interactive assistant\u2014in the form of a conversational agent\u2014may provide an opportunity for a Q&A dynamic that presents information on demand and improves analytic efficiency.\n\nConversation is becoming a key mode of human-computer interaction due to the proliferation of conversational agents. To understand the differences between text and voice modalities within the context of UX evaluation, we conducted a design probe in which evaluators used a simulated AI assistant with two modalities (voice and text) to ask any questions that they considered relevant to their analysis. Using the simulated AI assistant as a probe, we investigated if the Q&A dynamic and modality of interaction provided viable support to UX evaluators during analysis.\n\nSpecifically, our study was guided by the following research questions (RQs):\n- RQ1 - What types of questions will UX evaluators ask an AI assistant during analysis?\n- RQ2 - How do the number and content of questions asked by UX evaluators differ between text and voice modalities?",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Wizard-of-Oz design probe study"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Usability testing"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Conversational AI assistants"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "INVOLVES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "INVOLVES"
+      }
+    ]
+  },
+  "source_file": "emily_collaboration_with_conversational_ai_assistants_for_ux_evalu.pdf"
+}

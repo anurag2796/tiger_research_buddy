@@ -1,0 +1,64 @@
+{
+  "card_id": "evaluating_llm_based_0to1_software_generation",
+  "bibliographic_data": {
+    "title": "Evaluating LLM-Based 0-to-1 Software Generation in End-to-End CLI Tool Scenarios",
+    "primary_domain": "cs.SE",
+    "authors": [
+      {
+        "name": "Ruida Hu",
+        "faculty_id": "Derui Zhu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Xinchen Wang"
+      },
+      {
+        "name": "Chao Peng",
+        "faculty_id": "Chao Peng",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Cuiyun Gao"
+      },
+      {
+        "name": "David Lo"
+      }
+    ],
+    "year": 2018,
+    "abstract": "The evolution of Large Language Models (LLMs) has catalyzed a paradigm shift towards intent-driven software development, where autonomous agents are expected to architect and deliver complete, runnable software systems entirely from scratch. However, existing benchmarks fail to adequately assess this promising 0-to-1 software generation capability due to two fundamental limitations: reliance on predefined structural scaffolds and heavy dependence on rigid white-box unit testing. To bridge this gap, we introduce CLI-Tool-Bench, a novel, structure-agnostic benchmark designed to evaluate the ground-up generation of Command-Line Interface (CLI) tools. Powered by a black-box differential testing framework, CLI-Tool-Bench comprises 100 high-quality, real-world repositories spanning diverse difficulty levels, programming languages, and application domains. For each repository, our automated pipeline synthesizes a robust suite of end-to-end test cases. We evaluate the agent-generated software by executing it in isolated sandboxes and comparing its system-level side effects and terminal outputs against human-written oracles using a rigorous, multi-tiered equivalence metric.",
+    "arxiv_id": "arXiv:2604.06742v1"
+  },
+  "core_content": {
+    "novelty_claim": "Introduces CLI-Tool-Bench, a novel benchmark for evaluating the ground-up generation of Command-Line Interface (CLI) tools using black-box differential testing.",
+    "key_methodology": "Develops a structure-agnostic benchmark that evaluates LLM-based agents in generating complete software repositories from scratch. Utilizes a black-box differential testing framework to synthesize end-to-end test cases and compare system-level side effects against human-written oracles.",
+    "outcomes": [
+      "Top-tier models achieve less than 43% overall success, highlighting the challenges of 0-to-1 generation.",
+      "Higher token consumption does not necessarily yield better performance.",
+      "Agents exhibit a strong tendency to generate monolithic code structures."
+    ],
+    "full_text_markdown": "The evolution of Large Language Models (LLMs) has catalyzed a paradigm shift towards intent-driven software development, where autonomous agents are expected to architect and deliver complete, runnable software systems entirely from scratch. However, existing benchmarks fail to adequately assess this promising 0-to-1 software generation capability due to two fundamental limitations: reliance on predefined structural scaffolds and heavy dependence on rigid white-box unit testing. To bridge this gap, we introduce CLI-Tool-Bench, a novel benchmark designed to evaluate the ground-up generation of Command-Line Interface (CLI) tools. Powered by a black-box differential testing framework, CLI-Tool-Bench comprises 100 high-quality, real-world repositories spanning diverse difficulty levels, programming languages, and application domains. For each repository, our automated pipeline synthesizes a robust suite of end-to-end test cases. We evaluate the agent-generated software by executing it in isolated sandboxes and comparing its system-level side effects and terminal outputs against human-written oracles using a rigorous, multi-tiered equivalence metric. Leveraging CLI-Tool-Bench, we conduct an extensive evaluation of seven state-of-the-art LLMs deployed within prominent agent frameworks. Our experiments reveal that top-tier models achieve less than 43% overall success, highlighting that 0-to-1 generation remains a highly challenging frontier. Furthermore, we discover that higher token consumption does not necessarily yield better performance, and agents exhibit a strong tendency to generate monolithic code structures.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "CLI-Tool-Bench"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Black-box Differential Testing Framework"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "ruida_evaluating_llm-based_0-to-1_software_generation_in_end-to-en.pdf"
+}

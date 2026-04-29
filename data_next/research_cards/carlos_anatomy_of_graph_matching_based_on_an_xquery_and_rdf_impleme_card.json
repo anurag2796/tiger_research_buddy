@@ -1,0 +1,53 @@
+{
+  "card_id": "anatomy_of_graph_matching",
+  "bibliographic_data": {
+    "title": "Anatomy of Graph Matching based on an XQuery and RDF Implementation",
+    "primary_domain": "cs.DB",
+    "authors": [
+      {
+        "name": "Carlos R. Rivero",
+        "faculty_id": "Carlos R. Rivero",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Hasan M. Jamil"
+      }
+    ],
+    "year": 2013,
+    "abstract": "Graphs are becoming one of the most popular data modeling paradigms since they are able to model complex relationships that cannot be easily captured using traditional data models. One of the major tasks of graph management is graph matching, which aims to find all of the subgraphs in a data graph that match a query graph. In the literature, proposals in this context are classified into two different categories: graph-at-a-time, which process the whole query graph at the same time, and vertex-at-a-time, which process a single vertex of the query graph at the same time. In this paper, we propose a new vertex-at-a-time proposal that is based on graphlets, each of which comprises a vertex of a graph, all of the immediate neighbors of that vertex, and all of the edges that relate those neighbors. Furthermore, we also use the concept of minimum hub covers, each of which comprises a subset of vertices in the query graph that account for all of the edges in that graph. We present the algorithms of our proposal and describe an implementation based on XQuery and RDF. Our evaluation results show that our proposal is appealing to perform graph matching.",
+    "arxiv_id": "1311.2342"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a new vertex-at-a-time approach for graph matching based on the use of graphlets and minimum hub covers, which aims to reduce the search space by pruning using matching conditions.",
+    "key_methodology": "The method involves representing both data and query graphs as sets of graphlets. A minimum hub cover is used to select a subset of vertices in the query graph that account for all edges in it. The paper then sorts these vertices to further reduce the search space, followed by algorithms to compute subgraphs of the data graph that match the query graph.",
+    "outcomes": [
+      "Proposed a new vertex-at-a-time approach for graph matching",
+      "Used graphlets and minimum hub covers to represent graphs",
+      "Implemented the proposal using XQuery and RDF"
+    ],
+    "full_text_markdown": "Graphs are becoming one of the most popular data modeling paradigms since they are able to model complex relationships that cannot be easily captured using traditional data models. One of the major tasks of graph management is graph matching, which aims to find all of the subgraphs in a data graph that match a query graph. In the literature, proposals in this context are classified into two different categories: graph-at-a-time, which process the whole query graph at the same time, and vertex-at-a-time, which process a single vertex of the query graph at the same time. The most appealing advantage of the vertex-at-a-time proposals is that they are able to prune the search space using matching conditions such as vertex indices, path indices, or frequent structures.\n\nOur goal is to devise a new vertex-at-a-time proposal based on graphlets and minimum hub covers. In our proposal, both the data and query graphs are represented as sets of graphlets. To process the query graph over the data graph, we first reduce the number of graphlets in the query graph based on a new notion of edge covering in graph theory called the minimum hub cover. Then, our proposal sorts the vertices of the minimum hub cover to reduce the search space as much as possible. Finally, we use algorithms to compute the subgraphs of the data graph that match the query graph.\n\nThe paper assumes that the minimum hub covers for a given query graph are already computed and presents an implementation using XQuery and RDF.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "graphlets",
+        "type": "Method",
+        "label": "Graphlets"
+      },
+      {
+        "id": "minimum_hub_covers",
+        "type": "Method",
+        "label": "Minimum Hub Covers"
+      }
+    ],
+    "edges": [
+      {
+        "source": "graphlets",
+        "target": "minimum_hub_covers",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "carlos_anatomy_of_graph_matching_based_on_an_xquery_and_rdf_impleme.pdf"
+}

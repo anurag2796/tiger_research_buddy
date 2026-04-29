@@ -1,0 +1,62 @@
+{
+  "card_id": "causality_in_human_niche",
+  "bibliographic_data": {
+    "title": "Causality in the human niche: lessons for machine learning",
+    "primary_domain": "cs.AI",
+    "authors": [
+      {
+        "name": "Richard D. Lange",
+        "faculty_id": "Richard Lange",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Konrad P. Kording"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Humans interpret the world around them in terms of cause and effect and communicate their understanding of the world to each other in causal terms. These causal aspects of human cognition are thought to underlie humans\u2019 ability to generalize and learn efficiently in new domains, an area where current machine learning systems are weak. Building human-like causal competency into machine learning systems may facilitate the construction of effective and interpretable AI. Indeed, the machine learning community has been importing ideas on causality formalized by the Structural Causal Model (SCM) framework, which provides a rigorous formal language for many aspects of causality and has led to significant advances. However, the SCM framework fails to capture some salient aspects of human causal cognition and has likewise not yet led to advances in machine learning in certain critical areas where humans excel.",
+    "arxiv_id": "arXiv:2506.13803v1"
+  },
+  "core_content": {
+    "novelty_claim": "The paper argues that the Structural Causal Model (SCM) framework, while useful, does not fully capture human causal cognition and suggests that machine learning systems should be designed to better align with human-like causal competencies.",
+    "key_methodology": "The authors review the limitations of the SCM framework in capturing human causal cognition and propose a more nuanced approach to causality in AI and ML.",
+    "outcomes": [
+      "Identified limitations of Structural Causal Models (SCMs) in representing human causal cognition",
+      "Proposed that machine learning systems should be designed with human-like causal competencies"
+    ],
+    "full_text_markdown": "Humans interpret the world around them in terms of cause and effect, and this ability is thought to underlie their efficient generalization and learning. Current machine learning systems are weak in this area, but building human-like causal competency could lead to more effective AI. The paper reviews the Structural Causal Model (SCM) framework, which provides a formal language for causality, but notes that it fails to capture some aspects of human causal cognition. It suggests that future work should leverage more human-like inductive biases to create more capable and interpretable systems.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Structural Causal Model (SCM)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Human causal cognition"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Causality in the human niche"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "FORMALIZES"
+      },
+      {
+        "source": "concept_2",
+        "target": "concept_3",
+        "relation": "ADAPTED_TO"
+      }
+    ]
+  },
+  "source_file": "richard_causality_in_the_human_niche_lessons_for_machine_learning.pdf"
+}

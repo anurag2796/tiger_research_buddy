@@ -1,0 +1,1199 @@
+{
+  "card_id": "biomedical_image_analysis_competitions",
+  "bibliographic_data": {
+    "title": "Biomedical image analysis competitions: The state of current participation practice",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Matthias Eisenmann"
+      },
+      {
+        "name": "Annika Reinke"
+      },
+      {
+        "name": "Vivienn Weru"
+      },
+      {
+        "name": "Minu Dietlinde Tizabi"
+      },
+      {
+        "name": "Fabian Isensee"
+      },
+      {
+        "name": "Tim J. Adler"
+      },
+      {
+        "name": "Patrick Godau"
+      },
+      {
+        "name": "Veronika Cheplygina"
+      },
+      {
+        "name": "Michal Kozubek"
+      },
+      {
+        "name": "Sharib Ali"
+      },
+      {
+        "name": "Anubha Gupta"
+      },
+      {
+        "name": "Jan Kybic"
+      },
+      {
+        "name": "Alison Noble"
+      },
+      {
+        "name": "Carlos Ortiz de Sol\u00f3rzano"
+      },
+      {
+        "name": "Samiksha Pachade"
+      },
+      {
+        "name": "Caroline Petitjean"
+      },
+      {
+        "name": "Daniel Sage"
+      },
+      {
+        "name": "Donglai Wei"
+      },
+      {
+        "name": "Elizabeth Wilden"
+      },
+      {
+        "name": "Deepak Alapatt"
+      },
+      {
+        "name": "Vincent Andrearczyk"
+      },
+      {
+        "name": "Ujjwal Baid"
+      },
+      {
+        "name": "Spyridon Bakas"
+      },
+      {
+        "name": "Niranjan Balu"
+      },
+      {
+        "name": "Sophia Bano"
+      },
+      {
+        "name": "Vivek Singh Bawa"
+      },
+      {
+        "name": "Jorge Bernal"
+      },
+      {
+        "name": "Sebastian Bodenstedt"
+      },
+      {
+        "name": "Alessandro Casella"
+      },
+      {
+        "name": "Jinwook Choi"
+      },
+      {
+        "name": "Olivier Commowick"
+      },
+      {
+        "name": "Marie Daum"
+      },
+      {
+        "name": "Adrien Depeursinge"
+      },
+      {
+        "name": "Reuben Dorent"
+      },
+      {
+        "name": "Jan Egger"
+      },
+      {
+        "name": "Hannah Eichhorn"
+      },
+      {
+        "name": "Sandy Engelhardt"
+      },
+      {
+        "name": "Melanie Ganz"
+      },
+      {
+        "name": "Gabriel Girard"
+      },
+      {
+        "name": "Lasse Hansen"
+      },
+      {
+        "name": "Mattias Heinrich"
+      },
+      {
+        "name": "Nicholas Heller"
+      },
+      {
+        "name": "Alessa Hering"
+      },
+      {
+        "name": "Arnaud Huaulm\u00e9"
+      },
+      {
+        "name": "Hyunjeong Kim"
+      },
+      {
+        "name": "Bennett Landman"
+      },
+      {
+        "name": "Hongwei Bran Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jianning Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jun Ma",
+        "faculty_id": "Naveen Sharma",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Anne Martel"
+      },
+      {
+        "name": "Carlos Mart\u00edn-Isla"
+      },
+      {
+        "name": "Bjoern Menze"
+      },
+      {
+        "name": "Chinedu Innocent Nwoye"
+      },
+      {
+        "name": "Valentin Oreiller"
+      },
+      {
+        "name": "Nicolas Padoy"
+      },
+      {
+        "name": "Sarthak Pati"
+      },
+      {
+        "name": "Kelly Payette"
+      },
+      {
+        "name": "Carole Sudre"
+      },
+      {
+        "name": "Kimberlin van Wijnen"
+      },
+      {
+        "name": "Armine Vardazaryan"
+      },
+      {
+        "name": "Tom Vercauteren"
+      },
+      {
+        "name": "Martin Wagner"
+      },
+      {
+        "name": "Chuanbo Wang"
+      },
+      {
+        "name": "Moi Hoon Yap"
+      },
+      {
+        "name": "Zeyun Yu",
+        "faculty_id": "Zhe Yu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Chun Yuan",
+        "faculty_id": "Bo Yuan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Maximilian Zenk"
+      },
+      {
+        "name": "Aneeq Zia"
+      },
+      {
+        "name": "David Zimmerer"
+      },
+      {
+        "name": "Rina Bao"
+      },
+      {
+        "name": "Chanyeol Choi"
+      },
+      {
+        "name": "Andrew Cohen"
+      },
+      {
+        "name": "Oleh Dzyubachyk"
+      },
+      {
+        "name": "Adrian Galdran"
+      },
+      {
+        "name": "Tianyuan Gan",
+        "faculty_id": "Jill Flanagan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Tianqi Guo"
+      },
+      {
+        "name": "Pradyumna Gupta"
+      },
+      {
+        "name": "Mahmood Haithami"
+      },
+      {
+        "name": "Edward Ho"
+      },
+      {
+        "name": "Ikbeom Jang"
+      },
+      {
+        "name": "Zhili Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Zhengbo Luo"
+      },
+      {
+        "name": "Filip Lux"
+      },
+      {
+        "name": "Sokratis Makrogiannis"
+      },
+      {
+        "name": "Dominik M\u00fcller"
+      },
+      {
+        "name": "Young-tack Oh",
+        "faculty_id": "Tae Oh",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Subeen Pang"
+      },
+      {
+        "name": "Constantin Pape"
+      },
+      {
+        "name": "Gorkem Polat"
+      },
+      {
+        "name": "Charlotte Rosalie Reed"
+      },
+      {
+        "name": "Kanghyun Ryu"
+      },
+      {
+        "name": "Tim Scherr"
+      },
+      {
+        "name": "Vajira Thambawita"
+      },
+      {
+        "name": "Haoyu Wang"
+      },
+      {
+        "name": "Xinliang Wang"
+      },
+      {
+        "name": "Kele Xu"
+      },
+      {
+        "name": "Hung Yeh"
+      },
+      {
+        "name": "Doyeob Yeo"
+      },
+      {
+        "name": "Yixuan Yuan",
+        "faculty_id": "Bo Yuan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yan Zeng"
+      },
+      {
+        "name": "Xin Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Julian Abbing"
+      },
+      {
+        "name": "Jannes Adam"
+      },
+      {
+        "name": "Nagesh Adluru"
+      },
+      {
+        "name": "Niklas Agethen"
+      },
+      {
+        "name": "Salman Ahmed"
+      },
+      {
+        "name": "Yasmina Al Khalil"
+      },
+      {
+        "name": "Mireia Aleny\u00e0"
+      },
+      {
+        "name": "Esa Alhoniemi"
+      },
+      {
+        "name": "Chengyang An",
+        "faculty_id": "Jill Flanagan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Talha Anwar"
+      },
+      {
+        "name": "Tewodros Weldebirhan Arega"
+      },
+      {
+        "name": "Netanell Avisdris"
+      },
+      {
+        "name": "Dogu Baran Aydogan"
+      },
+      {
+        "name": "Yingbin Bai"
+      },
+      {
+        "name": "Maria Baldeon Calisto"
+      },
+      {
+        "name": "Berke Doga Basaran"
+      },
+      {
+        "name": "Marcel Beetz"
+      },
+      {
+        "name": "Cheng Bian"
+      },
+      {
+        "name": "Hao Bian"
+      },
+      {
+        "name": "Kevin Blansit"
+      },
+      {
+        "name": "Louise Bloch"
+      },
+      {
+        "name": "Robert Bohnsack"
+      },
+      {
+        "name": "Sara Bosticardo"
+      },
+      {
+        "name": "Jack Breen"
+      },
+      {
+        "name": "Mikael Brudfors"
+      },
+      {
+        "name": "Raphael Br\u00fcngel"
+      },
+      {
+        "name": "Mariano Cabezas"
+      },
+      {
+        "name": "Alberto Cacciola"
+      },
+      {
+        "name": "Zhiwei Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yucong Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Daniel Tianming Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Minjeong Cho"
+      },
+      {
+        "name": "Min-Kook Choi"
+      },
+      {
+        "name": "Chuantao Xie Chuantao Xie"
+      },
+      {
+        "name": "Dana Cobzas"
+      },
+      {
+        "name": "Julien Cohen-Adad"
+      },
+      {
+        "name": "Jorge Corral Acero"
+      },
+      {
+        "name": "Sujit Kumar Das"
+      },
+      {
+        "name": "Marcela de Oliveira"
+      },
+      {
+        "name": "Hanqiu Deng"
+      },
+      {
+        "name": "Guiming Dong"
+      },
+      {
+        "name": "Lars Doorenbos"
+      },
+      {
+        "name": "Cory Efird"
+      },
+      {
+        "name": "Sergio Escalera"
+      },
+      {
+        "name": "Di Fan"
+      },
+      {
+        "name": "Mehdi Fatan Serj"
+      },
+      {
+        "name": "Alexandre Fenneteau"
+      },
+      {
+        "name": "Lucas Fidon"
+      },
+      {
+        "name": "Patryk Filipiak"
+      },
+      {
+        "name": "Ren\u00e9 Finzel"
+      },
+      {
+        "name": "Nuno R. Freitas"
+      },
+      {
+        "name": "Christoph M. Friedrich"
+      },
+      {
+        "name": "Mitchell Fulton"
+      },
+      {
+        "name": "Finn Gaida"
+      },
+      {
+        "name": "Francesco Galati"
+      },
+      {
+        "name": "Christoforos Galazis"
+      },
+      {
+        "name": "Chang Hee Gan",
+        "faculty_id": "Jill Flanagan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Zheyao Gao"
+      },
+      {
+        "name": "Shengbo Gao"
+      },
+      {
+        "name": "Matej Gazda"
+      },
+      {
+        "name": "Beerend Gerats"
+      },
+      {
+        "name": "Neil Getty"
+      },
+      {
+        "name": "Adam Gibicar"
+      },
+      {
+        "name": "Ryan Gifford"
+      },
+      {
+        "name": "Sajan Gohil"
+      },
+      {
+        "name": "Maria Grammatikopoulou"
+      },
+      {
+        "name": "Daniel Grzech"
+      },
+      {
+        "name": "Orhun G\u00fcley"
+      },
+      {
+        "name": "Timo G\u00fcnnemann"
+      },
+      {
+        "name": "Chunxu Guo"
+      },
+      {
+        "name": "Sylvain Guy"
+      },
+      {
+        "name": "Heonjin Ha"
+      },
+      {
+        "name": "Luyi Han"
+      },
+      {
+        "name": "Il Song Han"
+      },
+      {
+        "name": "Ali Hatamizadeh"
+      },
+      {
+        "name": "Tian He"
+      },
+      {
+        "name": "Jimin Heo"
+      },
+      {
+        "name": "Sebastian Hitziger"
+      },
+      {
+        "name": "SeulGi Hong"
+      },
+      {
+        "name": "SeungBum Hong"
+      },
+      {
+        "name": "Rian Huang"
+      },
+      {
+        "name": "Ziyan Huang"
+      },
+      {
+        "name": "Markus Huellebrand"
+      },
+      {
+        "name": "Stephan Huschauer"
+      },
+      {
+        "name": "Mustaffa Hussain"
+      },
+      {
+        "name": "Tomoo Inubushi"
+      },
+      {
+        "name": "Ece Isik Polat"
+      },
+      {
+        "name": "Mojtaba Jafaritadi"
+      },
+      {
+        "name": "SeongHun Jeong"
+      },
+      {
+        "name": "Bailiang Jian"
+      },
+      {
+        "name": "Yuanhong Jiang"
+      },
+      {
+        "name": "Zhifan Jiang"
+      },
+      {
+        "name": "Yueming Jin"
+      },
+      {
+        "name": "Smriti Joshi"
+      },
+      {
+        "name": "Abdolrahim Kadkhodamohammadi"
+      },
+      {
+        "name": "Reda Abdellah Kamraoui"
+      },
+      {
+        "name": "Inha Kang"
+      },
+      {
+        "name": "Junghwa Kang"
+      },
+      {
+        "name": "Davood Karimi"
+      },
+      {
+        "name": "April Khademi"
+      },
+      {
+        "name": "Muhammad Irfan Khan"
+      },
+      {
+        "name": "Suleiman A. Khan"
+      },
+      {
+        "name": "Rishab Khantwal"
+      },
+      {
+        "name": "Kwang-Ju Kim"
+      },
+      {
+        "name": "Timothy Kline"
+      },
+      {
+        "name": "Satoshi Kondo"
+      },
+      {
+        "name": "Elina Kontio"
+      },
+      {
+        "name": "Adrian Krenzer"
+      },
+      {
+        "name": "Artem Kroviakov"
+      },
+      {
+        "name": "Hugo Kuijf"
+      },
+      {
+        "name": "Satyadwyoom Kumar",
+        "faculty_id": "Mohan Kumar",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Francesco La Rosa"
+      },
+      {
+        "name": "Abhi Lad"
+      },
+      {
+        "name": "Doohee Lee"
+      },
+      {
+        "name": "Minho Lee"
+      },
+      {
+        "name": "Chiara Lena"
+      },
+      {
+        "name": "Hao Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Ling Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Xingyu Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Fuyuan Liao"
+      },
+      {
+        "name": "KuanLun Liao"
+      },
+      {
+        "name": "Arlindo Limede Oliveira"
+      },
+      {
+        "name": "Chaonan Lin"
+      },
+      {
+        "name": "Shan Lin"
+      },
+      {
+        "name": "Akis Linardos"
+      },
+      {
+        "name": "Marius George Linguraru"
+      },
+      {
+        "name": "Han Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Tao Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Di Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yanling Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jo\u00e3o Louren\u00e7o-Silva"
+      },
+      {
+        "name": "Jingpei Lu"
+      },
+      {
+        "name": "Jiangshan Lu"
+      },
+      {
+        "name": "Imanol Luengo"
+      },
+      {
+        "name": "Christina B. Lund"
+      },
+      {
+        "name": "Huan Minh Luu"
+      },
+      {
+        "name": "Yi Lv"
+      },
+      {
+        "name": "Yi Lv"
+      },
+      {
+        "name": "Uzay Macar"
+      },
+      {
+        "name": "Leon Maechler"
+      },
+      {
+        "name": "Sina Mansour L."
+      },
+      {
+        "name": "Kenji Marshall"
+      },
+      {
+        "name": "Moona Mazher"
+      },
+      {
+        "name": "Richard McKinley"
+      },
+      {
+        "name": "Alfonso Medela"
+      },
+      {
+        "name": "Felix Meissen"
+      },
+      {
+        "name": "Mingyuan Meng"
+      },
+      {
+        "name": "Dylan Miller"
+      },
+      {
+        "name": "Seyed Hossein Mirjahanmardi"
+      },
+      {
+        "name": "Arnab Mishra",
+        "faculty_id": "Sumita Mishra",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Samir Mitha"
+      },
+      {
+        "name": "Hassan Mohy-ud-Din"
+      },
+      {
+        "name": "Tony Chi Wing Mok"
+      },
+      {
+        "name": "Gowtham Krishnan Murugesan"
+      },
+      {
+        "name": "Enamundram Naga Karthik"
+      },
+      {
+        "name": "Sahil Nalawade"
+      },
+      {
+        "name": "Jakub Nalepa"
+      },
+      {
+        "name": "Mohamed Naser"
+      },
+      {
+        "name": "Ramin Nateghi"
+      },
+      {
+        "name": "Hammad Naveed"
+      },
+      {
+        "name": "Quang-Minh Nguyen"
+      },
+      {
+        "name": "Cuong Nguyen Quoc"
+      },
+      {
+        "name": "Brennan Nichyporuk"
+      },
+      {
+        "name": "Bruno Oliveira"
+      },
+      {
+        "name": "David Owen"
+      },
+      {
+        "name": "Jimut Bahan Pal"
+      },
+      {
+        "name": "Junwen Pan",
+        "faculty_id": "Yin Pan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Wentao Pan",
+        "faculty_id": "Yin Pan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Winnie Pang"
+      },
+      {
+        "name": "Bogyu Park",
+        "faculty_id": "Ji Hwan Park",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Vivek Pawar"
+      },
+      {
+        "name": "Kamlesh Pawar"
+      },
+      {
+        "name": "Michael Peven"
+      },
+      {
+        "name": "Lena Philipp"
+      },
+      {
+        "name": "Tomasz Pieciak"
+      },
+      {
+        "name": "Szymon Plotka"
+      },
+      {
+        "name": "Marcel Plutat"
+      },
+      {
+        "name": "Fattaneh Pourakpour"
+      },
+      {
+        "name": "Domen Prelo\u017enik"
+      },
+      {
+        "name": "Kumaradevan Punithakumar"
+      },
+      {
+        "name": "Abdul Qayyum"
+      },
+      {
+        "name": "Sandro Queir\u00f3s"
+      },
+      {
+        "name": "Arman Rahmim"
+      },
+      {
+        "name": "Salar Razavi"
+      },
+      {
+        "name": "Jintao Ren"
+      },
+      {
+        "name": "Mina Rezaei"
+      },
+      {
+        "name": "Jonathan Adam Rico"
+      },
+      {
+        "name": "ZunHyan Rieu"
+      },
+      {
+        "name": "Markus Rink"
+      },
+      {
+        "name": "Johannes Roth"
+      },
+      {
+        "name": "Yusely Ruiz-Gonzalez"
+      },
+      {
+        "name": "Numan Saeed"
+      },
+      {
+        "name": "Anindo Saha"
+      },
+      {
+        "name": "Mostafa Salem"
+      },
+      {
+        "name": "Ricardo Sanchez-Matilla"
+      },
+      {
+        "name": "Kurt Schilling"
+      },
+      {
+        "name": "Wei Shao"
+      },
+      {
+        "name": "Zhiqiang Shen"
+      },
+      {
+        "name": "Ruize Shi",
+        "faculty_id": "Pengcheng Shi",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Pengcheng Shi",
+        "faculty_id": "Pengcheng Shi",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Daniel Sobotka"
+      },
+      {
+        "name": "Th\u00e9odore Soulier"
+      },
+      {
+        "name": "Bella Specktor Fadida"
+      },
+      {
+        "name": "Danail Stoyanov"
+      },
+      {
+        "name": "Timothy Sum Hon Mun"
+      },
+      {
+        "name": "Xiaowu Sun"
+      },
+      {
+        "name": "Rong Tao",
+        "faculty_id": "Zhiqiang Tao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Franz Thaler"
+      },
+      {
+        "name": "Antoine Th\u00e9berge"
+      },
+      {
+        "name": "Felix Thielke"
+      },
+      {
+        "name": "Helena Torres"
+      },
+      {
+        "name": "Kareem A. Wahid"
+      },
+      {
+        "name": "Jiacheng Wang"
+      },
+      {
+        "name": "YiFei Wang"
+      },
+      {
+        "name": "Wei Wang"
+      },
+      {
+        "name": "Xiong Wang"
+      },
+      {
+        "name": "Jianhui Wen"
+      },
+      {
+        "name": "Ning Wen"
+      },
+      {
+        "name": "Marek Wodzinski"
+      },
+      {
+        "name": "Ye Wu"
+      },
+      {
+        "name": "Fangfang Xia"
+      },
+      {
+        "name": "Tianqi Xiang"
+      },
+      {
+        "name": "Chen Xiaofei"
+      },
+      {
+        "name": "Lizhan Xu"
+      },
+      {
+        "name": "Tingting Xue"
+      },
+      {
+        "name": "Yuxuan Yang",
+        "faculty_id": "Haibo Yang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Lin Yang",
+        "faculty_id": "Haibo Yang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Kai Yao"
+      },
+      {
+        "name": "Huifeng Yao"
+      },
+      {
+        "name": "Amirsaeed Yazdani"
+      },
+      {
+        "name": "Michael Yip"
+      },
+      {
+        "name": "Hwanseung Yoo"
+      },
+      {
+        "name": "Fereshteh Yousefirizi"
+      },
+      {
+        "name": "Shunkai Yu",
+        "faculty_id": "Zhe Yu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Lei Yu",
+        "faculty_id": "Zhe Yu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jonathan Zamora"
+      },
+      {
+        "name": "Ramy Ashraf Zeineldin"
+      },
+      {
+        "name": "Dewen Zeng"
+      },
+      {
+        "name": "Jianpeng Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Bokai Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jiapeng Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Fan Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Huahong Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Zhongchen Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Zixuan Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jiachen Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Can Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Qingshuo Zheng"
+      },
+      {
+        "name": "Yuheng Zhi"
+      },
+      {
+        "name": "Ziqi Zhou"
+      },
+      {
+        "name": "Baosheng Zou"
+      },
+      {
+        "name": "Klaus Maier-Hein"
+      },
+      {
+        "name": "Paul F. J\u00e4ger"
+      },
+      {
+        "name": "Annette Kopp-Schneider"
+      },
+      {
+        "name": "Lena Maier-Hein"
+      }
+    ],
+    "year": 2023,
+    "abstract": "The number of international benchmarking competitions is steadily increasing in various fields of machine learning (ML) research and practice. So far, however, little is known about the common practice as well as bottlenecks faced by the community in tackling the research questions posed. To shed light on the status quo of algorithm development in the specific field of biomedical imaging analysis, we designed an international survey that was issued to all participants of challenges conducted in conjunction with the IEEE ISBI 2021 and MICCAI 2021 conferences (80 competitions in total). The survey covered participants\u2019 expertise and working environments, their chosen strategies, as well as algorithm characteristics. A median of 72% challenge participants took part in the survey. According to our results, knowledge exchange was the primary incentive (70%) for participation, while the reception of prize money played only a minor role (16%). While a median of 80 working hours was spent on method development, a large portion of participants stated that they did not have enough time for method development (32%). 25% perceived the infrastructure to be a bottleneck. Overall, 94% of all solutions were deep learning-based. Of these, 84% were based on standard architectures. 43% of the respondents reported that the data samples (e.g., images) were too large to be processed at once. This was most commonly addressed by patch-based training (69%), downsampling (37%), and solving 3D analysis tasks as a series of 2D tasks. K-fold cross-validation on the training set was performed by only 37% of the participants and only 50% of the participants performed ensembling based on multiple identical models (61%) or heterogeneous models (39%). 48% of the respondents applied postprocessing steps.",
+    "arxiv_id": "2212.08568v2"
+  },
+  "core_content": {
+    "novelty_claim": "The paper presents a survey on the current state and practices in biomedical image analysis competitions, highlighting common strategies and challenges faced by participants.",
+    "key_methodology": "An international survey was designed and distributed to all participants of challenges conducted in conjunction with IEEE ISBI 2021 and MICCAI 2021 conferences. The survey covered various aspects including expertise, working environments, chosen strategies, and algorithm characteristics.",
+    "outcomes": [
+      "Knowledge exchange is the primary incentive for participation (70%)",
+      "A median of 80 working hours was spent on method development, but only 32% had enough time",
+      "94% of solutions were deep learning-based, with 84% using standard architectures",
+      "Data processing challenges are common, addressed by patch-based training and downsampling"
+    ],
+    "full_text_markdown": "The paper investigates the current state and practices in biomedical image analysis competitions. It highlights that while knowledge exchange is a primary incentive for participation (70%), many participants face time constraints during method development (32%). The survey also reveals that 94% of solutions are deep learning-based, with 84% using standard architectures. Data processing challenges are common, addressed by patch-based training and downsampling. K-fold cross-validation was used by only 37%, and ensembling was performed by 50% of participants based on multiple identical or heterogeneous models. Postprocessing steps were applied in 48% of the cases."
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Patch-based training"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "Downsampling"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "matthias_biomedical_image_analysis_competitions_the_state_of_current_.pdf"
+}

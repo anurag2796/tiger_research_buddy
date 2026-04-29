@@ -1,0 +1,75 @@
+{
+  "card_id": "physics_assisted_ml_rac",
+  "bibliographic_data": {
+    "title": "Physics-assisted machine learning methods for predicting the splitting tensile strength of recycled aggregate concrete",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Jianguo Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Xiangyu Han"
+      },
+      {
+        "name": "Yin Pan",
+        "faculty_id": "Yin Pan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Kai Cui",
+        "faculty_id": "Feng Cui",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Q. Xiao"
+      }
+    ],
+    "year": 2023,
+    "abstract": "Recycled aggregate concrete (RAC) has become a popular building material due to its eco-friendly features, but the difficulty in predicting the crack resistance of RAC is increasingly impeding its application. In this study, splitting tensile strength is adopted to describe the crack resistance ability of RAC, and physics-assisted machine learning (ML) methods are used to construct predictive models for the splitting tensile strength of RAC. The results show that the AdaBoost model has excellent predictive performance with the help of the Firefly algorithm, and physical assistance plays a remarkable role in selecting features and verifying the ML models. Due to the limit in data size and the generalizability of the model, the dataset should be supplemented with more representative data, and an algorithm for small sample sizes could be studied in the future.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The study uses physics-assisted machine learning methods to predict the splitting tensile strength of recycled aggregate concrete (RAC) with AdaBoost model and Firefly algorithm, showing excellent predictive performance.",
+    "key_methodology": "Physics-assisted construction of a database using physical theories and existing mechanical models. The input variables include contents of water, cement, coarse aggregate, size of aggregate, characteristics of recycled aggregate, fiber types, and volume fractions. The output variable is the splitting tensile strength of RAC.",
+    "outcomes": [
+      "The AdaBoost model has excellent predictive performance with the Firefly algorithm.",
+      "Physical assistance plays a remarkable role in selecting features and verifying ML models."
+    ],
+    "full_text_markdown": "This study addresses the challenge of predicting the crack resistance of recycled aggregate concrete (RAC) by using physics-assisted machine learning methods. The authors propose that splitting tensile strength is an effective way to describe the crack resistance ability of RAC. They construct predictive models for the splitting tensile strength, with AdaBoost model showing excellent performance aided by the Firefly algorithm. Physical assistance significantly improves feature selection and model validation. However, due to limited data size and generalizability issues, more representative data are needed, and future research could focus on algorithms suitable for small sample sizes.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Physics-assisted machine learning"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Splitting tensile strength"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Recycled aggregate concrete"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "PREDICTS"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "APPLIES_TO"
+      }
+    ]
+  },
+  "source_file": "jianguo_physics-assisted_machine_learning_methods_for_predicting_the.pdf"
+}

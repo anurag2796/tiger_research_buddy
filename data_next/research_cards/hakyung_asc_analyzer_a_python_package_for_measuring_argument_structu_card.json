@@ -1,0 +1,62 @@
+{
+  "card_id": "asc_analyzer",
+  "bibliographic_data": {
+    "title": "ASC analyzer: A Python package for measuring argument structure construction usage in English texts",
+    "primary_domain": "cs.CL",
+    "authors": [
+      {
+        "name": "Hakyung Sung",
+        "faculty_id": "Hakyung Sung",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Kristopher Kyle"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Argument structure constructions (ASCs) offer a theoretically grounded lens for analyzing second language (L2) proficiency, yet scalable and systematic tools for measuring their usage remain limited. This paper introduces the ASC analyzer, a publicly available Python package designed to address this gap. The analyzer automatically tags ASCs and computes 50 indices that capture diversity, proportion, frequency, and ASC-verb lemma association strength. To demonstrate its utility, we conduct both bivariate and multivariate analyses that examine the relationship between ASC-based indices and L2 writing scores.",
+    "arxiv_id": "arXiv:2510.10384v1"
+  },
+  "core_content": {
+    "novelty_claim": "The ASC analyzer is a Python package that automatically tags argument structure constructions (ASCs) and computes 50 indices to capture their usage in English texts, addressing the gap in scalable tools for L2 proficiency analysis.",
+    "key_methodology": "The ASC analyzer uses a RoBERTa-based tagger trained on a gold-standard ASC treebank to automatically label ASCs and compute various indices capturing diversity, proportion, frequency, and association strength with verbs.",
+    "outcomes": [
+      "Developed a Python package for analyzing argument structure constructions in English texts.",
+      "Computed 50 indices that capture the usage of ASCs including diversity, proportion, frequency, and verb-lemma associations."
+    ],
+    "full_text_markdown": "The paper introduces the ASC analyzer, a publicly available Python package designed to measure the usage of Argument Structure Constructions (ASCs) in English texts. The tool leverages a RoBERTa-based tagger trained on a gold-standard ASC treebank to automatically label ASCs and compute 50 indices that capture their diversity, proportion, frequency, and association strength with verbs. The utility of this package is demonstrated through an analysis of 6,482 English learner essays from the ELLIPSE corpus, examining the relationship between ASC-based indices and L2 writing proficiency.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "ASC Tagger"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Argument Structure Constructions (ASCs)"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "L2 Proficiency"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "TAGS"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "RELATES_TO"
+      }
+    ]
+  },
+  "source_file": "hakyung_asc_analyzer_a_python_package_for_measuring_argument_structu.pdf"
+}

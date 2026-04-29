@@ -1,0 +1,67 @@
+{
+  "card_id": "uav_resilience_against_stealthy_attacks",
+  "bibliographic_data": {
+    "title": "UAV Resilience Against Stealthy Attacks",
+    "primary_domain": "cs.CR",
+    "authors": [
+      {
+        "name": "Arthur Amorim",
+        "faculty_id": "Arthur Azevedo de Amorim",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Max Taylor"
+      },
+      {
+        "name": "Trevor Kann"
+      },
+      {
+        "name": "Gary T. Leavens"
+      },
+      {
+        "name": "William L. Harrison",
+        "faculty_id": "Jason Harrison",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Lance Joneckis"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Unmanned aerial vehicles (UAVs) depend on untrusted software components to automate dangerous or critical missions, making them a desirable target for attacks. Some work has been done to prevent an attacker who has either compromised a ground control station or parts of a UAV\u2019s software from sabotaging the vehicle, but not both. We present an architecture running a UAV software stack with runtime monitoring and seL4-based software isolation that prevents attackers from both exploiting software bugs and stealthy attacks. Our architecture retrofits legacy UAVs and secures the popular MAVLink protocol, making wide adoption possible.",
+    "arxiv_id": "2503.17298v2"
+  },
+  "core_content": {
+    "novelty_claim": "The paper presents an architecture that combines runtime monitoring with seL4-based software isolation to prevent both software bugs and stealthy attacks on UAVs.",
+    "key_methodology": "The approach isolates software partitions in the UAV, preventing potential vulnerabilities from affecting critical components like the flight control system (FCS), while still allowing monitored communication between partitions. It also monitors commands sent to the FCS to prevent stealthy attacks.",
+    "outcomes": [
+      "Retrofits legacy UAVs with a secure architecture",
+      "Secures the popular MAVLink protocol",
+      "Mitigates stealthy attacks by monitoring commands and preventing malicious behavior"
+    ],
+    "full_text_markdown": "Unmanned aerial vehicles (UAVs) are critical for various missions, but their reliance on untrusted software components makes them vulnerable to attacks. Previous work has focused on securing UAVs against either compromised ground control stations or parts of the UAV's software, but not both simultaneously. This paper introduces a novel architecture that combines runtime monitoring and seL4-based software isolation to protect UAVs from both software bugs and stealthy attacks. The approach is designed to be compatible with legacy UAV systems and can secure the widely used MAVLink protocol, making it practical for widespread adoption.\n\nThe architecture isolates unverified components such as network stacks within the UAV, ensuring that critical flight control system (FCS) integrity is maintained. It also monitors commands sent to the FCS to prevent stealthy attacks, which exploit seemingly benign commands to induce undesired behavior in the UAV.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Runtime Monitoring"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "seL4-based Software Isolation"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "COMBINES_WITH"
+      }
+    ]
+  },
+  "source_file": "arthur_uav_resilience_against_stealthy_attacks.pdf"
+}

@@ -1,0 +1,56 @@
+{
+  "card_id": "neural_state_pushdown_automaton",
+  "bibliographic_data": {
+    "title": "The Neural State Pushdown Automata",
+    "primary_domain": "cs.AI",
+    "authors": [
+      {
+        "name": "Ankur Mali"
+      },
+      {
+        "name": "Alexander Ororbia",
+        "faculty_id": "Alexander Ororbia",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "C. Lee Giles"
+      }
+    ],
+    "year": 2019,
+    "abstract": "In order to learn complex grammars, recurrent neural networks (RNNs) require sufficient computational resources to ensure correct grammar recognition. A widely-used approach to expand model capacity would be to couple an RNN to an external memory stack. Here, we introduce a \u201cneural state\u201d pushdown automaton (NSPDA), which consists of a digital stack, instead of an analog one, that is coupled to a neural network state machine. We empirically show its effectiveness in recognizing various context-free grammars (CFGs). First, we develop the underlying mechanics of the proposed higher order recurrent network and its manipulation of a stack as well as how to stably program its underlying pushdown automaton (PDA) to achieve desired finite-state network dynamics. Next, we introduce a noise regularization scheme for higher-order (tensor) networks, to our knowledge the first of its kind, and design an algorithm for improved incremental learning. Finally, we design a method for inserting grammar rules into a NSPDA and empirically show that this prior knowledge improves its training convergence time by an order of magnitude and, in some cases, leads to better generalization. The NSPDA is also compared to a classical analog stack neural network pushdown automaton (NNPDA) as well as a wide array of first and second-order RNNs with and without external memory, trained using different learning algorithms. Our results show that, for Dyck(2) languages, prior rule-based knowledge is critical for optimization convergence and for ensuring generalization to longer sequences at test time. We observe that many RNNs with and without memory, but no prior knowledge, fail to converge and generalize poorly on CFGs.",
+    "arxiv_id": "1909.05233"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a neural state pushdown automaton (NSPDA) that uses a digital stack coupled with a neural network to recognize context-free grammars more effectively.",
+    "key_methodology": "The NSPDA is designed using higher-order recurrent networks and includes a noise regularization scheme for improved learning. The authors also propose methods for inserting grammar rules into the NSPDA, which significantly improves its training convergence time and generalization on CFGs.",
+    "outcomes": [
+      "Developed an NSPDA that uses a digital stack to recognize context-free grammars more effectively than traditional RNNs.",
+      "Introduced a noise regularization scheme for higher-order networks.",
+      "Designed methods for inserting grammar rules into the NSPDA, leading to better training convergence and generalization."
+    ],
+    "full_text_markdown": "The paper addresses the limitations of recurrent neural networks (RNNs) in recognizing complex grammars. It proposes a novel approach called the Neural State Pushdown Automaton (NSPDA), which combines a digital stack with a neural network to enhance RNN capabilities. The authors develop the mechanics of this higher-order RNN and introduce a noise regularization scheme for better learning. They also present methods for inserting grammar rules into the NSPDA, demonstrating significant improvements in training convergence time and generalization on context-free grammars (CFGs). The paper compares the NSPDA to classical analog stack neural network pushdown automata and various RNNs with external memory, showing that prior rule-based knowledge is crucial for optimization and generalization.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Neural State Pushdown Automaton (NSPDA)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Context-Free Grammar (CFG)"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "RECOGNIZES"
+      }
+    ]
+  },
+  "source_file": "ankur_the_neural_state_pushdown_automata.pdf"
+}

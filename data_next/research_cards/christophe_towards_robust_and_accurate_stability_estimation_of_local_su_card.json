@@ -1,0 +1,58 @@
+{
+  "card_id": "towards-robust-and-accurate-stability-estimation",
+  "bibliographic_data": {
+    "title": "Towards Robust and Accurate Stability Estimation of Local Surrogate Models in Text-based Explainable AI",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Christopher Burger"
+      },
+      {
+        "name": "Charles Walter"
+      },
+      {
+        "name": "Thai Le"
+      },
+      {
+        "name": "Lingwei Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Recent work has investigated the concept of adversarial attacks on explainable AI (XAI) in the NLP domain with a focus on examining the vulnerability of local surrogate methods such as LIME to adversarial perturbations or small changes on the input of a machine learning (ML) model. In such attacks, the generated explanation is manipulated while the meaning and structure of the original input remain similar under the ML model. Such attacks are especially alarming when XAI is used as a basis for decision making (e.g., prescribing drugs based on AI medical predictors) or for legal action (e.g., legal dispute involving AI software). Although weaknesses across many XAI methods have been shown to exist, the reasons behind why remain little explored. Central to this XAI manipulation is the similarity measure used to calculate how one explanation differs from another. A poor choice of similarity measure can lead to erroneous conclusions about the stability or adversarial robustness of an XAI method. Therefore, this work investigates a variety of similarity measures designed for text-based ranked lists referenced in related work to determine their comparative suitability for use. We find that many measures are overly sensitive, resulting in erroneous estimates of stability. We then propose a weighting scheme for text-based data that incorporates the synonymity between the features within an explanation, providing more accurate estimates of the actual weakness of XAI methods to adversarial examples.",
+    "arxiv_id": "arXiv:2501.02042"
+  },
+  "core_content": {
+    "novelty_claim": "The work proposes a weighting scheme for text-based data that incorporates synonymity between features within an explanation, providing more accurate estimates of the actual weakness of XAI methods to adversarial examples.",
+    "key_methodology": "A variety of similarity measures designed for text-based ranked lists are investigated to determine their comparative suitability. A new weighting scheme is proposed based on the synonymity between features within explanations.",
+    "outcomes": [
+      "Many existing similarity measures are found to be overly sensitive, leading to erroneous estimates of stability.",
+      "A new weighting scheme that incorporates synonymity between features within explanations is proposed and shown to provide more accurate estimates."
+    ],
+    "full_text_markdown": "Recent work has investigated the concept of adversarial attacks on explainable AI (XAI) in the NLP domain with a focus on examining the vulnerability of local surrogate methods such as LIME to adversarial perturbations or small changes on the input of a machine learning (ML) model. In such attacks, the generated explanation is manipulated while the meaning and structure of the original input remain similar under the ML model. Such attacks are especially alarming when XAI is used as a basis for decision making (e.g., prescribing drugs based on AI medical predictors) or for legal action (e.g., legal dispute involving AI software). Although weaknesses across many XAI methods have been shown to exist, the reasons behind why remain little explored. Central to this XAI manipulation is the similarity measure used to calculate how one explanation differs from another. A poor choice of similarity measure can lead to erroneous conclusions about the stability or adversarial robustness of an XAI method. Therefore, this work investigates a variety of similarity measures designed for text-based ranked lists referenced in related work to determine their comparative suitability for use. We find that many measures are overly sensitive, resulting in erroneous estimates of stability. We then propose a weighting scheme for text-based data that incorporates the synonymity between the features within an explanation, providing more accurate estimates of the actual weakness of XAI methods to adversarial examples.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Weighting Scheme for Text-based Data"
+      },
+      {
+        "id": "concept_2",
+        "type": "Similarity Measure",
+        "label": "RBO0.5"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "christophe_towards_robust_and_accurate_stability_estimation_of_local_su.pdf"
+}

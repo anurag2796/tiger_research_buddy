@@ -1,0 +1,220 @@
+{
+  "card_id": "locust_genome_sequence",
+  "bibliographic_data": {
+    "title": "The locust genome provides insight into swarm formation and long-distance flight",
+    "primary_domain": "q-bio.GN",
+    "authors": [
+      {
+        "name": "Xianhui Wang"
+      },
+      {
+        "name": "X. Fang"
+      },
+      {
+        "name": "Pengcheng Yang",
+        "faculty_id": "Haibo Yang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Xuanting Jiang"
+      },
+      {
+        "name": "Feng Jiang"
+      },
+      {
+        "name": "Dejian Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "B. Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "F. Cui",
+        "faculty_id": "Feng Cui",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jianing Wei"
+      },
+      {
+        "name": "Chuang Ma",
+        "faculty_id": "Naveen Sharma",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yundan Wang"
+      },
+      {
+        "name": "Jing He"
+      },
+      {
+        "name": "Yuan Luo"
+      },
+      {
+        "name": "Zhifeng Wang"
+      },
+      {
+        "name": "Xiaojiao Guo"
+      },
+      {
+        "name": "Wei Guo"
+      },
+      {
+        "name": "Xuesong Wang"
+      },
+      {
+        "name": "Yi Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Meiling Yang",
+        "faculty_id": "Haibo Yang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "S. Hao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Bing Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Zongyuan Ma",
+        "faculty_id": "Naveen Sharma",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Dan Yu",
+        "faculty_id": "Zhe Yu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Z. Xiong"
+      },
+      {
+        "name": "Yabing Zhu",
+        "faculty_id": "Derui Zhu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "D. Fan"
+      },
+      {
+        "name": "Lijuan Han"
+      },
+      {
+        "name": "Bo Wang"
+      },
+      {
+        "name": "Yuanxin Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Junwen Wang"
+      },
+      {
+        "name": "Lan Yang",
+        "faculty_id": "Haibo Yang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Wei Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yue Feng"
+      },
+      {
+        "name": "Guanxing Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jinmin Lian"
+      },
+      {
+        "name": "Qiye Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Zhiyong Huang"
+      },
+      {
+        "name": "Xiaoming Yao"
+      },
+      {
+        "name": "Na Lv"
+      },
+      {
+        "name": "Guojie Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yingrui Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jian Wang"
+      },
+      {
+        "name": "Jun Wang"
+      },
+      {
+        "name": "B. Zhu",
+        "faculty_id": "Derui Zhu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "L. Kang"
+      }
+    ],
+    "year": 2014,
+    "abstract": "Locusts are one of the world\u2019s most destructive agricultural pests and represent a useful model system in entomology. Here we present a draft 6.5 Gb genome sequence of Locusta migratoria, which is the largest animal genome sequenced so far. Our findings indicate that the large genome size of L. migratoria is likely to be because of transposable element proliferation combined with slow rates of loss for these elements. Methylome and transcriptome analyses reveal complex regulatory mechanisms involved in microtubule dynamic-mediated synapse plasticity during phase change. We find significant expansion of gene families associated with energy consumption and detoxification, consistent with long-distance flight capacity and phytophagy. We report hundreds of potential insecticide target genes, including cys-loop ligand-gated ion channels, G-protein-coupled receptors and lethal genes. The L. migratoria genome sequence offers new insights into the biology and sustainable management of this pest species, and will promote its wide use as a model system.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The study presents a draft genome sequence of Locusta migratoria, which is the largest animal genome sequenced so far, providing insights into swarm formation and long-distance flight mechanisms.",
+    "key_methodology": "Genome sequencing using Illumina HiSeq 2000 platform followed by de novo assembly. Transcriptome and methylome analyses were conducted to identify potential regulatory mechanisms during phase change and insecticide targets.",
+    "outcomes": [
+      "Identified the largest animal genome sequenced so far, at 6.5 Gb.",
+      "Found that transposable element proliferation combined with slow rates of loss contribute to the large genome size.",
+      "Revealed complex regulatory mechanisms involved in microtubule dynamic-mediated synapse plasticity during phase change.",
+      "Explored gene families associated with energy consumption and detoxification, consistent with long-distance flight capacity and phytophagy."
+    ],
+    "full_text_markdown": "Since the dawn of agrarian civilization, locust plagues have been viewed as one of the most devastating natural disasters, linked with famine, strife, and dissolution of societal order. Locusts are grasshopper species with swarming and long-distance migratory behaviors. The primary current method for combating locust outbreaks is through intensive spraying of chemical pesticides; however, their overall usefulness has been widely debated due to their highly negative impact on human and environmental health, and biological diversity. The study provides a draft genome sequence of the most widespread locust species, Locusta migratoria, which serves as a model organism for insect morphology, behavior, and physiological research. Genome sequencing using Illumina HiSeq 2000 followed by de novo assembly revealed a large genome size of 6.5 Gb with significant expansion in gene families related to long-distance migration, feeding, and other biological processes unique to the locust. Transcriptome and methylome analyses identified potential neuronal regulatory mechanisms underlying phase change in the locust."
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Genome Sequencing"
+      },
+      {
+        "id": "concept_2",
+        "type": "Mechanism",
+        "label": "Microtubule Dynamic-Mediated Synapse Plasticity"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "INVOLVES"
+      }
+    ]
+  },
+  "source_file": "xianhui_the_locust_genome_provides_insight_into_swarm_formation_and_.pdf"
+}

@@ -1,0 +1,82 @@
+{
+  "card_id": "astro2020_science_white_paper",
+  "bibliographic_data": {
+    "title": "Astro2020 Science White Paper: Toward Finding Earth 2.0: Masses and Orbits of Small Planets with Extreme Radial Velocity Precision",
+    "primary_domain": "astro-ph.EP",
+    "authors": [
+      {
+        "name": "David R. Ciardi"
+      },
+      {
+        "name": "Jacob Bean"
+      },
+      {
+        "name": "Jennifer Burt",
+        "faculty_id": "Jennifer Burt",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Diana Dragomir"
+      },
+      {
+        "name": "Eric Gaidos"
+      },
+      {
+        "name": "Marshall C. Johnson"
+      },
+      {
+        "name": "Eliza Kempton"
+      },
+      {
+        "name": "Quinn Konopacky"
+      },
+      {
+        "name": "Michael Meyer"
+      },
+      {
+        "name": "Johanna Teske"
+      },
+      {
+        "name": "Lauren Weiss"
+      },
+      {
+        "name": "George Zhou"
+      }
+    ],
+    "year": 2019,
+    "abstract": "Having discovered that Earth-sized planets are common, we are now embarking on a journey to determine if Earth-like planets are also common. Finding Earth-like planets is one of the most compelling endeavors of the 21st century \u2013 leading us toward finally answering the question \u201cAre we alone?\u201d To achieve this forward-looking goal, we must determine the masses of the planets; the sizes of the planets, by themselves, are not sufficient for the determination of the bulk and atmospheric compositions. Masses, coupled with the radii, are crucial constraints on the bulk composition and interior structure of the planets and the composition of their atmospheres, including the search for biosignatures. Precision radial velocity is the most viable technique for providing essential mass and orbit information for spectroscopy of other Earths.",
+    "arxiv_id": "1903.05665"
+  },
+  "core_content": {
+    "novelty_claim": "The paper emphasizes the importance of determining planetary masses to understand their bulk composition and atmospheric characteristics, particularly in the context of finding Earth-like planets.",
+    "key_methodology": "The authors advocate for high precision radial velocity instruments and advanced tools for statistical modeling of stellar variability to achieve this goal.",
+    "outcomes": [
+      "Developing high quality precision radial velocity instruments",
+      "Building large telescope facilities like TMT and GMT or space-based platforms like EarthFinder"
+    ],
+    "full_text_markdown": "Having discovered that Earth-sized planets are common, we are now embarking on a journey to determine if Earth-like planets are also common. Finding Earth-like planets is one of the most compelling endeavors of the 21st century \u2013 leading us toward finally answering the question \u201cAre we alone?\u201d To achieve this forward-looking goal, we must determine the masses of the planets; the sizes of the planets, by themselves, are not sufficient for the determination of the bulk and atmospheric compositions. Masses, coupled with the radii, are crucial constraints on the bulk composition and interior structure of the planets and the composition of their atmospheres, including the search for biosignatures. Precision radial velocity is the most viable technique for providing essential mass and orbit information for spectroscopy of other Earths.\n\nThe development of high quality precision radial velocity instruments coupled to the building of the large telescope facilities like TMT and GMT or space-based platforms like EarthFinder can enable very high spectral resolution observations with extremely precise radial velocities (\u223ccm/s) on minute timescales to allow for the modeling and removal of radial velocity jitter. Over the next decade, the legacy of exoplanet astrophysics can be cemented firmly as part of humankind\u2019s quest in finding the next Earth \u2013 but only if we can measure the masses and orbits of Earth-sized planets in habitable zone orbits around Sun-like stars.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Precision Radial Velocity"
+      },
+      {
+        "id": "concept_2",
+        "type": "Property",
+        "label": "Planetary Mass"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "NEEDS"
+      }
+    ]
+  },
+  "source_file": "david_astro2020_science_white_paper_toward_finding_earth_20_masses.pdf"
+}

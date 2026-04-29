@@ -1,0 +1,58 @@
+{
+  "card_id": "semiparametric_inference_of_the_youden_index",
+  "bibliographic_data": {
+    "title": "Semiparametric Inference of the Youden Index and the Optimal Cutoff Point under Density Ratio Models",
+    "primary_domain": "stat.ML",
+    "authors": [
+      {
+        "name": "Meng Yuan",
+        "faculty_id": "Bo Yuan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Pengfei Li",
+        "faculty_id": "Pengfei Li",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Changbao Wu"
+      }
+    ],
+    "year": 2020,
+    "abstract": "Receiver operating characteristic (ROC) curve is a widely used statistical tool in medical research to evaluate the discriminatory effectiveness of a biomarker for distinguishing diseased individuals from healthy ones. The Youden index, defined as the maximum of the sum of sensitivity and specificity minus one, provides a criterion to choose the optimal cutoffpoint which maximizes this value. In this paper, we propose to model the distributions of a biomarker for individuals in the healthy and diseased groups via a semiparametric density ratio model. Based on this model, we use the maximum empirical likelihood method to estimate the Youden index and the optimal cutoffpoint. We further establish the asymptotic normality of the proposed estimators and construct valid confidence intervals for the Youden index and the corresponding optimal cutoffpoint. The proposed method automatically covers both cases when there is no lower limit of detection (LLOD) and when there is a fixed and finite LLOD for the biomarker.",
+    "arxiv_id": "2005.04362v1"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a semiparametric method using density ratio models to estimate the Youden index and optimal cutoffpoint, which automatically covers both cases with or without lower limit of detection.",
+    "key_methodology": "The authors use a semiparametric density ratio model to estimate the distributions of biomarkers in healthy and diseased groups. They employ maximum empirical likelihood methods for estimation and establish asymptotic normality for constructing confidence intervals.",
+    "outcomes": [
+      "Asymptotic normality of proposed estimators",
+      "Valid confidence intervals for Youden index and optimal cutoffpoint",
+      "Method covers cases with or without lower limit of detection"
+    ],
+    "full_text_markdown": "The paper addresses the estimation of the Youden index, a popular summary statistic in ROC analysis. The authors propose using a semiparametric density ratio model to estimate the distributions of biomarkers for healthy and diseased groups. They use maximum empirical likelihood methods to derive estimators for the Youden index and optimal cutoffpoint, establishing their asymptotic normality. This method is robust to both cases with or without lower limit of detection (LLOD). Extensive simulations and a real data example demonstrate its effectiveness over existing methods.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "density_ratio_model",
+        "type": "Method",
+        "label": "Density Ratio Model"
+      },
+      {
+        "id": "empirical_likelihood",
+        "type": "Method",
+        "label": "Empirical Likelihood Method"
+      }
+    ],
+    "edges": [
+      {
+        "source": "density_ratio_model",
+        "target": "empirical_likelihood",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "meng_semiparametric_inference_of_the_youden_index_and_the_optimal.pdf"
+}

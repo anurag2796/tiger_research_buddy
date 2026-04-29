@@ -1,0 +1,56 @@
+{
+  "card_id": "ar_as_evaluation_playground",
+  "bibliographic_data": {
+    "title": "AR as an Evaluation Playground: Bridging Metrics and Visual Perception of Computer Vision Models",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Ashkan Ganj"
+      },
+      {
+        "name": "Yiqin Zhao",
+        "faculty_id": "Yiqin Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Tian Guo"
+      }
+    ],
+    "year": 2026,
+    "abstract": "Quantitative metrics are central to evaluating computer vision (CV) models, but they often fail to capture real-world performance due to protocol inconsistencies and ground truth noise. While visual perception studies can complement these metrics, they often require end-to-end systems that are time-consuming to implement and setups that are difficult to reproduce. We systematically summarize key challenges in evaluating CV models and present the design of ARCADE1, an evaluation platform that leverages augmented reality (AR) to enable easy, reproducible, and human-centered CV evaluation. ARCADE uses a modular architecture that provides cross-platform data collection, pluggable model inference, and interactive AR tasks, supporting both metric and visual perception evaluation.",
+    "arxiv_id": "2508.04102v2"
+  },
+  "core_content": {
+    "novelty_claim": "ARCADE is an evaluation platform that leverages augmented reality (AR) to enable easy, reproducible, and human-centered CV evaluation, addressing the limitations of traditional metrics.",
+    "key_methodology": "ARCADE uses a modular architecture with four components: data capture, pluggable inference models, AR tasks, and visualization tools. It supports both existing datasets and live or recorded data via a cross-platform client and exposes a plug-in inference interface for easy model integration and side-by-side visual comparison.",
+    "outcomes": [
+      "ARCADE can support real-time AR workflows with average latencies of 5.2 ms at 640\u00d7480 and about 20 ms at 1920\u00d71080, with interaction latencies between 7.5 ms and 18 ms.",
+      "User study participants reported high overall satisfaction (4.20/5) and found ARCADE very effective for judging task-level suitability of depth models (4.67/5) and for discovering failure cases more quickly (4.53/5).",
+      "ARCADE can effectively expose geometric errors such as depth discontinuities and misaligned occlusions, as well as visually implausible lighting."
+    ],
+    "full_text_markdown": "The paper addresses the limitations of traditional metrics in evaluating computer vision models by introducing ARCADE, an evaluation platform that leverages augmented reality (AR) to enable easy, reproducible, and human-centered CV evaluation. Traditional metrics often fail to capture real-world performance due to protocol inconsistencies and ground truth noise. Visual perception studies can complement these metrics but require end-to-end systems that are time-consuming to implement and difficult to reproduce. ARCADE uses a modular architecture with four components: data capture, pluggable inference models, AR tasks, and visualization tools. It supports both existing datasets and live or recorded data via a cross-platform client and exposes a plug-in inference interface for easy model integration and side-by-side visual comparison. The paper evaluates ARCADE in three ways to test its practicality, usability, and effectiveness: end-to-end evaluation, user study with 15 CV/ML researchers, and case studies on depth and lighting estimation. ARCADE can support real-time AR workflows with average latencies of 5.2 ms at 640\u00d7480 and about 20 ms at 1920\u00d71080, with interaction latencies between 7.5 ms and 18 ms. User study participants reported high overall satisfaction (4.20/5) and found ARCADE very effective for judging task-level suitability of depth models (4.67/5) and for discovering failure cases more quickly (4.53/5). Additionally, ARCADE can effectively expose geometric errors such as depth discontinuities and misaligned occlusions, as well as visually implausible lighting.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "ARCADE"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Evaluation Platform"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "IS_A"
+      }
+    ]
+  },
+  "source_file": "ashkan_ar_as_an_evaluation_playground_bridging_metrics_and_visual_p.pdf"
+}

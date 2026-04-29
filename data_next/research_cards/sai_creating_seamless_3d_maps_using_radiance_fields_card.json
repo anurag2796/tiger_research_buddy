@@ -1,0 +1,52 @@
+{
+  "card_id": "creating_seamless_3d_maps_using_radiance_fields",
+  "bibliographic_data": {
+    "title": "Creating Seamless 3D Maps Using Radiance Fields",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Sai Tarun Sathyan"
+      },
+      {
+        "name": "Thomas B. Kinsman",
+        "faculty_id": "Thomas Kinsman",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2024,
+    "abstract": "It is desirable to create 3D object models and 3D maps from 2D input images for applications such as navigation, virtual tourism, and urban planning. The traditional methods of creating 3D maps require a large number of images and odometry. Additionally, traditional methods have difficulty with reflective surfaces and specular reflections; windows and chrome in the scene can be problematic. Google Road View is a familiar application, which uses traditional methods to fuse a collection of 2D input images into the illusion of a 3D map. However, Google Road View does not create an actual 3D object model, only a collection of views. The objective of this work is to create an actual 3D object model using updated techniques. Neural Radiance Fields (NeRF) has emerged as a potential solution, offering the capability to produce more precise and intricate 3D maps. Gaussian Splatting is another contemporary technique. This investigation compares Neural Radiance Fields to Gaussian Splatting, and describes some of their inner workings. Our primary contribution is a method for improving the results of the 3D reconstructed models. Our results indicate that Gaussian Splatting was superior to the NeRF technique.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper compares Neural Radiance Fields (NeRF) and Gaussian Splatting techniques for creating 3D maps, with a primary contribution of improving results using Gaussian Splatting.",
+    "key_methodology": "The study involves training NeRF models on datasets comprising 2D images to generate 3D maps. The methodology also includes comparing the performance of NeRF against Gaussian Splatting in terms of precision and efficiency.",
+    "outcomes": [
+      "Gaussian Splatting was found superior to NeRF for creating 3D maps",
+      "A method for improving results of 3D reconstructed models using Gaussian Splatting"
+    ],
+    "full_text_markdown": "The paper explores the use of Neural Radiance Fields (NeRF) and Gaussian Splatting in generating 3D maps from 2D images. NeRF is a recent development that can create high-quality 3D scenes by learning mappings from 5D inputs to 3D outputs, while Gaussian Splatting represents radiance fields as sets of 3D Gaussians for efficient rendering. The study compares these techniques and finds that Gaussian Splatting outperforms NeRF in terms of precision and efficiency.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "NeRF",
+        "type": "Method",
+        "label": "Neural Radiance Fields"
+      },
+      {
+        "id": "Gaussian_Splatting",
+        "type": "Method",
+        "label": "3D Gaussian Splatting"
+      }
+    ],
+    "edges": [
+      {
+        "source": "NeRF",
+        "target": "Gaussian_Splatting",
+        "relation": "COMPARED_TO"
+      }
+    ]
+  },
+  "source_file": "sai_creating_seamless_3d_maps_using_radiance_fields.pdf"
+}

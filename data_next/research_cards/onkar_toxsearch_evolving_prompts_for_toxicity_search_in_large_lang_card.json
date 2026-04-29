@@ -1,0 +1,87 @@
+{
+  "card_id": "toxsearch-evolving-prompts",
+  "bibliographic_data": {
+    "title": "ToxSearch: Evolving Prompts for Toxicity Search in Large Language Models",
+    "primary_domain": "cs.CL",
+    "authors": [
+      {
+        "name": "Onkar Shelar"
+      },
+      {
+        "name": "Travis Desell"
+      }
+    ],
+    "year": 2026,
+    "abstract": "Large Language Models remain vulnerable to adversarial prompts that elicit toxic content even after safety alignment. We present ToxSearch, a black-box evolutionary framework that tests model safety by evolving prompts in a synchronous, steady-state (\u00b5 + \u03bb) loop. The system employs a diverse operator suite, including lexical substitutions, negation, back-translation, paraphrasing, and two semantic crossover operators, while a moderation oracle provides fitness guidance. Operator-level analysis reveals significant heterogeneity in performance, as lexical substitutions offer the best yield\u2013variance trade-off, semantic-similarity crossover acts as a precise low-throughput inserter, and global rewrites exhibit high variance with elevated refusal costs. Using elite prompts evolved on LLaMA 3.1 8B, we observe practically meaningful but attenuated cross-model transfer. Toxicity drops by roughly half on most targets, with smaller LLaMA 3.2 variants showing the strongest resistance and some cross-architecture models (e.g., Qwen and Mistral) retaining higher toxicity. Overall, our results indicate that small, controllable perturbations serve as reliable vehicles for systematic red-teaming, while defenses should anticipate cross-model prompt reuse rather than focusing solely on single-model hardening.",
+    "arxiv_id": "arXiv:2511.12487v2"
+  },
+  "core_content": {
+    "novelty_claim": "ToxSearch is a black-box evolutionary framework that evolves prompts to test the safety of large language models, providing insights into effective prompt perturbation strategies and cross-model transfer.",
+    "key_methodology": "ToxSearch uses a steady-state (\u00b5 + \u03bb) loop with diverse operators such as lexical substitutions, negation, back-translation, paraphrasing, and semantic crossover. A moderation oracle provides fitness guidance to evolve prompts that elicit toxic responses from the target model.",
+    "outcomes": [
+      "Lexical substitutions offer the best yield\u2013variance trade-off",
+      "Semantic-similarity crossover acts as a precise low-throughput inserter",
+      "Global rewrites exhibit high variance with elevated refusal costs",
+      "Elite prompts evolved on LLaMA 3.1 8B show practically meaningful but attenuated cross-model transfer"
+    ],
+    "full_text_markdown": "ToxSearch is an evolutionary framework designed to test the safety of large language models (LLMs) by evolving prompts that elicit toxic responses. The system uses a steady-state (\u00b5 + \u03bb) loop with diverse operators such as lexical substitutions, negation, back-translation, paraphrasing, and semantic crossover. A moderation oracle provides fitness guidance to evolve effective prompts. Operator-level analysis reveals that lexical substitutions offer the best balance between prompt diversity and toxicity gains, while global rewrites tend to make models refuse responses. Using elite prompts evolved on LLaMA 3.1 8B, ToxSearch shows practically meaningful but attenuated cross-model transfer, with most targets seeing a roughly halved toxicity level. Smaller LLaMA 3.2 variants show the strongest resistance, and some cross-architecture models retain higher toxicity.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "lexical_substitutions",
+        "type": "Method",
+        "label": "Lexical Substitutions"
+      },
+      {
+        "id": "negation",
+        "type": "Method",
+        "label": "Negation"
+      },
+      {
+        "id": "back_translation",
+        "type": "Method",
+        "label": "Back-Translation"
+      },
+      {
+        "id": "paraphrasing",
+        "type": "Method",
+        "label": "Paraphrasing"
+      },
+      {
+        "id": "semantic_crossover",
+        "type": "Method",
+        "label": "Semantic Crossover"
+      }
+    ],
+    "edges": [
+      {
+        "source": "lexical_substitutions",
+        "target": "ToxSearch",
+        "relation": "USED_IN"
+      },
+      {
+        "source": "negation",
+        "target": "ToxSearch",
+        "relation": "USED_IN"
+      },
+      {
+        "source": "back_translation",
+        "target": "ToxSearch",
+        "relation": "USED_IN"
+      },
+      {
+        "source": "paraphrasing",
+        "target": "ToxSearch",
+        "relation": "USED_IN"
+      },
+      {
+        "source": "semantic_crossover",
+        "target": "ToxSearch",
+        "relation": "USED_IN"
+      }
+    ]
+  },
+  "source_file": "onkar_toxsearch_evolving_prompts_for_toxicity_search_in_large_lang.pdf"
+}

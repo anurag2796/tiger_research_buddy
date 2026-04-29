@@ -1,0 +1,62 @@
+{
+  "card_id": "xihe_3d_vision_lighting_estimation",
+  "bibliographic_data": {
+    "title": "Xihe: A 3D Vision-based Lighting Estimation Framework for Mobile Augmented Reality",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Yiqin Zhao",
+        "faculty_id": "Yiqin Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Tian Guo"
+      }
+    ],
+    "year": 2021,
+    "abstract": "Omnidirectional lighting provides the foundation for achieving spatially-variant photorealistic 3D rendering, a desirable property for mobile augmented reality applications. However, in practice, estimating omnidirectional lighting can be challenging due to limitations such as partial panoramas of the rendering positions, and the inherent environment lighting and mobile user dynamics. A new opportunity arises recently with the advancements in mobile 3D vision, including built-in high-accuracy depth sensors and deep learning-powered algorithms, which provide the means to better sense and understand the physical surroundings. Centering the key idea of 3D vision, in this work, we design an edge-assisted framework called Xihe to provide mobile AR applications the ability to obtain accurate omnidirectional lighting estimation in real time.",
+    "arxiv_id": "2106.15280"
+  },
+  "core_content": {
+    "novelty_claim": "The paper introduces a novel sampling technique and an edge-assisted framework called Xihe for real-time, spatially-variant lighting estimation in mobile augmented reality applications.",
+    "key_methodology": "Developed a unit sphere-based point cloud technique to preprocess raw 3D data. Redesigned a recently proposed 3D vision-based lighting estimation pipeline by leveraging this sampling technique. Centralized tasks into a stateful server design for better support of heterogeneous mobile devices and simplified client design.",
+    "outcomes": [
+      "Achieved real-time lighting estimation with an accuracy improvement of 9.4% over a state-of-the-art neural network.",
+      "Reduced the time per lighting estimation to as fast as 20.67ms."
+    ],
+    "full_text_markdown": "The paper addresses the challenge of obtaining accurate omnidirectional lighting information for spatially-variant photorealistic rendering in mobile augmented reality applications. It introduces a framework called Xihe, which uses 3D vision techniques to provide real-time lighting estimation. The key methodology involves developing a novel sampling technique and redesigning an existing pipeline to preprocess raw point cloud data efficiently. This is achieved through empirical analysis of recent 3D indoor datasets. To support the real-time goal, a tailored GPU pipeline for on-device processing and encoding techniques are developed. Additionally, an adaptive triggering strategy is introduced to reduce unnecessary lighting estimations and ensure temporal coherence in rendering.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "unit_sphere_based_point_cloud",
+        "type": "Method",
+        "label": "Unit Sphere-Based Point Cloud Technique"
+      },
+      {
+        "id": "gpu_pipeline",
+        "type": "Method",
+        "label": "GPU Pipeline for On-Device Processing"
+      },
+      {
+        "id": "stateful_server_design",
+        "type": "Concept",
+        "label": "Stateful Server Design"
+      }
+    ],
+    "edges": [
+      {
+        "source": "unit_sphere_based_point_cloud",
+        "target": "gpu_pipeline",
+        "relation": "USES_IN"
+      },
+      {
+        "source": "unit_sphere_based_point_cloud",
+        "target": "stateful_server_design",
+        "relation": "CENTRALIZES"
+      }
+    ]
+  },
+  "source_file": "yiqin_xihe_a_3d_vision-based_lighting_estimation_framework_for_mob.pdf"
+}

@@ -1,0 +1,447 @@
+{
+  "card_id": "why_is_the_winner_the_best",
+  "bibliographic_data": {
+    "title": "Why is the winner the best?",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Matthias Eisenmann"
+      },
+      {
+        "name": "Annika Reinke"
+      },
+      {
+        "name": "Vivienn Weru"
+      },
+      {
+        "name": "Minu Dietlinde Tizabi"
+      },
+      {
+        "name": "Fabian Isensee"
+      },
+      {
+        "name": "Tim J. Adler"
+      },
+      {
+        "name": "Sharib Ali"
+      },
+      {
+        "name": "Vincent Andrearczyk"
+      },
+      {
+        "name": "Marc Aubreville"
+      },
+      {
+        "name": "Ujjwal Baid"
+      },
+      {
+        "name": "Spyridon Bakas"
+      },
+      {
+        "name": "Niranjan Balu"
+      },
+      {
+        "name": "Sophia Bano"
+      },
+      {
+        "name": "Jorge Bernal"
+      },
+      {
+        "name": "Sebastian Bodenstedt"
+      },
+      {
+        "name": "Alessandro Casella"
+      },
+      {
+        "name": "Veronika Cheplygina"
+      },
+      {
+        "name": "Marie Daum"
+      },
+      {
+        "name": "Marleen de Bruijne"
+      },
+      {
+        "name": "Adrien Depeursinge"
+      },
+      {
+        "name": "Reuben Dorent"
+      },
+      {
+        "name": "Jan Egger"
+      },
+      {
+        "name": "David G. Ellis"
+      },
+      {
+        "name": "Sandy Engelhardt"
+      },
+      {
+        "name": "Melanie Ganz"
+      },
+      {
+        "name": "Noha Ghatwary"
+      },
+      {
+        "name": "Gabriel Girard"
+      },
+      {
+        "name": "Patrick Godau"
+      },
+      {
+        "name": "Anubha Gupta"
+      },
+      {
+        "name": "Lasse Hansen"
+      },
+      {
+        "name": "Kanako Harada"
+      },
+      {
+        "name": "Mattias Heinrich"
+      },
+      {
+        "name": "Nicholas Heller"
+      },
+      {
+        "name": "Alessa Hering"
+      },
+      {
+        "name": "Arnaud Huaulm\u00e9"
+      },
+      {
+        "name": "Pierre Jannin"
+      },
+      {
+        "name": "Ali Emre Kavur"
+      },
+      {
+        "name": "Old\u0159ich Kodym"
+      },
+      {
+        "name": "Michal Kozubek"
+      },
+      {
+        "name": "Jianning Li",
+        "faculty_id": "Pengfei Li",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Hongwei Li",
+        "faculty_id": "Pengfei Li",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jun Ma",
+        "faculty_id": "Naveen Sharma",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Carlos Mart\u00edn-Isla"
+      },
+      {
+        "name": "Bjoern Menze"
+      },
+      {
+        "name": "Alison Noble"
+      },
+      {
+        "name": "Valentin Oreiller"
+      },
+      {
+        "name": "Nicolas Padoy"
+      },
+      {
+        "name": "Sarthak Pati"
+      },
+      {
+        "name": "Kelly Payette"
+      },
+      {
+        "name": "Tim R\u00e4dsch"
+      },
+      {
+        "name": "Jonathan Rafael-Pati\u00f1o"
+      },
+      {
+        "name": "Vivek Singh Bawa"
+      },
+      {
+        "name": "Stefanie Speidel"
+      },
+      {
+        "name": "Carole H. Sudre"
+      },
+      {
+        "name": "Kimberlin van Wijnen"
+      },
+      {
+        "name": "Martin Wagner"
+      },
+      {
+        "name": "Donglai Wei"
+      },
+      {
+        "name": "Amine Yamlahi"
+      },
+      {
+        "name": "Moi Hoon Yap"
+      },
+      {
+        "name": "Chun Yuan",
+        "faculty_id": "Bo Yuan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Maximilian Zenk"
+      },
+      {
+        "name": "Aneeq Zia"
+      },
+      {
+        "name": "David Zimmerer"
+      },
+      {
+        "name": "Dogu Baran Aydogan"
+      },
+      {
+        "name": "Binod Bhattarai"
+      },
+      {
+        "name": "Louise Bloch"
+      },
+      {
+        "name": "Raphael Br\u00fcngel"
+      },
+      {
+        "name": "Jihoon Cho"
+      },
+      {
+        "name": "Chanyeol Choi"
+      },
+      {
+        "name": "Qi Dou"
+      },
+      {
+        "name": "Ivan Ezhov"
+      },
+      {
+        "name": "Christoph M. Friedrich"
+      },
+      {
+        "name": "Clifton Fuller"
+      },
+      {
+        "name": "Rebati Raman Gaire"
+      },
+      {
+        "name": "Adrian Galdran"
+      },
+      {
+        "name": "\u00c1lvaro Garc\u00eda Faura"
+      },
+      {
+        "name": "Maria Grammatikopoulou"
+      },
+      {
+        "name": "SeulGi Hong"
+      },
+      {
+        "name": "Mostafa Jahanifar"
+      },
+      {
+        "name": "Ikbeom Jang"
+      },
+      {
+        "name": "Abdolrahim Kadkhodamohammadi"
+      },
+      {
+        "name": "Inha Kang"
+      },
+      {
+        "name": "Florian Kofler"
+      },
+      {
+        "name": "Satoshi Kondo"
+      },
+      {
+        "name": "Hugo Kuijf"
+      },
+      {
+        "name": "Mingxing Li",
+        "faculty_id": "Pengfei Li",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Minh Huan Luu"
+      },
+      {
+        "name": "Toma\u017e Martin\u010di\u010d"
+      },
+      {
+        "name": "Pedro Morais"
+      },
+      {
+        "name": "Mohamed A. Naser"
+      },
+      {
+        "name": "Bruno Oliveira"
+      },
+      {
+        "name": "David Owen"
+      },
+      {
+        "name": "Subeen Pang"
+      },
+      {
+        "name": "Jinah Park",
+        "faculty_id": "Ji Hwan Park",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Sung-Hong Park",
+        "faculty_id": "Ji Hwan Park",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Szymon P\u0142otka"
+      },
+      {
+        "name": "Elodie Puybareau"
+      },
+      {
+        "name": "Nasir Rajpoot"
+      },
+      {
+        "name": "Kanghyun Ryu"
+      },
+      {
+        "name": "Numan Saeed"
+      },
+      {
+        "name": "Adam Shephard"
+      },
+      {
+        "name": "Pengcheng Shi",
+        "faculty_id": "Pengcheng Shi",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Dejan \u0160tepec"
+      },
+      {
+        "name": "Ronast Subedi"
+      },
+      {
+        "name": "Guillaume Tochon"
+      },
+      {
+        "name": "Helena R. Torres"
+      },
+      {
+        "name": "Helene Urien"
+      },
+      {
+        "name": "Jo\u00e3o L. Vila\u00e7a"
+      },
+      {
+        "name": "Kareem Abdul Wahid"
+      },
+      {
+        "name": "Haojie Wang",
+        "faculty_id": "Linwei Wang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jiacheng Wang",
+        "faculty_id": "Linwei Wang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Liansheng Wang",
+        "faculty_id": "Linwei Wang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Xiyue Wang",
+        "faculty_id": "Linwei Wang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Benedikt Wiestler"
+      },
+      {
+        "name": "Marek Wodzinski"
+      },
+      {
+        "name": "Fangfang Xia"
+      },
+      {
+        "name": "Juanying Xie"
+      },
+      {
+        "name": "Zhiwei Xiong"
+      },
+      {
+        "name": "Sen Yang"
+      },
+      {
+        "name": "Yanwu Yang"
+      },
+      {
+        "name": "Zixuan Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Klaus Maier-Hein"
+      },
+      {
+        "name": "Paul F. J\u00e4ger"
+      },
+      {
+        "name": "Annette Kopp-Schneider"
+      },
+      {
+        "name": "Lena Maier-Hein"
+      }
+    ],
+    "year": 2024,
+    "abstract": "International benchmarking competitions have become fundamental for the comparative performance assessment of image analysis methods. However, little attention has been given to investigating what can be learnt from these competitions. Do they really generate scientific progress? What are common and successful participation strategies? What makes a solution superior to a competing method? To address this gap in the literature, we performed a multi-center study with all 80 competitions that were conducted in the scope of IEEE ISBI 2021 and MICCAI 2021. Statistical analyses performed based on comprehensive descriptions of the submitted algorithms linked to their rank as well as the underlying participation strategies revealed common characteristics of winning solutions. These typically include the use of multi-task learning (63%) and/or multi-stage pipelines (61%), and a focus on augmentation (100%), image preprocessing (97%), data curation (79%), and post-processing (66%). The \u201ctypical\u201d lead of a winning team is a computer scientist with a doctoral degree, five years of experience in biomedical image analysis, and four years of experience in deep learning. Two core general development strategies stood out for highly-ranked teams: the reflection of the metrics in the method design and the focus on analyzing and handling failure cases. According to the organizers, 43% of the winning algorithms exceeded the state of the art but only 11% completely solved the respective domain problem. The insights of our study could help researchers (1) improve algorithm development strategies when approaching new problems, and (2) focus on open research questions revealed by this work.",
+    "arxiv_id": "arXiv:2303.17719"
+  },
+  "core_content": {
+    "novelty_claim": "The study identifies common characteristics of winning solutions in biomedical image analysis competitions, including the use of multi-task learning and multi-stage pipelines, and highlights key strategies for success.",
+    "key_methodology": "A comprehensive survey was conducted among participants, organizers, and winners of 80 competitions from IEEE ISBI 2021 and MICCAI 2021. Statistical analyses were performed to link algorithmic design decisions and participation strategies with the outcome captured in rankings.",
+    "outcomes": [
+      "Winning solutions commonly use multi-task learning (63%) and/or multi-stage pipelines (61%).",
+      "A focus on augmentation (100%), image preprocessing (97%), data curation (79%), and post-processing (66%) is typical among winning teams.",
+      "The lead of a winning team is often a computer scientist with a doctoral degree, five years of experience in biomedical image analysis, and four years of experience in deep learning.",
+      "Two core general development strategies for highly-ranked teams are the reflection of metrics in method design and focusing on analyzing and handling failure cases."
+    ],
+    "full_text_markdown": "International benchmarking competitions have become fundamental for the comparative performance assessment of image analysis methods. However, little attention has been given to investigating what can be learnt from these competitions. Do they really generate scientific progress? What are common and successful participation strategies? What makes a solution superior to a competing method? To address this gap in the literature, we performed a multi-center study with all 80 competitions that were conducted in the scope of IEEE ISBI 2021 and MICCAI 2021. Statistical analyses performed based on comprehensive descriptions of the submitted algorithms linked to their rank as well as the underlying participation strategies revealed common characteristics of winning solutions.\n\nThese typically include the use of multi-task learning (63%) and/or multi-stage pipelines (61%), and a focus on augmentation (100%), image preprocessing (97%), data curation (79%), and post-processing (66%). The \u201ctypical\u201d lead of a winning team is a computer scientist with a doctoral degree, five years of experience in biomedical image analysis, and four years of experience in deep learning. Two core general development strategies stood out for highly-ranked teams: the reflection of the metrics in the method design and the focus on analyzing and handling failure cases. According to the organizers, 43% of the winning algorithms exceeded the state of the art but only 11% completely solved the respective domain problem. The insights of our study could help researchers (1) improve algorithm development strategies when approaching new problems, and (2) focus on open research questions revealed by this work.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Multi-task learning"
+      },
+      {
+        "id": "concept_2",
+        "type": "Strategy",
+        "label": "Reflection of metrics in method design"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "matthias_why_is_the_winner_the_best.pdf"
+}

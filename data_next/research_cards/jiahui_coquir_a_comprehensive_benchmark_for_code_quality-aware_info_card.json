@@ -1,0 +1,97 @@
+{
+  "card_id": "coquir_code_quality_benchmark",
+  "bibliographic_data": {
+    "title": "CoQuIR: A Comprehensive Benchmark for Code Quality-Aware Information Retrieval",
+    "primary_domain": "cs.SE",
+    "authors": [
+      {
+        "name": "Jiahui Geng"
+      },
+      {
+        "name": "Fengyu Cai"
+      },
+      {
+        "name": "Shaobo Cui",
+        "faculty_id": "Feng Cui",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Qing Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Liangwei Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Chenyang Lyu"
+      },
+      {
+        "name": "Haonan Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Derui Zhu",
+        "faculty_id": "Derui Zhu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Walter Pretschner"
+      },
+      {
+        "name": "Heinz Koeppl"
+      },
+      {
+        "name": "Fakhri Karray"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Code retrieval is essential in modern software development as it boosts reuse and speeds up debugging. However, current benchmarks primarily emphasize functional relevance while neglecting critical dimensions of software quality. Motivated by this gap, we introduce CoQuIR, the first large-scale, multilingual benchmark specifically designed to evaluate quality-aware code retrieval across four critical dimensions: correctness, efficiency, security, and maintainability. CoQuIR includes fine-grained quality annotations over 42,725 queries and 134,907 code snippets in 11 programming languages and is accompanied by two quality-centric evaluation metrics (Pairwise Preference Accuracy and Margin-based Ranking Score). Based on CoQuIR, we benchmark 23 retrieval models, spanning open-source and proprietary models, and find that even top-performing models often fail to distinguish buggy or insecure code from their robust counterparts. Furthermore, we conduct preliminary investigations into methods for explicitly training retrievers to recognize code quality. Through synthetic datasets, we demonstrate promising improvements in quality-aware metrics across different models without compromising semantic relevance. Downstream code generation performance further validates the effectiveness of our approach. Our work underscores the importance of incorporating quality signals into code retrieval systems, establishing a foundation for more trustworthy software development tools.",
+    "arxiv_id": "arXiv:2506.11066"
+  },
+  "core_content": {
+    "novelty_claim": "CoQuIR is the first benchmark that evaluates quality-aware code retrieval across four critical dimensions: correctness, efficiency, security, and maintainability.",
+    "key_methodology": "The authors introduce CoQuIR as a comprehensive resource with fine-grained quality annotations over 42,725 queries and 134,907 code snippets in 11 programming languages. It includes two quality-centric evaluation metrics: Pairwise Preference Accuracy (PPA) and Margin-based Ranking Score (MRS).",
+    "outcomes": [
+      "Top-performing models often fail to distinguish buggy or insecure code from their robust counterparts.",
+      "Preliminary investigations into methods for explicitly training retrievers to recognize code quality show promising improvements in quality-aware metrics without compromising semantic relevance."
+    ],
+    "full_text_markdown": "CoQuIR is a comprehensive benchmark designed to evaluate quality-aware code retrieval. It addresses the gap between current benchmarks that focus on functional relevance and neglect critical software quality dimensions such as correctness, efficiency, security, and maintainability. The benchmark includes 42,725 queries and 134,907 code snippets in 11 programming languages with fine-grained quality annotations. It uses two evaluation metrics: Pairwise Preference Accuracy (PPA) and Margin-based Ranking Score (MRS). The authors find that even top-performing models struggle to distinguish between high-quality and flawed implementations. They also explore methods for explicitly training retrievers to recognize code quality, demonstrating improvements in quality-aware metrics without compromising semantic relevance.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "CoQuIR"
+      },
+      {
+        "id": "concept_2",
+        "type": "Metric",
+        "label": "Pairwise Preference Accuracy (PPA)"
+      },
+      {
+        "id": "concept_3",
+        "type": "Metric",
+        "label": "Margin-based Ranking Score (MRS)"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "jiahui_coquir_a_comprehensive_benchmark_for_code_quality-aware_info.pdf"
+}

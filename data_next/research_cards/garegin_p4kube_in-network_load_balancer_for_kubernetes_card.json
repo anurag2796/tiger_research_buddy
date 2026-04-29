@@ -1,0 +1,75 @@
+{
+  "card_id": "p4kube_kubernetes_load_balancer",
+  "bibliographic_data": {
+    "title": "P4Kube: In-Network Load Balancer for Kubernetes",
+    "primary_domain": "cs.SE",
+    "authors": [
+      {
+        "name": "Garegin Grigoryan"
+      },
+      {
+        "name": "Kevin Penkowski"
+      },
+      {
+        "name": "Minseok Kwon",
+        "faculty_id": "Minseok Kwon",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Kubernetes Services such as LoadBalancer and NodePort expose applications running on pods within a Kubernetes cluster to external users. While the LoadBalancer Service requires an external load-balancing middleware, its alternative, NodePort Service, adds additional hops on the path between clients and the worker nodes. In this paper, we propose P4Kube, a framework consisting of a P4 data plane program and a Kubernetes plugin. Our solution effectively performs load balancing of requests to the worker nodes of a cluster based on the number of running replicas. In P4Kube, the data packets completely bypass the system\u2019s control plane. Unlike the previous work, to update its state, the P4Kube data plane works directly with the Kubernetes control plane without any involvement of the network control plane. Our experiments show up to 50% improvement in the average request time to the cluster compared to conventional approaches.",
+    "arxiv_id": "2505.05996v1"
+  },
+  "core_content": {
+    "novelty_claim": "P4Kube decouples the control and data paths of a Kubernetes cluster, allowing user packets to bypass slower middleware or a Kubernetes CP, thus improving performance.",
+    "key_methodology": "P4Kube uses P4 programming language to program the data plane of networking devices designed with Protocol-Independent Switch Architecture (PISA). It performs load balancing by leveraging Equal-Cost Multipath (ECMP) hashing technique and stores information in router\u2019s data plane registers. A Kubernetes plugin monitors cluster status and sends control packets to the router.",
+    "outcomes": [
+      "Up to 50% improvement in average request time compared to conventional approaches",
+      "Eliminates the need for an external load balancer"
+    ],
+    "full_text_markdown": "P4Kube is a framework that performs in-network load balancing of a Kubernetes cluster, simplifying its operation and improving performance. Unlike pure NodePort, P4Kube decouples the data and control plane of a Kubernetes cluster, allowing user packets to bypass slower middleware or a Kubernetes CP. The solution leverages P4 programming language to program networking devices designed with Protocol-Independent Switch Architecture (PISA). It performs load balancing using Equal-Cost Multipath (ECMP) hashing technique and stores information in the router\u2019s data plane registers. A Kubernetes plugin monitors cluster status and sends control packets to the router, containing public port information for external clients, number of replicas, IP addresses of nodes running the replicas, and virtual IP address and TCP port for the cluster.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "p4kube",
+        "type": "Framework",
+        "label": "P4Kube"
+      },
+      {
+        "id": "load_balancing",
+        "type": "Method",
+        "label": "Load Balancing"
+      },
+      {
+        "id": "kubernetes_control_plane",
+        "type": "Concept",
+        "label": "Kubernetes Control Plane"
+      },
+      {
+        "id": "p4_programming_language",
+        "type": "Language",
+        "label": "P4 Programming Language"
+      }
+    ],
+    "edges": [
+      {
+        "source": "p4kube",
+        "target": "load_balancing",
+        "relation": "PERFORMS"
+      },
+      {
+        "source": "p4kube",
+        "target": "kubernetes_control_plane",
+        "relation": "DECouples"
+      },
+      {
+        "source": "p4_programming_language",
+        "target": "p4kube",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "garegin_p4kube_in-network_load_balancer_for_kubernetes.pdf"
+}

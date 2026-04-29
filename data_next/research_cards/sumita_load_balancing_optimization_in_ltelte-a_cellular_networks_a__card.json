@@ -1,0 +1,52 @@
+{
+  "card_id": "load_balancing_optimization_in_lte",
+  "bibliographic_data": {
+    "title": "Load Balancing Optimization in LTE/LTE-A Cellular Networks: A Review",
+    "primary_domain": "cs.SE",
+    "authors": [
+      {
+        "name": "Sumita Mishra",
+        "faculty_id": "Sumita Mishra",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Nidhi Mathur"
+      }
+    ],
+    "year": 2024,
+    "abstract": "During the past few decades wireless technology has seen a tremendous growth. The recent introduction of high-end mobile devices has further increased subscribers\u2019 demand for high bandwidth. Current cellular systems require manual configuration and management of networks, which is now costly, time consuming and error prone due to exponentially increasing rate of mobile users and nodes. This leads to introduction of self organizing capabilities for network management with minimum human involvement. It is expected to permit higher end user Quality of Service (QoS) along with less operational and maintenance cost for telecom service providers. Self organized cellular networks incorporate a collection of functions for automatic configuration, optimization and maintenance of cellular networks. As mobile end users continue to use network resources while moving from a cell boundary to other, traffic load within a cell does not remain constant. Thus Load balancing as a part of self organized network solution, has become one of the most active and emerging fields of research in Cellular Network. It involves transfer of load from overloaded cells to the neighbouring cells with free resources for more balanced load distribution in order to maintain appropriate end-user experience and network performance. In this paper, review of various load balancing techniques currently used in mobile networks is presented, with special emphasis on techniques that are suitable for self optimization feature in future cellular networks.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper reviews various load balancing techniques suitable for self-optimization in future cellular networks, focusing on LTE and LTE-A technologies.",
+    "key_methodology": "A review of existing load balancing schemes with emphasis on their suitability for self-optimized network management.",
+    "outcomes": [
+      "Reviewed load balancing techniques for LTE/LTE-A",
+      "Identified techniques suitable for self-optimization in future cellular networks"
+    ],
+    "full_text_markdown": "The paper discusses the rapid growth and increasing demand for high bandwidth due to the use of high-end mobile devices. It highlights the need for self-organizing capabilities in network management to reduce costs, time consumption, and errors. The focus is on load balancing techniques that can be used in future cellular networks like LTE and LTE-A to maintain quality of service (QoS) and efficient resource utilization. The paper reviews various load balancing schemes and identifies those suitable for self-optimization features.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Load Balancing Techniques"
+      },
+      {
+        "id": "concept_2",
+        "type": "Technology",
+        "label": "LTE/LTE-A"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "APPLIES_TO"
+      }
+    ]
+  },
+  "source_file": "sumita_load_balancing_optimization_in_ltelte-a_cellular_networks_a_.pdf"
+}

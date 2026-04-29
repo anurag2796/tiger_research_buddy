@@ -1,0 +1,62 @@
+{
+  "card_id": "hide_and_seek_noise_labels",
+  "bibliographic_data": {
+    "title": "Hide and Seek in Noise Labels: Noise-Robust Collaborative Active Learning with LLM-Powered Assistance",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Bo Yuan",
+        "faculty_id": "Bo Yuan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yulin Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yin Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Wei Jiang"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Learning from noisy labels (LNL) is a challenge that arises in many real-world scenarios where collected training data can contain incorrect or corrupted labels. Most existing solutions identify noisy labels and adopt active learning to query human experts on them for denoising. In the era of large language models (LLMs), although we can reduce the human effort to improve these methods, their performances are still subject to accurately separating the clean and noisy samples from noisy data. In this paper, we propose an innovative collaborative learning framework NoiseAL based on active learning to combine LLMs and small models (SMs) for learning from noisy labels. During collaborative training, we first adopt two SMs to form a co-prediction network and propose a dynamic-enhanced threshold strategy to divide the noisy data into different subsets, then select the clean and noisy samples from these subsets to feed the active annotator LLMs to rectify noisy samples. Finally, we employ different optimization objectives to conquer subsets with different degrees of label noises. Extensive experiments on synthetic and real-world noise datasets further demonstrate the superiority of our framework over state-of-the-art baselines.",
+    "arxiv_id": "arXiv:2504.02901"
+  },
+  "core_content": {
+    "novelty_claim": "Proposes a novel collaborative learning framework, NoiseAL, that combines LLMs and small models (SMs) for learning from noisy labels by utilizing a co-prediction network and dynamic-enhanced threshold strategy.",
+    "key_methodology": "Two SMs are used to form a co-prediction network, which helps in mitigating confirmation bias. A dynamic-enhanced threshold strategy is proposed to divide the noisy data into different subsets, allowing clean and noisy samples to be selected for active learning by LLMs.",
+    "outcomes": [
+      "Achieves competitive results compared with its counterparts supervised on ground truth labels under some scenarios.",
+      "Proposes a novel collaborative learning framework termed NoiseAL."
+    ],
+    "full_text_markdown": "The core of deep learning models' success lies in the precision of large amounts of annotated data, which can be complex and labor-intensive to obtain. In practical scenarios, researchers often collect datasets by web-crawling or crowd-sourcing to reduce annotation burden. However, these datasets frequently suffer from noisy labels that mislead learning patterns and result in incorrect predictions. Existing LNL methods include robust loss functions, estimating noise transition matrices, etc., with active learning being a popular solution for providing accurate labels through expert queries but still requiring human effort. Recently, large language models (LLMs) have shown strong zero-shot learning ability, avoiding human costs for text annotation tasks. However, they tend to underperform compared to BERT supervised on complex datasets. This paper proposes NoiseAL, an innovative collaborative learning framework that combines LLMs and small models (SMs) for learning from noisy labels by utilizing a co-prediction network and dynamic-enhanced threshold strategy.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Co-Prediction Network"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Dynamic-Enhanced Threshold Strategy"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "bo_hide_and_seek_in_noise_labels_noise-robust_collaborative_act.pdf"
+}

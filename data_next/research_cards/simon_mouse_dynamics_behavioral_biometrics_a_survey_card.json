@@ -1,0 +1,71 @@
+{
+  "card_id": "mouse_dynamics_behavioral_biometrics_survey",
+  "bibliographic_data": {
+    "title": "Mouse Dynamics Behavioral Biometrics: A Survey",
+    "primary_domain": "cs.HC",
+    "authors": [
+      {
+        "name": "Simon Khan"
+      },
+      {
+        "name": "Charles Devlen"
+      },
+      {
+        "name": "Michael Manno"
+      },
+      {
+        "name": "Daqing Hou",
+        "faculty_id": "Daqing Hou",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2023,
+    "abstract": "Utilization of the Internet in our everyday lives has made us vulnerable in terms of privacy and security of our data and systems. Therefore, there is a pressing need to protect our data and systems by improving authentication mechanisms, which are expected to be low cost, unobtrusive, and ideally ubiquitous in nature. Behavioral biometric modalities such as mouse dynamics (mouse behaviors on a graphical user interface (GUI)) and widget interactions (another modality closely related to mouse dynamics that also considers the target (widget) of a GUI interaction, such as links, buttons, and combo-boxes) can bolster the security of existing authentication systems because of their ability to distinguish an individual based on their unique features. As a result, it can be difficult for an imposter to impersonate these behavioral biometrics, making them suitable for authentication. In this paper, we survey the literature on mouse dynamics and widget interactions dated from 1897 to 2023.",
+    "arxiv_id": "arXiv:2208.09061v2"
+  },
+  "core_content": {
+    "novelty_claim": "This paper provides a comprehensive survey of mouse dynamics and widget interactions as behavioral biometric modalities, covering their psychological perspectives, data collection methods, feature extraction, algorithms, and performance.",
+    "key_methodology": "The authors surveyed literature from 1897 to 2023, analyzing the tasks and experimental settings for data collection, taxonomy of raw attributes, feature extractions and mathematical definitions, publicly available datasets, algorithms (statistical, machine learning, and deep learning), data fusion, performance, and limitations.",
+    "outcomes": [
+      "Surveyed literature on mouse dynamics and widget interactions",
+      "Analyzed psychological perspectives on behavioral biometrics",
+      "Reviewed tasks and experimental settings for data collection",
+      "Described raw data and feature extraction methods",
+      "Surveyed statistical, machine learning, and deep learning algorithms"
+    ],
+    "full_text_markdown": "The paper discusses the importance of protecting data in today's internet-dependent world. It highlights how traditional authentication mechanisms like passwords are inadequate due to their cost and unobtrusiveness. Behavioral biometrics such as mouse dynamics and widget interactions offer a low-cost, unobtrusive alternative that can be implemented without interfering with daily computer operations. The authors provide a comprehensive survey of the literature on these modalities from 1897 to 2023, covering their psychological perspectives, data collection methods, feature extraction, algorithms, performance, and limitations.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "mouse_dynamics",
+        "type": "Method",
+        "label": "Mouse Dynamics"
+      },
+      {
+        "id": "widget_interactions",
+        "type": "Method",
+        "label": "Widget Interactions"
+      }
+    ],
+    "edges": [
+      {
+        "source": "mouse_dynamics",
+        "target": "behavioral_biometrics",
+        "relation": "IS_A"
+      },
+      {
+        "source": "widget_interactions",
+        "target": "behavioral_biometrics",
+        "relation": "IS_A"
+      },
+      {
+        "source": "behavioral_biometrics",
+        "target": "authentication",
+        "relation": "USED_FOR"
+      }
+    ]
+  },
+  "source_file": "simon_mouse_dynamics_behavioral_biometrics_a_survey.pdf"
+}

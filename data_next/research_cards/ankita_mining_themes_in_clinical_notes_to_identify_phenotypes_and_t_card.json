@@ -1,0 +1,64 @@
+{
+  "card_id": "mining_themes_in_clinical_notes",
+  "bibliographic_data": {
+    "title": "Mining Themes in Clinical Notes to Identify Phenotypes and to Predict Length of Stay in Patients admitted with Heart Failure",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Ankita Agarwal"
+      },
+      {
+        "name": "Tanvi Banerjee"
+      },
+      {
+        "name": "William L. Romine"
+      },
+      {
+        "name": "Krishnaprasad Thirunarayan"
+      },
+      {
+        "name": "Lingwei Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Mia Cajita"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Heart failure is a syndrome which occurs when the heart is not able to pump blood and oxygen to support other organs in the body. Treatment and management of heart failure in patients include understanding the diagnostic codes and procedure reports of these patients during their hospitalization. Identifying the underlying themes in these diagnostic codes and procedure reports could reveal the clinical phenotypes associated with heart failure. These themes could also help clinicians to predict length of stay in the patients using their clinical notes. Understanding clinical phenotypes on the basis of these themes is important to group patients based on their similar characteristics which could also help in predicting patient outcomes like length of stay. These clinical phenotypes usually have a probabilistic latent structure and hence, as there has been no previous work on identifying phenotypes in clinical notes of heart failure patients using a probabilistic framework and to predict length of stay of these patients using data-driven artificial intelligence-based methods, we apply natural language processing technique, topic modeling, to identify the themes present in diagnostic codes and in procedure reports of 1,200 patients admitted for heart failure at the University of Illinois Hospital and Health Sciences System (UI Health). Topic modeling identified twelve themes each in diagnostic codes and procedure reports. These themes revealed information about different phenotypes related to various perspectives about heart failure, which could help to study patients\u2019 profiles and discover new relationships among medical concepts. Each theme had a set of keywords and each clinical note was labeled with two themes \u2014 one corresponding to its diagnostic code and the other corresponding to its procedure reports along with their percentage contribution. We used these themes and their percentage contribution to predict length of stay. We found that the themes discovered in diagnostic codes and procedure reports using topic modeling together were able to predict length of stay of the patients with an accuracy of 61.1% and an Area under the Receiver Operating Characteristic Curve (ROC AUC) value of 0.828.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper applies topic modeling to identify themes in diagnostic codes and procedure reports of heart failure patients, which are then used to predict the length of stay with an accuracy of 61.1% and an ROC AUC value of 0.828.",
+    "key_methodology": "Topic modeling was applied to clinical notes from 1,200 heart failure patients admitted at UI Health to identify themes in diagnostic codes and procedure reports.",
+    "outcomes": [
+      "Identified twelve themes each in diagnostic codes and procedure reports.",
+      "Used the identified themes to predict length of stay with an accuracy of 61.1% and an ROC AUC value of 0.828."
+    ],
+    "full_text_markdown": "# Mining Themes in Clinical Notes to Identify Phenotypes and to Predict Length of Stay in Patients Admitted with Heart Failure\n\n## Abstract\nHeart failure is a syndrome where the heart cannot pump enough blood and oxygen to support other organs. This paper uses topic modeling on diagnostic codes and procedure reports from 1,200 heart failure patients at UI Health to identify themes that can predict length of stay with an accuracy of 61.1% and an ROC AUC value of 0.828.\n\n## Introduction\nHeart failure occurs when the heart cannot pump enough blood or oxygen to meet body needs. It is a condition that progresses through different stages, often due to long-term medical conditions like arrhythmia, cardiomyopathy, or hypertension. Predicting length of stay in patients with heart failure can reduce hospital costs and resource allocation.\n\n## Methodology\nTopic modeling was applied to clinical notes from 1,200 heart failure patients at UI Health to identify themes in diagnostic codes and procedure reports. These themes were used to predict the length of stay with an accuracy of 61.1% and an ROC AUC value of 0.828.\n\n## Results\nThe paper identified twelve themes each in diagnostic codes and procedure reports, which revealed information about different phenotypes related to heart failure. The themes helped to study patients' profiles and discover new relationships among medical concepts.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Topic Modeling"
+      },
+      {
+        "id": "concept_2",
+        "type": "Outcome",
+        "label": "Predicting Length of Stay"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "ankita_mining_themes_in_clinical_notes_to_identify_phenotypes_and_t.pdf"
+}

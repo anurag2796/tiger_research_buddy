@@ -1,0 +1,83 @@
+{
+  "card_id": "dualgenerator_point_cloud_completion",
+  "bibliographic_data": {
+    "title": "DualGenerator: Information Interaction-based Generative Network for Point Cloud Completion",
+    "primary_domain": "cs.RO",
+    "authors": [
+      {
+        "name": "Pengcheng Shi",
+        "faculty_id": "Pengcheng Shi",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Haozhe Cheng"
+      },
+      {
+        "name": "Xu Han"
+      },
+      {
+        "name": "Yiyang Zhou"
+      },
+      {
+        "name": "Jihua Zhu",
+        "faculty_id": "Derui Zhu",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2023,
+    "abstract": "Point cloud completion estimates complete shapes from incomplete point clouds to obtain higher-quality point cloud data. Most existing methods only consider global object features, ignoring spatial and semantic information of adjacent points. They cannot distinguish structural information well between different object parts, and the robustness of models is poor. To tackle these challenges, we propose an information interaction-based generative network for point cloud completion (DualGenerator). It contains an upper adversarial generation path and a lower variational generation path, which interact with each other and share weights. DualGenerator introduces a local refinement module in the lower path, which captures general structures from partial inputs and then refines shape details of the point cloud. The upper path effectively provides support for completion by establishing a comprehensive distribution of complete point clouds, while the design of DGStyleGan enhances the robustness of network. Qualitative and quantitative evaluations demonstrate that our method is superior on MVP and Completion3D datasets. The performance will not degrade significantly after adding noise interference or sparse sampling.",
+    "arxiv_id": "2305.09132"
+  },
+  "core_content": {
+    "novelty_claim": "The proposed DualGenerator introduces an information interaction-based generative network for point cloud completion, which addresses the limitations of existing methods by considering both global and local features.",
+    "key_methodology": "DualGenerator contains two paths: an upper adversarial generation path and a lower variational generation path. The lower path includes a local refinement module that captures general structures from partial inputs and refines shape details. The upper path establishes a comprehensive distribution of complete point clouds, while DGStyleGan enhances the robustness.",
+    "outcomes": [
+      "Proposed DualGenerator outperforms existing methods on MVP and Completion3D datasets.",
+      "The method maintains performance even when noise interference or sparse sampling is added."
+    ],
+    "full_text_markdown": "Point cloud completion aims to estimate complete shapes from incomplete point clouds, enhancing the quality of 3D data. Existing methods often focus only on global features, neglecting local and spatial details, leading to poor model robustness. To address these issues, this paper introduces DualGenerator, a generative network that uses an adversarial path and a variational path. The lower path includes a local refinement module for detailed shape restoration, while the upper path provides comprehensive distribution support. DGStyleGan further enhances the robustness of the network. Evaluations on MVP and Completion3D datasets show superior performance, with consistent results even under noisy or sparse conditions.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "DualGenerator"
+      },
+      {
+        "id": "concept_2",
+        "type": "Module",
+        "label": "Local Refinement Module"
+      },
+      {
+        "id": "concept_3",
+        "type": "Path",
+        "label": "Adversarial Generation Path"
+      },
+      {
+        "id": "concept_4",
+        "type": "Path",
+        "label": "Variational Generation Path"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "CONTAINS"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "HAS_PATH"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_4",
+        "relation": "HAS_PATH"
+      }
+    ]
+  },
+  "source_file": "pengcheng_dualgenerator_information_interaction-based_generative_netwo.pdf"
+}

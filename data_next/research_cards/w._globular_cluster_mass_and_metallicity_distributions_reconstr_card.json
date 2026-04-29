@@ -1,0 +1,49 @@
+{
+  "card_id": "cluster_mass_and_metallicity_distributions",
+  "bibliographic_data": {
+    "title": "Globular Cluster Mass and Metallicity Distributions: Reconstructing the Events During Halo Formation",
+    "primary_domain": "astro-ph",
+    "authors": [
+      {
+        "name": "W. E. Harris",
+        "faculty_id": "W Michelle Harris",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2001,
+    "abstract": "Globular clusters in most large galaxies are a mixture of metal-poor and metal-rich (bimodal), but the halo stars are almost entirely metal-rich. This and other lines of evidence argue that the metal-poor globular clusters formed within widely distributed 108 \u2212109M\u2299 gas clouds (supergiant GMCs) during an early burst in which most of the gas was ejected or unused till later rounds of star formation. New simulations of the growth of pre-galactic potential wells in the early universe now indicate that the initial power-law form of the globular cluster mass distribution (dN/dM \u223c M\u22121.8) is a miniature replica of the mass distribution of the SGMCs themselves, which grow hierarchically in the CDM potential wells of large protogalaxies.",
+    "arxiv_id": "astro-ph/0108355v1"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes that metal-poor globular clusters formed within supergiant GMCs during an early burst, and suggests a hierarchical growth model for these clusters in the context of galaxy formation.",
+    "key_methodology": "The authors use deep HST/WFPC2 (V, I) photometry to study the MDF of NGC 5128's halo stars and compare it with the metallicity distribution function of its globular clusters. They also propose an 'accreting-box' model for ongoing gas accretion during early star formation phases.",
+    "outcomes": [
+      "The MDF of the halo stars in NGC 5128 shows a broad spread, indicating significant star-to-star metallicity differences.",
+      "The MDF of the globular clusters is bimodal, with roughly equal numbers of metal-poor and metal-rich clusters."
+    ],
+    "full_text_markdown": "The paper discusses the formation and evolution of globular clusters in galaxies. It argues that metal-poor globular clusters formed within supergiant GMCs during an early burst when most gas was ejected or unused, while halo stars are almost entirely metal-rich. The authors use deep HST/WFPC2 photometry to study NGC 5128's halo and find a broad spread in the MDF of its stars, indicating significant star-to-star metallicity differences. They propose an 'accreting-box' model for ongoing gas accretion during early star formation phases, which helps explain the observed MDFs.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "HST/WFPC2 Photometry"
+      },
+      {
+        "id": "concept_2",
+        "type": "Model",
+        "label": "Accreting-Box Model"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "w._globular_cluster_mass_and_metallicity_distributions_reconstr.pdf"
+}

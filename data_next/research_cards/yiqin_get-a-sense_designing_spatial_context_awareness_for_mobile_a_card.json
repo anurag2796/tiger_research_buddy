@@ -1,0 +1,55 @@
+{
+  "card_id": "get-a-sense",
+  "bibliographic_data": {
+    "title": "Get-A-Sense: Designing Spatial Context Awareness for Mobile AR Environment Understanding",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Yiqin Zhao",
+        "faculty_id": "Yiqin Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Ashkan Ganj"
+      },
+      {
+        "name": "Tian Guo"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Physical environment understanding is vital in delivering immersive and interactive mobile augmented reality (AR) user experiences. Recently, we have witnessed a transition in the design of environment understanding systems, from visual data focused to centering on the concept of spatial context, including user, device, and environment information. Even though spatial context can benefit the environment understanding tasks, e.g., we demonstrate in a case study that lighting estimation performance can be improved by as much as 59%, not all environment understanding systems support spatial context. Furthermore, even for the environment understanding systems that support spatial context, not all useful spatial context has been leveraged; and the design and implementation can differ vastly. In this paper, we advocate for the design of a spatial context-aware and shared environment understanding system that can effectively support multiple tasks simultaneously.",
+    "arxiv_id": "arXiv:2310.10821"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a novel simulation-based experiment design with semi-synthetic data to explore the benefits of spatial context in environment understanding tasks, particularly for lighting estimation.",
+    "key_methodology": "The authors use a case study and a semi-synthetic simulation experiment using RCareWorld platform to evaluate different scenarios where spatial context data are discovered from opportunistic environment observations (single and multi-user scenarios) and guided user movements. They also identify three key open questions in the design of future AR environment understanding systems.",
+    "outcomes": [
+      "Spatial context can significantly increase lighting estimation performance, with a 13.2db PSNR improvement to 19.7db in multi-user scenarios where context can be shared.",
+      "Guided user movements achieve better PSNR improvement than naive sharing of spatial context while incurring minimal overhead compared to single-user scenarios."
+    ],
+    "full_text_markdown": "Environment understanding is a fundamental task for mobile AR to support immersive and interactive user experiences. This process typically involves estimating the environment's physical properties, such as geometry and lighting, from devices' environment observations. The paper advocates for designing a spatial context-aware and shared environment understanding system that can effectively support multiple tasks simultaneously. It discusses three key open questions: (i) how to fully leverage user mobility, (ii) how to design a unified data model, and (iii) how to build a shared system for multiple tasks. Through a case study, the authors demonstrate the benefits of spatial context in lighting estimation by leveraging AR user's mobility and hand movements to capture camera images and other sensory data. They use RCareWorld platform for semi-synthetic simulation experiments which provide photorealistic physical room scans and physically accurate human models. The paper identifies that existing environment understanding systems often miss opportunities to fully exploit user mobility, do not have a unified data model for spatial context, and require real-time and concurrent workload execution.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Spatial Context Awareness"
+      },
+      {
+        "id": "concept_2",
+        "type": "Task",
+        "label": "Lighting Estimation"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "yiqin_get-a-sense_designing_spatial_context_awareness_for_mobile_a.pdf"
+}

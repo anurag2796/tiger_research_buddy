@@ -1,0 +1,62 @@
+{
+  "card_id": "nosql_schema_design_time_dependent_workloads",
+  "bibliographic_data": {
+    "title": "NoSQL Schema Design for Time-Dependent Workloads",
+    "primary_domain": "cs.DB",
+    "authors": [
+      {
+        "name": "Yusuke Wakuta"
+      },
+      {
+        "name": "Michael Mior",
+        "faculty_id": "Michael Mior",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Teruyoshi Zenmyo"
+      },
+      {
+        "name": "Yuya Sasaki"
+      },
+      {
+        "name": "Makoto Onizuka"
+      }
+    ],
+    "year": 2023,
+    "abstract": "In this paper, we propose a schema optimization method for time-dependent workloads for NoSQL databases. In our proposed method, we migrate schema according to changing workloads, and the estimated cost of execution and migration are formulated and minimized as a single integer linear programming problem. Furthermore, we propose a method to reduce the number of optimization candidates by iterating over the time dimension abstraction and optimizing the workload while updating constraints.",
+    "arxiv_id": "arXiv:2303.16577"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a schema optimization method for NoSQL databases that considers both the execution cost of time-dependent workloads and database migrations, formulated as a single integer linear programming problem.",
+    "key_methodology": "The authors formulate an optimization problem using ILP to minimize the total cost of executing time-dependent workloads and migrating schemas. They also propose a pruning technique for schema candidates and a method to reduce migration plan candidates based on optimized query plans.",
+    "outcomes": [
+      "Formulated a single integer linear programming problem for minimizing costs.",
+      "Proposed an efficient schema candidate pruning technique using workload summary trees.",
+      "Reduced the number of migration plan candidates by restricting them according to changes in optimized query plans."
+    ],
+    "full_text_markdown": "In this paper, we propose a schema optimization method for time-dependent workloads for NoSQL databases. The authors address the challenge of optimizing database schemas that can adapt to changing workloads over time. They formulate an optimization problem using integer linear programming (ILP) to minimize both the execution cost of time-dependent workloads and the cost of migrating schemas. Additionally, they introduce a pruning technique for schema candidates by decomposing the ILP into hierarchical local ILPs and propose a method to reduce migration plan candidates based on changes in optimized query plans.\n\nThe paper highlights the importance of designing database schemas that can handle predictable patterns in automated IoT applications and scientific analysis pipelines. The authors discuss existing techniques that either assume static workloads or adaptively change schemas without considering the cost of migrations, which are not optimal for time-dependent workloads.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Integer Linear Programming"
+      },
+      {
+        "id": "concept_2",
+        "type": "Technique",
+        "label": "Workload Summary Tree"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "yusuke_nosql_schema_design_for_time-dependent_workloads.pdf"
+}

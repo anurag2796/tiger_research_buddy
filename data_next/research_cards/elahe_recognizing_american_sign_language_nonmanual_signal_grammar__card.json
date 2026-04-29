@@ -1,0 +1,68 @@
+{
+  "card_id": "recognizing-american-sign-language-errors",
+  "bibliographic_data": {
+    "title": "Recognizing American Sign Language Nonmanual Signal Grammar Errors in Continuous Videos",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Elahe Vahdani"
+      },
+      {
+        "name": "Longlong Jing"
+      },
+      {
+        "name": "Yingli Tian"
+      },
+      {
+        "name": "Matt Huenerfauth",
+        "faculty_id": "Matt Huenerfauth",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2020,
+    "abstract": "As part of the development of an educational tool that can help students achieve fluency in American Sign Language (ASL) through independent and interactive practice with immediate feedback, this paper introduces a near real-time system to recognize grammatical errors in continuous signing videos without necessarily identifying the entire sequence of signs. Our system automatically recognizes if a performance of ASL sentences contains grammatical errors made by ASL students. We first recognize the ASL grammatical elements including both manual gestures and nonmanual signals independently from multiple modalities (i.e., hand gestures, facial expressions, and head movements) by 3D-ResNet networks. Then the temporal boundaries of grammatical elements from different modalities are examined to detect ASL grammatical mistakes by using a sliding window-based approach. We have collected a dataset of continuous sign language, ASL-HW-RGBD, covering different aspects of ASL grammars for training and testing. Our system is able to recognize grammatical elements on ASL-HW-RGBD from manual gestures, facial expressions, and head movements and successfully detect 8 ASL grammatical mistakes.",
+    "arxiv_id": "2005.00253v1"
+  },
+  "core_content": {
+    "novelty_claim": "The system recognizes grammatical errors in continuous signing videos by independently recognizing manual gestures and nonmanual signals from multiple modalities using a sliding window-based approach.",
+    "key_methodology": "The system uses 3D-ResNet networks to recognize ASL grammatical elements (both manual gestures and nonmanual signals) from hand gestures, facial expressions, and head movements. Temporal boundaries of these elements are then examined with a sliding window approach to detect grammatical mistakes.",
+    "outcomes": [
+      "Successfully detected 8 ASL grammatical mistakes",
+      "Recognized ASL grammatical elements on the ASL-HW-RGBD dataset"
+    ],
+    "full_text_markdown": "The paper introduces a near real-time system for recognizing grammatical errors in continuous signing videos of American Sign Language (ASL). The system processes multiple modalities, including hand gestures, facial expressions, and head movements. It uses 3D-ResNet networks to recognize ASL grammatical elements such as manual gestures and nonmanual signals. A sliding window approach is employed to examine the temporal boundaries of these elements for detecting errors. The system successfully recognized 8 ASL grammatical mistakes on a dataset called ASL-HW-RGBD, which covers various aspects of ASL grammar.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "asl_grammatical_elements",
+        "type": "Concept",
+        "label": "ASL Grammatical Elements"
+      },
+      {
+        "id": "3d_resnet_networks",
+        "type": "Method",
+        "label": "3D-ResNet Networks"
+      },
+      {
+        "id": "sliding_window_approach",
+        "type": "Method",
+        "label": "Sliding Window Approach"
+      }
+    ],
+    "edges": [
+      {
+        "source": "asl_grammatical_elements",
+        "target": "3d_resnet_networks",
+        "relation": "RECOGNIZED_BY"
+      },
+      {
+        "source": "asl_grammatical_elements",
+        "target": "sliding_window_approach",
+        "relation": "EXAMINED_WITH"
+      }
+    ]
+  },
+  "source_file": "elahe_recognizing_american_sign_language_nonmanual_signal_grammar_.pdf"
+}

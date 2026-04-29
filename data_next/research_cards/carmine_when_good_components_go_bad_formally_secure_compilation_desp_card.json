@@ -1,0 +1,90 @@
+{
+  "card_id": "when_good_components_go_bad",
+  "bibliographic_data": {
+    "title": "When Good Components Go Bad: Formally Secure Compilation Despite Dynamic Compromise",
+    "primary_domain": "cs.CR",
+    "authors": [
+      {
+        "name": "Carmine Abate"
+      },
+      {
+        "name": "Arthur Azevedo de Amorim",
+        "faculty_id": "Arthur Azevedo de Amorim",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Roberto Blanco"
+      },
+      {
+        "name": "Ana Nora Evans"
+      },
+      {
+        "name": "Guglielmo Fachini"
+      },
+      {
+        "name": "Catalin Hritcu"
+      },
+      {
+        "name": "Th\u00e9o Laurent"
+      },
+      {
+        "name": "Benjamin C. Pierce"
+      },
+      {
+        "name": "Marco Stronati"
+      },
+      {
+        "name": "J\u00e9r\u00e9my Thibault"
+      },
+      {
+        "name": "Andrew Tolmach"
+      }
+    ],
+    "year": 2018,
+    "abstract": "We propose a new formal criterion for evaluating secure compilation schemes for unsafe languages, expressing end-to-end security guarantees for software components that may become compromised after encountering undefined behavior\u2014for example, by accessing an array out of bounds. Our criterion is the first to model dynamic compromise in a system of mutually distrustful components with clearly specified privileges. It articulates how each component should be protected from all the others\u2014in particular, from components that have encountered undefined behavior and become compromised. Each component receives secure compilation guarantees\u2014in particular, its internal invariants are protected from compromised components\u2014up to the point when this component itself becomes compromised, after which we assume an attacker can take complete control and use this component\u2019s privileges to attack other components. More precisely, a secure compilation chain must ensure that a dynamically compromised component cannot break the safety properties of the system at the target level any more than an arbitrary attacker-controlled component (with the same interface and privileges, but without undefined behaviors) already could at the source level.",
+    "arxiv_id": "1802.00588"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a new formal criterion for secure compilation schemes in unsafe languages that accounts for dynamic compromise due to undefined behavior, ensuring end-to-end security guarantees.",
+    "key_methodology": "The authors construct a secure compilation chain for an unsafe language with buffers, procedures, and components targeting a simple abstract machine with built-in compartmentalization. They provide a machine-checked proof in Coq that this compiler satisfies their secure compilation criterion.",
+    "outcomes": [
+      "Developed a formal criterion for secure compilation schemes",
+      "Constructed a secure compilation chain using Coq",
+      "Demonstrated protection guarantees at the machine-code level"
+    ],
+    "full_text_markdown": "The paper addresses the challenge of ensuring security in unsafe languages like C and C++ by proposing a new formal criterion for evaluating secure compilation schemes. The authors introduce a model that accounts for dynamic compromise due to undefined behaviors, such as accessing an array out of bounds. They construct a secure compilation chain for a small unsafe language with buffers, procedures, and components targeting a simple abstract machine with built-in compartmentalization. Using Coq, they provide a machine-checked proof that this compiler satisfies their secure compilation criterion. Finally, the paper shows how protection guarantees can be achieved at the machine-code level using either software fault isolation or a tag-based reference monitor.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Secure Compilation Criterion"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Dynamic Compromise"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Compartmentalization"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "APPLIES_TO"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "REQUIRES"
+      }
+    ]
+  },
+  "source_file": "carmine_when_good_components_go_bad_formally_secure_compilation_desp.pdf"
+}

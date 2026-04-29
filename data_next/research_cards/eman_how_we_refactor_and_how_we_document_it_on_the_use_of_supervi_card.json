@@ -1,0 +1,85 @@
+{
+  "card_id": "refactoring-documentation-classification",
+  "bibliographic_data": {
+    "title": "How We Refactor and How We Document it? On the Use of Supervised Machine Learning Algorithms to Classify Refactoring Documentation",
+    "primary_domain": "cs.SE (Software Engineering)",
+    "authors": [
+      {
+        "name": "Eman Abdullah AlOmar"
+      },
+      {
+        "name": "Anthony Peruma"
+      },
+      {
+        "name": "Mohamed Wiem Mkaouer"
+      },
+      {
+        "name": "Christian Newman",
+        "faculty_id": "Christian Newman",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Ali Ouni"
+      },
+      {
+        "name": "Marouane Kessentini"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Refactoring is the art of improving the structural design of a software system without altering its external behavior. Today, refactoring has become a well-established and disciplined software engineering practice that has attracted significant research presuming that refactoring is primarily motivated by the need to improve system structures. However, recent studies have shown that developers may incorporate refactoring strategies in other development-related activities that go beyond improving the design especially with the emerging challenges in contemporary software engineering. Unfortunately, these studies are limited to developer interviews and a reduced set of projects. To cope with the above-mentioned limitations, we aim to better understand what motivates developers to apply a refactoring by mining and automatically classifying a large set of 111,884 commits containing refactoring activities extracted from 800 open source Java projects. We trained a multi-class classifier to categorize these commits into three categories, namely, Internal Quality Attribute, External Quality Attribute, and Code Smell Resolution, along with the traditional Bug Fix and Functional categories. This classification challenges the original definition of refactoring, being exclusive to improving software design and fixing code smells.",
+    "arxiv_id": "2010.13890"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a method to automatically classify refactoring activities in commit messages into categories such as Internal Quality Attribute, External Quality Attribute, and Code Smell Resolution.",
+    "key_methodology": "A multi-class classifier was trained on 111,884 commits from 800 open source Java projects to categorize refactoring activities.",
+    "outcomes": [
+      "Refactoring is motivated by a variety of reasons beyond improving design and fixing code smells.",
+      "The distribution of refactoring operations differs between production and test files.",
+      "Developers use various patterns in commit messages to document their refactorings."
+    ],
+    "full_text_markdown": "This paper explores the motivations behind developers' refactoring activities by analyzing 111,884 commits from 800 open source Java projects. The authors trained a multi-class classifier to categorize these commits into five categories: Internal Quality Attribute, External Quality Attribute, Code Smell Resolution, Bug Fix, and Functional. This classification challenges the traditional view of refactoring as solely focused on improving design and fixing code smells. Additionally, the paper qualitatively analyzed commit messages to identify patterns used by developers in documenting their refactorings. The results show that fixing code smells is not the main driver for developers to refactor their code bases, and that refactoring operations are distributed differently between production and test files.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Multi-class Classifier"
+      },
+      {
+        "id": "concept_2",
+        "type": "Category",
+        "label": "Internal Quality Attribute"
+      },
+      {
+        "id": "concept_3",
+        "type": "Category",
+        "label": "External Quality Attribute"
+      },
+      {
+        "id": "concept_4",
+        "type": "Category",
+        "label": "Code Smell Resolution"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "CLASSIFIES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "CLASSIFIES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_4",
+        "relation": "CLASSIFIES"
+      }
+    ]
+  },
+  "source_file": "eman_how_we_refactor_and_how_we_document_it_on_the_use_of_supervi.pdf"
+}

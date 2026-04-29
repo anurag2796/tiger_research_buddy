@@ -1,0 +1,65 @@
+{
+  "card_id": "mask_uncertainty_spectral_SCI",
+  "bibliographic_data": {
+    "title": "Modeling Mask Uncertainty in Hyperspectral Image Reconstruction",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Jiamian Wang"
+      },
+      {
+        "name": "Yulun Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Xin Yuan",
+        "faculty_id": "Bo Yuan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Ziyi Meng"
+      },
+      {
+        "name": "Zhiqiang Tao",
+        "faculty_id": "Zhiqiang Tao",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Recently, hyperspectral imaging (HSI) has attracted increasing research attention, especially for the ones based on a coded aperture snapshot spectral imaging (CASSI) system. Existing deep HSI reconstruction models are generally trained on paired data to retrieve original signals upon 2D compressed measurements given by a particular optical hardware mask in CASSI, during which the mask largely impacts the reconstruction performance and could work as a \u201cmodel hyperparameter\u201d governing on data augmentations. This mask-specific training style will lead to a hardware miscalibration issue, which sets up barriers to deploying deep HSI models among different hardware and noisy environments. To address this challenge, we introduce mask uncertainty for HSI with a complete variational Bayesian learning treatment and explicitly model it through a mask decomposition inspired by real hardware. Speci\ufb01cally, we propose a novel Graph-based Self-Tuning (GST) network to reason uncertainties adapting to varying spatial structures of masks among different hardware. Moreover, we develop a bilevel optimization framework to balance HSI reconstruction and uncertainty estimation, accounting for the hyperparameter property of masks. Extensive experimental results and model discussions validate the effectiveness (over 33/30 dB) of the proposed GST method under two miscalibration scenarios and demonstrate a highly competitive performance compared with the state-of-the-art well-calibrated methods.",
+    "arxiv_id": "arXiv:2112.15362v4"
+  },
+  "core_content": {
+    "novelty_claim": "The paper introduces mask uncertainty for HSI and proposes a Graph-based Self-Tuning (GST) network to reason uncertainties adapting to varying spatial structures of masks among different hardware.",
+    "key_methodology": "A complete variational Bayesian learning framework is developed, including the GST network and a bilevel optimization framework to balance HSI reconstruction and uncertainty estimation.",
+    "outcomes": [
+      "The proposed GST method demonstrates effectiveness (over 33/30 dB) under two miscalibration scenarios.",
+      "It shows highly competitive performance compared with state-of-the-art well-calibrated methods."
+    ],
+    "full_text_markdown": "Recently, hyperspectral imaging (HSI) has attracted increasing research attention, especially for the ones based on a coded aperture snapshot spectral imaging (CASSI) system. Existing deep HSI reconstruction models are generally trained on paired data to retrieve original signals upon 2D compressed measurements given by a particular optical hardware mask in CASSI, during which the mask largely impacts the reconstruction performance and could work as a \u201cmodel hyperparameter\u201d governing on data augmentations. This mask-specific training style will lead to a hardware miscalibration issue, which sets up barriers to deploying deep HSI models among different hardware and noisy environments. To address this challenge, we introduce mask uncertainty for HSI with a complete variational Bayesian learning treatment and explicitly model it through a mask decomposition inspired by real hardware. Specifically, we propose a novel Graph-based Self-Tuning (GST) network to reason uncertainties adapting to varying spatial structures of masks among different hardware. Moreover, we develop a bilevel optimization framework to balance HSI reconstruction and uncertainty estimation, accounting for the hyperparameter property of masks. Extensive experimental results and model discussions validate the effectiveness (over 33/30 dB) of the proposed GST method under two miscalibration scenarios and demonstrate a highly competitive performance compared with the state-of-the-art well-calibrated methods.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Graph-based Self-Tuning (GST) network"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Mask Uncertainty in Hyperspectral Image Reconstruction"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "jiamian_modeling_mask_uncertainty_in_hyperspectral_image_reconstruct.pdf"
+}

@@ -1,0 +1,74 @@
+{
+  "card_id": "measuring-copyright-risks-of-large-language-model",
+  "bibliographic_data": {
+    "title": "Measuring Copyright Risks of Large Language Model via Partial Information Probing",
+    "primary_domain": "cs.CL",
+    "authors": [
+      {
+        "name": "Weijie Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Huajie Shao"
+      },
+      {
+        "name": "Zhaozhuo Xu"
+      },
+      {
+        "name": "Suzhen Duan"
+      },
+      {
+        "name": "Denghui Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Exploring the data sources used to train Large Language Models (LLMs) is a crucial direction in investigating potential copyright infringement by these models. While this approach can identify possible use of copyrighted materials in training data, it does not directly measure infringing risks. Recent research has shifted towards testing whether LLMs can directly output copyrighted content. Addressing this direction, we investigate and assess LLMs\u2019 capacity to generate infringing content by providing them with partial information from copyrighted materials, and try to use iterative prompting to get LLMs to generate more infringing content.",
+    "arxiv_id": "2409.13831"
+  },
+  "core_content": {
+    "novelty_claim": "The study demonstrates that it is possible to prompt LLMs to generate copyrighted content by providing them with partial information from copyrighted materials, and provides experimental evidence that LLMs possess the capability to directly reproduce content that should be protected by copyright.",
+    "key_methodology": "Providing LLMs with a portion of a copyrighted text as input and prompting them to complete it. Analyzing the overlap between the generated content and the original copyrighted material.",
+    "outcomes": [
+      "LLMs can generate content highly overlapping with copyrighted materials based on partial inputs.",
+      "Models with larger parameter scales exhibited superior performance in generating infringing content.",
+      "Certain LLMs perform better with specific types of content."
+    ],
+    "full_text_markdown": "The rapid advancement of Large Language Models (LLMs) has demonstrated their remarkable capabilities. However, the growing use of LLMs has also given rise to concerns regarding copyright infringement. This study investigates potential copyright infringement by LLMs through a novel approach: providing them with partial information from copyrighted materials and prompting them to complete it. The findings show that LLMs can generate content highly overlapping with copyrighted materials based on these partial inputs, especially models with larger parameter scales. Additionally, certain LLMs perform better with specific types of content.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Partial Information Probing"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Large Language Model (LLM)"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Copyright Infringement"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "APPLIES_TO"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "EVALUATES"
+      }
+    ]
+  },
+  "source_file": "weijie_measuring_copyright_risks_of_large_language_model_via_partia.pdf"
+}

@@ -1,0 +1,92 @@
+{
+  "card_id": "arXiv:2306.09027v1",
+  "bibliographic_data": {
+    "title": "Ultra-low-loss optical interconnect enabled by topological unidirectional guided resonance",
+    "primary_domain": "physics.optics",
+    "authors": [
+      {
+        "name": "Haoran Wang"
+      },
+      {
+        "name": "Yi Zuo"
+      },
+      {
+        "name": "Xuefan Yin"
+      },
+      {
+        "name": "Zihao Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Zixuan Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Feifan Wang"
+      },
+      {
+        "name": "Yuefeng Hu",
+        "faculty_id": "Derui Zhu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Xiaoyu Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Chao Peng",
+        "faculty_id": "Chao Peng",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2023,
+    "abstract": "Grating couplers that interconnect photonic chips to off-chip components are of essential importance for various optoelectronics applications. Despite numerous efforts in past decades, existing grating couplers still suffer from poor energy efficiency and thus hinder photonic integration toward a larger scale. Here, we theoretically propose and experimentally demonstrate a method to achieve ultra-low-loss grating coupler by employing topological unidirectional guided resonances (UGRs). Leveraging the unidirectional emitting nature of UGRs, the useless downward radiation is greatly suppressed with no mirror placed on the bottom. By engineering the dispersion and apodizing the geometry of grating, we realize a grating coupler on 340 nm silicon-on-insulator platform with a record-low-loss of 0.34 dB and bandwidth exceeding 30 nm at the telecom wavelength of 1550 nm. We further show a pair of gratings works as optic via that interconnects two stacked photonic chips with a loss of only 0.94 dB. Our work sheds light on the feasibility of energy-efficient optical interconnect for silicon photonics, and paving the way to large-scale photonic integration for applications from optical communication to photonic computing.",
+    "arxiv_id": "arXiv:2306.09027v1"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a method to achieve ultra-low-loss grating couplers by utilizing topological unidirectional guided resonances (UGRs) without the need for mirrors on the bottom, significantly reducing downward radiation.",
+    "key_methodology": "The authors use an L-shaped structure and continuously tune the grating geometry to form UGRs. By engineering the dispersion and apodizing the geometry, they reduce back-scattering and promote model overlap with the fiber.",
+    "outcomes": [
+      "Achieved a record-low insertion loss of 0.34 dB for chip-to-fiber interconnects at telecom wavelength of 1550 nm",
+      "Obtained a bandwidth exceeding 30 nm for the scheme of chip-to-fiber and stacked-chip interconnects",
+      "Demonstrated a pair of grating couplers works as optic via that interconnects two stacked photonic chips with a loss of only 0.94 dB"
+    ],
+    "full_text_markdown": "The paper addresses the challenge of achieving ultra-low-loss optical interconnects for silicon photonics by proposing and experimentally demonstrating a method to utilize topological unidirectional guided resonances (UGRs). The authors design an L-shaped grating coupler on a 340 nm thick SOI platform, optimizing its geometry through dispersion engineering and apodization. This approach significantly reduces downward radiation without the need for mirrors, achieving record-low losses of 0.34 dB for chip-to-fiber interconnects at 1550 nm with a bandwidth exceeding 30 nm. The method is further validated by demonstrating an optic via that connects two stacked photonic chips with only 0.94 dB loss.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Topological Unidirectional Guided Resonance (UGR)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "L-shaped Grating Coupler"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Silicon-on-Insulator (SOI) Platform"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "REALIZED_BY"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "APPLIED_ON"
+      }
+    ]
+  },
+  "source_file": "haoran_ultra-low-loss_optical_interconnect_enabled_by_topological_u.pdf"
+}

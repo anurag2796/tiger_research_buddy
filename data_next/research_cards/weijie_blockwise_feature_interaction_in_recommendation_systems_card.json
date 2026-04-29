@@ -1,0 +1,54 @@
+{
+  "card_id": "blockwise-feature-interaction",
+  "bibliographic_data": {
+    "title": "Blockwise Feature Interaction in Recommendation Systems",
+    "primary_domain": "cs.IR",
+    "authors": [
+      {
+        "name": "Weijie Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Ping Li",
+        "faculty_id": "Pengfei Li",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2023,
+    "abstract": "Feature interactions can play a crucial role in recommendation systems as they capture complex relationships between user preferences and item characteristics. Existing methods such as Deep & Cross Network (DCNv2) may suffer from high computational requirements due to their cross-layer operations. In this paper, we propose a novel approach called blockwise feature interaction (BFI) to help alleviate this issue. By partitioning the feature interaction process into smaller blocks, we can significantly reduce both the memory footprint and the computational burden. Four variants (denoted by P, Q, T, S, respectively) of BFI have been developed and empirically compared. Our experimental results demonstrate that the proposed algorithms achieve close accuracy compared to the standard DCNv2, while greatly reducing the computational overhead and the number of parameters.",
+    "arxiv_id": "arXiv:2306.15881"
+  },
+  "core_content": {
+    "novelty_claim": "The paper introduces Blockwise Feature Interaction (BFI), a network architecture that partitions cross layers into smaller blocks to reduce both computation and memory consumption.",
+    "key_methodology": "BFI splits the vectors for fully-connected embedding layers, reducing the computational cost from D^2 to (D/K)^2 \u00d7 K = D^2 / K, where D represents the total number of input features, and K is the number of blocks in BFI.",
+    "outcomes": [
+      "The proposed algorithms achieve close accuracy compared to the standard DCNv2 while greatly reducing computational overhead and the number of parameters.",
+      "Four variants (P, Q, T, S) of BFI are developed and empirically compared."
+    ],
+    "full_text_markdown": "In recent years, deep learning has emerged as a powerful technique for building recommendation systems that can effectively capture complex patterns and user preferences. One significant challenge in designing these systems lies in capturing feature interactions, which are essential for achieving high performance and accuracy. Feature interactions refer to the relationships and dependencies between different input features such as user demographics, historical preferences, and item characteristics. These interactions can be highly non-linear and intricate, making it challenging to model them accurately using traditional linear models or shallow neural networks. The number of potential feature interactions grows exponentially with the number of features, making it infeasible to explicitly enumerate and represent all possible interactions. Even if we only consider second-order feature interactions, we will still have to explicitly introduce a quadratic number of combined features. As the number of features increases, the computational and memory requirements become unpractical.\n\nIn this paper, we propose Blockwise Feature Interaction (BFI), which partitions the cross layers into smaller blocks to reduce both computation and memory consumption. By splitting the vectors for fully-connected embedding layers, BFI reduces the D^2 cost to (D/K)^2 \u00d7 K = D^2 / K, where D represents the total number of input features, and K is the number of blocks in BFI. The paper introduces four variants (P, Q, T, S) of BFI designed for saving memory and evaluation cost by reducing the number of parameter shuffling and introducing parameter sharing. Experimental results confirm the effectiveness of the proposed methods on public datasets.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Blockwise Feature Interaction (BFI)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "Deep & Cross Network (DCNv2)"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "weijie_blockwise_feature_interaction_in_recommendation_systems.pdf"
+}

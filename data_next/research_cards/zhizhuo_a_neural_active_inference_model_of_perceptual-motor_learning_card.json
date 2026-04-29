@@ -1,0 +1,65 @@
+{
+  "card_id": "neural_active_inference_model",
+  "bibliographic_data": {
+    "title": "A Neural Active Inference Model of Perceptual-Motor Learning",
+    "primary_domain": "cs.NE (Neural and Evolutionary Computing)",
+    "authors": [
+      {
+        "name": "Zhizhuo Yang"
+      },
+      {
+        "name": "Gabriel J. Diaz",
+        "faculty_id": "Gabriela Diaz",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Brett R. Fajen"
+      },
+      {
+        "name": "Reynold Bailey",
+        "faculty_id": "Reynold Bailey",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Alexander Ororbia",
+        "faculty_id": "Alexander Ororbia",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2024,
+    "abstract": "The active inference framework (AIF) is a promising new computational framework grounded in contemporary neuroscience that can produce human-like behavior through reward-based learning. In this study, we test the ability for the AIF to capture the role of anticipation in the visual guidance of action in humans through the systematic investigation of a visual-motor task that has been well-explored \u2013 that of intercepting a target moving over a ground plane. Previous research demonstrated that humans performing this task resorted to anticipatory changes in speed intended to compensate for semi-predictable changes in target speed later in the approach. To capture this behavior, our proposed \u201cneural\u201d AIF agent uses artificial neural networks to select actions on the basis of a very short term prediction of the information about the task environment that these actions would reveal along with a long-term estimate of the resulting cumulative expected free energy. Systematic variation revealed that anticipatory behavior emerged only when required by limitations on the agent\u2019s movement capabilities, and only when the agent was able to estimate accumulated free energy over sufficiently long durations into the future. In addition, we present a novel formulation of the prior function that maps a multi-dimensional world-state to a uni-dimensional distribution of free-energy. Together, these results demonstrate the use of AIF as a plausible model of anticipatory visually guided behavior in humans.",
+    "arxiv_id": "arXiv:2211.10419"
+  },
+  "core_content": {
+    "novelty_claim": "The study demonstrates the ability of an active inference framework to capture human-like anticipatory behavior in visual guidance tasks through a novel formulation of the prior function and systematic investigation.",
+    "key_methodology": "The researchers used artificial neural networks within an active inference agent to predict actions based on short-term predictions and long-term free energy estimates. The study systematically varied conditions to determine when anticipatory behavior emerged.",
+    "outcomes": [
+      "Anticipatory behavior only emerged under specific limitations of the agent's movement capabilities and ability to estimate future free energy.",
+      "A novel formulation of the prior function that maps multi-dimensional world-states to a uni-dimensional distribution of free-energy was presented."
+    ],
+    "full_text_markdown": "The active inference framework (AIF) is an emerging theory in neuroscience that can produce human-like behavior through reward-based learning. This study investigates whether AIF can capture anticipatory behavior during visual guidance tasks, specifically the interception of a moving target. The researchers used artificial neural networks to simulate actions based on short-term predictions and long-term free energy estimates. By systematically varying conditions, they found that anticipatory behavior only emerged when the agent faced specific limitations in movement capabilities and could estimate future free energy over extended periods. Additionally, they introduced a novel prior function that maps multi-dimensional world-states to a uni-dimensional distribution of free-energy, demonstrating AIF's potential as a model for human anticipatory behavior.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Active Inference Framework"
+      },
+      {
+        "id": "concept_2",
+        "type": "Behavior",
+        "label": "Anticipatory Behavior"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "zhizhuo_a_neural_active_inference_model_of_perceptual-motor_learning.pdf"
+}

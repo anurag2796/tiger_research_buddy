@@ -1,0 +1,61 @@
+{
+  "card_id": "software_reuse_discussion_stackoverflow",
+  "bibliographic_data": {
+    "title": "How is Software Reuse Discussed in Stack Overflow?",
+    "primary_domain": "cs.SE",
+    "authors": [
+      {
+        "name": "Eman Abdullah AlOmara"
+      },
+      {
+        "name": "Anthony Peruma"
+      },
+      {
+        "name": "Mohamed Wiem Mkaouer"
+      },
+      {
+        "name": "Christian Newman",
+        "faculty_id": "Christian Newman",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Ali Ouni"
+      }
+    ],
+    "year": 2023,
+    "abstract": "Software reuse is a crucial external quality attribute targeted by open-source and commercial projects. Despite increased adoption, little is known about what aspects of code reuse developers discuss. This paper presents an empirical study of 1,409 posts to better understand the challenges developers face when reusing code. Our findings show that 'visual studio' is the top occurring bigrams for question posts, and there are frequent design patterns utilized by developers for the purpose of reuse. We envision our findings enabling researchers to develop guidelines to be utilized to foster software reuse.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The study provides insights into the challenges developers face when reusing code and identifies common topics discussed in Stack Overflow posts related to software reuse.",
+    "key_methodology": "The authors mined 1,528 reuse-tagged posts from Stack Overflow, filtered out unrelated or duplicate posts, and manually classified the remaining 1,409 posts to understand the discussions around software reuse.",
+    "outcomes": [
+      "Identified 'visual studio' as a top occurring bigram in question posts.",
+      "Found frequent use of design patterns by developers for code reuse."
+    ],
+    "full_text_markdown": "The study investigates how software reuse is discussed on Stack Overflow. Despite increased adoption, little is known about the specific challenges and topics developers discuss when reusing code. The authors mined 1,528 posts from Stack Overflow, filtered out unrelated or duplicate posts, and manually classified the remaining 1,409 posts to understand the discussions around software reuse. Key findings include identifying 'visual studio' as a top occurring bigram in question posts and frequent use of design patterns by developers for code reuse.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "software_reuse",
+        "type": "Concept",
+        "label": "Software Reuse"
+      },
+      {
+        "id": "design_patterns",
+        "type": "Method",
+        "label": "Design Patterns"
+      }
+    ],
+    "edges": [
+      {
+        "source": "software_reuse",
+        "target": "design_patterns",
+        "relation": "INVOLVES"
+      }
+    ]
+  },
+  "source_file": "eman_how_is_software_reuse_discussed_in_stack_overflow.pdf"
+}

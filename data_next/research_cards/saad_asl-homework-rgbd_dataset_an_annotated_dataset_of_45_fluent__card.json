@@ -1,0 +1,66 @@
+{
+  "card_id": "aslhomework-rgbd",
+  "bibliographic_data": {
+    "title": "ASL-Homework-RGBD Dataset: An annotated dataset of 45 fluent and non-fluent signers performing American Sign Language homeworks",
+    "primary_domain": "cs.CL",
+    "authors": [
+      {
+        "name": "Saad Hassan"
+      },
+      {
+        "name": "Matthew Seita"
+      },
+      {
+        "name": "Larwan Berke"
+      },
+      {
+        "name": "Yingli Tian"
+      },
+      {
+        "name": "Elaine Gale"
+      },
+      {
+        "name": "Sooyeon Lee"
+      },
+      {
+        "name": "Matt Huenerfauth",
+        "faculty_id": "Matt Huenerfauth",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2022,
+    "abstract": "We are releasing a dataset containing videos of both fluent and non-fluent signers using American Sign Language (ASL), which were collected using a Kinect v2 sensor. This dataset was collected as a part of a project to develop and evaluate computer vision algorithms to support new technologies for automatic detection of ASL fluency attributes. A total of 45 fluent and non-fluent participants were asked to perform signing homework assignments that are similar to the assignments used in introductory or intermediate level ASL courses. The data is annotated to identify several aspects of signing including grammatical features and non-manual markers. Sign language recognition is currently very data-driven and this dataset can support the design of recognition technologies, especially technologies that can benefit ASL learners. This dataset might also be interesting to ASL education researchers who want to contrast fluent and non-fluent signing.",
+    "arxiv_id": "2207.04021"
+  },
+  "core_content": {
+    "novelty_claim": "The dataset includes recordings of both fluent and non-fluent ASL signers performing homework-style tasks, with detailed annotations including gloss labels and syntactic non-manual expressions.",
+    "key_methodology": "Videos were collected using a Kinect v2 sensor from 45 signers (both fluent and non-fluent) performing ASL homework assignments. The dataset includes continuous signing data and is annotated to identify grammatical features and non-manual markers.",
+    "outcomes": [
+      "The dataset supports the development of computer vision algorithms for detecting fluency attributes in ASL.",
+      "It can be used by researchers to study fluent and non-fluent signing behaviors."
+    ],
+    "full_text_markdown": "This paper introduces a new annotated dataset, the ASL-Homework-RGBD, which contains videos of both fluent and non-fluent signers performing American Sign Language (ASL) homework tasks. The data was collected using a Kinect v2 sensor from 45 participants who were asked to perform signing assignments similar to those used in introductory or intermediate level ASL courses. The dataset is unique because it includes continuous signing data, which can be valuable for developing sign language recognition technologies. Additionally, the annotations are detailed and include gloss labels as well as information about syntactic non-manual expressions. This dataset can support the design of recognition technologies that benefit ASL learners and may also interest researchers studying fluent versus non-fluent signing behaviors."
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "ASL-Homework-RGBD",
+        "type": "Dataset",
+        "label": "ASL Homework RGB-D Dataset"
+      },
+      {
+        "id": "Fluency-Attributes",
+        "type": "Concept",
+        "label": "Fluency Attributes in ASL"
+      }
+    ],
+    "edges": [
+      {
+        "source": "ASL-Homework-RGBD",
+        "target": "Fluency-Attributes",
+        "relation": "CONTAINS_DATA_FOR"
+      }
+    ]
+  },
+  "source_file": "saad_asl-homework-rgbd_dataset_an_annotated_dataset_of_45_fluent_.pdf"
+}

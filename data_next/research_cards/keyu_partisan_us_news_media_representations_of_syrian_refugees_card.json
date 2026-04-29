@@ -1,0 +1,101 @@
+{
+  "card_id": "partisan_us_news_media_representations_of_syrian_refugees",
+  "bibliographic_data": {
+    "title": "Partisan US News Media Representations of Syrian Refugees",
+    "primary_domain": "cs.CL (Computational Linguistics)",
+    "authors": [
+      {
+        "name": "Keyu Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Marzieh Babaeianjelodar"
+      },
+      {
+        "name": "Yiwen Shi",
+        "faculty_id": "Pengcheng Shi",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Kamila Janmohamed"
+      },
+      {
+        "name": "Rupak Sarkar"
+      },
+      {
+        "name": "Ingmar Weber"
+      },
+      {
+        "name": "Thomas Davidson"
+      },
+      {
+        "name": "Munmun De Choudhury"
+      },
+      {
+        "name": "Jonathan Huang"
+      },
+      {
+        "name": "Shweta Yadav"
+      },
+      {
+        "name": "Ashique Khudabukhsh",
+        "faculty_id": "Ashique KhudaBukhsh",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Preslav Ivanov Nakov"
+      },
+      {
+        "name": "Chris Bauch"
+      },
+      {
+        "name": "Orestis Papakyriakopoulos"
+      },
+      {
+        "name": "Kaveh Khoshnood"
+      },
+      {
+        "name": "Navin Kumar",
+        "faculty_id": "Mohan Kumar",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2024,
+    "abstract": "We investigate how representations of Syrian refugees (2011-2021) differ across US partisan news outlets. We analyze 47,388 articles from the online US media about Syrian refugees to detail differences in reporting between left- and right-leaning media. Our polarization and question answering results indicated that left-leaning media tended to represent refugees as child victims, welcome in the US, while right-leaning media cast refugees as Islamic terrorists. We noted similar results with our sentiment and offensive speech scores over time, which detail possibly unfavorable representations of refugees in right-leaning media. A strength of our work is how the different techniques we have applied validate each other. Based on our results, we provide several recommendations.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The study explores differences in reporting between left- and right-leaning media outlets regarding Syrian refugees from 2011 to 2021, using various NLP techniques.",
+    "key_methodology": "47,388 articles were analyzed using NLP techniques including polarization analysis and question answering. The results showed that left-leaning media tended to represent refugees as child victims and welcome in the US, while right-leaning media cast them as Islamic terrorists.",
+    "outcomes": [
+      "Left-leaning media represented refugees as child victims and welcome in the US.",
+      "Right-leaning media portrayed refugees as Islamic terrorists.",
+      "Sentiment analysis indicated unfavorable representations of refugees in right-leaning media over time."
+    ],
+    "full_text_markdown": "The study investigates how Syrian refugee representations differ across partisan news outlets in the United States from 2011 to 2021. By analyzing 47,388 articles, the research highlights that left-leaning media tended to portray refugees as child victims and welcome in the US, while right-leaning media depicted them as Islamic terrorists. Sentiment analysis further confirmed unfavorable representations of refugees in right-leaning media over time. The study provides recommendations for stakeholders to intervene around refugee representations and improve public perception.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "NLP Techniques"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Syrian Refugees"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "ANALYZES"
+      }
+    ]
+  },
+  "source_file": "keyu_partisan_us_news_media_representations_of_syrian_refugees.pdf"
+}

@@ -1,0 +1,100 @@
+{
+  "card_id": "on-the-documentation-of-refactoring-types",
+  "bibliographic_data": {
+    "title": "On the Documentation of Refactoring Types",
+    "primary_domain": "cs.SE",
+    "authors": [
+      {
+        "name": "Eman Abdullah AlOmar"
+      },
+      {
+        "name": "Jiaqian Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Kenneth Addo"
+      },
+      {
+        "name": "Mohamed Wiem Mkaouer"
+      },
+      {
+        "name": "Christian Newman",
+        "faculty_id": "Christian Newman",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Ali Ouni"
+      },
+      {
+        "name": "Zhe Yu",
+        "faculty_id": "Zhe Yu",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2021,
+    "abstract": "Commit messages are the atomic level of software documentation. They provide a natural language description of the code change and its purpose. Messages are critical for software maintenance and program comprehension. Unlike documenting feature updates and bug fixes, little is known about how developers document their refactoring activities. This paper challenges the ability of refactoring documentation, written in commit messages, to adequately predict the refactoring types, performed at the commit level. Our analysis relies on the text mining of commit messages to extract the corresponding features (i.e., keywords) that better represent each class (i.e., refactoring type). The extraction of text patterns, specific to each refactoring type (e.g., rename, extract, move), allows the design of a model that verifies the consistency of these patterns with their corresponding refactoring. Such verification process can be achieved via automatically predicting, for a given commit, the method-level type of refactoring being applied, namely Extract Method, Inline Method, Move Method, Pull-up Method, Push-down Method, and Rename Method.",
+    "arxiv_id": "2112.01581"
+  },
+  "core_content": {
+    "novelty_claim": "The paper challenges the ability of refactoring documentation in commit messages to predict the types of refactorings performed at the commit level by analyzing text patterns specific to each refactoring type.",
+    "key_methodology": "Text mining of commit messages to extract keywords and design a model that verifies consistency between these patterns and actual refactoring operations.",
+    "outcomes": [
+      "Found that the complexity of refactoring type prediction varies from one type to another, with Rename Method and Extract Method being the best documented refactorings while Pull-up Method and Push-down Method were the hardest to identify via textual descriptions."
+    ],
+    "full_text_markdown": "Understanding maintenance activities is critical for practitioners. This paper focuses on analyzing commit messages in the context of refactoring. Commit messages are used to automatically predict method-level types of refactorings such as Extract Method, Inline Method, Move Method, Pull-up Method, Push-down Method, and Rename Method. The study compares various classifiers and a keyword-based approach using a dataset of 5,004 commits. Key findings show that the complexity of refactoring type prediction varies from one type to another, with Rename Method and Extract Method being the best documented refactorings while Pull-up Method and Push-down Method were the hardest to identify via textual descriptions.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Extract Method"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "Inline Method"
+      },
+      {
+        "id": "concept_3",
+        "type": "Method",
+        "label": "Move Method"
+      },
+      {
+        "id": "concept_4",
+        "type": "Method",
+        "label": "Pull-up Method"
+      },
+      {
+        "id": "concept_5",
+        "type": "Method",
+        "label": "Push-down Method"
+      },
+      {
+        "id": "concept_6",
+        "type": "Method",
+        "label": "Rename Method"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      },
+      {
+        "source": "concept_3",
+        "target": "concept_4",
+        "relation": "SOLVES"
+      },
+      {
+        "source": "concept_5",
+        "target": "concept_6",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "eman_on_the_documentation_of_refactoring_types.pdf"
+}

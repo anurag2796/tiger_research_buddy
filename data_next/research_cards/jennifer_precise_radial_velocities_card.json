@@ -1,0 +1,64 @@
+{
+  "card_id": "precise_radial_velocities",
+  "bibliographic_data": {
+    "title": "Precise Radial Velocities",
+    "primary_domain": "astro-ph.EP",
+    "authors": [
+      {
+        "name": "Jennifer A. Burt",
+        "faculty_id": "Jennifer Burt",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Xavier Dumusque"
+      },
+      {
+        "name": "Samuel Halverson"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Precise measurements of a star\u2019s radial velocity (RV) made using extremely stable, high resolution, optical or near infrared spectrographs can be used to determine the masses and orbital parameters of gravitationally-bound extra-solar planets (exoplanets). Indeed, RV surveys and follow up efforts have provided the vast majority of published exoplanet mass measurements and in doing so have enabled studies into exoplanet interior and atmospheric compositions. Here we review the current state of the RV field, with particular attention paid to: \u2022 The evolution of precise RV methodologies over the past two decades \u2022 Modern RV spectrograph designs that can be calibrated to a stability level of \u226450 cm s\u22121 over timescales of years \u2022 RV data reduction and post-processing techniques that minimize the impact of instrument systematics and stellar variability \u2022 Techniques for detecting exoplanets in RV data and disentangling planetary signals from stellar variability",
+    "arxiv_id": "2511.01954"
+  },
+  "core_content": {
+    "novelty_claim": "The paper reviews the evolution of precise radial velocity methodologies, modern spectrograph designs, data reduction techniques, and exoplanet detection methods.",
+    "key_methodology": "Reviewing advancements in RV spectrographs, data reduction pipelines, and exoplanet modeling tools.",
+    "outcomes": [
+      "Provided an overview of the current state of RV field",
+      "Highlighted key advancements in instruments, data reduction, and variability modeling"
+    ],
+    "full_text_markdown": "The Doppler radial velocity (RV) method has been crucial for detecting exoplanets. This review focuses on modern precise RV methodologies, including spectrograph designs, data reduction techniques, and exoplanet detection methods. The paper discusses the evolution of these techniques over two decades, highlighting key advancements in instruments, data processing, and modeling tools that have driven the field to its current state."
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Precise Radial Velocity Methodology"
+      },
+      {
+        "id": "concept_2",
+        "type": "Technique",
+        "label": "Spectrograph Design"
+      },
+      {
+        "id": "concept_3",
+        "type": "Technique",
+        "label": "Data Reduction Pipeline"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "REQUIRES"
+      }
+    ]
+  },
+  "source_file": "jennifer_precise_radial_velocities.pdf"
+}

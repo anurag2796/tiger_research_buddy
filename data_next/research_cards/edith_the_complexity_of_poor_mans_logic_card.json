@@ -1,0 +1,50 @@
+{
+  "card_id": "complexity_of_poor_mans_logic",
+  "bibliographic_data": {
+    "title": "The Complexity of Poor Man's Logic",
+    "primary_domain": "cs.LO",
+    "authors": [
+      {
+        "name": "Edith Hemaspaandra",
+        "faculty_id": "Edith Hemaspaandra",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2005,
+    "abstract": "Motivated by description logics, we investigate what happens to the complexity of modal satisifiability problems if we only allow formulas built from literals, \u2227, \u2738, and \u2737. Previously, the only known result was that the complexity of the satisifiability problem for K dropped from PSPACE-complete to coNP-complete (Schmidt-Schauss and Smolka [9] and Donini et al. [3]). In this paper we show that not all modal logics behave like K. In particular, we show that the complexity of the satisifiability problem with respect to frames in which each world has at least one successor drops from PSPACE-complete to P, but that in contrast the satisifiability problem with respect to the class of frames in which each world has at most two successors remains PSPACE-complete. As a corollary of the latter result, we also solve the open problem from Donini et al.\u2019s complexity classification of description logics [2]. In the last section, we classify the complexity of the satisifiability problem for K for all other restrictions on the set of operators.",
+    "arxiv_id": "cs/9911014v2"
+  },
+  "core_content": {
+    "novelty_claim": "The paper investigates the complexity of modal satisfiability problems with specific restrictions and shows that not all modal logics behave like K, providing new insights into the complexity of satisifiability problems.",
+    "key_methodology": "The authors analyze different restrictions on the number of successors allowed for each world in a frame to determine the complexity of the satisfiability problem.",
+    "outcomes": [
+      "The complexity of the satisfiability problem with respect to linear frames drops from NP-complete to P.",
+      "The complexity of the satisfiability problem with respect to frames where every world has at least one successor drops from PSPACE-complete to P.",
+      "The complexity of the satisfiability problem with respect to frames where every world has at most two successors remains PSPACE-complete."
+    ],
+    "full_text_markdown": "Since consistent normal modal logics contain propositional logic, the satisifiability problems for all these logics are automatically NP-hard. However, in some applications we may use only a finite set of propositional variables, making the complexity of satisifiability problems drop to P. The paper investigates what happens when formulas are built from literals, \u2227, \u2738, and \u2737 under different restrictions on frames. It is shown that not all modal logics behave like K; for example, the satisfiability problem with respect to linear frames drops from NP-complete to P, while the problem remains PSPACE-complete for frames where each world has at most two successors. These results provide new insights into the complexity of satisifiability problems in modal logic.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Modal Logic Satisfiability"
+      },
+      {
+        "id": "concept_2",
+        "type": "Complexity Class",
+        "label": "PSPACE-complete"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "edith_the_complexity_of_poor_mans_logic.pdf"
+}

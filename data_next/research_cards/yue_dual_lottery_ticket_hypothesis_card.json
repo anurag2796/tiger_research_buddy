@@ -1,0 +1,65 @@
+{
+  "card_id": "dual_lottery_ticket_hypothesis",
+  "bibliographic_data": {
+    "title": "Dual Lottery Ticket Hypothesis",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Yue Bai"
+      },
+      {
+        "name": "Huan Wang",
+        "faculty_id": "Linwei Wang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Zhiqiang Tao",
+        "faculty_id": "Zhiqiang Tao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Kunpeng Li",
+        "faculty_id": "Pengfei Li",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yun Fu"
+      }
+    ],
+    "year": 2022,
+    "abstract": "Fully exploiting the learning capacity of neural networks requires overparameterized dense networks. On the other side, directly training sparse neural networks typically results in unsatisfactory performance. Lottery Ticket Hypothesis (LTH) provides a novel view to investigate sparse network training and maintain its capacity. Concretely, it claims there exist winning tickets from a randomly initialized network found by iterative magnitude pruning and preserving promising trainability (or we say being in trainable condition). In this work, we regard the winning ticket from LTH as the subnetwork which is in trainable condition and its performance as our benchmark, then go from a complementary direction to articulate the Dual Lottery Ticket Hypothesis (DLTH): Randomly selected subnetworks from a randomly initialized dense network can be transformed into a trainable condition and achieve admirable performance compared with LTH \u2014 random tickets in a given lottery pool can be transformed into winning tickets. Speci\ufb01cally, by using uniform-randomly selected subnetworks to represent the general cases, we propose a simple sparse network training strategy, Random Sparse Network Transformation (RST), to substantiate our DLTH.",
+    "arxiv_id": "2203.04248"
+  },
+  "core_content": {
+    "novelty_claim": "Proposes Dual Lottery Ticket Hypothesis (DLTH) which suggests that randomly selected subnetworks from a randomly initialized dense network can be transformed into a trainable condition and achieve admirable performance compared with LTH.",
+    "key_methodology": "Introduces Random Sparse Network Transformation (RST) to transform a randomly selected subnetwork into a trainable condition by introducing a regularization term to achieve information extrusion from extra weights to the target sparse structure.",
+    "outcomes": [
+      "Demonstrates that randomly selected subnetworks can be transformed into trainable conditions and achieve performance comparable to LTH",
+      "Validates DLTH through extensive experiments on several public datasets"
+    ],
+    "full_text_markdown": "While over-parameterized networks perform promisingly on challenging machine learning tasks, they require a high cost of computational and storage resources. Recent pruning techniques aim to reduce the model size by discarding irrelevant weights of well-trained models based on different criteria. Following this line, several series of research works have been done to explore effective pruning criterion for better final performances. However, regular pruning methods still require a full pretraining with high computational and storage costs. To avoid this, pruning at initialization (PI) attempts determining the sparse network before training and maintains the final performances. Dual Lottery Ticket Hypothesis (DLTH) studies a more challenging and general case of investigating the internal relationships between a dense network and its sparse counterparts and achieves promising performances for sparse network training. Specifically, DLTH is described as a randomly selected subnetwork from a randomly initialized dense network can be transformed into a trainable condition and achieve admirable performance using regular finetuning compared with LTH. To validate our proposed DTLH, we design Random Sparse Network Transformation (RST) to transform a randomly selected subnetwork into a trainable condition.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Random Sparse Network Transformation (RST)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Hypothesis",
+        "label": "Dual Lottery Ticket Hypothesis (DLTH)"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "yue_dual_lottery_ticket_hypothesis.pdf"
+}

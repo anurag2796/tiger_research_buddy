@@ -1,0 +1,59 @@
+{
+  "card_id": "feriji_corpus",
+  "bibliographic_data": {
+    "title": "Feriji: A French-Zarma Parallel Corpus, Glossary & Translator",
+    "primary_domain": "cs.CL",
+    "authors": [
+      {
+        "name": "Mamadou K. Keita"
+      },
+      {
+        "name": "Elysabhete Amadou Ibrahim"
+      },
+      {
+        "name": "Habibatou Abdoulaye Alfari"
+      },
+      {
+        "name": "Christopher Homan",
+        "faculty_id": "Christopher Homan",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Machine translation (MT) is a rapidly expanding field that has experienced significant advancements in recent years with the development of models capable of translating multiple languages with remarkable accuracy. However, the representation of African languages in this field still needs to improve due to linguistic complexities and limited resources. This applies to the Zarma language, a dialect of Songhay (of the Nilo-Saharan language family) spoken by over 5 million people across Niger and neighboring countries (Lewis et al., 2016). This paper introduces Feriji, the first robust French-Zarma parallel corpus and glossary designed for MT. The corpus, containing 61,085 sentences in Zarma and 42,789 in French, and a glossary of 4,062 words represent a significant step in addressing the need for more resources for Zarma. We fine-tune three large language models on our dataset, obtaining a BLEU score of 30.06 on the best-performing model. We further evaluate the models on human judgments of fluency, comprehension, and readability and the importance and impact of the corpus and models. Our contributions help to bridge a significant language gap and promote an essential and overlooked indigenous African language.",
+    "arxiv_id": "arXiv:2406.05888"
+  },
+  "core_content": {
+    "novelty_claim": "Feriji is the first robust French-Zarma parallel corpus and glossary designed for machine translation tasks, addressing the need for more resources in Zarma language.",
+    "key_methodology": "The dataset was created through a comprehensive sentence collection process from various sources including religious texts, materials from the Peace Corps, and original stories generated using ChatGPT. The initial data contained noise and missing translations, which were cleaned and aligned using scripts.",
+    "outcomes": [
+      "A parallel corpus of 61,085 Zarma sentences and 42,789 French sentences was created.",
+      "A glossary containing over 4,062 words was curated to support the translation process between French and Zarma.",
+      "Three large language models were fine-tuned on the dataset, achieving a BLEU score of 30.06."
+    ],
+    "full_text_markdown": "Machine translation (MT) has seen significant advancements in recent years with the development of sophisticated models capable of accurately translating multiple languages. However, African languages like Zarma, spoken by over 5 million people across Niger and neighboring countries, still need to be better represented due to linguistic complexities and limited resources. This paper introduces Feriji, a French-Zarma parallel corpus and glossary designed for MT tasks. The corpus contains 61,085 sentences in Zarma and 42,789 in French, representing a significant step towards enriching MT resources for the Zarma language. The dataset was created through extensive collection, alignment, and cleaning of texts from various sources including religious texts, materials from the Peace Corps, and original stories generated using ChatGPT. Three large language models were fine-tuned on this dataset, achieving a BLEU score of 30.06. The paper also evaluates the models on human judgments of fluency, comprehension, and readability, highlighting the importance and impact of the corpus and models in bridging the linguistic gap and promoting Zarma as an indigenous African language.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Feriji Dataset"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "Glossary"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "mamadou_feriji_a_french-zarma_parallel_corpus_glossary_translator.pdf"
+}

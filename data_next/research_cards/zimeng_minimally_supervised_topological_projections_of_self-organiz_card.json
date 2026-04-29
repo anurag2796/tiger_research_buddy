@@ -1,0 +1,53 @@
+{
+  "card_id": "cs-lg-2402.11185",
+  "bibliographic_data": {
+    "title": "Minimally Supervised Topological Projections of Self-Organizing Maps for Phase of Flight Identification",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Zimeng Lyu"
+      },
+      {
+        "name": "Pujan Thapa"
+      },
+      {
+        "name": "Travis Desell"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Identifying phases of flight is important in the field of general aviation, as knowing which phase of flight data is collected from aircraft flight data recorders can aid in the more effective detection of safety or hazardous events. General aviation flight data for phase of flight identification is usually per-second data, comes on a large scale, and is class imbalanced. It is expensive to manually label the data and training classification models usually faces class imbalance problems. This work investigates the use of a novel method for minimally supervised self-organizing maps (MS-SOMs) which utilize nearest neighbor majority votes in the SOM U-matrix for class estimation. Results show that the proposed method can reach or exceed a naive SOM approach which utilized a full data file of labeled data, with only 30 labeled datapoints per class. Additionally, the minimally supervised SOM is significantly more robust to the class imbalance of the phase of flight data. These results highlight how little data is required for effective phase of flight identification.",
+    "arxiv_id": "2402.11185"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a minimally supervised self-organizing map (MS-SOM) method that uses nearest neighbor majority votes in the SOM U-matrix for class estimation, demonstrating effectiveness with only 30 labeled data points per class.",
+    "key_methodology": "The method utilizes self-organizing maps to cluster high-dimensional flight data into a two-dimensional grid and applies nearest neighbor majority voting on the U-matrix to estimate classes. This approach is tested against a naive SOM classification strategy that requires a large amount of labeled data.",
+    "outcomes": [
+      "The proposed MS-SOM method can reach or exceed the performance of a naive SOM approach with only 30 labeled datapoints per class.",
+      "The minimally supervised SOM is significantly more robust to the class imbalance of phase of flight data."
+    ],
+    "full_text_markdown": "Identifying phases of flight in general aviation (GA) is crucial for improving safety. GA flights are challenging due to their variable nature and limited sensor availability, making automated identification difficult. This paper proposes a minimally supervised self-organizing map (MS-SOM) method that uses nearest neighbor majority votes in the SOM U-matrix for class estimation. The approach was tested with only 30 labeled data points per class and showed comparable performance to a naive SOM approach using full data files of labeled data. Additionally, the MS-SOM demonstrated better robustness to class imbalance compared to the naive approach.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Minimally Supervised Self-Organizing Maps (MS-SOM)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Technique",
+        "label": "Nearest Neighbor Majority Voting in U-matrix"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "zimeng_minimally_supervised_topological_projections_of_self-organiz.pdf"
+}

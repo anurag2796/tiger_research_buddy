@@ -1,0 +1,75 @@
+{
+  "card_id": "arXiv:1404.7462",
+  "bibliographic_data": {
+    "title": "A 4-Planet System Orbiting the K0V Star HD 141399",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Steven S. Vogt"
+      },
+      {
+        "name": "R. Paul Butler",
+        "faculty_id": "Zachary Butler",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Eugenio J. Rivera"
+      },
+      {
+        "name": "Robert Kibrick"
+      },
+      {
+        "name": "Jennifer Burt",
+        "faculty_id": "Jennifer Burt",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Russell Hanson"
+      },
+      {
+        "name": "Stefano Meschiari"
+      },
+      {
+        "name": "Gregory W. Henry"
+      },
+      {
+        "name": "Gregory Laughlin"
+      }
+    ],
+    "year": 2014,
+    "abstract": "We present precision radial velocity (RV) datasets from Keck-HIRES and from Lick Observatory\u2019s new Automated Planet Finder Telescope and Levy Spectrometer on Mt. Hamilton that reveal a multiple-planet system orbiting the nearby, slightly evolved, K-type star HD 141399. Our 91 observations over 10.5 years suggest the presence of four planets with orbital periods of 94.35, 202.08, 1070.35, and 3717.35 days and minimum masses of 0.46, 1.36, 1.22, and 0.69 MJ respectively. The orbital eccentricities of the three inner planets are small, and the phase curves are well sampled. The inner two planets lie just outside the 2:1 resonance, suggesting that the system may have experienced dissipative evolution during the protoplanetary disk phase. The fourth companion is a Jupiter-like planet with a Jupiter-like orbital period. Its orbital eccentricity is consistent with zero, but more data will be required for an accurate eccentricity determination.",
+    "arxiv_id": "arXiv:1404.7462"
+  },
+  "core_content": {
+    "novelty_claim": "The paper presents the detection of a multiple-planet system orbiting the K-type star HD 141399 using precision radial velocity datasets.",
+    "key_methodology": "Precision radial velocity measurements were obtained from Keck-HIRES and Lick Observatory\u2019s Automated Planet Finder Telescope. An iodine absorption cell was used to measure Doppler shifts in the stellar light.",
+    "outcomes": [
+      "Four planets with orbital periods of 94.35, 202.08, 1070.35, and 3717.35 days were detected around HD 141399.",
+      "The inner two planets lie just outside the 2:1 resonance, suggesting dissipative evolution during the protoplanetary disk phase."
+    ],
+    "full_text_markdown": "This paper presents precision radial velocity datasets from Keck-HIRES and Lick Observatory\u2019s Automated Planet Finder Telescope that reveal a multiple-planet system orbiting the K-type star HD 141399. The authors detected four planets with orbital periods of 94.35, 202.08, 1070.35, and 3717.35 days and minimum masses of 0.46, 1.36, 1.22, and 0.69 MJ respectively. The inner two planets lie just outside the 2:1 resonance, suggesting that the system may have experienced dissipative evolution during the protoplanetary disk phase.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Precision Radial Velocity Measurement"
+      },
+      {
+        "id": "concept_2",
+        "type": "Planet Detection",
+        "label": "Detection of Multiple Planets"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "steven_a_4-planet_system_orbiting_the_k0v_star_hd_141399.pdf"
+}

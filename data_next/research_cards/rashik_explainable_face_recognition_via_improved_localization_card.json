@@ -1,0 +1,58 @@
+{
+  "card_id": "explainable_face_recognition",
+  "bibliographic_data": {
+    "title": "Explainable Face Recognition via Improved Localization",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Rashik Shadman"
+      },
+      {
+        "name": "Daqing Hou",
+        "faculty_id": "Daqing Hou",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Faraz Hussain"
+      },
+      {
+        "name": "M G Sarwar Murshed"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Biometric authentication has become one of the most widely used tools in the current technological era to authenticate users and distinguish between genuine users and imposters. Face is the most common form of biometric modality that has proven effective. Deep learning-based face recognition systems are now commonly used across different domains. However, these systems usually operate like black-box models that do not provide necessary explanations or justifications for their decisions. This is a major disadvantage because users cannot trust such artificial intelligence-based biometric systems and may not feel comfortable using them when clear explanations or justifications are not provided. This paper addresses this problem by applying an efficient method for explainable face recognition systems. We use a Class Activation Mapping (CAM)-based discriminative localization technique called Scaled Directed Divergence (SDD) to visually explain the results of deep learning-based face recognition systems. Our experiments show that the SDD Class Activation Map (CAM) highlights the relevant face features very specifically compared to the traditional CAM and very accurately. The provided visual explanations with narrow localization of relevant features can ensure much-needed transparency and trust for deep learning-based face recognition systems.",
+    "arxiv_id": "2505.03837"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes using a Scaled Directed Divergence (SDD) technique to improve the localization of relevant features in Class Activation Mapping (CAM) for explainable face recognition systems.",
+    "key_methodology": "The authors use a CAM-based discriminative localization technique called Scaled Directed Divergence (SDD) to visually explain the results of deep learning-based face recognition systems. The SDD technique is particularly useful for fine localization in situations where class overlapping occurs, making it easier to distinguish between similar face images.",
+    "outcomes": [
+      "The SDD Class Activation Map (CAM) highlights relevant face features more specifically compared to traditional CAM methods.",
+      "Narrow localization of relevant features provides much-needed transparency and trust for deep learning-based face recognition systems."
+    ],
+    "full_text_markdown": "Biometric authentication has become a crucial tool in the current technological era, with face being one of the most common biometric modalities. However, deep learning-based face recognition systems often operate as black-box models, lacking transparency and explanations for their decisions. This paper addresses this issue by proposing an efficient method using Scaled Directed Divergence (SDD) to enhance explainability in face recognition. The authors use a Class Activation Mapping (CAM)-based discriminative localization technique that specifically localizes relevant features of the face image, providing clear visual explanations. Experiments show that SDD CAMs outperform traditional CAM methods by highlighting more specific and accurate regions, thereby ensuring transparency and trust in deep learning-based systems.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Scaled Directed Divergence (SDD)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Technique",
+        "label": "Class Activation Mapping (CAM)"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "rashik_explainable_face_recognition_via_improved_localization.pdf"
+}

@@ -1,0 +1,86 @@
+{
+  "card_id": "medal_s",
+  "bibliographic_data": {
+    "title": "Medal S: Spatio-Textual Prompt Model for Medical Segmentation",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Pengcheng Shi",
+        "faculty_id": "Pengcheng Shi",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jiawei Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jiaqi Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Xinglin Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Tao Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Lei Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2025,
+    "abstract": "We introduce Medal S, a medical segmentation foundation model that supports native-resolution spatial and textual prompts within an end-to-end trainable framework. Unlike text-only methods lacking spatial awareness, Medal S achieves channel-wise alignment between volumetric prompts and text embeddings, mitigating inaccuracies from resolution mismatches. By preserving full 3D context, it efficiently processes multiple native-resolution masks in parallel, enhancing multi-class segmentation performance. A lightweight 3D convolutional module enables precise voxel-space refinement guided by both prompt types, supporting up to 243 classes across CT, MRI, PET, ultrasound, and microscopy modalities in the BiomedSegFM dataset. Medal S offers two prompting modes: a text-only mode, where model predictions serve as spatial prompts for self-refinement without human input, and a hybrid mode, incorporating manual annotations for enhanced flexibility. For 24-class segmentation, parallel spatial prompting reduces inference time by more than 90% compared to sequential prompting. We propose dynamic resampling to address target-patch ratio imbalance, extending SAT and nnU-Net for data augmentation. Furthermore, we develop optimized text preprocessing, a two-stage inference strategy, and post-processing techniques to improve memory efficiency, precision, and inference speed. On the five-modality average on the validation set, Medal S outperforms SAT with a DSC of 75.44 (vs. 69.83), NSD of 77.34 (vs. 71.06), F1 of 38.24 (vs. 24.88), and DSC TP of 65.46 (vs. 46.97). Medal S achieves excellent performance by harmonizing spatial precision with semantic textual guidance, demonstrating superior efficiency and accuracy in multi-class medical segmentation tasks compared to sequential prompt-based approaches.",
+    "arxiv_id": "2511.13001"
+  },
+  "core_content": {
+    "novelty_claim": "Medal S introduces a novel method for medical segmentation that supports native-resolution spatial and textual prompts, achieving channel-wise alignment between volumetric prompts and text embeddings.",
+    "key_methodology": "Medal S uses a lightweight 3D convolutional module to enable precise voxel-space refinement guided by both prompt types. It offers two prompting modes: a text-only mode for self-refinement and a hybrid mode incorporating manual annotations.",
+    "outcomes": [
+      "Achieves channel-wise alignment between volumetric prompts and text embeddings, reducing inaccuracies from resolution mismatches.",
+      "Supports up to 243 classes across various medical imaging modalities.",
+      "Reduces inference time by more than 90% for 24-class segmentation using parallel spatial prompting.",
+      "Outperforms existing models like SAT in terms of DSC, NSD, F1, and DSC TP."
+    ],
+    "full_text_markdown": "Medal S is a medical segmentation foundation model that supports native-resolution spatial and textual prompts within an end-to-end trainable framework. Unlike text-only methods lacking spatial awareness, Medal S achieves channel-wise alignment between volumetric prompts and text embeddings, mitigating inaccuracies from resolution mismatches. By preserving full 3D context, it efficiently processes multiple native-resolution masks in parallel, enhancing multi-class segmentation performance. A lightweight 3D convolutional module enables precise voxel-space refinement guided by both prompt types, supporting up to 243 classes across CT, MRI, PET, ultrasound, and microscopy modalities in the BiomedSegFM dataset. Medal S offers two prompting modes: a text-only mode where model predictions serve as spatial prompts for self-refinement without human input, and a hybrid mode incorporating manual annotations for enhanced flexibility. For 24-class segmentation, parallel spatial prompting reduces inference time by more than 90% compared to sequential prompting. We propose dynamic resampling to address target-patch ratio imbalance, extending SAT and nnU-Net for data augmentation. Furthermore, we develop optimized text preprocessing, a two-stage inference strategy, and post-processing techniques to improve memory efficiency, precision, and inference speed.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Medal S"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Channel-wise Prompt Alignment"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Parallel Spatial Prompts"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "ENABLING"
+      }
+    ]
+  },
+  "source_file": "pengcheng_medal_s_spatio-textual_prompt_model_for_medical_segmentation.pdf"
+}

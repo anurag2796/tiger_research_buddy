@@ -1,0 +1,83 @@
+{
+  "card_id": "mapping_violence_bangla_dataset",
+  "bibliographic_data": {
+    "title": "Mapping Violence: Developing an Extensive Framework to Build a Bangla Sectarian Expression Dataset from Social Media Interactions",
+    "primary_domain": "cs.CL",
+    "authors": [
+      {
+        "name": "Nazia Tasnim"
+      },
+      {
+        "name": "Sujan Sen Gupta"
+      },
+      {
+        "name": "Md. Istiak Hossain Shihab"
+      },
+      {
+        "name": "Fatiha Islam Juee"
+      },
+      {
+        "name": "Arunima Tahsin"
+      },
+      {
+        "name": "Pritom Ghum"
+      },
+      {
+        "name": "Kanij Fatema"
+      },
+      {
+        "name": "Marshia Haque"
+      },
+      {
+        "name": "Wasema Farzana"
+      },
+      {
+        "name": "Prionti Nasir"
+      },
+      {
+        "name": "Ashique KhudaBukhsh"
+      },
+      {
+        "name": "Farig Sadeque"
+      },
+      {
+        "name": "Asif Sushmit"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Communal violence in online forums has become extremely prevalent in South Asia, where many communities of different cultures coexist and share resources. To address this issue, we have developed the first comprehensive framework for the automatic detection of communal violence markers in online Bangla content accompanying the largest collection (13K raw sentences) of social media interactions that fall under the definition of four major violence classes and their 16 coarse expressions. Our work introduces a 7-step expert annotation process incorporating insights from social scientists, linguists, and psychologists.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "Developed the first comprehensive framework for automatic detection of communal violence markers in online Bangla content.",
+    "key_methodology": "A 7-step expert annotation process was introduced to create a dataset containing 13,000 sentences from social media interactions, categorized into four major violence classes and their 16 coarse expressions.",
+    "outcomes": [
+      "Detected pervasive Religio-communal violence in Bangla text.",
+      "Demonstrated the effectiveness of fine-tuning language models for identifying violent comments."
+    ],
+    "full_text_markdown": "The paper addresses the issue of communal violence in online forums, particularly in South Asia. It introduces a novel framework for detecting communal violence markers in Bangla social media content. The authors developed a dataset containing 13,000 sentences from various sources and annotated them with 16 coarse expressions of four major violence classes. This work also includes a 7-step expert annotation process involving insights from social scientists, linguists, and psychologists. The outcomes include the detection of pervasive Religio-communal violence in Bangla text and the effectiveness of fine-tuning language models for identifying violent comments.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "7-step expert annotation process"
+      },
+      {
+        "id": "concept_2",
+        "type": "Dataset",
+        "label": "Bangla sectarian expression dataset"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "nazia_mapping_violence_developing_an_extensive_framework_to_build_.pdf"
+}

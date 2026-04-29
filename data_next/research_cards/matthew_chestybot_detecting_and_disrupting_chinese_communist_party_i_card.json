@@ -1,0 +1,75 @@
+{
+  "card_id": "chestybot-detecting-disrupting-chinese-influence",
+  "bibliographic_data": {
+    "title": "ChestyBot: Detecting and Disrupting Chinese Communist Party Influence Stratagems",
+    "primary_domain": "cs.CY",
+    "authors": [
+      {
+        "name": "Matthew Stoffolano"
+      },
+      {
+        "name": "Ayush Rout"
+      },
+      {
+        "name": "Justin M. Pelletier",
+        "faculty_id": "Justin Pelletier",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Foreign information operations conducted by Russian and Chinese actors exploit the United States' permissive information environment. These campaigns threaten democratic institutions and the broader Westphalian model. Yet, existing detection and mitigation strategies often fail to identify active information campaigns in real time. This paper introduces ChestyBot, a pragmatics-based language model that detects unlabeled foreign malign influence tweets with up to 98.34% accuracy. The model supports a novel framework to disrupt foreign influence operations in their formative stages.",
+    "arxiv_id": "arXiv:2505.10746v1"
+  },
+  "core_content": {
+    "novelty_claim": "ChestyBot is a pragmatics-based language model that detects unlabeled foreign malign influence tweets with up to 98.34% accuracy and supports a novel framework to disrupt foreign influence operations in their formative stages.",
+    "key_methodology": "The model uses a pragmatic approach to detect influence stratagems used by the Chinese Communist Party (CCP) during the 2022 U.S. Mid-term Elections, with data generated from this period.",
+    "outcomes": [
+      "ChestyBot detects unlabeled foreign malign influence tweets with up to 98.34% accuracy.",
+      "Supports a novel framework for disrupting foreign influence operations in their formative stages."
+    ],
+    "full_text_markdown": "This paper introduces ChestyBot, a pragmatics-based language model designed to detect and disrupt Chinese Communist Party (CCP) influence campaigns on social media. The model achieves up to 98.34% accuracy in identifying unlabeled foreign malign influence tweets. It supports a novel framework for early detection and disruption of such operations, which is crucial given the potential impact of these campaigns on U.S. internal affairs. The project aims to provide a proof of concept by analyzing data from the 2022 U.S. Mid-term Elections, focusing on four specific influence stratagems used by the CCP.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "chestybot",
+        "type": "Method",
+        "label": "ChestyBot"
+      },
+      {
+        "id": "influence_stratagems",
+        "type": "Concept",
+        "label": "Influence Stratagems"
+      },
+      {
+        "id": "social_cybersecurity",
+        "type": "Concept",
+        "label": "Social Cybersecurity"
+      },
+      {
+        "id": "information_warfare",
+        "type": "Concept",
+        "label": "Information Warfare"
+      }
+    ],
+    "edges": [
+      {
+        "source": "chestybot",
+        "target": "influence_stratagems",
+        "relation": "DETECTS"
+      },
+      {
+        "source": "social_cybersecurity",
+        "target": "chestybot",
+        "relation": "APPLIES_TO"
+      },
+      {
+        "source": "information_warfare",
+        "target": "chestybot",
+        "relation": "RELATES_TO"
+      }
+    ]
+  },
+  "source_file": "matthew_chestybot_detecting_and_disrupting_chinese_communist_party_i.pdf"
+}

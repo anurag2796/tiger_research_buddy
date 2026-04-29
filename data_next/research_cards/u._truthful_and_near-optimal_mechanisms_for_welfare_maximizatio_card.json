@@ -1,0 +1,66 @@
+{
+  "card_id": "truthful_and_near-optimal_mechanisms",
+  "bibliographic_data": {
+    "title": "Truthful and Near-Optimal Mechanisms for Welfare Maximization in Multi-Winner Elections",
+    "primary_domain": "cs.SE",
+    "authors": [
+      {
+        "name": "U. Bhaskar"
+      },
+      {
+        "name": "Varsha Dani",
+        "faculty_id": "Varsha Dani",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Abheek Ghosh"
+      }
+    ],
+    "year": 2018,
+    "abstract": "Mechanisms for aggregating the preferences of agents in elections need to balance many different considerations, including efficiency, information elicited from agents, and manipulability. We consider the utilitarian social welfare of mechanisms for preference aggregation, measured by the distortion. For a particular input format called threshold approval voting, there is a mechanism with nearly optimal distortion when the number of voters is large. Threshold mechanisms are potentially manipulable but place a low informational burden on voters. We then consider truthful mechanisms. For the widely-studied class of ordinal mechanisms which elicit the rankings of candidates from each agent, we show that truthfulness essentially imposes no additional loss of welfare. We give truthful mechanisms with distortion O(\u221am log m) for k-winner elections and distortion O(\u221am log m) when candidates have arbitrary costs in elections with m candidates. These nearly match known lower bounds for ordinal mechanisms that ignore the strategic behavior. We further tighten these lower bounds and show that for truthful mechanisms our first upper bound is tight. Lastly, when agents decide between two candidates, we give tight bounds on the distortion for truthful mechanisms.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper presents nearly optimal mechanisms with low distortion for welfare maximization in multi-winner elections and shows that truthfulness imposes no additional loss of welfare compared to non-truthful mechanisms.",
+    "key_methodology": "The authors analyze the distortion of mechanisms, particularly focusing on threshold approval voting and truthful ordinal mechanisms. They provide upper bounds on the distortion for truthful mechanisms and show that these bounds are tight.",
+    "outcomes": [
+      "Mechanisms with nearly optimal distortion for large numbers of voters in threshold approval voting.",
+      "Truthful mechanisms with distortion O(\u221am log m) for k-winner elections and arbitrary candidate costs.",
+      "Tight lower bounds on the distortion for truthful mechanisms."
+    ],
+    "full_text_markdown": "The paper addresses the challenge of designing mechanisms to aggregate preferences in multi-winner elections, focusing on welfare maximization. The authors introduce threshold approval voting as a mechanism that can achieve nearly optimal distortion when the number of voters is large. They also explore truthful ordinal mechanisms and show that truthfulness does not significantly reduce the welfare compared to non-truthful mechanisms. Specifically, they provide upper bounds for the distortion in truthful mechanisms and demonstrate that these bounds are tight.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "threshold_approval_voting",
+        "type": "Method",
+        "label": "Threshold Approval Voting"
+      },
+      {
+        "id": "truthful_mechanisms",
+        "type": "Concept",
+        "label": "Truthful Mechanisms"
+      },
+      {
+        "id": "distortion",
+        "type": "Measure",
+        "label": "Distortion"
+      }
+    ],
+    "edges": [
+      {
+        "source": "threshold_approval_voting",
+        "target": "distortion",
+        "relation": "HAS_LOW"
+      },
+      {
+        "source": "truthful_mechanisms",
+        "target": "distortion",
+        "relation": "HAS_LOW"
+      }
+    ]
+  },
+  "source_file": "u._truthful_and_near-optimal_mechanisms_for_welfare_maximizatio.pdf"
+}

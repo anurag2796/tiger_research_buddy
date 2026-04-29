@@ -1,0 +1,78 @@
+{
+  "card_id": "aerotraj_2023",
+  "bibliographic_data": {
+    "title": "AeroTraj: Trajectory Planning for Fast, and Accurate 3D Reconstruction Using a Drone-based LiDAR",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Fawad Ahmad",
+        "faculty_id": "Fawad Ahmad",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Christina Shin"
+      },
+      {
+        "name": "Rajrup Ghosh"
+      },
+      {
+        "name": "John D'Ambrosio"
+      },
+      {
+        "name": "Eugene Chai"
+      },
+      {
+        "name": "Karthik Sundaresan"
+      },
+      {
+        "name": "Ramesh Govindan"
+      }
+    ],
+    "year": 2023,
+    "abstract": "Drones equipped with LiDAR sensors can be used to reconstruct 3D models of large buildings. AeroTraj is a system that enables fast, accurate, and automated reconstruction using SLAM while minimizing drone battery usage by exploiting building geometry in designing an optimal trajectory. Even with an optimal trajectory, SLAM\u2019s position error can drift over time, so AeroTraj tracks drift in-flight by offloading computations to the cloud and invokes a re-calibration procedure to minimize error. AeroTraj can reconstruct large structures with centimeter-level accuracy and with an average end-to-end latency below 250 ms, significantly outperforming the state of the art.",
+    "arxiv_id": "2104.08634v4"
+  },
+  "core_content": {
+    "novelty_claim": "AeroTraj addresses the challenges in LiDAR-based 3D reconstruction by exploiting building geometry to design an optimal trajectory and tracking SLAM drift in-flight.",
+    "key_methodology": "AeroTraj uses SLAM for position estimation while minimizing flight time through a novel optimization formulation that considers drone speed, height, and orientation. It tracks SLAM drift by offloading computations to the cloud and invokes re-calibration procedures as needed.",
+    "outcomes": [
+      "Achieves centimeter-level accuracy in 3D reconstruction",
+      "Reduces end-to-end latency below 250 ms",
+      "Significantly outperforms state-of-the-art methods"
+    ],
+    "full_text_markdown": "AeroTraj is a system designed for fast and accurate 3D reconstruction of large buildings using drone-mounted LiDAR. The key challenge lies in balancing the constraints of drone speed, height, and orientation to minimize flight time while ensuring high accuracy. By exploiting building geometry, AeroTraj optimizes the trajectory planning process. Additionally, it addresses the issue of SLAM drift by offloading computations to the cloud and performing re-calibration procedures in-flight. This approach enables centimeter-level accuracy with an end-to-end latency below 250 ms, significantly outperforming existing methods.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Trajectory Optimization"
+      },
+      {
+        "id": "concept_2",
+        "type": "Technique",
+        "label": "SLAM (Simultaneous Localization and Mapping)"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Drone-based LiDAR"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "INVOLVES"
+      }
+    ]
+  },
+  "source_file": "fawad_aerotraj_trajectory_planning_for_fast_and_accurate_3d_recons.pdf"
+}

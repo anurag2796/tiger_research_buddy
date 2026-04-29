@@ -1,0 +1,55 @@
+{
+  "card_id": "modeling_acoustic_prosodic_cues",
+  "bibliographic_data": {
+    "title": "Modeling Acoustic-Prosodic Cues for Word Importance Prediction in Spoken Dialogues",
+    "primary_domain": "cs.CL",
+    "authors": [
+      {
+        "name": "Sushant Kafle"
+      },
+      {
+        "name": "Cecilia O. Alm"
+      },
+      {
+        "name": "Matt Huenerfauth",
+        "faculty_id": "Matt Huenerfauth",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2019,
+    "abstract": "Prosodic cues in conversational speech aid listeners in discerning a message. We investigate whether acoustic cues in spoken dialogue can be used to identify the importance of individual words to the meaning of a conversation turn. Individuals who are Deaf and Hard of Hearing often rely on real-time captions in live meetings. Word error rate, a traditional metric for evaluating automatic speech recognition (ASR), fails to capture that some words are more important for a system to transcribe correctly than others. We present and evaluate neural architectures that use acoustic features for 3-class word importance prediction. Our model performs competitively against state-of-the-art text-based word-importance prediction models, and it demonstrates particular benefits when operating on imperfect ASR output.",
+    "arxiv_id": "1903.12238v2"
+  },
+  "core_content": {
+    "novelty_claim": "The paper presents a neural architecture that uses acoustic features for predicting the importance of words in spoken dialogues, which performs competitively against text-based models.",
+    "key_methodology": "A bi-directional LSTM-based neural architecture is used to predict word importance from speech signals. The model takes into account word-level timestamps and assigns an importance label to each word in a dialogue turn.",
+    "outcomes": [
+      "The proposed model performs competitively against state-of-the-art text-based models for predicting word importance.",
+      "The model demonstrates particular benefits when operating on imperfect ASR output."
+    ],
+    "full_text_markdown": "In this paper, the authors investigate whether acoustic cues in spoken dialogue can be used to identify the importance of individual words. They present and evaluate neural architectures that use acoustic features for 3-class word importance prediction. The traditional Word Error Rate (WER) metric fails to capture the importance of certain words in ASR output. The proposed model uses a bi-directional LSTM-based architecture, taking into account word-level timestamps from speech signals. This approach is particularly useful when operating on imperfect ASR outputs, as seen in real-time captioning applications for Deaf and Hard of Hearing individuals.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Bi-directional LSTM-based architecture"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Word Importance Prediction"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "sushant_modeling_acoustic-prosodic_cues_for_word_importance_predicti.pdf"
+}

@@ -1,0 +1,65 @@
+{
+  "card_id": "cryptis_cryptographic_reasoning",
+  "bibliographic_data": {
+    "title": "Cryptis: Cryptographic Reasoning in Separation Logic",
+    "primary_domain": "cs.CR",
+    "authors": [
+      {
+        "name": "Arthur Azevedo de Amorim",
+        "faculty_id": "Arthur Azevedo de Amorim",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Amal Ahmed"
+      },
+      {
+        "name": "Marco Gaboardi"
+      }
+    ],
+    "year": 2025,
+    "abstract": "We introduce Cryptis, an extension of the Iris separation logic for the symbolic model of cryptography. The combination of separation logic and cryptographic reasoning allows us to prove the correctness of a protocol and later reuse this result to verify larger systems that rely on the protocol. To make this integration possible, we propose novel specifications for authentication protocols that allow agents in a network to agree on the use of system resources. We evaluate our approach by verifying various authentication protocols and a key-value store server that uses these authentication protocols to connect to clients.",
+    "arxiv_id": "arXiv:2502.21156v2"
+  },
+  "core_content": {
+    "novelty_claim": "Cryptis extends the Iris separation logic to include cryptographic reasoning, allowing for the verification of protocols in the presence of Dolev-Yao adversaries.",
+    "key_methodology": "Cryptis uses a special public predicate to overapproximate messages accessible by an attacker and associates tokens with cryptographic terms such as nonces or session keys to enable proof reuse within larger systems.",
+    "outcomes": [
+      "Verification of various authentication protocols",
+      "Evaluation of a key-value store server using Cryptis"
+    ],
+    "full_text_markdown": "Cryptis is an extension of the Iris separation logic that integrates cryptographic reasoning. This combination allows for proving the correctness of protocols and reusing these results in larger systems. The paper introduces novel specifications for authentication protocols, enabling agents to agree on resource usage. It evaluates Cryptis by verifying several components including a key-value store server and client, as well as an RPC mechanism.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Cryptis"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Iris separation logic"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Dolev-Yao adversary"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "EXTENDS"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "REASONING_ABOUT"
+      }
+    ]
+  },
+  "source_file": "arthur_cryptis_cryptographic_reasoning_in_separation_logic.pdf"
+}

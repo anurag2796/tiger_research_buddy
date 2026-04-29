@@ -1,0 +1,87 @@
+{
+  "card_id": "online_coherence_identification",
+  "bibliographic_data": {
+    "title": "Online Coherence Identification Using Dynamic Time Warping for Controlled Islanding",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Hasan Ul Banna"
+      },
+      {
+        "name": "Zhe Yu",
+        "faculty_id": "Zhe Yu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Di Shi",
+        "faculty_id": "Pengcheng Shi",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Zhiwei Wang"
+      },
+      {
+        "name": "Dawei Su"
+      },
+      {
+        "name": "Chunlei Xu"
+      },
+      {
+        "name": "Sarika Solanki"
+      },
+      {
+        "name": "Jignesh Solanki"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Controlled islanding is considered to be the last countermeasure to prevent system-wide blackouts in case of cascading failures. It splits the system into self-sustained islands to maintain transient stability at the expense of possible loss of load. Generator coherence identification is critical to controlled islanding scheme as it helps identify the optimal cut-set to maintain system transient stability. This paper presents a novel approach for online generator coherency identification using phasor measurement unit (PMU) data and dynamic time warping (DTW). Results from the coherence identification are used to further cluster non-generator buses using spectral clustering with the objective of minimizing power flow disruption. The proposed approach is validated and compared to existing methods on the IEEE 39-bus system, through which its advantages are demonstrated.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a novel online generator coherency identification method using dynamic time warping (DTW) for controlled islanding in power systems.",
+    "key_methodology": "The proposed approach uses PMU data and DTW to identify coherent generators. The results are further used with spectral clustering to minimize power flow disruption.",
+    "outcomes": [
+      "Demonstrated the effectiveness of the proposed method on the IEEE 39-bus system",
+      "Compared the proposed method with existing methods for controlled islanding"
+    ],
+    "full_text_markdown": "Controlled islanding is a critical measure in preventing cascading failures and blackouts. This paper introduces an innovative approach to online generator coherency identification using PMU data and dynamic time warping (DTW). The identified coherence helps cluster non-generator buses with spectral clustering, aiming to minimize power flow disruption. The method was validated on the IEEE 39-bus system, showing its superiority over existing methods.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "dtw",
+        "type": "Method",
+        "label": "Dynamic Time Warping"
+      },
+      {
+        "id": "phasor_measurement_unit",
+        "type": "Data",
+        "label": "PMU Data"
+      },
+      {
+        "id": "spectral_clustering",
+        "type": "Algorithm",
+        "label": "Spectral Clustering"
+      }
+    ],
+    "edges": [
+      {
+        "source": "dtw",
+        "target": "coherence_identification",
+        "relation": "USES"
+      },
+      {
+        "source": "phasor_measurement_unit",
+        "target": "coherence_identification",
+        "relation": "PROVIDES_INPUT"
+      },
+      {
+        "source": "spectral_clustering",
+        "target": "bus_clustering",
+        "relation": "APPLIES"
+      }
+    ]
+  },
+  "source_file": "hasan_online_coherence_identification_using_dynamic_time_warping_f.pdf"
+}

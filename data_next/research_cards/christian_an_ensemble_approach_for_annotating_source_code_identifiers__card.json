@@ -1,0 +1,88 @@
+{
+  "card_id": "ensemble_approach_for_annotating_source_code_identifiers",
+  "bibliographic_data": {
+    "title": "An Ensemble Approach for Annotating Source Code Identifiers with Part-of-speech Tags",
+    "primary_domain": "cs.CL",
+    "authors": [
+      {
+        "name": "Christian D. Newman",
+        "faculty_id": "Christian Newman",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Michael J. Decker"
+      },
+      {
+        "name": "Reem S. AlSuhaibani"
+      },
+      {
+        "name": "Anthony Peruma"
+      },
+      {
+        "name": "Satyajit Mohapatra"
+      },
+      {
+        "name": "Tejal Vishnoi"
+      },
+      {
+        "name": "Marcos Zampieri"
+      },
+      {
+        "name": "Mohamed W. Mkaouer"
+      },
+      {
+        "name": "Timothy J. Sheldon"
+      },
+      {
+        "name": "Emily Hill",
+        "faculty_id": "Lawrence Hill",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2021,
+    "abstract": "This paper presents an ensemble part-of-speech tagging approach for source code identifiers. Ensemble tagging is a technique that uses machine-learning and the output from multiple part-of-speech taggers to annotate natural language text at a higher quality than the part-of-speech taggers are able to obtain independently. Our ensemble uses three state-of-the-art part-of-speech taggers: SWUM, POSSE, and Stanford. We study the quality of the ensemble\u2019s annotations on five different types of identifier names: function, class, attribute, parameter, and declaration statement at the level of both individual words and full identifier names. We also study and discuss the weaknesses of our tagger to promote the future amelioration of these problems through further research. Our results show that the ensemble achieves 75% accuracy at the identifier level and 84-86% accuracy at the word level. This is an increase of +17% points at the identifier level from the closest independent part-of-speech tagger.",
+    "arxiv_id": "arXiv:2109.00629v1"
+  },
+  "core_content": {
+    "novelty_claim": "The paper presents an ensemble approach that combines three state-of-the-art part-of-speech taggers to improve the accuracy of tagging source code identifiers.",
+    "key_methodology": "The authors use machine-learning algorithms such as Decision Tree and Random Forest to combine the outputs of SWUM, POSSE, and Stanford taggers. The ensemble is tested on five types of identifier names: function, class, attribute, parameter, and declaration statement at both word and full identifier levels.",
+    "outcomes": [
+      "The ensemble achieves 75% accuracy at the identifier level and 84-86% accuracy at the word level.",
+      "This is an increase of +17% points at the identifier level from the closest independent part-of-speech tagger."
+    ],
+    "full_text_markdown": "# An Ensemble Approach for Annotating Source Code Identifiers with Part-of-speech Tags\nAuthors: Christian D. Newman, Michael J. Decker, Reem S. Alsuhaibani, Anthony Peruma, Mohamed Wiem Mkaouer, Satyajit Mohapatra, Tejal Vishnoi, Marcos Zampieri, Timothy J. Sheldon, Emily Hill\n\n## Abstract\nThis paper presents an ensemble part-of-speech tagging approach for source code identifiers. Ensemble tagging is a technique that uses machine-learning and the output from multiple part-of-speech taggers to annotate natural language text at a higher quality than the part-of-speech taggers are able to obtain independently. Our ensemble uses three state-of-the-art part-of-speech taggers: SWUM, POSSE, and Stanford. We study the quality of the ensemble\u2019s annotations on five different types of identifier names: function, class, attribute, parameter, and declaration statement at the level of both individual words and full identifier names. We also study and discuss the weaknesses of our tagger to promote the future amelioration of these problems through further research. Our results show that the ensemble achieves 75% accuracy at the identifier level and 84-86% accuracy at the word level. This is an increase of +17% points at the identifier level from the closest independent part-of-speech tagger.\n\n## Introduction\nProgram comprehension is a significant factor in the time it takes to develop and maintain software [1], [2]. Developers spend much more time reading code than they spend writing; 10 times more by some estimates [2]. Increased understanding of developer comprehension will lead to approaches that not only augment the ability of developers and program analysis tools to be productive, but also improve the accessibility of software development (e.g., by supporting programmers that prefer top-down or bottom-up comprehension styles [3], [4]) and help developers avoid stress stemming from code that is hard to understand. One of the primary ways a developer comprehends code is by reading identifier names, which make up on average about 70% of the characters found in a body of code [5]. Therefore, improving identifier naming practices can have a significant, positive impact on comprehension.\n\nOne challenge to studying identifiers is the difficulty in understanding how to map the meaning of natural language phrases to the behavior of the code. For example, when a developer names a method, the name should reflect the behavior of the method such that another developer can understand what the method does without the need to read the method body. Understanding this connection between name and behavior presents challenges for humans and tools; both of which use this relationship to comprehend, generate, or critique code. A second challenge lies in the natural language analysis techniques themselves, many of which are not trained to be applied to software [6]; introducing significant threats [7]. Addressing these problems is vital to improving the developer experience and augmenting tools which leverage natural language.\n\n## Core Content\nThe goal of this paper is to discuss and present an ensemble tagging technique that improves the accuracy of part-of-speech taggers, and supports a larger variety of POS tags than other software engineering based POS taggers, specifically SWUM and POSSE [17], [16]. The ensemble approach uses machine-learning algorithms such as Decision Tree [26] and Random Forest [27], which are common in other software research tasks [28], [29] and have been used for part-of-speech tagging of standard English documents [30].\n\n### Main Contributions\n1. An implementation of the most accurate (to-date) part-of-speech tagger for source code identifiers, built using data that was curated via significant manual-annotation effort made by the authors in prior work [25]. This approach is trained to support more types of annotations (i.e., POS tags) specifically oriented for source code than any other approach currently available. In addition, the ensemble has been made fully available (see Section IV), and is intended for long term support by the research team as we expand the training set and include identifiers from different contexts (e.g., test code).\n2. Confirmation of observations we made in prior work [25] that indicate 1) the importance of the position of a word in an identifier, 2) the importance of the context of an identifier when annotating using part-of-speech, and 3) the complementarity of three part-of-speech taggers.\n3. An expanded set of manually-annotated identifiers, based on the original set constructed in [25], that can be used to train and create other tagging approaches or for other natural language problems. As with the implementation, this has been made fully available to the research community (see Section IV).\n4. A thorough evaluation of the ensemble approach at both the identifier- and word-level, including a discussion of the features, which were empirically derived by the authors in prior work [25], that most positively influence the tagger\u2019s performance.\n5. A discussion that provides a clear path for future work on part-of-speech tagger accuracy and effectiveness. This discussion is based on the authors\u2019 experience in prior work [25], [31] combined with phenomena observed during the evaluation of the tagger.\n\n### Research Questions (RQs)\nRQ1: How accurate is the ensemble part-of-speech tagger at the individual word level and how does this compare to the independent taggers? In prior research [25], we found that the output of three part-of-speech taggers complemented one another by applying them all to a manually-curated dataset of grammar patterns. This question will address just how much we can improve the accuracy of part-of-speech taggers on source code by combining the output of these taggers using machine learning.\nRQ2: How accurate is the ensemble part-of-speech tagger at the identifier level and how does this compare to the independent taggers? In RQ1, we explore word-level accuracy. In RQ2, we will",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Ensemble Tagging"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Part-of-speech Tagging"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Source Code Identifiers"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "APPLIES_TO"
+      }
+    ]
+  },
+  "source_file": "christian_an_ensemble_approach_for_annotating_source_code_identifiers_.pdf"
+}

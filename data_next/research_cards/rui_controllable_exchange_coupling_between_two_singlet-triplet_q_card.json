@@ -1,0 +1,57 @@
+{
+  "card_id": "controllable_exchange_coupling_2018",
+  "bibliographic_data": {
+    "title": "Controllable exchange coupling between two singlet-triplet qubits",
+    "primary_domain": "cs.QU",
+    "authors": [
+      {
+        "name": "Rui Li",
+        "faculty_id": "Rui Li",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Xuedong Hu",
+        "faculty_id": "Derui Zhu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "J. Q. You"
+      }
+    ],
+    "year": 2018,
+    "abstract": "We study controllable exchange coupling between two singlet-triplet qubits. We start from the original second quantized Hamiltonian of a quadruple quantum dot system, and obtain the effective spin-spin interaction between the two qubits using the projection operator method. Under a strong uniform external magnetic field and an inhomogeneous local micro-magnetic field, the effective interqubit coupling is of the Ising type, and the coupling strength can be expressed in terms of quantum dot parameters. Finally, we discuss how to generate various two-qubit operations using this controllable coupling, such as entanglement generation, and a controlled-NOT gate.",
+    "arxiv_id": "1206.3112v4"
+  },
+  "core_content": {
+    "novelty_claim": "The paper presents a method to achieve controllable exchange coupling between two singlet-triplet qubits using the projection operator method and discusses its application in generating entanglement and controlled-NOT gates.",
+    "key_methodology": "Starting from the second quantized Hamiltonian of a quadruple quantum dot system, the authors derive the effective spin-spin interaction between the two qubits under specific magnetic fields. The coupling strength is expressed in terms of quantum dot parameters.",
+    "outcomes": [
+      "Effective Ising-type interqubit coupling",
+      "Generation of entanglement and controlled-NOT gates"
+    ],
+    "full_text_markdown": "The paper focuses on achieving controllable exchange coupling between two singlet-triplet qubits. Starting from the second quantized Hamiltonian of a quadruple quantum dot system, the authors use the projection operator method to derive the effective spin-spin interaction between the two qubits under strong uniform and inhomogeneous local micro-magnetic fields. This results in an Ising-type coupling with a coupling strength that can be expressed using parameters related to the quantum dots. The paper then discusses how this controllable coupling can be used to generate various two-qubit operations, including entanglement generation and controlled-NOT gates.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Projection Operator Method"
+      },
+      {
+        "id": "concept_2",
+        "type": "Interaction",
+        "label": "Ising-type Coupling"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "DERIVES"
+      }
+    ]
+  },
+  "source_file": "rui_controllable_exchange_coupling_between_two_singlet-triplet_q.pdf"
+}

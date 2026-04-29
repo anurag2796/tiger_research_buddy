@@ -1,0 +1,55 @@
+{
+  "card_id": "leveraging-television-feasibility-study",
+  "bibliographic_data": {
+    "title": "Leveraging Familiarity with Television to Enrich Older Adults' Engagement and Wellbeing: A Feasibility Study Using Video Probes",
+    "primary_domain": "cs.HC",
+    "authors": [
+      {
+        "name": "Shyama Sastha Krishnamoorthy Srinivasan"
+      },
+      {
+        "name": "Mohan Kumar",
+        "faculty_id": "Mohan Kumar",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Pushpendra Singh"
+      }
+    ],
+    "year": 2025,
+    "abstract": "The shift away from multigenerational families to nuclear families in India has created a growing need to support older adults living independently. While technology can help address this gap, older adults\u2019 limited exposure to newer technology restricts the adoption of such solutions. However, they remain comfortable with long-standing technologies like television (TV). This study explores their daily technology usage and challenges, aiming to determine whether TV can be leveraged to improve their quality of life. We examined how TV systems could be enhanced to assist older adults with tasks such as staying connected, receiving health alerts, and ensuring security. Using a participatory design approach, we developed video probes using the prototype of the TV-based application and interviewed 27 older adults to assess its acceptance and usability. The findings validate our hypothesis, as the strong interest in a TV-based solution underscores a preference for familiar technology to support security, independence, and wellbeing.",
+    "arxiv_id": "arXiv:2509.15618v1"
+  },
+  "core_content": {
+    "novelty_claim": "The study leverages the familiarity of older adults with television to develop a TV-based application that can assist them in daily tasks and improve their quality of life.",
+    "key_methodology": "A participatory design approach was used to develop video probes using the prototype of the TV-based application. Interviews were conducted with 27 older adults to assess its acceptance and usability.",
+    "outcomes": [
+      "The study validated the hypothesis that a TV-based solution is preferred by older adults for security, independence, and wellbeing.",
+      "TV can be enhanced to assist older adults with tasks such as staying connected, receiving health alerts, and ensuring security."
+    ],
+    "full_text_markdown": "This paper explores how television (TV) systems can be leveraged to improve the quality of life for older adults in India. The study addresses the growing need for support systems that promote positive aging by fostering well-being, independence, and active engagement in society. It highlights the challenges faced by older adults towards digital use, such as increased risk through scams and knowledge gaps. The research aims to determine whether TV can be used to assist older adults with daily tasks. Using a participatory design approach, video probes were developed using the prototype of the TV-based application, and interviews were conducted with 27 older adults to assess its acceptance and usability. The findings validate the hypothesis that a TV-based solution is preferred by older adults for security, independence, and wellbeing.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Participatory Design Approach"
+      },
+      {
+        "id": "concept_2",
+        "type": "Technology",
+        "label": "TV-based Application"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "DESIGN_FOR"
+      }
+    ]
+  },
+  "source_file": "shyama_leveraging_familiarity_with_television_to_enrich_older_adult.pdf"
+}

@@ -1,0 +1,58 @@
+{
+  "card_id": "using-bert-embeddings-to-model-word-importance",
+  "bibliographic_data": {
+    "title": "Using BERT Embeddings to Model Word Importance in Conversational Transcripts for Deaf and Hard of Hearing Users",
+    "primary_domain": "cs.CL",
+    "authors": [
+      {
+        "name": "Akhter Al Amin"
+      },
+      {
+        "name": "Saad Hassan"
+      },
+      {
+        "name": "Cecilia O. Alm"
+      },
+      {
+        "name": "Matt Huenerfauth",
+        "faculty_id": "Matt Huenerfauth",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2022,
+    "abstract": "Deaf and hard of hearing individuals regularly rely on captioning while watching live TV. Live TV captioning is evaluated by regulatory agencies using various caption evaluation metrics, but these are often not informed by preferences of DHH users or how meaningful the captions are. There is a need to construct caption evaluation metrics that take the relative importance of words in a transcript into account. We conducted correlation analysis between two types of word embeddings and human-annotated labeled word-importance scores in existing corpus. We found that normalized contextualized word embeddings generated using BERT correlated better with manually annotated importance scores than word2vec-based word embeddings.",
+    "arxiv_id": "arXiv:2206.12368"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes the use of BERT contextualized embeddings to model word importance in conversational transcripts, which correlates better with manually annotated importance scores than word2vec-based embeddings.",
+    "key_methodology": "Correlation analysis between human-annotated word-importance scores and aggregated lexical semantic scores generated from BERT-based contextualized embeddings and word2vec-based word embeddings.",
+    "outcomes": [
+      "BERT-based contextualized embeddings correlated better with manually annotated importance scores than word2vec-based embeddings.",
+      "A dataset of BERT contextualized word embeddings paired with their word-importance scores was created for use by researchers in constructing improved caption-evaluation metrics or studying conversational discourse."
+    ],
+    "full_text_markdown": "The paper addresses the need to develop caption evaluation metrics that consider the relative importance of words in a transcript, particularly for Deaf and hard of hearing (DHH) users. It compares BERT contextualized embeddings with word2vec-based embeddings in modeling word importance. The authors found that BERT embeddings correlated better with manually annotated importance scores. They also created a dataset to support future research on this topic.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "BERT Contextualized Embeddings"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "Word Importance Modeling"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "akhter_using_bert_embeddings_to_model_word_importance_in_conversati.pdf"
+}

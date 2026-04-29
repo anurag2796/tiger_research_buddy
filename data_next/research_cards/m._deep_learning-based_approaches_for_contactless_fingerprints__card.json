@@ -1,0 +1,62 @@
+{
+  "card_id": "contactless_fingerprint_segmentation",
+  "bibliographic_data": {
+    "title": "Deep Learning-Based Approaches for Contactless Fingerprints Segmentation and Extraction",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "M. G. Sarwar Murshed"
+      },
+      {
+        "name": "Syed Konain Abbas"
+      },
+      {
+        "name": "Sandip Purnapatra"
+      },
+      {
+        "name": "Daqing Hou",
+        "faculty_id": "Daqing Hou",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Faraz Hussain"
+      }
+    ],
+    "year": 2023,
+    "abstract": "Fingerprints are widely recognized as one of the most unique and reliable characteristics of human identity. Most modern fingerprint authentication systems rely on contact-based fingerprints, which require the use of fingerprint scanners or sensors for capturing fingerprints during the authentication process. This dependency on specific hardware creates a barrier for broader adoption. To mitigate this dependence, the use of contactless fingerprints has emerged as an alternative. The paper focuses on developing a deep learning-based segmentation tool for contactless fingerprint localization and segmentation. Our system leverages deep learning techniques to achieve high segmentation accuracy and reliable extraction of fingerprints from contactless fingerprint images. In our evaluation, our segmentation method demonstrated an average mean absolute error (MAE) of 30 pixels, an error in angle prediction (EAP) of 5.92 degrees, and a labeling accuracy of 97.46%. These results demonstrate the effectiveness of our novel contactless fingerprint segmentation and extraction tools.",
+    "arxiv_id": "arXiv:2311.15163v1"
+  },
+  "core_content": {
+    "novelty_claim": "The paper presents a deep learning-based method for segmenting contactless fingerprints, which outperforms existing methods in terms of precision and reliability.",
+    "key_methodology": "The authors developed CRFSEG, a deep learning-based fingerprint segmenter that leverages advanced techniques to achieve high segmentation accuracy and reliable extraction from contactless fingerprint images.",
+    "outcomes": [
+      "Achieved an average mean absolute error (MAE) of 30 pixels",
+      "Error in angle prediction (EAP) of 5.92 degrees",
+      "Labeling accuracy of 97.46%"
+    ],
+    "full_text_markdown": "Fingerprints are widely recognized as one of the most unique and reliable characteristics of human identity. Most modern fingerprint authentication systems rely on contact-based fingerprints, which require the use of fingerprint scanners or sensors for capturing fingerprints during the authentication process. This dependency on specific hardware creates a barrier for broader adoption. To mitigate this dependence, the use of contactless fingerprints has emerged as an alternative. The paper focuses on developing a deep learning-based segmentation tool for contactless fingerprint localization and segmentation. Our system leverages deep learning techniques to achieve high segmentation accuracy and reliable extraction of fingerprints from contactless fingerprint images. In our evaluation, our segmentation method demonstrated an average mean absolute error (MAE) of 30 pixels, an error in angle prediction (EAP) of 5.92 degrees, and a labeling accuracy of 97.46%. These results demonstrate the effectiveness of our novel contactless fingerprint segmentation and extraction tools.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "CRFSEG",
+        "type": "Method",
+        "label": "Contactless Fingerprint Segmentation Tool"
+      },
+      {
+        "id": "Deep Learning Techniques",
+        "type": "Concept",
+        "label": "Advanced Deep Learning Methods"
+      }
+    ],
+    "edges": [
+      {
+        "source": "CRFSEG",
+        "target": "Deep Learning Techniques",
+        "relation": "LEVERAGES"
+      }
+    ]
+  },
+  "source_file": "m._deep_learning-based_approaches_for_contactless_fingerprints_.pdf"
+}

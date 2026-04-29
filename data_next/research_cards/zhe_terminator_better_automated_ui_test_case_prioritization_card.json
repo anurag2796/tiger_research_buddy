@@ -1,0 +1,64 @@
+{
+  "card_id": "terminator_test_case_prioritization",
+  "bibliographic_data": {
+    "title": "TERMINATOR: Better Automated UI Test Case Prioritization",
+    "primary_domain": "cs.SE",
+    "authors": [
+      {
+        "name": "Zhe Yu",
+        "faculty_id": "Zhe Yu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Fahmid M. Fahid"
+      },
+      {
+        "name": "Tim Menzies"
+      },
+      {
+        "name": "Gregg Rothermel"
+      },
+      {
+        "name": "Kyle Patrick"
+      },
+      {
+        "name": "Snehit Cherian"
+      }
+    ],
+    "year": 2019,
+    "abstract": "Automated UI testing is an important component of the continuous integration process of software development. A modern web-based UI is an amalgam of reports from dozens of microservices written by multiple teams. Queries on a page that opens up another will fail if any of that page\u2019s microservices fails. As a result, the overall cost for automated UI testing is high since the UI elements cannot be tested in isolation. For example, the entire automated UI testing suite at LexisNexis takes around 30 hours (3-5 hours on the cloud) to execute, which slows down the continuous integration process. To mitigate this problem and give developers faster feedback on their code, test case prioritization techniques are used to reorder the automated UI test cases so that more failures can be detected earlier. Given that much of the automated UI testing is \u201cblack box\u201d in nature, very little information (only the test case descriptions and testing results) can be utilized to prioritize these automated UI test cases. Hence, this paper evaluates 17 \u201cblack box\u201d test case prioritization approaches that do not rely on source code information. Among these, we propose a novel TCP approach, that dynamically re-prioritizes the test cases when new failures are detected, by applying and adapting a state of the art framework from the total recall problem. Experimental results on LexisNexis automated UI testing data show that our new approach (which we call TERMINATOR), outperformed prior state of the art approaches in terms of failure detection rates with negligible CPU overhead.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a novel TCP approach called TERMINATOR that dynamically re-prioritizes test cases when new failures are detected, utilizing only test descriptions and results from prior tests.",
+    "key_methodology": "The authors evaluate 17 existing black box test case prioritization approaches and propose a new approach called TERMINATOR. This approach applies and adapts a state of the art framework from the total recall problem to dynamically re-prioritize test cases based on new failures detected during testing.",
+    "outcomes": [
+      "TERMINATOR outperformed prior state-of-the-art approaches in terms of failure detection rates",
+      "The approach has negligible CPU overhead"
+    ],
+    "full_text_markdown": "Automated UI testing is a critical component of the continuous integration process. However, modern web-based UIs are complex and involve multiple microservices from different teams, making automated UI testing expensive and time-consuming. The paper proposes TERMINATOR, a novel test case prioritization approach that dynamically re-prioritizes test cases based on new failures detected during testing, using only test descriptions and results from prior tests. This method outperforms existing approaches in terms of failure detection rates with minimal computational overhead.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "TERMINATOR"
+      },
+      {
+        "id": "concept_2",
+        "type": "Framework",
+        "label": "Total Recall Problem"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "APPLIES"
+      }
+    ]
+  },
+  "source_file": "zhe_terminator_better_automated_ui_test_case_prioritization.pdf"
+}

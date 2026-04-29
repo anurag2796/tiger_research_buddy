@@ -1,0 +1,58 @@
+{
+  "card_id": "covert-channel-smartphones-2024",
+  "bibliographic_data": {
+    "title": "A New Covert Channel over Cellular Voice Channel in Smartphones",
+    "primary_domain": "cs.CR",
+    "authors": [
+      {
+        "name": "Bushra Aloraini"
+      },
+      {
+        "name": "Daryl Johnson"
+      },
+      {
+        "name": "Bill Stackpole"
+      },
+      {
+        "name": "Sumita Mishra",
+        "faculty_id": "Sumita Mishra",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Investigating network covert channels in smartphones has become increasingly important as smartphones have replaced traditional computers. Smartphones are subject to traditional computer network covert channel techniques and introduce new sets of covert channel techniques due to their added capabilities and multiple network connections. This work presents a new network covert channel in smartphones, where information can be leaked from applications by reaching the cellular voice stream. The research studies the ability to employ the cellular voice channel as a potential medium for information leakage through carrying modulated 'speech-like' data covertly. To validate the theory, an Android software audio modem was developed and successfully leaked data with a throughput of 13 bps and 0.018% BER. Furthermore, security policies were investigated and broken to implement a user-mode rootkit that opens voice channels by stealthily answering incoming calls.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "This work identifies a new potential smartphone covert channel using the cellular voice stream for data exfiltration, demonstrating security vulnerabilities in Android OS.",
+    "key_methodology": "Developed an Android software audio modem to leak data through the cellular voice channel and implemented a user-mode rootkit to open voice channels by answering incoming calls without user or system knowledge.",
+    "outcomes": [
+      "Successfully leaked data with a throughput of 13 bps and 0.018% BER through the cellular voice channel.",
+      "Identified security vulnerabilities in Android OS that allow the use of this covert channel."
+    ],
+    "full_text_markdown": "This paper investigates network covert channels in smartphones, focusing on the potential for using the cellular voice stream as a medium for information leakage. The research identifies a new covert channel and demonstrates its feasibility by developing an Android software audio modem to leak data with a throughput of 13 bps and 0.018% BER. Additionally, security policies were broken to implement a user-mode rootkit that opens the voice channels by answering incoming calls without user or system knowledge. This study highlights the need for countermeasures against such breaches.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Android software audio modem"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "User-mode rootkit"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "bushra_a_new_covert_channel_over_cellular_voice_channel_in_smartpho.pdf"
+}

@@ -1,0 +1,59 @@
+{
+  "card_id": "microarchitectural_timing_attacks_via_machine_clears",
+  "bibliographic_data": {
+    "title": "U Can Touch This! Microarchitectural Timing Attacks via Machine Clears",
+    "primary_domain": "cs.CR",
+    "authors": [
+      {
+        "name": "Billy Bob Brumley",
+        "faculty_id": "Billy Brumley",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Microarchitectural timing attacks exploit subtle timing variations caused by hardware behaviors to leak sensitive information. In this paper, we introduce MCHammer, a novel side-channel technique that leverages machine clears induced by self-modifying code detection mechanisms. Unlike most traditional techniques, MCHammer does not require memory access or waiting periods, making it highly efficient. We compare MCHammer to the classical Flush+Reload technique, improving in terms of trace granularity, providing a powerful side-channel attack vector. Using MCHammer, we successfully recover keys from a deployed implementation of a cryptographic tool. Our findings highlight the practical implications of MCHammer and its potential impact on real-world systems.",
+    "arxiv_id": "2502.09864"
+  },
+  "core_content": {
+    "novelty_claim": "MCHammer is a novel side-channel technique that leverages machine clears induced by self-modifying code detection mechanisms, improving trace granularity and providing a powerful attack vector.",
+    "key_methodology": "MCHammer exploits the latency variations caused by machine clears to induce measurable timing variations in code traversal. Unlike traditional cache-based attacks, it does not rely on memory access patterns or cache hits/misses.",
+    "outcomes": [
+      "MCHammer significantly outperforms Flush+Reload with an increase in trace granularity by a factor ranging from 13 to 15 times.",
+      "Successfully recovered keys from a deployed implementation of a cryptographic tool using MCHammer."
+    ],
+    "full_text_markdown": "Microarchitectural timing attacks exploit subtle timing variations caused by hardware behaviors to leak sensitive information. In this paper, we introduce MCHammer, a novel side-channel technique that leverages machine clears induced by self-modifying code detection mechanisms. Unlike most traditional techniques, MCHammer does not require memory access or waiting periods, making it highly efficient. We compare MCHammer to the classical Flush+Reload technique, improving in terms of trace granularity, providing a powerful side-channel attack vector. Using MCHammer, we successfully recover keys from a deployed implementation of a cryptographic tool. Our findings highlight the practical implications of MCHammer and its potential impact on real-world systems.\n\nMCHammer leverages the concept of machine clears\u2014specific microarchitectural events that disrupt normal execution flow\u2014to induce measurable timing variations in code traversal. Unlike traditional cache-based attacks, which rely on memory access patterns and cache hits/misses, MCHammer exploits the latency variations caused by these machine clears. This approach not only increases the granularity of the resulting side-channel signals but also improves accuracy.\n\nTo quantitatively assess the effectiveness of MCHammer, we utilize the Normalized Inner Class Variance (NICV) metric. NICV is particularly advantageous because it depends solely on public data and remains independent of specific leakage models, making it a versatile tool for comparing the quality of different trace datasets. NICV facilitates a direct comparison between the Flush+Reload and MCHammer methods, as illustrated in our experimental results.\n\nOur findings demonstrate that MCHammer significantly outperforms Flush+Reload, with an increase in trace granularity by a factor ranging from 13 to 15 times. This enhanced visibility translates into better detection of critical leakage points when targeting cryptographic operations, thereby enabling more efficient and controlled side-channel attacks.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "machine_clears",
+        "type": "Concept",
+        "label": "Machine Clears"
+      },
+      {
+        "id": "flush_reload_technique",
+        "type": "Method",
+        "label": "Flush+Reload Technique"
+      },
+      {
+        "id": "mchammer_technique",
+        "type": "Method",
+        "label": "MCHammer Technique"
+      }
+    ],
+    "edges": [
+      {
+        "source": "machine_clears",
+        "target": "flush_reload_technique",
+        "relation": "SOLVES"
+      },
+      {
+        "source": "machine_clears",
+        "target": "mchammer_technique",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "billy_u_can_touch_this_microarchitectural_timing_attacks_via_machi.pdf"
+}

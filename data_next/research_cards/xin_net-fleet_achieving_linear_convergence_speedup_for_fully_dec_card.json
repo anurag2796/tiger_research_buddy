@@ -1,0 +1,82 @@
+{
+  "card_id": "net-fleet",
+  "bibliographic_data": {
+    "title": "NET-FLEET: Achieving Linear Convergence Speedup for Fully Decentralized Federated Learning with Heterogeneous Data",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Xin Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Minghong Fang"
+      },
+      {
+        "name": "Zhuqing Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Haibo Yang",
+        "faculty_id": "Haibo Yang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jia Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Zhengyuan Zhu",
+        "faculty_id": "Derui Zhu",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2022,
+    "abstract": "Federated learning (FL) has received a surge of interest in recent years thanks to its benefits in data privacy protection, efficient communication, and parallel data processing. Also, with appropriate algorithmic designs, one could achieve the desirable linear speedup for convergence effect in FL. However, most existing works on FL are limited to systems with i.i.d. data and centralized parameter servers and results on decentralized FL with heterogeneous datasets remain limited. Moreover, whether or not the linear speedup for convergence is achievable under fully decentralized FL with data heterogeneity remains an open question. In this paper, we address these challenges by proposing a new algorithm, called NET-FLEET, for fully decentralized FL systems with data heterogeneity. The key idea of our algorithm is to enhance the local update scheme in FL (originally intended for communication efficiency) by incorporating a recursive gradient correction technique to handle heterogeneous datasets. We show that, under appropriate parameter settings, the proposed NET-FLEET algorithm achieves a linear speedup for convergence. We further conduct extensive numerical experiments to evaluate the performance of the proposed NET-FLEET algorithm and verify our theoretical findings.",
+    "arxiv_id": "arXiv:2208.08490"
+  },
+  "core_content": {
+    "novelty_claim": "NET-FLEET proposes a fully decentralized federated learning algorithm that achieves linear speedup for convergence with heterogeneous data, addressing the limitations of existing FL algorithms.",
+    "key_methodology": "The key idea is to enhance local update schemes in FL by incorporating a recursive gradient correction technique. This method allows workers to run multiple local updates between communication rounds and handle heterogeneous datasets effectively.",
+    "outcomes": [
+      "Achieves linear speedup for convergence under fully decentralized FL with data heterogeneity",
+      "Proposes NET-FLEET algorithm that eliminates the need for centralized servers"
+    ],
+    "full_text_markdown": "NET-FLEET is a novel algorithm designed to address the challenges of fully decentralized federated learning (FL) systems, particularly in handling heterogeneous datasets. The paper highlights the limitations of existing FL algorithms which are mostly limited to i.i.d. data and centralized parameter servers. NET-FLEET introduces a recursive gradient correction technique that enhances local update schemes, allowing for efficient communication and robustness against unreliable centralized servers. Through extensive numerical experiments, the authors verify the theoretical findings, demonstrating the algorithm's effectiveness in achieving linear speedup for convergence.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "net-fleet",
+        "type": "Algorithm",
+        "label": "NET-FLEET"
+      },
+      {
+        "id": "fedavg",
+        "type": "Algorithm",
+        "label": "FedAvg"
+      },
+      {
+        "id": "gradient_correction",
+        "type": "Technique",
+        "label": "Recursive Gradient Correction"
+      }
+    ],
+    "edges": [
+      {
+        "source": "net-fleet",
+        "target": "gradient_correction",
+        "relation": "USES"
+      },
+      {
+        "source": "net-fleet",
+        "target": "fedavg",
+        "relation": "INFLUENCED_BY"
+      }
+    ]
+  },
+  "source_file": "xin_net-fleet_achieving_linear_convergence_speedup_for_fully_dec.pdf"
+}

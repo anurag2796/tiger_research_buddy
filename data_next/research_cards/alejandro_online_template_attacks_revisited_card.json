@@ -1,0 +1,63 @@
+{
+  "card_id": "online_template_attacks_revisited",
+  "bibliographic_data": {
+    "title": "Online Template Attacks: Revisited",
+    "primary_domain": "cs.CR",
+    "authors": [
+      {
+        "name": "Alejandro Cabrera Aldaya"
+      },
+      {
+        "name": "Billy Bob Brumley",
+        "faculty_id": "Billy Brumley",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2021,
+    "abstract": "An online template attack (OTA) is a powerful technique previously used to attack elliptic curve scalar multiplication algorithms. This attack has only been analyzed in the realm of power consumption and EM side channels, where the signals leak related to the value being processed. However, microarchitecture signals have no such feature, invalidating some assumptions from previous OTA works. In this paper, we revisit previous OTA descriptions, proposing a generic framework and evaluation metrics for any side-channel signal. Our analysis reveals OTA features not previously considered, increasing its application scenarios and requiring a fresh countermeasure analysis to prevent it.",
+    "arxiv_id": "arXiv:2007.05337v2"
+  },
+  "core_content": {
+    "novelty_claim": "The paper revisits online template attacks (OTAs) and demonstrates their effectiveness on microarchitecture side-channel signals, expanding the attack's application scenarios.",
+    "key_methodology": "Proposes a generic framework for OTAs applicable to any side-channel signal and evaluates three libraries: libgcrypt, mbedTLS, and wolfSSL using two microarchitectural side channels.",
+    "outcomes": [
+      "OTAs can work in the backward direction, allowing an augmented projective coordinates attack with respect to Naccache, Smart, and Stern's proposal (Eurocrypt 2004).",
+      "Randomizing the initial targeted algorithm state does not prevent the attack as previously believed.",
+      "OTAs are effective on commonly used libraries such as libgcrypt, mbedTLS, and wolfSSL."
+    ],
+    "full_text_markdown": "Online template attacks (OTAs) have been traditionally analyzed in the context of power consumption and EM side channels. However, this paper revisits OTAs and demonstrates their effectiveness on microarchitecture side-channel signals. The authors propose a generic framework for OTAs applicable to any side-channel signal and evaluate three libraries: libgcrypt, mbedTLS, and wolfSSL using two microarchitectural side channels. They show that randomizing the initial targeted algorithm state does not prevent the attack as previously believed. This work highlights the importance of developing secure-by-default implementations instead of fix-on-demand ones.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Online Template Attack (OTA)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Microarchitecture Side-Channel Signals"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Libgcrypt, mbedTLS, wolfSSL"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "APPLIES_TO"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "TARGETS"
+      }
+    ]
+  },
+  "source_file": "alejandro_online_template_attacks_revisited.pdf"
+}

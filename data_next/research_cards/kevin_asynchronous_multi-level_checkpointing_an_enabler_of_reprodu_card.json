@@ -1,0 +1,58 @@
+{
+  "card_id": "asynchronous_multi_level_checkpointing",
+  "bibliographic_data": {
+    "title": "Asynchronous Multi-Level Checkpointing: An Enabler of Reproducibility using Checkpoint History Analytics",
+    "primary_domain": "cs.SI (Social and Information Networks)",
+    "authors": [
+      {
+        "name": "Kevin Assogba"
+      },
+      {
+        "name": "Bogdan Nicolae"
+      },
+      {
+        "name": "Hubertus van Dam"
+      },
+      {
+        "name": "M. Rafique",
+        "faculty_id": "M. Mustafa Rafique",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2023,
+    "abstract": "High-Performance Computing applications are increasingly integrating checkpointing libraries for reproducibility analytics. However, capturing an entire checkpoint history for reproducibility study faces the challenges of high-frequency checkpointing across thousands of processes. As a result, the runtime overhead affects application performance and intermediate results when interleaving is introduced during floating-point calculations. In this paper, we extend asynchronous multi-level checkpoint/restart to study the intermediate results generated from scientific workflows. We present an initial prototype of a framework that captures, caches, and compares checkpoint histories from different runs of a scientific application executed using identical input files. We also study the impact of our proposed approach by evaluating the reproducibility of classical molecular dynamics simulations executed using the NWChem software. Experiment results show that our proposed solution improves the checkpoint write bandwidth when capturing checkpoints for reproducibility analysis by a minimum of 30\u00d7 and up to 211\u00d7 compared to the default checkpointing approach in NWChem.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes an extension of asynchronous multi-level checkpoint/restart techniques to study intermediate results generated from scientific workflows, specifically focusing on improving reproducibility analysis through capturing and comparing checkpoint histories.",
+    "key_methodology": "The authors extend existing asynchronous multi-level checkpointing techniques by adding support for capturing, caching, and comparing the history of intermediate checkpoints across multiple runs of a scientific application. This is achieved by blocking the application only minimally to capture local copies of checkpoints on SSDs, which are then flushed asynchronously.",
+    "outcomes": [
+      "The proposed solution improves checkpoint write bandwidth when capturing checkpoints for reproducibility analysis by at least 30\u00d7 and up to 211\u00d7 compared to the default approach in NWChem.",
+      "The framework enables more efficient study of intermediate results generated from scientific workflows, facilitating better understanding and root cause analysis."
+    ],
+    "full_text_markdown": "High-Performance Computing (HPC) applications produce massive amounts of distributed intermediate data during their execution that need to be checkpointed concurrently by a large number of processes in real-time at scale. This is a fundamental I/O pattern used in various scenarios such as resilience based on checkpoint-restart, suspend-resume for long-running jobs, and producer-consumer patterns in workflows. One key emerging scenario enabled by checkpointing is the study of reproducibility of scientific results. However, capturing an entire history of intermediate checkpoints can be challenging due to high-frequency checkpointing and significant runtime overhead. The paper proposes a framework that extends asynchronous multi-level checkpoint/restart techniques to capture, cache, and compare histories from different runs of a scientific application executed with identical input files. This approach minimizes the overhead by blocking the application only briefly to capture local checkpoints on SSDs, which are then flushed asynchronously. The framework is evaluated using classical molecular dynamics simulations in NWChem, showing significant improvements in checkpoint write bandwidth.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "asynchronous_multi_level_checkpointing",
+        "type": "Method",
+        "label": "Asynchronous Multi-Level Checkpointing"
+      },
+      {
+        "id": "checkpoint_history_analytics",
+        "type": "Analysis",
+        "label": "Checkpoint History Analytics"
+      }
+    ],
+    "edges": [
+      {
+        "source": "asynchronous_multi_level_checkpointing",
+        "target": "checkpoint_history_analytics",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "kevin_asynchronous_multi-level_checkpointing_an_enabler_of_reprodu.pdf"
+}

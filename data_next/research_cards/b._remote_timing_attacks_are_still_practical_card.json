@@ -1,0 +1,72 @@
+{
+  "card_id": "remote-timing-attacks-still-practical",
+  "bibliographic_data": {
+    "title": "Remote Timing Attacks Are Still Practical",
+    "primary_domain": "cs.CR",
+    "authors": [
+      {
+        "name": "B. Brumley",
+        "faculty_id": "Billy Brumley",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Nicola Tuveri"
+      }
+    ],
+    "year": 2011,
+    "abstract": "For over two decades, timing attacks have been an active area of research within applied cryptography. These attacks exploit cryptosystem or protocol implementations that do not run in constant time. When implementing an elliptic curve cryptosystem with a goal to provide side-channel resistance, the scalar multiplication routine is a critical component. In such instances, one attractive method often suggested in the literature is Montgomery\u2019s ladder that performs a fixed sequence of curve and field operations. This paper describes a timing attack vulnerability in OpenSSL\u2019s ladder implementation for curves over binary fields. We use this vulnerability to steal the private key of a TLS server where the server authenticates with ECDSA signatures. Using the timing of the exchanged messages, the messages themselves, and the signatures, we mount a lattice attack that recovers the private key. Finally, we describe and implement an effective countermeasure.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "Describes a timing attack vulnerability in OpenSSL\u2019s ladder implementation for elliptic curve cryptography over binary fields, leading to the recovery of the ECDSA private key.",
+    "key_methodology": "The authors use the timing information from the TLS handshake between an attacker client and OpenSSL's own TLS server to mount a lattice attack that exploits this vulnerability and recovers the ECDSA private key given a small number of signatures along with said timing data.",
+    "outcomes": [
+      "Reveals a critical vulnerability in OpenSSL\u2019s ladder implementation for elliptic curve cryptography over binary fields.",
+      "Demonstrates how to use timing information, exchanged messages, and signatures to mount a lattice attack that recovers the ECDSA private key."
+    ],
+    "full_text_markdown": "For over two decades, timing attacks have been an active area of research within applied cryptography. These attacks exploit cryptosystem or protocol implementations that do not run in constant time. The paper describes a timing attack vulnerability in OpenSSL\u2019s ladder implementation for elliptic curve cryptography over binary fields. Using this vulnerability, the authors steal the private key of a TLS server where the server authenticates with ECDSA signatures by analyzing the timing of exchanged messages and their signatures. They then use lattice attacks to recover the private key. Finally, they propose an effective countermeasure.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Montgomery\u2019s Ladder"
+      },
+      {
+        "id": "concept_2",
+        "type": "Attack",
+        "label": "Timing Attack"
+      },
+      {
+        "id": "concept_3",
+        "type": "Cryptographic Primitive",
+        "label": "Elliptic Curve Cryptography (ECC)"
+      },
+      {
+        "id": "concept_4",
+        "type": "Key Recovery",
+        "label": "Lattice Attack"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_2",
+        "target": "concept_3",
+        "relation": "TARGETS"
+      },
+      {
+        "source": "concept_2",
+        "target": "concept_4",
+        "relation": "RECOVERS"
+      }
+    ]
+  },
+  "source_file": "b._remote_timing_attacks_are_still_practical.pdf"
+}

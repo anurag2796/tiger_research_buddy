@@ -1,0 +1,68 @@
+{
+  "card_id": "inapproximability_of_independent_set_polynomial",
+  "bibliographic_data": {
+    "title": "Inapproximability of the independent set polynomial in the complex plane",
+    "primary_domain": "math.OC",
+    "authors": [
+      {
+        "name": "Ivona Bezakova",
+        "faculty_id": "Ivona Bezakova",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Andreas Galanis"
+      },
+      {
+        "name": "Leslie Ann Goldberg"
+      },
+      {
+        "name": "Daniel Stefankovic"
+      }
+    ],
+    "year": 2026,
+    "abstract": "We study the complexity of approximating the value of the independent set polynomial $Z_G(\boldsymbol{\nu})$ of a graph $G$ with maximum degree $\triangle$, when the activity $\boldsymbol{\nu}$ is a complex number. When $\boldsymbol{\nu}$ is real, the complexity picture is well-understood and captured by two real-valued thresholds $\boldsymbol{\nu}^*$ and $\boldsymbol{\nu}_c$. It is known that if $\boldsymbol{\nu}$ is in the interval $(-\boldsymbol{\nu}^*, \boldsymbol{\nu}_c)$, then there is an FPTAS for approximating $Z_G(\boldsymbol{\nu})$ on graphs with maximum degree at most $\triangle$. On the other hand, if $\boldsymbol{\nu}$ is outside of this interval, approximation is NP-hard. Peters and Regts identified the complex values of $\boldsymbol{\nu}$ for which the occupation ratio of the $\triangle$-regular tree converges. These values carve a cardioid-shaped region $\boldsymbol{\boldsymbol{\boldLambda}}_{\triangle}$ in the complex plane, whose boundary includes the critical points $-\boldsymbol{\nu}^*$ and $\boldsymbol{\nu}_c$. Our main result shows that for every $\boldsymbol{\nu}$ outside of $\boldsymbol{\boldsymbol{\boldLambda}}_{\triangle}$, approximating $Z_G(\boldsymbol{\nu})$ on graphs with maximum degree at most $\triangle$ is indeed NP-hard. In fact, when $\boldsymbol{\nu}$ is outside of $\boldsymbol{\boldsymbol{\boldLambda}}_{\triangle}$ and not a positive real number, we establish the stronger result that approximating $Z_G(\boldsymbol{\nu})$ is actually #P-hard.",
+    "arxiv_id": "1711.00282v4"
+  },
+  "core_content": {
+    "novelty_claim": "The paper establishes NP-hardness for the approximation of the independent set polynomial $Z_G(\boldsymbol{\nu})$ outside a cardioid-shaped region $\boldsymbol{\boldsymbol{\boldLambda}}_{\triangle}$ in the complex plane, resolving an open question posed by Peters and Regts.",
+    "key_methodology": "The authors use tools from complex analysis, specifically the study of iterative multivariate rational maps, to prove their results.",
+    "outcomes": [
+      "For every $\boldsymbol{\nu}$ outside of $\boldsymbol{\boldsymbol{\boldLambda}}_{\triangle}$, approximating $Z_G(\boldsymbol{\nu})$ is NP-hard.",
+      "When $\boldsymbol{\nu}$ is outside of $\boldsymbol{\boldsymbol{\boldLambda}}_{\triangle}$ and not a positive real number, approximating $Z_G(\boldsymbol{\nu})$ is #P-hard."
+    ],
+    "full_text_markdown": "The independent set polynomial is one of the most well-studied graph polynomials, arising in combinatorics and computer science. It is also known in statistical physics as the partition function of the hard-core model. This paper studies the computational complexity of evaluating the polynomial approximately when a parameter, called the activity, is complex. For properties of this polynomial in the complex plane, including connections to the Lov\u00e1sz Local Lemma, see the work of Scott and Sokal [14]. For $\boldsymbol{\nu} \neq 0$ and a graph $G$, the polynomial is defined as $Z_G(\boldsymbol{\nu}) := \text{P}_I \boldsymbol{\nu}^{|I|}$, where the sum ranges over all independent sets of $G$. The authors are interested in approximating $Z_G(\boldsymbol{\nu})$ when the maximum degree of $G$ is bounded. When $\boldsymbol{\nu}$ is real, the complexity picture is well-understood. For $\triangle \neq 3$, let $G_\triangle$ be the set of graphs with maximum degree at most $\triangle$. The complexity of approximating $Z_G(\boldsymbol{\nu})$ for $G \neq G_\triangle$ is captured by two real-valued thresholds $\boldsymbol{\nu}^*$ and $\boldsymbol{\nu}_c$, which depend on $\triangle$ and satisfy $0 < \boldsymbol{\nu}^* < \boldsymbol{\nu}_c$. The known results are as follows. 1. If $\boldsymbol{\nu}$ is in the interval $-\boldsymbol{\nu}^* < \boldsymbol{\nu} < \boldsymbol{\nu}_c$, there is an FPTAS for approximating $Z_G(\boldsymbol{\nu})$ on graphs $G \neq G_\triangle$. 2. If $\boldsymbol{\nu} < -\boldsymbol{\nu}^*$ or $\boldsymbol{\nu} > \boldsymbol{\nu}_c$, it is NP-hard to approximate $|Z_G(\boldsymbol{\nu})|$ on graphs $G \neq G_\triangle$, even within an exponential factor. The key to establishing this complexity characterisation was the following interpretation of the thresholds $\boldsymbol{\nu}^*$ and $\boldsymbol{\nu}_c$. Given a $\triangle$-regular tree $T$ of height $h$ with root $\rho$, let $p_h$ denote the \u201coccupation ratio\u201d of the tree, which is given by $p_h = \text{P}_{I; \rho \neq I} \boldsymbol{\nu}^{|I|}/Z_T(\boldsymbol{\nu})$, where the sum ranges over the independent sets of $T$ that include the root $\rho$. It turns out that the occupation ratio $p_h$ converges to a limit as $h \rightarrow \triangle$ if and only if the activity $\boldsymbol{\nu}$ lies within the interval $[-\boldsymbol{\nu}^*, \boldsymbol{\nu}_c]$, so it turns out that the complexity of approximating $Z_G(\boldsymbol{\nu})$ for $G \neq G_\triangle$ depends on whether this quantity converges. Understanding the complexity picture in the case where $\boldsymbol{\nu} \neq 0$ is more challenging. If $\boldsymbol{\nu}$ is a complex number with norm at most $\boldsymbol{\nu}^*$, then there is an FPTAS for approximating $Z_G(\boldsymbol{\nu})$ on graphs $G \neq G_\triangle$. This is due to Harvey, Srivastava and Vondrak and to Patel and Regts [8, 11]. More recently, Peters and Regts [12] showed the existence of an FPTAS when $\boldsymbol{\nu}$ is in a small strip surrounding the real interval $[0, \boldsymbol{\nu}_c)$. However, neither of these results is believed to fully capture the truth about when approximation is possible. Motivated by the real case, Peters and Regts [12] identified the values of $\boldsymbol{\nu}$ for which the occupation ratio of the $\triangle$-regular tree converges (for $\triangle \neq 3$). These values carve a cardioid-shaped region $\boldsymbol{\boldsymbol{\boldLambda}}_{\triangle}$ in the complex plane, whose boundary includes the critical points $-\boldsymbol{\nu}^*$ and $\boldsymbol{\nu}_c$. The definition of $\boldsymbol{\boldsymbol{\boldLambda}}_{\triangle}$ is as follows (see Figure 1): \n\n$\boldsymbol{\boldsymbol{\boldLambda}}_{\triangle}=\\left\\{ \\lambda \\in \\mathbb{C} : \\exists z \\in \\mathbb{C} : |z| \\leqslant \\frac{1}{\\triangle-1}, \\lambda = \\frac{z}{(1-z)\\triangle} \\right\\}$.\n\nPeters and Regts showed that, for every $\boldsymbol{\nu}$ in the (strict) interior of $\boldsymbol{\boldsymbol{\boldLambda}}_{\triangle}$, the occupation ratio of the $\triangle$-regular tree converges, and asked whether the region $\boldsymbol{\boldsymbol{\boldLambda}}_{\triangle}$ marks the true approximability threshold for general complex values $\boldsymbol{\nu}$. Our main result shows that for every $\boldsymbol{\nu}$ outside of the region $\boldsymbol{\boldsymbol{\boldLambda}}_{\triangle}$, the problem of approximating $Z_G(\boldsymbol{\nu})$ on graphs $G \neq G_\triangle$ is indeed NP-hard. In fact, when $\boldsymbol{\nu}$ is outside of $\boldsymbol{\boldsymbol{\boldLambda}}_{\triangle}$ and not a positive real number, we establish the stronger result that approximating $Z_G(\boldsymbol{\nu})$ is actually #P-hard. We do this by showing that an approximation algorithm for $Z_G(\boldsymbol{\nu})$ can be converted into a polynomial-time algorithm for exactly counting independent sets. Further, on the negative real axis, when $\boldsymbol{\nu} < -\boldsymbol{\nu}^*$, we show that it is #P-hard to even decide whether $Z_G(\boldsymbol{\nu}) > 0$, resolving in the affirmative a conjecture of Harvey, Srivastava, and Vondrak.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Complex Analysis"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Occupation Ratio"
+      },
+      {
+        "id: concept_3, ": ", ",
+        "type": "Threshold",
+        "label": "\u03bd\u207a and \u03bd_c"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "APPLIES_TO"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "INTERPRETS"
+      }
+    ]
+  },
+  "source_file": "ivona_inapproximability_of_the_independent_set_polynomial_in_the_c.pdf"
+}

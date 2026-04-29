@@ -1,0 +1,54 @@
+{
+  "card_id": "modeling_efficiency_foreign_aid_allocation",
+  "bibliographic_data": {
+    "title": "Modeling Efficiency of Foreign Aid Allocation in Malawi",
+    "primary_domain": "cs.SI (Social and Information Networks)",
+    "authors": [
+      {
+        "name": "Philip A. White",
+        "faculty_id": "Philip White",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Candace Berrett"
+      },
+      {
+        "name": "E. Shannon Neeley-Tass"
+      },
+      {
+        "name": "Michael G. Findley"
+      }
+    ],
+    "year": 2011,
+    "abstract": "The Open Aid Malawi initiative has collected an unprecedented database that identifies as much location-specific information as possible for each of over 2500 individual foreign aid donations to Malawi since 2003. Ensuring efficient use and distribution of that aid is important to donors and to Malawi citizens. However, because of individual donor goals and difficulty in tracking donor coordination, determining presence or absence of efficient aid allocation is difficult. We compare several Bayesian spatial generalized linear mixed models to relate aid allocation to various economic indicators within seven donation sectors. We find that the spatial gamma regression model best predicts current aid allocation. Using this model, first we use inferences on coefficients to examine whether or not there is evidence of efficient aid allocation within each sector. Second, we use this model to determine a more efficient aid allocation scenario and compare this scenario to the current allocation to provide insight for future aid donations.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper uses Bayesian spatial generalized linear mixed models to analyze foreign aid allocation in Malawi, focusing on seven sectors: Agriculture, Education, Governance, Health, Rural Development, Roads, Public Works, and Transportation, and Water, Sanitation, and Irrigation.",
+    "key_methodology": "Several Bayesian spatial generalized linear mixed models are compared to relate aid allocation to various economic indicators within the seven donation sectors. The spatial gamma regression model is found to best predict current aid allocation.",
+    "outcomes": [
+      "The spatial gamma regression model was identified as the most effective in predicting current aid allocation.",
+      "Inferences on coefficients were used to examine evidence of efficient aid allocation within each sector.",
+      "A more efficient aid allocation scenario was proposed and compared to the current allocation."
+    ],
+    "full_text_markdown": "Each year, wealthy countries and international organizations send billions of dollars in foreign aid to developing countries across the world. The Organization for Economic Co-operation and Development (OECD) estimates that in 2015 the United States alone donated 31.1 billion dollars in development assistance and that other developed countries are donating anywhere between 700 million and 19 billion US dollars (OECD, 2015). Aid giving is thus big business, and we need to understand better whether the business operates in the service of its so-called clients in recipient countries or rather in service of its own interests. Donors\u2019 motives are varied, ranging from pursuing strategic interest (Alesina and Dollar, 2000) to trying to facilitate positive social and economic outcomes. And yet, with so much spent on development assistance, donors, governments, and citizens may want these donations to be allocated efficiently \u2014 providing money to places and situations with the most need. Even where strategic interest concerns are high, and therefore aid may not be allocated with need in mind, foreign aid can affect peoples\u2019 lives in non-trivial ways, for better or for worse. Thus, stakeholders in both recipient and donor countries deserve to know whether aid is in fact allocated in ways that respond to and meet the needs of recipient countries. For example, donations meant for improving education should ideally be sent to those places within the country where education is suffering the most. Several initiatives have been introduced to improve aid targeting and coordination, including the Paris Declaration of 2005 which called for better alignment between government objectives and donor aid allocation (Aced, 2009; Findley et al., 2016). However, communication among donors and recipients, as well as donors and other donors, in order to track and efficiently allocate the vast array of projects has proven nearly impossible. Moreover, there has been a dearth of scholarly attempts to track the complexity of aid allocation and so both academics and policy makers have a poor understanding of the patterns of foreign aid allocation. Because so much hangs in the balance, answers to the question of efficient aid allocation are sorely needed. In 2011, the government of Malawi, together with the University of Texas at Austin\u2019s Climate Change and African Political Stability team, began efforts to collect and display donor information at the subnational level (Findley et al., 2011; Weaver et al., 2014). This initiative \u2014 Open Aid Malawi \u2014 resulted in an unprecedented and unique database containing as much location-specific information as possible for each individual donation to Malawi since 2003 (Peratsakis et al., 2012). This database contains over 2500 tracked donations all at the subnational level, to date the largest of its kind. Such a large and detailed resource makes it possible to examine donor aid across various project sectors. Malawi is a particularly interesting country for examining aid allocation. Malawi\u2019s economy, education, and public health are some of the least developed anywhere in the world. Specifically, they have an infant mortality rate of 69.3 for every 1,000 births, 50.7% of the population live below the poverty line, a 68.2% literacy rate, and agricultural goods are their leading export (National Statistical Office, 2015). In an effort to improve circumstances in Malawi, a large number of foreign donors support economic, health, and educational development and improvement plans in Malawi. In contrast to most highly impoverished countries, Malawi has experienced almost no violence, making it an ideal location to study aid allocation patterns as the presence of violence makes stable aid allocation patterns difficult. Put differently, given its political stability, Malawi is a most likely case to observe donors responding to need, and we thus explore in this paper the extent to which donors in fact allocate based on indicators of need. Because so much aid is sent to Malawi and because of its need for hastened development, the question of whether aid is allocated efficiently is paramount both for taxpayers in donor countries as well as citizens affected by aid in recipient countries. We are specifically interested in quantifying how assistance is being allocated within the country to determine whether sectoral aid matches sectoral need. In particular, we focus on seven project sectors or donation types: (1) Agriculture; (2) Education; (3) Governance; (4) Health; (5) Rural Development [RD]; (6) Roads, Public Works, and Transportation [RPT]; and (7) Water, Sanitation, and Irrigation [WSI]. Using district-specific economic, social, and demographic data (hereafter referred to as \u201ceconomic indicators\u201d), we model foreign aid allocation in all districts for these project sectors. While we do not expect the economic indicators to be the sole driving forces behind aid allocation, by donors own admission they should be key factors in determining whether or not aid is being allocated efficiently. Therefore, our goals are, first, identifying high-level economic indicators that are related to aid allocation while accounting for and making use of spatial dependence; second, determining the ability of our model to capture a true relationship between aid distribution and the economic indicators; and third, to propose an efficient allocation scenario and its discrepancy from the actual allocation in order to inform future donations.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Bayesian spatial generalized linear mixed models"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "philip_modeling_efficiency_of_foreign_aid_allocation_in_malawi.pdf"
+}

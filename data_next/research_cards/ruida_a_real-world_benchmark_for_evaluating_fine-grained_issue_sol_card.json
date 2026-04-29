@@ -1,0 +1,98 @@
+{
+  "card_id": "a_real_world_benchmark_for_evaluating_fine_grained_issue_solving_capabilities_of_large_language_models",
+  "bibliographic_data": {
+    "title": "A Real-World Benchmark for Evaluating Fine-Grained Issue Solving Capabilities of Large Language Models",
+    "primary_domain": "cs.SE (Software Engineering)",
+    "authors": [
+      {
+        "name": "Ruida Hu",
+        "faculty_id": "Derui Zhu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Chao Peng",
+        "faculty_id": "Chao Peng",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jingyi Ren"
+      },
+      {
+        "name": "Bo Jiang"
+      },
+      {
+        "name": "Xiangxin Meng"
+      },
+      {
+        "name": "Qinyun Wu"
+      },
+      {
+        "name": "Pengfei Gao"
+      },
+      {
+        "name": "Xinchen Wang",
+        "faculty_id": "Linwei Wang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Cuiyun Gao"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Large language models (LLMs) are increasingly being integrated into tools such as chatbots and coding assistants, showcasing their potential to transform various software engineering tasks. As a result, the research community has begun exploring how LLMs can be further leveraged to assist with more complex real-world tasks encountered in software development. However, existing benchmarks like HumanEval fall short in assessing LLMs' proficiency in solving issues within a codebase. To address these challenges, we introduce FAUN-Eval, a benchmark specifically designed to evaluate the Fine-grained issue solving capabilities of LLMs across three distinct tasks: QA, fault localization, and code editing. This benchmark is constructed using a dataset curated from 30 well-known GitHub repositories, ensuring systematic assessment of LLMs in real-world scenarios.",
+    "arxiv_id": "2411.18019"
+  },
+  "core_content": {
+    "novelty_claim": "FAUN-Eval is introduced as a benchmark to evaluate the fine-grained issue solving capabilities of large language models across three distinct tasks: QA, fault localization, and code editing.",
+    "key_methodology": "The benchmark uses a dataset from 30 well-known GitHub repositories to systematically assess LLMs in real-world scenarios. Each entry includes meticulously compiled issue and pull request (PR) pairs validated using cross-referencing and keyword verification methods.",
+    "outcomes": [
+      "Top-performing LLMs differ across different tasks.",
+      "Features in issues may lead LLMs to generate incorrect information.",
+      "Models vary in their proficiency with texts of different lengths."
+    ],
+    "full_text_markdown": "Large language models (LLMs) are increasingly being integrated into tools such as chatbots and coding assistants, showcasing their potential to transform various software engineering tasks. As a result, the research community has begun exploring how LLMs can be further leveraged to assist with more complex real-world tasks encountered in software development. However, existing benchmarks like HumanEval fall short in assessing LLMs' proficiency in solving issues within a codebase. To address these challenges, we introduce FAUN-Eval, a benchmark specifically designed to evaluate the Fine-grained issue solving capabilities of LLMs across three distinct tasks: QA, fault localization, and code editing. This benchmark is constructed using a dataset curated from 30 well-known GitHub repositories, ensuring systematic assessment of LLMs in real-world scenarios.\n\nThe FAUN-Eval systematically assesses LLMs across three distinct tasks: QA, fault localization, and code editing. Each entry includes meticulously compiled issue and pull request (PR) pairs validated using cross-referencing and keyword verification methods. The benchmark is designed to provide granular insights into the performance of subtasks involved in issue solving.\n\nOur experimental results reveal several key findings. We find that the top-performing LLMs differ across different tasks, indicating a need for models optimized for specific aspects of issue resolution. Additionally, features in issues may lead LLMs to generate incorrect information, highlighting the importance of careful issue formulation. Moreover, models vary in their proficiency with texts of different lengths, suggesting potential improvements in handling varying input sizes.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "FAUN-Eval"
+      },
+      {
+        "id": "concept_2",
+        "type": "Task",
+        "label": "QA"
+      },
+      {
+        "id": "concept_3",
+        "type": "Task",
+        "label": "Fault Localization"
+      },
+      {
+        "id": "concept_4",
+        "type": "Task",
+        "label": "Code Editing"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "INVOLVES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "INVOLVES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_4",
+        "relation": "INVOLVES"
+      }
+    ]
+  },
+  "source_file": "ruida_a_real-world_benchmark_for_evaluating_fine-grained_issue_sol.pdf"
+}

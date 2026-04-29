@@ -1,0 +1,78 @@
+{
+  "card_id": "access_incontext_futuring_accessible_prototyping_tools_and_methods",
+  "bibliographic_data": {
+    "title": "Access InContext: Futuring Accessible Prototyping Tools and Methods",
+    "primary_domain": "cs.HC",
+    "authors": [
+      {
+        "name": "Patricia Piedade"
+      },
+      {
+        "name": "Peter A Hayton"
+      },
+      {
+        "name": "Cynthia Bennett"
+      },
+      {
+        "name": "Anna R L Carter"
+      },
+      {
+        "name": "Clara Crivellaro"
+      },
+      {
+        "name": "Alan Dix"
+      },
+      {
+        "name": "Jess McGowan"
+      },
+      {
+        "name": "Katta Spiel"
+      },
+      {
+        "name": "Miriam Sturdee"
+      },
+      {
+        "name": "Garreth W. Tigwell",
+        "faculty_id": "Garreth Tigwell",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Hugo Nicolau"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Accessibility has been a topic of growing interest within the CHI community, with a steady rise in publications in the last decade [20]. Disability rights advocates within HCI, many of which are themselves disabled researchers [16], have repeatedly pushed for the inclusion of disabled perspectives in work that directly or indirectly impacts them [22, 33]. However, research around this topic is largely unexplored, with clear gaps in HCI education [14], methodologies [21], and tools [18] that enable such participatory vision. Furthermore, though popular, accessibility continues to be treated as an afterthought within the human-centred design (HCD) process [21]. This contrasts with the known benefits of including people with disabilities in design processes [30] and recent calls by disability rights advocates towards the inclusion of disabled individuals in broader settings [3, 33]. To achieve this vision of an inclusive future, and to allow people with disabilities to fully participate in design and research settings, we must ensure that these settings, practices, methods, and tools are accessible in context. This means recognising and addressing the specific barriers\u2014whether physical, sensory, cognitive, or technological\u2014that exist in particular settings, ensuring accessibility is not a generic afterthought but integrated into the specific contexts of design and research from the outset.",
+    "arxiv_id": "2506.24057v1"
+  },
+  "core_content": {
+    "novelty_claim": "The paper calls for a more inclusive approach to prototyping tools and methods, addressing barriers faced by people with disabilities in design processes.",
+    "key_methodology": "The authors propose a workshop format to discuss barriers and opportunities for creating accessible prototyping, focusing on both researchers and designers/practitioners.",
+    "outcomes": [
+      "Identify specific accessibility barriers in prototyping tools and methods",
+      "Promote hands-on ideation and fabrication exercises aimed at futuring accessible prototyping"
+    ],
+    "full_text_markdown": "The popularity of accessibility research has grown recently, improving digital inclusion for people with disabilities. However, researchers, including those who have disabilities, have attempted to include people with disabilities in all aspects of design, and they have identified a myriad of practical accessibility barriers posed by tools and methods leveraged by human-computer interaction (HCI) researchers during prototyping. To build a more inclusive technological landscape, we must question the effectiveness of existing prototyping tools and methods, repurpose/retrofit existing resources, and build new tools and methods to support the participation of both researchers and people with disabilities within the prototyping design process of novel technologies. This full-day workshop at CHI 2025 will provide a platform for HCI researchers, designers, and practitioners to discuss barriers and opportunities for creating accessible prototyping and promote hands-on ideation and fabrication exercises aimed at futuring accessible prototyping."
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Accessible Prototyping Tools"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Disability Inclusion in Design"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "patricia_access_incontext_futuring_accessible_prototyping_tools_and_m.pdf"
+}

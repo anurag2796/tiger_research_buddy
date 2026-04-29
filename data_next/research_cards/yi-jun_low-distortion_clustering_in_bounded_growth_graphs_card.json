@@ -1,0 +1,55 @@
+{
+  "card_id": "low-distortion-clustering-bounded-growth-graphs",
+  "bibliographic_data": {
+    "title": "Low-Distortion Clustering in Bounded Growth Graphs",
+    "primary_domain": "cs.DS",
+    "authors": [
+      {
+        "name": "Yi-Jun Chang"
+      },
+      {
+        "name": "Varsha Dani",
+        "faculty_id": "Varsha Dani",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Thomas P. Hayes"
+      }
+    ],
+    "year": 2025,
+    "abstract": "The well-known clustering algorithm of Miller, Peng, and Xu (SPAA 2013) is useful for many applications, including low-diameter decomposition and low-energy distributed algorithms. One nice property of their clustering, shown in previous work by Chang, Dani, Hayes, and Pettie (PODC 2020), is that distances in the cluster graph are rescaled versions of distances in the original graph, up to an O(log n) distortion factor and rounding issues. Minimizing this distortion factor is important for efficiency in computing the clustering, as well as in further applications, once the clustering has been constructed. We prove that there exist graphs for which an \u2126\n\u00e4log1/3 n\n\u00e4distortion factor is necessary for any clustering. We also consider a class of nice graphs which we call uniformly bounded independence graphs. These include, for example, paths, lattice graphs, and \u201cdense\u201d unit disk graphs. For these graphs, we prove that clusterings of constant distortion always exist, and moreover, we give an efficient distributed algorithm to construct them. Our clustering algorithm is based on Voronoi cells centered at the vertices of a maximal independent set in a suitable power graph. Applications of our new clustering include low-energy simulation of distributed algorithms in the LOCAL, CONGEST, and RADIO-CONGEST models, as well as efficient approximate solutions to distributed combinatorial optimization problems. We complement these results with matching or nearly matching lower bounds.",
+    "arxiv_id": "2405.05132v3"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proves that there exist graphs for which an \u2126\n\u00e4log1/3 n\n\u00e4distortion factor is necessary and provides a clustering algorithm with constant distortion for uniformly bounded independence graphs.",
+    "key_methodology": "The authors use Voronoi cells centered at the vertices of a maximal independent set in a suitable power graph to construct clusterings. They also provide lower bounds on the distortion factor.",
+    "outcomes": [
+      "Proved that an \u2126\n\u00e4log1/3 n\n\u00e4distortion factor is necessary for any clustering",
+      "Developed a clustering algorithm with constant distortion for uniformly bounded independence graphs"
+    ],
+    "full_text_markdown": "The paper addresses the problem of low-distortion clustering in graph theory, focusing on applications in distributed computing. The authors prove that there exist graphs where an \u2126\n\u00e4log1/3 n\n\u00e4distortion factor is necessary for any clustering. They also provide a clustering algorithm with constant distortion for uniformly bounded independence graphs, which include paths, lattice graphs, and dense unit disk graphs. This algorithm is based on Voronoi cells centered at the vertices of a maximal independent set in a suitable power graph. The results have applications in low-energy simulation of distributed algorithms in various models (LOCAL, CONGEST, RADIO-CONGEST) and efficient approximate solutions to combinatorial optimization problems.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Voronoi cells centered at maximal independent set vertices"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Uniformly bounded independence graphs"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "yi-jun_low-distortion_clustering_in_bounded_growth_graphs.pdf"
+}

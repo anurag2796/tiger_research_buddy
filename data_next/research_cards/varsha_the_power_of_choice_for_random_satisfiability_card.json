@@ -1,0 +1,61 @@
+{
+  "card_id": "power_of_choice_for_k_sat",
+  "bibliographic_data": {
+    "title": "The Power of Choice for Random Satisfiability",
+    "primary_domain": "cs.CC",
+    "authors": [
+      {
+        "name": "Varsha Dani",
+        "faculty_id": "Varsha Dani",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Josep Diaz",
+        "faculty_id": "Gabriela Diaz",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Thomas Hayes"
+      },
+      {
+        "name": "Cristopher Moore"
+      }
+    ],
+    "year": 2018,
+    "abstract": "We consider Achlioptas processes for k-SAT formulas. We create a semi-random formula with n variables and m clauses, where each clause is a choice, made on-line, between two or more uniformly random clauses. Our goal is to delay the satisfiability/unsatisfiability transition, keeping the formula satisfiable up to densities m/n beyond the satisfiability threshold \u03b1k for random k-SAT. We show that three choices suffice to delay the transition for any k \u22653, and that two choices suffice for all 3 \u2264k \u226425. We also show that two choices suffice to lower the threshold for all k \u22653, making the formula unsatisfiable at a density below \u03b1k.",
+    "arxiv_id": "1211.6997v2"
+  },
+  "core_content": {
+    "novelty_claim": "The paper shows that three choices suffice to delay the satisfiability/unsatisfiability transition for k-SAT formulas, and two choices suffice for all 3 \u2264k \u226425.",
+    "key_methodology": "A simple nonadaptive strategy is used where given a choice between t clauses, the one with the largest number of positive literals is chosen. This strategy is then applied to create a 2-SAT formula from k-SAT clauses to delay the transition.",
+    "outcomes": [
+      "Three choices suffice to increase the k-SAT threshold for any k \u22652.",
+      "Two choices suffice to increase the threshold for all 3 \u2264k \u226425.",
+      "Two choices can lower the threshold for all k \u22653."
+    ],
+    "full_text_markdown": "# Introduction\nThe Erd\u0151s-R\u00e9nyi model of random graphs undergoes a celebrated phase transition. Specifically, suppose we form a random graph G(n, m) with n vertices and m edges by choosing m times uniformly from the possible edges. The average degree of this graph is d = 2m/n. If d < 1, then with high probability in the limit n \u2192\u221e, G(n, m) consists almost entirely of trees, and the largest component has size O(log n). But if d > 1, then with high probability G(n, m) has a giant connected component containing \u0398(n) vertices.\n\nIn 2001, Dimitris Achlioptas posed the following question. Suppose at each step we are presented with two uniformly random edges. We are allowed to choose between them, adding one of them to the graph and throwing away the other. We play this game on-line; that is, our choice can depend on the graph up to this point, but not on future pairs of edges. Can we delay the appearance of the giant component, ensuring that the largest component has size o(n) after m = cn edges for some c > 1/2?\n\nA positive answer was given by Bohman and Frieze [5], who showed that two choices suffice to delay the giant up to c = 0.535. Achlioptas, D\u2019Souza, and Spencer [1] studied a particular rule where we choose the edge that minimizes the product of the component sizes of its endpoints, which exhibits a phenomenon they call explosive percolation. It is also possible to speed up the appearance of the giant component [13, 6]; Spencer and Wormald [27] showed that it can be brought into existence at c = 0.334.\n\nIn analogy with G(n, m), we can consider random k-SAT formulas Fk(n, m). Specifically, given n variables x1, ..., xn, we create a k-SAT formula by choosing m clauses uniformly from the 2^k * C(n, k) possibilities. The satisfiability threshold conjecture states that there is a critical density \u03b1k = m/n at which Fk(n, m) undergoes a phase transition from satisfiable to unsatisfiable:\n\nConjecture 1. For each k \u22652, there is a constant \u03b1k such that\nlim n\u2192\u221ePr[Fk(n, \u03b1n) is satisfiable] =\n(\n1 if \u03b1 < \u03b1k\n0 if \u03b1 > \u03b1k.\n\nThis conjecture has been proved only for k = 2 [9, 15, 12], where \u03b12 = 1. For the NP-complete case k \u22653, there are strong arguments from statistical physics that it is true, and very precise conjectures for the value of \u03b1k from calculations using the cavity method [20, 21].\n\nThere are rigorous upper and lower bounds on \u03b1k assuming it exists. That is, there are known values \u03b1low_k, \u03b1high_k such that Fk(n, \u03b1n) is satisfiable if \u03b1 < \u03b1low_k and unsatisfiable if \u03b1 > \u03b1high_k. In that case, we write \u03b1low_k \u2264\u03b1k \u2264\u03b1high_k. Specifically, for k = 3 we have [10, 16, 18]\n3.52 \u2264\u03b13 \u22644.4898,\nwhile the cavity method gives \u03b13 = 4.267. For arbitrary k, the first and second moment methods give [4]\n2k ln 2 - O(k) \u2264\u03b1k < 2k ln 2 - ln 2/2,\nwhile the cavity method gives\n\u03b1k = 2k ln 2 -1 + ln 2/2 + O(2^-k).\nSinclair and Vilenchik [26] asked whether Achlioptas processes can delay the satisfiability/unsatisfiability transition for k-SAT. In other words, suppose at each step we are given a choice of two clauses, each of which is uniformly random. We choose one of them and add it to the formula, and our goal is keeping the formula satisfiable up to m = \u03b1n clauses for some \u03b1 > \u03b1k. They showed that two choices are enough to delay the 2-SAT transition up to \u03b1 = 1.0002, and also that two choices can delay the k-SAT transition for k = \u03c9(log n). Perkins [25] showed that for any k, there is a strategy with t choices, for a constant t, that delays the k-SAT transition. In fact, his analysis shows that three choices suffice for sufficiently large k, and that 7 choices suffice for all k \u22653.\n\nWe improve these results in the following ways. First, we give a simple, nonadaptive strategy that, given a choice between three clauses, increases the k-SAT threshold for all k \u22652. Secondly, we give a two-choice strategy that increases the threshold for all 3 \u2264k \u226425, and we conjecture that it works for all large k as well. Finally, we give a simple two-choice strategy that lowers the threshold for all k.\n\n## Three Choices Suffice to Raise the Threshold for All k\nIn this section and the next, we show that a constant number of choices suffice to raise the satisfiability threshold. Our strategy is simple and nonadaptive. Indeed, it is oblivious to the \u201ctopology\u201d of the formula, which variables appear together in clauses, and is sensitive only to the signs of the literals. Given a choice of t clauses, we choose the one with the largest number of positive literals.\n\nTo show that the resulting k-SAT formula is satisfiable, we convert it into an \u2113-SAT formula in the following way: for each k-SAT clause c, we form an \u2113-SAT clause by taking \u2113 of the most positive literals in c. If the resulting \u2113-SAT formula is satisfiable, then so is the original k-SAT formula. In Theorem 1, we use \u2113 = 2; in Theorems 2-4, we use \u2113 = 3.\n\nWe note that Perkins [25] used a similar strategy, with \u2113 = 2, to show that a constant number of choices suffice for any k. Here we improve his results, showing that three choices suffice.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Achlioptas Process"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "Satisfiability Threshold"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "INFLUENCES"
+      }
+    ]
+  },
+  "source_file": "varsha_the_power_of_choice_for_random_satisfiability.pdf"
+}

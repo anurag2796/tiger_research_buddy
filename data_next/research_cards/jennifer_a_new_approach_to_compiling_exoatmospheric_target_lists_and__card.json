@@ -1,0 +1,74 @@
+{
+  "card_id": "a_new_approach_to_compiling_exoatmospheric_target_lists",
+  "bibliographic_data": {
+    "title": "A New Approach to Compiling Exoatmospheric Target Lists And Quantifying the Ground-Based Resources Needed to Vet Them",
+    "primary_domain": "astro-ph.EP",
+    "authors": [
+      {
+        "name": "Jennifer A. Burt",
+        "faculty_id": "Jennifer Burt",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Robert T. Zellem"
+      },
+      {
+        "name": "David R. Ciardi"
+      },
+      {
+        "name": "Shubham Kanodia"
+      },
+      {
+        "name": "Geoffrey Bryden"
+      },
+      {
+        "name": "Tiffany Kataria"
+      },
+      {
+        "name": "Kyle A. Pearson"
+      },
+      {
+        "name": "Jessie L. Christiansen"
+      },
+      {
+        "name": "Charles Beichman"
+      },
+      {
+        "name": "B. J. Fulton"
+      },
+      {
+        "name": "Mark Swain"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Transiting exoplanet atmospheric characterization is currently in a golden age as dozens of exo-planet atmospheres are being studied by NASA\u2019s Hubble and James Webb Space Telescopes. This trend is expected to continue with NASA\u2019s Pandora Smallsat and Roman Space Telescope and ESA\u2019s Ariel mission (all expected to launch within this decade) and NASA\u2019s Habitable Worlds Observatory (expected to launch in the early 2040s) all of which are centered around studying the atmospheres of exoplanets. Here we explore a new approach to constructing large scale exoatmospheric survey lists, which combines the use of traditional transmission/emission spectroscopy figures of merit with a focus on more-evenly sampling planets across a range of radii and equilibrium temperatures. After assembling a sample target list comprised of 750 transmission spectroscopy targets and 150 emission spectroscopy targets, we quantify the potential time lost to stale transit and eclipse ephemerides and find that hundreds of hours of space-based observing could be wasted given current uncertainties in orbital periods, transit epochs, and orbital eccentricities. We further estimate the amount of ground-based telescope time necessary to obtain sufficiently precise exoplanet masses and find that it exceeds 100 nights of 10m telescope time. Based upon these findings, we provide a list of recommendations that would make community efforts for preparation and interpretation of atmospheric characterization endeavours more effective and efficient. The strategies we recommend here can be used to support both current (e.g., HST and JWST) and future exoplanet atmosphere characterization missions (e.g., Pandora, Ariel, Roman, and the Habitable Worlds Observatory).",
+    "arxiv_id": "arXiv:2508.03801"
+  },
+  "core_content": {
+    "novelty_claim": "The paper introduces a new approach to compiling large-scale exoatmospheric target lists that combines traditional spectroscopy figures of merit with an even sampling strategy across radii and equilibrium temperatures.",
+    "key_methodology": "The authors assembled a sample target list of 750 transmission spectroscopy targets and 150 emission spectroscopy targets, then quantified the potential time lost to stale transit and eclipse ephemerides, and estimated the ground-based telescope time necessary for precise exoplanet mass determinations.",
+    "outcomes": [
+      "Quantification of the potential time loss due to stale transit and eclipse ephemerides",
+      "Estimation that over 100 nights of 10m telescope time are needed for ground-based measurements"
+    ],
+    "full_text_markdown": "Over the past thirty years, scientists have moved from wondering if planets exist around other stars to performing statistical studies on the physical characteristics of numerous exoplanet populations. The detection of thousands of transiting exoplanets across a range of masses and sizes has opened up the possibility of atmospheric characterization across a breadth of planetary properties. Spectroscopic observations during an exoplanet\u2019s transit or eclipse provide information about its atmospheric properties, enabling the detection of individual atomic and molecular species as well as evidence for clouds and hazes. The next paradigm shift in our understanding of exoplanetary atmospheres will come with upcoming launches of NASA's Pandora mission (2025), ESA's Ariel mission (2029), and NASA's Habitable Worlds Observatory (\u223c2040). To accurately interpret the results of these missions, precise knowledge of a planet\u2019s surface gravity is necessary. The majority of transiting exoplanet targets lack any level of mass estimate, and many do not have sufficiently well-constrained orbital parameters to ensure precise knowledge of their orbital ephemerides. In light of these challenges, we propose compiling a large, representative, exoatmospheric target list and quantifying the scope of ground-based science programs that could provide high precision ephemerides, masses, and orbital parameters for selected planets.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Compilation of Exoatmospheric Target Lists"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "jennifer_a_new_approach_to_compiling_exoatmospheric_target_lists_and_.pdf"
+}

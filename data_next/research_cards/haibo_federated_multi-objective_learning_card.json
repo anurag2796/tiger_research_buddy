@@ -1,0 +1,75 @@
+{
+  "card_id": "federated_multi_objective_learning",
+  "bibliographic_data": {
+    "title": "Federated Multi-Objective Learning",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Haibo Yang",
+        "faculty_id": "Haibo Yang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Zhuqing Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jia Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Chaosheng Dong"
+      },
+      {
+        "name": "Michinari Momma"
+      }
+    ],
+    "year": 2024,
+    "abstract": "In recent years, multi-objective optimization (MOO) emerges as a foundational problem underpinning many multi-agent multi-task learning applications. However, existing algorithms in MOO literature remain limited to centralized learning settings, which do not satisfy the distributed nature and data privacy needs of such multi-agent multi-task learning applications. This motivates us to propose a new federated multi-objective learning (FMOL) framework with multiple clients distributively and collaboratively solving an MOO problem while keeping their training data private. Notably, our FMOL framework allows a different set of objective functions across different clients to support a wide range of applications, which advances and generalizes the MOO formulation to the federated learning paradigm for the first time.",
+    "arxiv_id": "2310.09866"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a new federated multi-objective learning (FMOL) framework that supports both objective and data heterogeneity across clients, enabling multiple clients to distributively solve MOO problems while keeping their computation and training data private.",
+    "key_methodology": "Two new federated multi-objective optimization (FMOO) algorithms called federated multi-gradient descent averaging (FMGDA) and federated stochastic multi-gradient descent averaging (FSMGDA) are proposed. Both algorithms allow local updates to significantly reduce communication costs while achieving the same convergence rates as their algorithmic counterparts in single-objective federated learning.",
+    "outcomes": [
+      "Proposed FMOL framework with provable Pareto-stationary convergence guarantees for both objective and data heterogeneity.",
+      "Developed two gradient-based FMOO algorithms: FMGDA and FSMGDA, which achieve linear and sublinear Pareto-stationary convergence rates in different settings."
+    ],
+    "full_text_markdown": "In recent years, multi-objective optimization (MOO) has emerged as a foundational problem underpinning many multi-agent multi-task learning applications. However, existing algorithms in MOO literature remain limited to centralized learning settings, which do not satisfy the distributed nature and data privacy needs of such multi-agent multi-task learning applications. This motivates us to propose a new federated multi-objective learning (FMOL) framework with multiple clients distributively and collaboratively solving an MOO problem while keeping their training data private. Notably, our FMOL framework allows a different set of objective functions across different clients to support a wide range of applications, which advances and generalizes the MOO formulation to the federated learning paradigm for the first time. For this FMOL framework, we propose two new federated multi-objective optimization (FMOO) algorithms called federated multi-gradient descent averaging (FMGDA) and federated stochastic multi-gradient descent averaging (FSMGDA). Both algorithms allow local updates to significantly reduce communication costs, while achieving the same convergence rates as those of their algorithmic counterparts in the single-objective federated learning. Our extensive experiments also corroborate the efficacy of our proposed FMOO algorithms.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Federated Multi-Objective Learning (FMOL)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Algorithm",
+        "label": "Federated Multi-Gradient Descent Averaging (FMGDA)"
+      },
+      {
+        "id": "concept_3",
+        "type": "Algorithm",
+        "label": "Federated Stochastic Multi-Gradient Descent Averaging (FSMGDA)"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "haibo_federated_multi-objective_learning.pdf"
+}

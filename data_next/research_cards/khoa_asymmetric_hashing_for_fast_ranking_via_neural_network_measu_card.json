@@ -1,0 +1,60 @@
+{
+  "card_id": "asymmetric_hashing_for_fast_ranking",
+  "bibliographic_data": {
+    "title": "Asymmetric Hashing for Fast Ranking via Neural Network Measures",
+    "primary_domain": "cs.AI",
+    "authors": [
+      {
+        "name": "Khoa Doan"
+      },
+      {
+        "name": "Shulong Tan"
+      },
+      {
+        "name": "Weijie Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Ping Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Fast item ranking is an important task in recommender systems. In previous works, graph-based Approximate Nearest Neighbor (ANN) approaches have demonstrated good performance on item ranking tasks with generic searching/matching measures (including complex measures such as neural network measures). However, since these ANN approaches must go through the neural measures several times during ranking, the computation is not practical if the neural measure is a large network. On the other hand, fast item ranking using existing hashing-based approaches, such as Locality Sensitive Hashing (LSH), only works with a limited set of measures, such as cosine and Euclidean distance. Previous learning-to-hash approaches are also not suitable to solve the fast item ranking problem since they can take a significant amount of time and computation to train the hash functions due to a large number of possible training pairs in this problem. Hashing approaches, however, are attractive because they provide a principle and efficient way to retrieve candidate items. In this paper, we propose a simple and effective learning-to-hash approach for the fast item ranking problem that can be used for any type of measure, including neural network measures. Speci\ufb01cally, we solve this problem with an asymmetric hashing framework based on discrete inner product fitting. We learn a pair of related hash functions that map heterogeneous objects (e.g., users and items) into a common discrete space where the inner product of their binary codes reveals their true similarity defined via the original searching measure. The fast ranking problem is reduced to an ANN search via this asymmetric hashing scheme. Then, we propose a sampling strategy to efficiently select relevant and contrastive samples to train the hashing model. We empirically validate the proposed method against the existing state-of-the-art fast item ranking methods in several combinations of non-linear searching functions and prominent datasets.",
+    "arxiv_id": "2211.00619"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes an asymmetric hashing framework based on discrete inner product fitting to solve the fast item ranking problem for any type of measure, including neural network measures.",
+    "key_methodology": "The authors learn a pair of related hash functions that map heterogeneous objects into a common discrete space where the inner product of their binary codes reveals true similarity defined via the original searching measure. The method reduces the fast ranking problem to an ANN search via this asymmetric hashing scheme and proposes a sampling strategy for efficient training.",
+    "outcomes": [
+      "Proposed a novel approach for fast item ranking using neural network measures by learning hash functions that approximate the original ranking measure.",
+      "Empirically validated the proposed method against existing state-of-the-art methods in various non-linear searching functions and datasets."
+    ],
+    "full_text_markdown": "Fast item ranking is an important task in recommender systems. Previous works have shown good performance using graph-based Approximate Nearest Neighbor (ANN) approaches with generic measures, including neural network measures. However, these ANN approaches require multiple passes through the neural measure during ranking, making them impractical for large networks. Hashing-based methods like Locality Sensitive Hashing (LSH) only work with limited measures such as cosine and Euclidean distance. Learning-to-hash approaches are also not suitable due to their high computational cost. The paper proposes an asymmetric hashing framework based on discrete inner product fitting, learning a pair of hash functions that map objects into a common space where the inner product reveals true similarity via the original measure. This reduces the fast ranking problem to an ANN search and includes a sampling strategy for efficient training. Empirical validation against state-of-the-art methods in various non-linear searching functions and datasets is provided.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "asymmetric_hashing",
+        "type": "Method",
+        "label": "Asymmetric Hashing Framework"
+      },
+      {
+        "id": "discrete_inner_product_fitting",
+        "type": "Concept",
+        "label": "Discrete Inner Product Fitting"
+      }
+    ],
+    "edges": [
+      {
+        "source": "asymmetric_hashing",
+        "target": "discrete_inner_product_fitting",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "khoa_asymmetric_hashing_for_fast_ranking_via_neural_network_measu.pdf"
+}

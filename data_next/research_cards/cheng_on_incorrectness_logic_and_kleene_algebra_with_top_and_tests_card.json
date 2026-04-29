@@ -1,0 +1,57 @@
+{
+  "card_id": "incorrectness_logic_kleene_algebra",
+  "bibliographic_data": {
+    "title": "On Incorrectness Logic and Kleene Algebra with Top and Tests",
+    "primary_domain": "cs.PL",
+    "authors": [
+      {
+        "name": "Cheng Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Arthur Azevedo de Amorim",
+        "faculty_id": "Arthur Azevedo de Amorim",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Marco Gaboardi"
+      }
+    ],
+    "year": 2022,
+    "abstract": "Kleene algebra with tests (KAT) is a foundational equational framework for reasoning about programs, which has found applications in program transformations, networking and compiler optimizations, among many other areas. In his seminal work, Kozen proved that KAT subsumes propositional Hoare logic, showing that one can reason about the (partial) correctness of while programs by means of the equational theory of KAT. In this work, we investigate the support that KAT provides for reasoning about incorrectness, instead, as embodied by O\u2019Hearn\u2019s recently proposed incorrectness logic. We show that KAT cannot directly express incorrectness logic. The main reason for this limitation can be traced to the fact that KAT cannot express explicitly the notion of codomain, which is essential to express incorrectness triples. To address this issue, we study Kleene Algebra with Top and Tests (TopKAT), an extension of KAT with a top element. We show that TopKAT is powerful enough to express a codomain operation, to express incorrectness triples, and to prove all the rules of incorrectness logic sound. This shows that one can reason about the incorrectness of while-like programs by means of the equational theory of TopKAT.",
+    "arxiv_id": "2108.07707v4"
+  },
+  "core_content": {
+    "novelty_claim": "The paper extends Kozen's work on Kleene Algebra with Tests (KAT) to support reasoning about incorrectness logic by introducing TopKAT, which includes a top element and can express codomain operations.",
+    "key_methodology": "The authors extend KAT to include a top element in TopKAT to address the limitation of KAT in expressing incorrectness triples. They prove that TopKAT is powerful enough to encode inequalities between images, allowing for the expression of incorrectness triples and the sound proof of all rules of incorrectness logic.",
+    "outcomes": [
+      "TopKAT can express codomain operations necessary for reasoning about incorrectness.",
+      "The equational theory of TopKAT allows for the sound proof of all rules of incorrectness logic."
+    ],
+    "full_text_markdown": "Since the seminal work of Floyd and Hoare, logic has become an essential tool for program verification. A program logic provides a system of deduction rules to prove Hoare triples {b} p {c}, where p is a program, and b and c are assertions describing the pre- and post-conditions. Such Hoare triples are (partial) correctness specifications, which state that if we run p on an initial state satisfying b, all final states (if reached) will satisfy c. In other words, c over-approximates the set of final states of p starting from b.\n\nDespite their popularity, such logics are not the only tool for verifying programs. Another longstanding approach is equational reasoning, where programs are modeled as elements of some algebraic structure, whose equational theory can be used to prove specifications. One such algebraic structure is Kleene Algebra with Tests (KAT), which extends Kleene algebra with predicates for modeling conditionals. KAT has several pleasing properties and has been applied in various domains including program transformations, networking, compiler optimization, etc.\n\nKozen showed that KAT can express the validity of a Hoare triple as an equation, thus establishing a clear bridge between deductive and equational reasoning for program verification. In this work, we are interested in extending this correspondence to other deductive formalisms for reasoning about programs, specifically incorrectness logic (IL), which revolves around incorrectness specifications [b] p [c], stating that p can produce any final state satisfying c from some input state satisfying b.\n\nUnfortunately, KAT cannot directly express these incorrectness triples due to its inability to explicitly model the codomain. To address this issue, we introduce Kleene Algebra with Top and Tests (TopKAT), an extension of KAT with a top element. We show that TopKAT can encode inequalities between images, allowing for the expression of incorrectness triples and proving all rules of IL sound.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "TopKAT"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Incorrectness Logic"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "cheng_on_incorrectness_logic_and_kleene_algebra_with_top_and_tests.pdf"
+}

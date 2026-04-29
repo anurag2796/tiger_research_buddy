@@ -1,0 +1,73 @@
+{
+  "card_id": "impact_of_data_breadth_and_depth_on_siamese_neural_networks",
+  "bibliographic_data": {
+    "title": "Impact of Data Breadth and Depth on Performance of Siamese Neural Network Model: Experiments with Three Keystroke Dynamic Datasets",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Ahmed Anu Wahab"
+      },
+      {
+        "name": "Daqing Hou",
+        "faculty_id": "Daqing Hou",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Nadia Cheng"
+      },
+      {
+        "name": "Parker Huntley"
+      },
+      {
+        "name": "Charles Devlen"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Deep learning models, such as the Siamese Neural Networks (SNN), have shown great potential in capturing intricate patterns in behavioral data. However, the impacts of dataset breadth (i.e., the number of subjects) and depth (e.g., the amount of training samples per subject) on the performance of these models is often informally assumed, and remains under-explored. To this end, we have conducted extensive experiments using the concepts of \u201cfeature space\u201d and \u201cdensity\u201d to guide and gain deeper understanding on the impact of dataset breadth and depth on three publicly available keystroke datasets (Aalto, CMU and Clarkson II). Through varying the number of training subjects, number of samples per subject, amount of data in each sample, and number of triplets used in training, we found that when feasible, increasing dataset breadth enables the training of a well-trained model that effectively captures more inter-subject variability. In contrast, we find that the extent of depth\u2019s impact from a dataset depends on the nature of the dataset. Free-text datasets are influenced by all three depth-wise factors; inadequate samples per subject, sequence length, training triplets and gallery sample size, which may all lead to an under-trained model. Fixed-text datasets are less affected by these factors, and as such make it easier to create a well-trained model. These findings shed light on the importance of dataset breadth and depth in training deep learning models for behavioral biometrics and provide valuable insights for designing more effective authentication systems.",
+    "arxiv_id": "arXiv:2501.07600"
+  },
+  "core_content": {
+    "novelty_claim": "The study explores the impact of dataset breadth and depth on the performance of Siamese Neural Networks (SNN) in keystroke dynamics.",
+    "key_methodology": "Experiments were conducted using three publicly available keystroke datasets, varying the number of training subjects, samples per subject, data amount in each sample, and triplets used in training.",
+    "outcomes": [
+      "Increasing dataset breadth enables better model training that captures more inter-subject variability.",
+      "The impact of depth on performance depends on the nature of the dataset; free-text datasets are more affected by depth factors."
+    ],
+    "full_text_markdown": "This paper investigates how the number of subjects (breadth) and amount of data per subject (depth) affect the performance of Siamese Neural Networks (SNN) in keystroke dynamics. The study uses three publicly available datasets: Aalto, CMU, and Clarkson II. By varying parameters such as the number of training subjects, samples per subject, data amount in each sample, and triplets used in training, it was found that increasing dataset breadth can lead to better model performance. However, the depth's impact varies depending on the type of dataset; free-text datasets are more sensitive to factors like inadequate samples per subject, sequence length, training triplets, and gallery sample size.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Siamese Neural Network (SNN)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Feature Space"
+      },
+      {
+        "id: concept_3, ": ", "
+      },
+      "type: ",
+      "Concept",
+      "label: ",
+      "Depth of Dataset"
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "REQUIRES"
+      }
+    ]
+  },
+  "source_file": "ahmed_impact_of_data_breadth_and_depth_on_performance_of_siamese_n.pdf"
+}

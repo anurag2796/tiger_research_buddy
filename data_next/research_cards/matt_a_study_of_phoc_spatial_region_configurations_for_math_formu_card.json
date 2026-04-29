@@ -1,0 +1,66 @@
+{
+  "card_id": "phoc_spatial_region_configurations",
+  "bibliographic_data": {
+    "title": "A Study of PHOC Spatial Region Configurations for Math Formula Retrieval",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Matt Langsenkamp"
+      },
+      {
+        "name": "Bryan Amador"
+      },
+      {
+        "name": "Richard Zanibbi",
+        "faculty_id": "Richard Zanibbi",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2023,
+    "abstract": "A Pyramidal Histogram Of Characters (PHOC) represents the spatial location of symbols as binary vectors. The vectors are composed of levels that split a formula into equal-sized regions of one or more types (e.g., rectangles or ellipses). For each region type, this produces a pyramid of overlapping regions, where the first level contains the entire formula, and the final level the finest-grained regions. In this work, we introduce concentric rectangles for regions, and analyze whether subsequent PHOC levels encode redundant information by omitting levels from PHOC configurations. As a baseline, we include a bag of words PHOC containing only the first whole-formula level. Finally, using the ARQMath-3 formula retrieval benchmark, we demonstrate that some levels encoded in the original PHOC configurations are redundant, that PHOC models with rectangular regions outperform earlier PHOC models, and that despite their simplicity, PHOC models are surprisingly competitive with the state-of-the-art.",
+    "arxiv_id": "2408.09283"
+  },
+  "core_content": {
+    "novelty_claim": "The introduction of concentric rectangle regions for PHOC and analysis of omitting levels from PHOC configurations to reduce redundancy.",
+    "key_methodology": "PHOC models with rectangular and elliptical regions were used, and the effectiveness of including different levels was evaluated using the ARQMath-3 formula retrieval benchmark.",
+    "outcomes": [
+      "Some levels in original PHOC configurations are redundant.",
+      "PHOC models with rectangular regions outperform earlier PHOC models.",
+      "Despite simplicity, PHOC models are competitive with state-of-the-art."
+    ],
+    "full_text_markdown": "In this study, the Pyramidal Histogram of Characters (PHOC) is used to represent the spatial location of symbols in math formulas. The PHOC model splits a formula into regions and creates overlapping regions at each level. This work introduces concentric rectangle regions for PHOC and evaluates whether omitting certain levels from the PHOC configuration reduces redundancy. Using the ARQMath-3 benchmark, it was found that some levels are redundant, rectangular region models outperform earlier models, and despite their simplicity, PHOC models perform competitively with state-of-the-art methods.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "PHOC"
+      },
+      {
+        "id": "concept_2",
+        "type": "Region Type",
+        "label": "Rectangular Region"
+      },
+      {
+        "id": "concept_3",
+        "type": "Region Type",
+        "label": "Elliptical Region"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "matt_a_study_of_phoc_spatial_region_configurations_for_math_formu.pdf"
+}

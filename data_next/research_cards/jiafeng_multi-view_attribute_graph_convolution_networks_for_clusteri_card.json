@@ -1,0 +1,71 @@
+{
+  "card_id": "learning_from_multi_dimensional_partial_labels",
+  "bibliographic_data": {
+    "title": "Multi-View Attribute Graph Convolution Networks for Clustering",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Jiafeng Cheng"
+      },
+      {
+        "name": "Qianqian Wang"
+      },
+      {
+        "name": "Zhiqiang Tao",
+        "faculty_id": "Zhiqiang Tao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Deyan Xie"
+      },
+      {
+        "name": "Quanxue Gao"
+      }
+    ],
+    "year": 2020,
+    "abstract": "Multi-dimensional classification (MDC) has attracted much attention from the community. Though most studies consider fully annotated data, in real practice obtaining fully labeled data in MDC tasks is usually intractable. In this paper, we propose a novel learning paradigm: Multi-Dimensional Partial Label Learning (MDPL), where the ground-truth labels of each instance are concealed in multiple candidate label sets. We first introduce the partial hamming loss for MDPL that incurs a large loss if the predicted labels are not in candidate label sets, and provide an empirical risk minimization (ERM) framework. Theoretically, we rigorously prove the conditions for ERM learnability of MDPL in both independent and dependent cases. Furthermore, we present two MDPL algorithms under our proposed ERM framework. Comprehensive experiments on both synthetic and real-world datasets validate the effectiveness of our proposals.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a novel learning paradigm called Multi-Dimensional Partial Label Learning (MDPL) for handling partially labeled data in multi-dimensional classification tasks.",
+    "key_methodology": "The authors introduce the partial hamming loss and provide an empirical risk minimization framework. They also present two algorithms under this framework.",
+    "outcomes": [
+      "Rigorous proof of ERM learnability conditions for MDPL",
+      "Two MDPL algorithms instantiated under the proposed framework"
+    ],
+    "full_text_markdown": "In multi-dimensional classification (MDC), each object is associated with multiple class variables. However, obtaining fully labeled data in MDC tasks is usually intractable. The paper proposes a new weakly-supervised learning scenario called Multi-Dimensional Partial Label Learning (MDPL) where the ground-truth labels of each instance are concealed in multiple candidate label sets. This approach addresses challenges such as noisy information and label correlations, which can improve generalization performance. The authors introduce a partial hamming loss that incurs a large loss if the predicted labels are not included in candidate label sets. They also provide an empirical risk minimization (ERM) framework and rigorously prove conditions for ERM learnability of MDPL in both independent and dependent cases. Two algorithms under this framework are instantiated, and extensive experiments on synthetic and real-world datasets validate their effectiveness.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "MDPL",
+        "type": "Method",
+        "label": "Multi-Dimensional Partial Label Learning"
+      },
+      {
+        "id": "partial_hamming_loss",
+        "type": "Concept",
+        "label": "Partial Hamming Loss"
+      },
+      {
+        "id": "ERM",
+        "type": "Method",
+        "label": "Empirical Risk Minimization"
+      }
+    ],
+    "edges": [
+      {
+        "source": "MDPL",
+        "target": "partial_hamming_loss",
+        "relation": "USES"
+      },
+      {
+        "source": "MDPL",
+        "target": "ERM",
+        "relation": "BASED_ON"
+      }
+    ]
+  },
+  "source_file": "jiafeng_multi-view_attribute_graph_convolution_networks_for_clusteri.pdf"
+}

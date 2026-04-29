@@ -1,0 +1,60 @@
+{
+  "card_id": "llm_agents_for_buggy_fixing",
+  "bibliographic_data": {
+    "title": "An Empirical Study on LLM-based Agents for Automated Bug Fixing",
+    "primary_domain": "cs.SE",
+    "authors": [
+      {
+        "name": "Xiangxin Meng"
+      },
+      {
+        "name": "Zexiong Ma",
+        "faculty_id": "Naveen Sharma",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Pengfei Gao"
+      },
+      {
+        "name": "Chao Peng",
+        "faculty_id": "Chao Peng",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Large language models (LLMs) and LLM-based Agents have been applied to fix bugs automatically, demonstrating the capability in addressing software defects by engaging in development environment interaction, iterative validation and code modification. However, systematic analysis of these agent systems remain limited, particularly regarding performance variations among top-performing ones. In this paper, we examine six repair systems on the SWE-bench Verified benchmark for automated bug fixing. We first assess each system\u2019s overall performance, noting the instances solvable by all or none of these systems, and explore the capabilities of different systems. We also compare fault localization accuracy at file and code symbol levels and evaluate bug reproduction capabilities. Through analysis, we concluded that further optimization is needed in both the LLM capability itself and the design of Agentic flow to improve the effectiveness of the Agent in bug fixing.",
+    "arxiv_id": "arXiv:2411.10213v2"
+  },
+  "core_content": {
+    "novelty_claim": "This paper is the first work to study the effectiveness of LLM-based Agents in automatic bug fixing for code repositories, examine their fault localization capabilities, investigate the impact of bug reproduction on bug fixing, and summarize current issues and future research directions.",
+    "key_methodology": "The authors evaluated six top-performing repair systems (W&B Programmer, Blackbox AI Agent, CodeStory Midwit Agent, Learn-by-interact, Devlo, Emergent E1) on the SWE-bench Verified benchmark. They assessed overall performance, fault localization accuracy at file and code symbol levels, and bug reproduction capabilities.",
+    "outcomes": [
+      "Identified that further optimization is needed in both LLM capability and Agentic flow design to improve agent effectiveness in bug fixing.",
+      "Found significant differences in the solving capabilities of different systems on specific instances."
+    ],
+    "full_text_markdown": "Large language models (LLMs) have been applied to fix bugs automatically, demonstrating the capability in addressing software defects by engaging in development environment interaction, iterative validation and code modification. However, systematic analysis of these agent systems remain limited, particularly regarding performance variations among top-performing ones. In this paper, we examine six repair systems on the SWE-bench Verified benchmark for automated bug fixing. We first assess each system\u2019s overall performance, noting the instances solvable by all or none of these systems, and explore the capabilities of different systems. We also compare fault localization accuracy at file and code symbol levels and evaluate bug reproduction capabilities. Through analysis, we concluded that further optimization is needed in both the LLM capability itself and the design of Agentic flow to improve the effectiveness of the Agent in bug fixing.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "LLM-based Agents"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "SWE-bench Verified Benchmark"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "xiangxin_an_empirical_study_on_llm-based_agents_for_automated_bug_fix.pdf"
+}

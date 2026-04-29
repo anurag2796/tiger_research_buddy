@@ -1,0 +1,57 @@
+{
+  "card_id": "m87-globular-clusters",
+  "bibliographic_data": {
+    "title": "M87, Globular Clusters, and Galactic Winds: Issues in Giant Galaxy Formation",
+    "primary_domain": "astro-ph.GA",
+    "authors": [
+      {
+        "name": "W. E. Harris",
+        "faculty_id": "W Michelle Harris",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "G. L. H. Harris",
+        "faculty_id": "W Michelle Harris",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "D. E. McLaughlin"
+      }
+    ],
+    "year": 1998,
+    "abstract": "We have used the High Resolution Camera at the Canada-France-Hawaii Telescope to obtain V RI photometry of the globular clusters in the innermost 140\u2032\u2032 of the M87 halo. The results are used to discuss several issues concerning the formation and evolution of globular cluster systems in supergiant ellipticals like M87. Our principal results are as follows: (1) From our deep R\u2212band photometry of the cluster population, we find no signi\ufb01cant change in the globular cluster luminosity function (GCLF) with galactocentric radius, for cluster masses M >\u223c 105M\u2299. This result places constraints on current theoretical predictions of the rate of cluster evolution by tidal shocking and evaporation, indicating that the main e\ufb00ects of dynamical evolution may be only on lower-mass clusters ( <\u223c 105M\u2299) that are below the faint limit of most current observations. (2) Combining our (V \u2212I) color indices with other data in the literature, we derive the metallicity gradient and mean metallicity of the clusters from r = 9\u2032\u2032 out to r \u2243500\u2032\u2032 (\u223c0.7 to 35 kpc). Within the core radius rc = 1\u2032 of the globular cluster system, the metallicity distribution is uniform, but at larger radii the mean metallicity declines steadily as Z/Z\u2299\u223cr\u22120.9. (3) The various options for explaining the existence of high speci\ufb01c frequency galaxies like M87 are evaluated. We argue that alternatives involving secondary evolution (such as the formation of many globular clusters during mergers, or the existence of a population of intergalactic globular clusters centered on the same location as the central elliptical) are capable of modifying the characteristics of the",
+    "arxiv_id": "astro-ph/9801214"
+  },
+  "core_content": {
+    "novelty_claim": "The study finds no significant change in the globular cluster luminosity function (GCLF) with galactocentric radius for clusters with masses greater than approximately 105M\u2299, and derives a metallicity gradient within M87.",
+    "key_methodology": "High Resolution Camera at the Canada-France-Hawaii Telescope was used to obtain V RI photometry of globular clusters in the innermost 140\u2032\u2032 of the M87 halo.",
+    "outcomes": [
+      "No significant change in GCLF with galactocentric radius for cluster masses greater than approximately 105M\u2299",
+      "Metallicity gradient and mean metallicity derived from (V \u2212I) color indices within M87"
+    ],
+    "full_text_markdown": "The study used the High Resolution Camera at the Canada-France-Hawaii Telescope to obtain V RI photometry of globular clusters in the innermost 140\u2032\u2032 of the M87 halo. The key findings include: (1) No significant change in the GCLF with galactocentric radius for cluster masses greater than approximately 105M\u2299, which constrains theoretical predictions about tidal shocking and evaporation; (2) A metallicity gradient was derived from (V \u2212I) color indices within M87. The metallicity distribution is uniform within the core radius of the globular cluster system but declines steadily at larger radii as Z/Z\u2299\u223cr\u22120.9.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "High Resolution Camera at the Canada-France-Hawaii Telescope"
+      },
+      {
+        "id": "concept_2",
+        "type": "Observation",
+        "label": "Globular Cluster Photometry"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USED_FOR"
+      }
+    ]
+  },
+  "source_file": "w._m87_globular_clusters_and_galactic_winds_issues_in_giant_gal.pdf"
+}

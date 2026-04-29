@@ -1,0 +1,70 @@
+{
+  "card_id": "opensslntru",
+  "bibliographic_data": {
+    "title": "OpenSSLNTRU: Faster post-quantum TLS key exchange",
+    "primary_domain": "cs.CR",
+    "authors": [
+      {
+        "name": "Daniel J. Bernstein"
+      },
+      {
+        "name": "Billy Bob Brumley",
+        "faculty_id": "Billy Brumley",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Ming-Shing Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Nicola Tuveri"
+      }
+    ],
+    "year": 2021,
+    "abstract": "Google\u2019s CECPQ1 experiment in 2016 integrated a post-quantum key-exchange algorithm, newhope1024, into TLS 1.2. The Google-Cloudflare CECPQ2 experiment in 2019 integrated a more efficient key-exchange algorithm, ntruhrss701, into TLS 1.3. This paper revisits the choices made in CECPQ2 and shows how to achieve higher performance for post-quantum key exchange in TLS 1.3 using sntrup761. Previous work had indicated that ntruhrss701 key generation was much faster than sntrup761 key generation, but this paper makes sntrup761 key generation much faster by generating a batch of keys at once.",
+    "arxiv_id": "arXiv:2106.08759"
+  },
+  "core_content": {
+    "novelty_claim": "The paper introduces OpenSSLNTRU, an improved integration of post-quantum key exchange into TLS 1.3, focusing on faster sntrup761 key generation through batch processing.",
+    "key_methodology": "The authors optimize the sntrup761 key generation process by using Montgomery's trick to speed up certain types of inverses and generating a batch of keys at once.",
+    "outcomes": [
+      "Achieved higher performance for post-quantum key exchange in TLS 1.3",
+      "Made sntrup761 key generation faster than ntruhrss701"
+    ],
+    "full_text_markdown": "The urgency of upgrading TLS to post-quantum encryption has prompted a significant amount of work, with many proposals submitted for NIST\u2019s Post-Quantum Cryptography Standardization Project. This paper introduces OpenSSLNTRU, an improved integration of post-quantum key exchange into TLS 1.3, focusing on faster sntrup761 key generation through batch processing. The authors optimize the sntrup761 key generation process by using Montgomery's trick to speed up certain types of inverses and generating a batch of keys at once. This approach achieves higher performance for post-quantum key exchange in TLS 1.3, making it faster than ntruhrss701 while maintaining a higher security level.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "sntrup761",
+        "type": "Method",
+        "label": "sntrup761"
+      },
+      {
+        "id": "ntruhrss701",
+        "type": "Method",
+        "label": "ntruhrss701"
+      },
+      {
+        "id": "montgomerys_trick",
+        "type": "Concept",
+        "label": "Montgomery's Trick"
+      }
+    ],
+    "edges": [
+      {
+        "source": "sntrup761",
+        "target": "montgomerys_trick",
+        "relation": "USES"
+      },
+      {
+        "source": "ntruhrss701",
+        "target": "montgomerys_trick",
+        "relation": "COMPARES"
+      }
+    ]
+  },
+  "source_file": "daniel_opensslntru_faster_post-quantum_tls_key_exchange.pdf"
+}

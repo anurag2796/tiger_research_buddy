@@ -1,0 +1,85 @@
+{
+  "card_id": "adapter_based_multi_domain_transformer_asr",
+  "bibliographic_data": {
+    "title": "Adaptable Multi-Domain Language Model for Transformer ASR",
+    "primary_domain": "cs.CL",
+    "authors": [
+      {
+        "name": "Taewoo Lee"
+      },
+      {
+        "name": "Min-Joong Lee"
+      },
+      {
+        "name": "Tae Gyoon Kang"
+      },
+      {
+        "name": "Seokyeoung Jung"
+      },
+      {
+        "name": "Minseok Kwon",
+        "faculty_id": "Minseok Kwon",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yeona Hong"
+      },
+      {
+        "name": "Jungin Lee"
+      },
+      {
+        "name": "Kyoung-Gu Woo"
+      },
+      {
+        "name": "Ho-Gyeong Kim"
+      },
+      {
+        "name": "Jiseung Jeong"
+      },
+      {
+        "name": "Jihyun Lee"
+      },
+      {
+        "name": "Hosik Lee"
+      },
+      {
+        "name": "Young Sang Choi"
+      }
+    ],
+    "year": 2024,
+    "abstract": "We propose an adapter based multi-domain Transformer based language model (LM) for Transformer ASR. The model consists of a big size common LM and small size adapters. The model can perform multi-domain adaptation with only the small size adapters and its related layers. The proposed model can reuse the full fine-tuned LM which is fine-tuned using all layers of an original model. The proposed LM can be expanded to new domains by adding about 2% of parameters for a first domain and 13% parameters for after second domain. The proposed model is also effective in reducing the model maintenance cost because it is possible to omit the costly and time-consuming common LM pre-training process. Using proposed adapter based approach, we observed that a general LM with adapter can outperform a dedicated music domain LM in terms of word error rate (WER).",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The model proposes an adapter-based multi-domain Transformer language model for ASR, which can be adapted to new domains with minimal parameter additions.",
+    "key_methodology": "The method involves using a large common LM and small size adapters. The adapters are added in front of each batch normalization layer in series or parallel manner. This allows the model to perform multi-domain adaptation efficiently.",
+    "outcomes": [
+      "The proposed model can reuse the full fine-tuned LM which is fine-tuned using all layers of an original model.",
+      "The model can be expanded to new domains by adding about 2% of parameters for a first domain and 13% parameters for after second domain."
+    ],
+    "full_text_markdown": "In this paper, the authors propose an adapter-based multi-domain Transformer language model (LM) for ASR. The model consists of a large common LM and small size adapters that can be added to perform multi-domain adaptation with minimal parameter additions. This approach allows the model to reuse the full fine-tuned LM which is fine-tuned using all layers of an original model. The proposed model can be expanded to new domains by adding about 2% of parameters for a first domain and 13% parameters for after second domain. Additionally, this method reduces the maintenance cost as it omits the costly and time-consuming common LM pre-training process. Experimental results show that using the adapter-based approach, a general LM with adapters can outperform a dedicated music domain LM in terms of word error rate (WER).",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "adapter",
+        "type": "Method",
+        "label": "Adapter"
+      },
+      {
+        "id": "multi_domain_adaptation",
+        "type": "Concept",
+        "label": "Multi-domain Adaptation"
+      }
+    ],
+    "edges": [
+      {
+        "source": "adapter",
+        "target": "multi_domain_adaptation",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "taewoo_adaptable_multi-domain_language_model_for_transformer_asr.pdf"
+}

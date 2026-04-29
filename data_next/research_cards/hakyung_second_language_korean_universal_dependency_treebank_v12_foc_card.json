@@ -1,0 +1,82 @@
+{
+  "card_id": "second_language_korean_ud_treebank_v1_2",
+  "bibliographic_data": {
+    "title": "Second language Korean Universal Dependency treebank v1.2: Focus on data augmentation and annotation scheme refinement",
+    "primary_domain": "cs.CL",
+    "authors": [
+      {
+        "name": "Hakyung Sung",
+        "faculty_id": "Hakyung Sung",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Gyu-Ho Shin"
+      }
+    ],
+    "year": 2025,
+    "abstract": "We expand the second language (L2) Korean Universal Dependencies (UD) treebank with 5,454 manually annotated sentences. The annotation guidelines are also revised to better align with the UD framework. Using this enhanced treebank, we fine-tune three Korean language models\u2014Stanza, spaCy, and Trankit\u2014and evaluate their performance on in-domain and out-of-domain L2-Korean datasets. The results show that fine-tuning significantly improves their performance across various metrics, thus highlighting the importance of using well-tailored L2 datasets for fine-tuning first-language-based, general-purpose language models for the morphosyntactic analysis of L2 data.",
+    "arxiv_id": "arXiv:2503.14718"
+  },
+  "core_content": {
+    "novelty_claim": "The study augments an existing Korean UD treebank with additional sentences and revises annotation guidelines to better align with the UD framework, demonstrating significant improvements in model performance.",
+    "key_methodology": "The authors expanded the L2-Korean UD treebank by adding 5,454 manually annotated sentences. They also revised dependency annotation guidelines to better align with the language-general UD framework and fine-tuned three Korean language models (Stanza, spaCy, Trankit) using this enhanced dataset.",
+    "outcomes": [
+      "The performance of the fine-tuned models significantly improved across various metrics on both in-domain and out-of-domain L2-Korean datasets.",
+      "The updated annotation guidelines better align with the UD framework."
+    ],
+    "full_text_markdown": "This study addresses gaps in previous research by expanding an existing Korean Universal Dependencies (UD) treebank for second language (L2) learners. The authors added 5,454 manually annotated sentences and revised annotation guidelines to better align with the UD framework. They fine-tuned three Korean language models\u2014Stanza, spaCy, and Trankit\u2014and evaluated their performance on both in-domain and out-of-domain L2-Korean datasets. The results showed significant improvements in model performance, highlighting the importance of using well-tailored L2 datasets for fine-tuning general-purpose language models.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Data Augmentation"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "Annotation Guidelines Refinement"
+      },
+      {
+        "id": "concept_3",
+        "type": "Model",
+        "label": "Stanza"
+      },
+      {
+        "id": "concept_4",
+        "type": "Model",
+        "label": "spaCy"
+      },
+      {
+        "id": "concept_5",
+        "type": "Model",
+        "label": "Trankit"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "INVOLVES"
+      },
+      {
+        "source": "concept_2",
+        "target": "concept_3",
+        "relation": "APPLIES_TO"
+      },
+      {
+        "source": "concept_2",
+        "target": "concept_4",
+        "relation": "APPLIES_TO"
+      },
+      {
+        "source": "concept_2",
+        "target": "concept_5",
+        "relation": "APPLIES_TO"
+      }
+    ]
+  },
+  "source_file": "hakyung_second_language_korean_universal_dependency_treebank_v12_foc.pdf"
+}

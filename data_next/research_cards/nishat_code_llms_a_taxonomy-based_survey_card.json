@@ -1,0 +1,65 @@
+{
+  "card_id": "arXiv:2412.08291v1",
+  "bibliographic_data": {
+    "title": "Code LLMs: A Taxonomy-based Survey",
+    "primary_domain": "cs.CL",
+    "authors": [
+      {
+        "name": "Nishat Raihan"
+      },
+      {
+        "name": "Christian Newman",
+        "faculty_id": "Christian Newman",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Marcos Zampieri"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Large language models (LLMs) have demonstrated remarkable capabilities across various NLP tasks and have recently expanded their impact to coding tasks, bridging the gap between natural languages (NL) and programming languages (PL). This taxonomy-based survey provides a comprehensive analysis of LLMs in the NL-PL domain, investigating how these models are utilized in coding tasks and examining their methodologies, architectures, and training processes. We propose a taxonomy-based framework that categorizes relevant concepts, providing a unified classification system to facilitate a deeper understanding of this rapidly evolving field. This survey offers insights into the current state and future directions of LLMs in coding tasks, including their applications and limitations.",
+    "arxiv_id": "arXiv:2412.08291v1"
+  },
+  "core_content": {
+    "novelty_claim": "The paper presents the first taxonomy-based survey on Code LLMs, categorizing relevant concepts to provide a unified classification system for understanding their performance in coding tasks.",
+    "key_methodology": "A comprehensive taxonomy is proposed to organize research in the area of Code Large Language Models (Code LLMs) into five principal sub-areas: Tasks, Corpora, Models, Benchmarks, and Challenges. The survey examines decoder-based models, encoder and encoder-decoder architectures, relevant benchmarks, and open problems.",
+    "outcomes": [
+      "Proposed a taxonomy for organizing research in Code LLMs",
+      "Provided insights into the current state and future directions of LLMs in coding tasks"
+    ],
+    "full_text_markdown": "This paper presents a comprehensive survey on Large Language Models (LLMs) applied to coding tasks, bridging natural language processing (NLP) with programming languages. The authors propose a taxonomy-based framework that categorizes the field into five sub-areas: Tasks, Corpora, Models, Benchmarks, and Challenges. They examine decoder-based models, encoder and encoder-decoder architectures, relevant benchmarks, and open problems in this domain. This survey offers insights into the current state and future directions of LLMs in coding tasks, including their applications and limitations.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Taxonomy-based Framework"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Code LLMs"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "NL-PL Tasks"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "APPLIES_TO"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "ORGANIZES"
+      }
+    ]
+  },
+  "source_file": "nishat_code_llms_a_taxonomy-based_survey.pdf"
+}

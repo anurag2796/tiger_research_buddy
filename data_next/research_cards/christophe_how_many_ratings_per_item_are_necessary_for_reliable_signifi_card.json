@@ -1,0 +1,68 @@
+{
+  "card_id": "how-many-ratings-per-item",
+  "bibliographic_data": {
+    "title": "How Many Ratings per Item are Necessary for Reliable Significance Testing?",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Christopher Homan",
+        "faculty_id": "Christopher Homan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Flip Korn"
+      },
+      {
+        "name": "Deepak Pandita"
+      },
+      {
+        "name": "Chris Welty"
+      }
+    ],
+    "year": 2026,
+    "abstract": "A cornerstone of machine learning evaluation is the (often hidden) assumption that model and human responses are reliable enough to evaluate models against unitary, authoritative, \u201cgold standard\u201d data, via simple metrics such as accuracy, precision, and recall. The genera- tive AI revolution would seem to explode this assumption, given the critical role stochastic inference plays. Yet, in spite of public demand for more transparency in AI\u2014along with strong evidence that humans are unreliable judges\u2014estimates of model reliability are conventionally based on, at most, a few output responses per input item. We adapt a method, previously used to evaluate the reliability of various metrics and estimators for machine learning evaluation, to determine whether an (existing or planned) dataset has enough responses per item to assure reliable null hypothesis statistical testing. We show that, for many common metrics, collecting even 5-10 responses per item (from each model and team of human evaluators) is not sufficient. We apply our methods to several of the very few extant gold standard test sets with multiple disaggregated responses per item and show that even these datasets lack enough responses per item. We show how our methods can help AI researchers make better decisions about how to collect data for AI evaluation.",
+    "arxiv_id": "arXiv:2412.02968v3"
+  },
+  "core_content": {
+    "novelty_claim": "The paper adapts a method previously used to evaluate the reliability of various metrics and estimators in machine learning to determine how many responses per item are necessary for reliable null hypothesis statistical testing.",
+    "key_methodology": "The authors simulate responses from a large pool of human raters and two ML models, generating enough response data to explore the significance boundary for NHST under various metrics. They extend the simulator used by Wein et al. (2023) to estimate type-II error rates, allowing for statistical power.",
+    "outcomes": [
+      "For many common metrics, collecting even 5-10 responses per item is not sufficient for reliable null hypothesis statistical testing.",
+      "The datasets examined in the paper lack enough responses per item for reproducibility of model performance.",
+      "Collecting fewer items with more responses per item can boost reproducibility."
+    ],
+    "full_text_markdown": "This paper addresses a fundamental issue in machine learning evaluation: the assumption that model and human responses are reliable enough to evaluate models against unitary, authoritative 'gold standard' data. The authors propose using a method adapted from Wein et al. (2023) to determine how many responses per item are necessary for reliable null hypothesis statistical testing. They simulate responses from a large pool of human raters and two ML models, generating enough response data to explore the significance boundary under various metrics. Their findings show that even 5-10 responses per item may not be sufficient for reliable testing. The authors also examine the trade-off between the number of items (N) and the number of responses per item (K), showing that collecting fewer items with more responses can boost reproducibility.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Simulation-based Estimation"
+      },
+      {
+        "id": "concept_2",
+        "type": "Metric",
+        "label": "Null Hypothesis Statistical Testing (NHST)"
+      },
+      {
+        "id: concept_3, ": "type: ",
+        "label": "Response Variance"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "APPLIES_TO"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "ESTIMATES"
+      }
+    ]
+  },
+  "source_file": "christophe_how_many_ratings_per_item_are_necessary_for_reliable_signifi.pdf"
+}

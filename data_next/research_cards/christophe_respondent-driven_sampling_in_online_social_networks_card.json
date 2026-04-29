@@ -1,0 +1,57 @@
+{
+  "card_id": "respondent-driven-sampling-in-online-social-networks",
+  "bibliographic_data": {
+    "title": "Respondent-Driven Sampling in Online Social Networks",
+    "primary_domain": "cs.SI",
+    "authors": [
+      {
+        "name": "Christopher M. Homan",
+        "faculty_id": "Christopher Homan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Vincent Silenzio"
+      },
+      {
+        "name": "Randall Sell",
+        "faculty_id": "Travis Desell",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2013,
+    "abstract": "Respondent-driven sampling (RDS) is a commonly used method for acquiring data on hidden communities, i.e., those that lack unbiased sampling frames or face social stigmas that make their members unwilling to identify themselves. Obtaining accurate statistical data about such communities is important because they often have different health burdens from the greater population, and without good statistics it is hard and expensive to effectively reach them for prevention or treatment interventions. Online social networks (OSN) have the potential to transform RDS for the better. We present a new RDS recruitment protocol for OSNs and show via simulation that it outperforms the standard RDS protocol in terms of sampling accuracy and approaches the accuracy of Markov chain Monte Carlo random walks.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper presents a new recruitment protocol for respondent-driven sampling (RDS) over online social networks (OSNs) that outperforms standard RDS protocols and approaches the accuracy of Markov chain Monte Carlo random walks.",
+    "key_methodology": "A new protocol where the recruitment networks are directed acyclic graphs (DAGs).",
+    "outcomes": [
+      "The new protocol dramatically outperforms the standard RDS protocol",
+      "It approaches the sampling accuracy of a Markov chain Monte Carlo (MCMC) random walk"
+    ],
+    "full_text_markdown": "Respondent-driven sampling (RDS) is a commonly used method for acquiring data on hidden communities, such as IV drug users and sex workers. This paper presents a new approach to leverage online social networks (OSNs) to improve the sampling design of RDS. The authors propose a new protocol where recruitment networks are directed acyclic graphs (DAGs). Through simulation, they show that this protocol outperforms standard RDS protocols and approaches the accuracy of Markov chain Monte Carlo random walks. This work is related to previous studies on RDS over OSNs but focuses on different sampling dynamics due to confidentiality concerns.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Respondent-driven Sampling (RDS)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "Directed Acyclic Graphs (DAGs)"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "christophe_respondent-driven_sampling_in_online_social_networks.pdf"
+}

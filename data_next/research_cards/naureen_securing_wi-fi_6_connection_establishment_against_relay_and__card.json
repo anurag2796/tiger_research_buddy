@@ -1,0 +1,52 @@
+{
+  "card_id": "securing-wifi6-connection-establishment",
+  "bibliographic_data": {
+    "title": "Securing Wi-Fi 6 Connection Establishment Against Relay and Spoofing Threats",
+    "primary_domain": "cs.CR",
+    "authors": [
+      {
+        "name": "Naureen Hoque"
+      },
+      {
+        "name": "Hanif Rahbari",
+        "faculty_id": "Hanif Rahbari",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Wireless local area networks remain vulnerable to attacks initiated during the connection establishment (CE) phase. Current Wi-Fi security protocols fail to fully mitigate attacks like man-in-the-middle, preamble spoofing, and relaying. To fortify the CE phase, in this paper we design a backward-compatible scheme using a digital signature interwoven into the preambles at the physical (PHY) layer with time constraints to effectively counter those attacks. This approach slices a MAC-layer signature and embeds the slices within CE frame preambles without extending frame size, allowing one or multiple stations to concurrently verify their respective APs\u2019 transmissions. The concurrent CEs are supported by enabling the stations to analyze the consistent patterns of PHY-layer headers and identify whether the received frames are the anticipated ones from the expected APs, achieving 100% accuracy without needing to examine their MAC-layer headers. Additionally, we design and implement a fast relay attack to challenge our proposed defense and determine its effectiveness. We extend existing open-source tools to support IEEE 802.11ax to evaluate the effectiveness and practicality of our proposed scheme in a testbed consisting of USRPs, commercial APs, and Wi-Fi devices, and we show that our relay attack detection achieves 96-100% true positive rates. Finally, end-to-end formal security analyses confirm the security and correctness of the proposed solution.",
+    "arxiv_id": "arXiv:2501.01517v1"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a backward-compatible scheme that interweaves digital signatures into the preambles at the physical (PHY) layer with time constraints to counter relay and preamble spoofing attacks during Wi-Fi 6 connection establishment.",
+    "key_methodology": "The method involves slicing a MAC-layer signature and embedding it within CE frame preambles without extending frame size, allowing stations to concurrently verify their respective APs\u2019 transmissions. The approach uses consistent patterns of PHY-layer headers to identify expected frames from the anticipated APs.",
+    "outcomes": [
+      "Developed a defense mechanism that achieves 100% accuracy in verifying AP transmissions at the PHY layer without examining MAC-layer headers.",
+      "Implemented and evaluated a fast relay attack to challenge the proposed defense, achieving 96-100% true positive rates."
+    ],
+    "full_text_markdown": "Wireless local area networks (WLANs) have seen significant growth since 2020. However, these networks remain vulnerable to various attacks during the connection establishment phase. Current Wi-Fi security protocols fail to fully mitigate threats like man-in-the-middle, preamble spoofing, and relaying. To address this, the paper proposes a backward-compatible scheme that integrates digital signatures into the preambles at the physical (PHY) layer with time constraints. This approach slices a MAC-layer signature and embeds it within CE frame preambles without extending frame size, allowing stations to concurrently verify their respective APs\u2019 transmissions. The method uses consistent patterns of PHY-layer headers to identify expected frames from the anticipated APs, achieving 100% accuracy without examining MAC-layer headers. Additionally, a fast relay attack was designed and implemented to challenge the proposed defense, with evaluations showing true positive rates of 96-100%. End-to-end formal security analyses confirm the solution's effectiveness.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Digital Signature Interweaving"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "PHY Layer Header Analysis"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "naureen_securing_wi-fi_6_connection_establishment_against_relay_and_.pdf"
+}

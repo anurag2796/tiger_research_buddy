@@ -1,0 +1,55 @@
+{
+  "card_id": "simulation_and_optimization_of_mqw_based_optical_modulator",
+  "bibliographic_data": {
+    "title": "Simulation and Optimization of MQW based optical modulator for on chip optical interconnect",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Sumita Mishra",
+        "faculty_id": "Sumita Mishra",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Naresh K. Chaudhary"
+      },
+      {
+        "name": "Kalyan Singh"
+      }
+    ],
+    "year": 2011,
+    "abstract": "Optical interconnects are foreseen as a potential solution to improve the performance of data transmission in high speed integrated circuits since electrical interconnects operating at high bit rates have several limitations which creates a bottleneck at the interconnect level. The objective of the work is to model and then simulate the MQWM based optical interconnect transmitter. The power output of the simulated modulator is then optimized with respect to various parameters namely contrast ratio, insertion loss and bias current. The methodology presented here is suitable for investigation of both analog and digital modulation performance but it primarily deals with digital modulation. We have not included the effect of carrier charge density in multiple quantum well simulation.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper presents a methodology to model and simulate MQWM based optical interconnect transmitters, optimizing their power output with respect to contrast ratio, insertion loss, and bias current.",
+    "key_methodology": "A rate equation model was used for simulating the dynamic response of MQW laser. The modulator structure is reflective mode (RMQWM). The simulation results were optimized for parameters such as contrast ratio, insertion loss, and bias current.",
+    "outcomes": [
+      "The power output of the simulated modulator was optimized with respect to various parameters.",
+      "The methodology can be used for both analog and digital modulation performance but primarily deals with digital modulation."
+    ],
+    "full_text_markdown": "Optical interconnects are foreseen as a potential solution to improve the performance of data transmission in high speed integrated circuits since electrical interconnects operating at high bit rates have several limitations which creates a bottleneck at the interconnect level. The objective of this work is to model and simulate an MQWM based optical interconnect transmitter, optimizing its power output with respect to parameters such as contrast ratio, insertion loss, and bias current. The methodology presented here can be used for both analog and digital modulation performance but primarily deals with digital modulation. The simulation results were obtained using a rate equation model for the dynamic response of MQW laser, assuming low parasitics assembly scheme. The modulator structure is reflective mode (RMQWM).",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Rate Equation Model"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "MQWM Modulator"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "sumita_simulation_and_optimization_of_mqw_based_optical_modulator_f.pdf"
+}

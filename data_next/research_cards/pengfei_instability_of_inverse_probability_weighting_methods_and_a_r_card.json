@@ -1,0 +1,72 @@
+{
+  "card_id": "instability_ipw_methods",
+  "bibliographic_data": {
+    "title": "Instability of inverse probability weighting methods and a remedy for non-ignorable missing data",
+    "primary_domain": "cs.SE",
+    "authors": [
+      {
+        "name": "Pengfei Li",
+        "faculty_id": "Pengfei Li",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jing Qin"
+      },
+      {
+        "name": "Yukun Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Inverse probability weighting (IPW) methods are commonly used to analyze non-ignorable missing data under the assumption of a logistic model for the missingness probability. However, solving IPW equations numerically may involve non-convergence problems when the sample size is moderate and the missingness probability is high. Moreover, those equations often have multiple roots, and identifying the best root is challenging. Therefore, IPW methods may have low efficiency or even produce biased results. We identify the pitfall in these methods pathologically: they involve the estimation of a moment-generating function, and such functions are notoriously unstable in general. As a remedy, we model the outcome distribution given the covariates of the completely observed individuals semiparametrically. After forming an induced logistic regression model for the missingness status of the outcome and covariate, we develop a maximum conditional likelihood method to estimate the underlying parameters. The proposed method circumvents the estimation of a moment-generating function and hence overcomes the instability of IPW methods. Our theoretical and simulation results show that the proposed method outperforms existing competitors greatly. Two real data examples are analyzed to illustrate the advantages of our method.",
+    "arxiv_id": "arXiv:2507.17137v1"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a new method that circumvents the estimation of a moment-generating function to overcome the instability of inverse probability weighting methods for non-ignorable missing data.",
+    "key_methodology": "Developing a maximum conditional likelihood method based on semiparametric modeling of the outcome distribution given covariates of completely observed individuals, and forming an induced logistic regression model for the missingness status of the outcome and covariate.",
+    "outcomes": [
+      "The proposed method outperforms existing competitors in theoretical and simulation results.",
+      "Two real data examples illustrate the advantages of the new method."
+    ],
+    "full_text_markdown": "Inverse probability weighting (IPW) methods are commonly used to analyze non-ignorable missing data under the assumption of a logistic model for the missingness probability. However, solving IPW equations numerically may involve non-convergence problems when the sample size is moderate and the missingness probability is high. Moreover, those equations often have multiple roots, making it challenging to identify the best root as a parameter estimate. Therefore, IPW methods may have low efficiency or even produce biased results. The paper identifies that the instability of these methods arises mainly from the estimation of a moment-generating function (MGF), which is notoriously unstable in general. As a remedy, the authors propose modeling the outcome distribution given the covariates of completely observed individuals semiparametrically and developing a maximum conditional likelihood method to estimate underlying parameters. This approach circumvents the MGF estimation and overcomes the instability of IPW methods. Theoretical and simulation results show that this new method outperforms existing competitors, and two real data examples are analyzed to illustrate its advantages.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Inverse Probability Weighting (IPW)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Moment-Generating Function (MGF)"
+      },
+      {
+        "id": "concept_3",
+        "type": "Method",
+        "label": "Maximum Conditional Likelihood Method"
+      },
+      {
+        "id": "concept_4",
+        "type": "Model",
+        "label": "Semiparametric Location-Scale Model"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "INVOLVES"
+      },
+      {
+        "source": "concept_3",
+        "target": "concept_4",
+        "relation": "BASED_ON"
+      }
+    ]
+  },
+  "source_file": "pengfei_instability_of_inverse_probability_weighting_methods_and_a_r.pdf"
+}

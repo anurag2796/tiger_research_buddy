@@ -1,0 +1,72 @@
+{
+  "card_id": "understanding_visual_arts_experiences_of_blind_people",
+  "bibliographic_data": {
+    "title": "Understanding Visual Arts Experiences of Blind People",
+    "primary_domain": "cs.HC",
+    "authors": [
+      {
+        "name": "Franklin Mingzhe Li",
+        "faculty_id": "Pengfei Li",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Lotus Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Maryam Bandukda"
+      },
+      {
+        "name": "Abigale Stangl"
+      },
+      {
+        "name": "Kristen Shinohara",
+        "faculty_id": "Kristen Shinohara",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Leah Findlater"
+      },
+      {
+        "name": "Patrick Carrington"
+      }
+    ],
+    "year": 2023,
+    "abstract": "Art allows the expression of important ideas, emotions and beliefs in a multitude of forms, and profoundly influences human society. Experiencing art can bring spiritual satisfaction and self-enrichment to individuals, including people in the blind community [11, 51]: \u201cThe power of the arts can literally change a person\u2019s life by helping him or her develop skills such as leadership, teamwork, communication, self-discipline, and creativity\u201d, says the president and CEO of American Foundation for the Blind [11]. However, most art is consumed visually (e.g., photography, drawing, painting) and thus poses access barriers for over 2.2 billion population in the world who have vision impairments [25]. Although art museums and galleries increasingly offer accessible tours, these are still limited to a small number of venues and are far from comparably enjoyable to what is offered to sighted visitors. In particular, blind people still face challenges with attending and experiencing visual arts exhibitions independently [25]. Past HCI and accessibility research has explored technology-based approaches to lower these access barriers, including museum navigation support [9, 44, 52], audio descriptions [17], tactile graphics [88], multimodal feedback [28], and virtual art tours through smart devices [2]. Despite past innovative efforts, we still know little about how people in the blind community adopt existing technology-based supports, and what considerations they make when using these tools to access visual arts. In particular, while contextual factors, such as social settings, could significantly impact the experience of visual arts appreciation [18, 110], little is known about how blind people adopt visual art access methods under different contexts. We therefore explore blind patrons\u2019 visual arts access preferences with considerations of a range of contextual factors\u2014including locations (e.g., art museums, home), social settings (e.g., with peers, alone), personal art appreciation goals and vision conditions\u2014to inform the design of more inclusive and effective technological supports for blind art patrons.",
+    "arxiv_id": "arXiv:2301.12687"
+  },
+  "core_content": {
+    "novelty_claim": "The study explores how blind people access visual arts, their motivations, and the factors influencing their adoption of various methods to inform the design of more inclusive technological supports.",
+    "key_methodology": "Semi-structured interviews with 15 blind visual arts patrons followed by a survey (N=220) to understand current practices, challenges, motivations, and preferences for accessing visual arts.",
+    "outcomes": [
+      "Current practices and challenges of accessing visual artwork in-person and online",
+      "Motivation and cognition of perceiving visual arts through imagination and discussion with sighted peers",
+      "Implications for designing visual arts access methods"
+    ],
+    "full_text_markdown": "The paper explores the experiences of blind people engaging with visual arts, focusing on current practices, challenges, motivations, and preferences. Through semi-structured interviews with 15 blind patrons and a follow-up survey (N=220), the authors identify key factors influencing the adoption of visual arts access methods. The study highlights the importance of non-visual modes of communication, coordination across modalities, and individual memory in designing effective technological supports for blind art patrons.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Semi-structured interviews"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "Surveys"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "COMPLEMENTARY"
+      }
+    ]
+  },
+  "source_file": "franklin_understanding_visual_arts_experiences_of_blind_people.pdf"
+}

@@ -1,0 +1,70 @@
+{
+  "card_id": "data_forensics_in_diffusion_models",
+  "bibliographic_data": {
+    "title": "Data Forensics in Diffusion Models: A Systematic Analysis of Membership Privacy",
+    "primary_domain": "cs.CR",
+    "authors": [
+      {
+        "name": "Derui Zhu",
+        "faculty_id": "Derui Zhu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Dingfan Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jens Grossklags"
+      },
+      {
+        "name": "Mario Fritz"
+      }
+    ],
+    "year": 2023,
+    "abstract": "In recent years, diffusion models have achieved tremendous success in the field of image generation, becoming the state-of-the-art technology for AI-based image processing systems. Despite the numerous benefits brought by recent advances in diffusion models, there are also concerns about their potential misuse, specifically in terms of privacy breaches and intellectual property infringement. In particular, some of their unique characteristics open up new attack surfaces when considering the real-world deployment of systems built on such models. With a thorough investigation of the attack vectors, we develop a systematic analysis of membership inference attacks on diffusion models and propose novel attack methods tailored to each attack scenario specifically relevant to diffusion models. Our approach exploits easily obtainable quantities and is highly effective, achieving near-perfect attack performance (>0.9 AUCROC) in realistic scenarios. Our extensive experiments demonstrate the effectiveness of our method, highlighting the importance of considering privacy and intellectual property risks when using diffusion models in image generation systems.",
+    "arxiv_id": "arXiv:2302.07801"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes novel attack methods for membership inference attacks on diffusion models, tailored to their unique characteristics and achieving near-perfect performance in realistic scenarios.",
+    "key_methodology": "The authors conduct a systematic analysis of the potential attack surface of diffusion models and design novel attack strategies based on easily obtainable or estimable quantities. The approach is highly effective, with an AUCROC >0.9 in various practical settings.",
+    "outcomes": [
+      "Developed novel membership inference attacks tailored to diffusion models",
+      "Achieved near-perfect attack performance (>0.9 AUCROC) across different scenarios",
+      "Highlighted the importance of considering privacy and intellectual property risks when using diffusion models"
+    ],
+    "full_text_markdown": "In recent years, diffusion models have achieved significant success in image generation, becoming state-of-the-art technology for AI-based systems. However, concerns about their potential misuse, particularly regarding privacy breaches and intellectual property infringement, exist due to unique characteristics that open new attack surfaces. This paper systematically analyzes membership inference attacks on diffusion models and proposes novel methods tailored to specific scenarios. The approach exploits easily obtainable quantities and achieves near-perfect performance (>0.9 AUCROC) in realistic settings. Extensive experiments demonstrate the effectiveness of these methods, emphasizing the need for privacy and intellectual property considerations when using diffusion models.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Membership Inference Attack"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Diffusion Models"
+      },
+      {
+        "id: concept_3, ": "type: ",
+        "label": "Privacy Breaches"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "APPLIES_TO"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "CAUSES"
+      }
+    ]
+  },
+  "source_file": "derui_data_forensics_in_diffusion_models_a_systematic_analysis_of_.pdf"
+}

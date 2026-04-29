@@ -1,0 +1,93 @@
+{
+  "card_id": "aastex62_exoplanet_survey",
+  "bibliographic_data": {
+    "title": "A collage of small planets from the Lick Carnegie Exoplanet Survey : Exploring the super-Earth and sub-Neptune mass regime",
+    "primary_domain": "astro-ph.EP",
+    "authors": [
+      {
+        "name": "Jennifer A. Burt",
+        "faculty_id": "Jennifer Burt",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Fabo Feng"
+      },
+      {
+        "name": "Bradford Holden"
+      },
+      {
+        "name": "Eric E. Mamajek"
+      },
+      {
+        "name": "Chelsea X. Huang"
+      },
+      {
+        "name": "Mickey M. Rosenthal"
+      },
+      {
+        "name": "Songhu Wang"
+      },
+      {
+        "name": "R. Paul Butler",
+        "faculty_id": "Zachary Butler",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Steven S. Vogt"
+      },
+      {
+        "name": "Gregory Laughlin"
+      },
+      {
+        "name": "Gregory W. Henry"
+      },
+      {
+        "name": "Johanna K. Teske"
+      },
+      {
+        "name": "Sharon W. Wang"
+      },
+      {
+        "name": "Jeffrey D. Crane"
+      },
+      {
+        "name": "Steve A. Shectman"
+      }
+    ],
+    "year": 2020,
+    "abstract": "Analysis of new precision radial velocity (RV) measurements from the Lick Automated Planet Finder (APF) and Keck HIRES have yielded the discovery of three new exoplanet candidates orbiting two nearby K dwarfs not previously reported to have companions (HD 190007 and HD 216520. We also report new velocities from both the APF and the Planet Finder Spectrograph (PFS) for the previously reported planet host stars GJ 686 and HD 180617 and update the corresponding exoplanet orbital models. Of the newly discovered planets, HD 190007 b has a period of 11.72 days, an RV semi-amplitude of K = 5.64\u00b10.55 m s\u22121, a minimum mass of 16.46\u00b11.66 M\u2295, and orbits the slightly metal-rich, active K4 dwarf star HD 190007 (d = 12.7 pc). HD 216520 b has an orbital period of 35.45 days, an RV semi-amplitude of K = 2.28\u00b10.20 m s\u22121, and a minimum mass of 10.26\u00b10.99 M\u2295, while HD 216520 c has an orbital period of P = 154.43 days, an RV semi-amplitude of K = 1.29\u00b10.22 m s\u22121, and a minimum mass of 9.44 \u00b1 1.63 M\u2295. Both of these planets orbit the slightly metal-poor, inactive K0 dwarf star HD 216520 (d = 19.6 pc). We find that our updated best fit models for HD 180617 b and GJ 686 b are in good agreement with the previously published results. For HD 180617 b we obtain an orbital period of 105.91 days, an RV semi-amplitude of K = 2.696\u00b10.224 m s\u22121, and a minimum mass of 12.214\u00b11.05 M\u2295. For GJ 686 b we find the orbital period to be 15.53 days, the RV semi-amplitude to be K = 3.004\u00b10.180 m s\u22121, and the minimum mass to be 6.624\u00b10.432 M\u2295. Using an injection-recovery exercise, we find that HD 190007 b and HD 216520 b are unlikely to have additional planets with masses and orbital periods within a factor of two, in marked contrast to \u223c85% of planets in this mass and period range found with Kepler.",
+    "arxiv_id": "2011.08867"
+  },
+  "core_content": {
+    "novelty_claim": "The paper reports the discovery of three new exoplanet candidates using precision radial velocity measurements from the Lick Automated Planet Finder and Keck HIRES, orbiting nearby K dwarfs.",
+    "key_methodology": "New precision radial velocity measurements were obtained for several stars previously known to host planets. The data was used to update orbital models and identify potential additional planets in the system.",
+    "outcomes": [
+      "Discovered three new exoplanet candidates",
+      "Updated orbital models for previously known planets"
+    ],
+    "full_text_markdown": "The Lick Carnegie Exoplanet Survey (LCES) team analyzed precision radial velocity measurements from the Lick Automated Planet Finder (APF) and Keck HIRES to discover three new exoplanet candidates orbiting nearby K dwarfs. The study also updated orbital models for previously known planets, including HD 180617 b and GJ 686 b. The newly discovered planets include HD 190007 b with a period of 11.72 days, an RV semi-amplitude of K = 5.64\u00b10.55 m s\u22121, and a minimum mass of 16.46\u00b11.66 M\u2295, orbiting the slightly metal-rich, active K4 dwarf star HD 190007 (d = 12.7 pc). HD 216520 b has an orbital period of 35.45 days and a minimum mass of 10.26\u00b10.99 M\u2295, while HD 216520 c orbits the slightly metal-poor, inactive K0 dwarf star HD 216520 (d = 19.6 pc). The study also found that updated models for HD 180617 b and GJ 686 b are in good agreement with previously published results.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Precision Radial Velocity Measurements"
+      },
+      {
+        "id": "concept_2",
+        "type": "Exoplanet Discovery",
+        "label": "New Exoplanet Candidates"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "YIELDS"
+      }
+    ]
+  },
+  "source_file": "jennifer_a_collage_of_small_planets_from_the_lick_carnegie_exoplanet_.pdf"
+}

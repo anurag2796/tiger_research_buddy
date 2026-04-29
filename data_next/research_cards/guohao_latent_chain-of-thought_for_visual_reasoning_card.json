@@ -1,0 +1,80 @@
+{
+  "card_id": "latent_chain_of_thought_cv",
+  "bibliographic_data": {
+    "title": "Latent Chain-of-Thought for Visual Reasoning",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Guohao Sun"
+      },
+      {
+        "name": "Hang Hua"
+      },
+      {
+        "name": "Jian Wang"
+      },
+      {
+        "name": "Jiebo Luo"
+      },
+      {
+        "name": "Sohail Dianat"
+      },
+      {
+        "name": "Majid Rabbani"
+      },
+      {
+        "name": "Raghuveer Rao"
+      },
+      {
+        "name": "Zhiqiang Tao",
+        "faculty_id": "Zhiqiang Tao",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Chain-of-thought (CoT) reasoning is critical for improving the interpretability and reliability of Large Vision-Language Models (LVLMs). However, existing training algorithms such as SFT, PPO, and GRPO may not generalize well across unseen reasoning tasks and heavily rely on a biased reward model. To address this challenge, we reformulate reasoning in LVLMs as posterior inference and propose a scalable training algorithm based on amortized variational inference. By leveraging diversity-seeking reinforcement learning algorithms, we introduce a novel sparse reward function for token-level learning signals that encourage diverse, high-likelihood latent CoT, overcoming deterministic sampling limitations and avoiding reward hacking. Additionally, we implement a Bayesian inference-scaling strategy that replaces costly Best-of-N and Beam Search with a marginal likelihood to efficiently rank optimal rationales and answers. We empirically demonstrate that the proposed method enhances the state-of-the-art LVLMs on seven reasoning benchmarks, in terms of effectiveness, generalization, and interpretability.",
+    "arxiv_id": "arXiv:2510.23925"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a novel method called LaCoT for enabling amortized latent CoT sampling in LVLMs, which generalizes across various visual reasoning tasks.",
+    "key_methodology": "The authors propose a scalable training algorithm based on Amortized Variational Inference (AVI) and introduce a Bayesian inference-scaling strategy to efficiently rank optimal rationales and answers. They also use a reference-guided policy exploration method and a token-level reward approximation method to improve exploration efficiency.",
+    "outcomes": [
+      "The proposed method enhances the state-of-the-art LVLMs on seven reasoning benchmarks, improving effectiveness, generalization, and interpretability.",
+      "A scalable, probabilistically justified searching strategy is delivered, effectively identifying optimal rationales and answers within LVLMs."
+    ],
+    "full_text_markdown": "Chain-of-thought (CoT) reasoning is critical for enhancing the interpretability and reliability of Large Vision-Language Models (LVLMs). However, existing training methods such as Supervised Fine-Tuning (SFT), Proximal Policy Optimization (PPO), and Group Relative Policy Optimization (GRPO) struggle to generalize across diverse reasoning questions due to their inability to explicitly capture dependencies across trajectories. To address these limitations, this work proposes a latent variable model to realize visual CoT as a probabilistic inference problem over latent variables. The proposed method, LaCoT, enables amortized latent CoT sampling in LVLMs and generalizes across various visual reasoning tasks. Key components include a general RL training algorithm (RGFN) with a novel reference-guided policy exploration method, a token-level reward approximation method for efficient mini-batch exploration, and a Bayesian inference-scaling strategy (BiN) for optimal rationale-solution searching at inference time. Empirical results show that LaCoT improves the state-of-the-art LVLMs on seven reasoning benchmarks, demonstrating its effectiveness in enhancing model performance.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Amortized Variational Inference (AVI)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Latent Chain-of-Thought (CoT)"
+      },
+      {
+        "id": "concept_3",
+        "type": "Algorithm",
+        "label": "RGFN (Reference-Guided Policy Exploration Method)"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "guohao_latent_chain-of-thought_for_visual_reasoning.pdf"
+}

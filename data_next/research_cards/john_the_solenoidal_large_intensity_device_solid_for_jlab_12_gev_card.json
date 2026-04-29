@@ -1,0 +1,141 @@
+{
+  "card_id": "solenoidal_large_intensity_device",
+  "bibliographic_data": {
+    "title": "The Solenoidal Large Intensity Device (SoLID) for JLab 12 GeV",
+    "primary_domain": "nucl-ex",
+    "authors": [
+      {
+        "name": "John Arrington"
+      },
+      {
+        "name": "Jay Benesch"
+      },
+      {
+        "name": "Alexandre Camsonne"
+      },
+      {
+        "name": "Jimmy Caylor"
+      },
+      {
+        "name": "Jian-Ping Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Silviu Covrig Dusa"
+      },
+      {
+        "name": "Alexander Emmert"
+      },
+      {
+        "name": "George Evans"
+      },
+      {
+        "name": "Haiyan Gao"
+      },
+      {
+        "name": "J. Ole Hansen"
+      },
+      {
+        "name": "Garth M. Huber"
+      },
+      {
+        "name": "Sylvester Joosten"
+      },
+      {
+        "name": "Vladimir Khachatryan"
+      },
+      {
+        "name": "Nilanga Liyanage"
+      },
+      {
+        "name": "Zein-Eddine Meziani"
+      },
+      {
+        "name": "Michael Nycz"
+      },
+      {
+        "name": "Chao Peng",
+        "faculty_id": "Chao Peng",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Michael Paolone"
+      },
+      {
+        "name": "Whit Seay"
+      },
+      {
+        "name": "Paul A. Souder"
+      },
+      {
+        "name": "Nikos Sparveris"
+      },
+      {
+        "name": "Hubert Spiesberger"
+      },
+      {
+        "name": "Ye Tian"
+      },
+      {
+        "name": "Eric Voutier"
+      },
+      {
+        "name": "Junqi Xie"
+      },
+      {
+        "name": "Weizhi Xiong"
+      },
+      {
+        "name": "Zhenyu Ye"
+      },
+      {
+        "name": "Zhihong Ye"
+      },
+      {
+        "name": "Jixie Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Zhiwen Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Xiaochao Zheng"
+      }
+    ],
+    "year": 2023,
+    "abstract": "To exploit the full potential of the 12 GeV energy upgrade of the Continuous Electron Beam Accelerator Facility (CEBAF) at Jefferson Lab (JLab), we have designed a new spectrometer, named the Solenoidal Large Intensity Device (SoLID). The main feature of SoLID is its large acceptance and the capacity to operate at the full CEBAF luminosity of up to 1039 cm\u22122s\u22121. A rich and diverse science program consisting of a set of high-impact physics experiments has been developed with SoLID. The SoLID proposal was submitted as a Major Item of Equipment (MIE) to the U.S. Department of Energy (DOE) and, after passing several Director\u2019s Reviews at JLab, received a successful Science Review from the DOE in March 2021. We are presently awaiting the full report describing the review outcome.",
+    "arxiv_id": "arXiv:2209.13357v3"
+  },
+  "core_content": {
+    "novelty_claim": "SoLID is a new spectrometer designed to exploit the full potential of JLab's 12 GeV energy upgrade, with large acceptance and capacity for high luminosity operation.",
+    "key_methodology": "The design of SoLID takes advantage of recent progress in detector, data acquisition, and computing technologies. It will accommodate various experimental configurations for a broad spectrum of physics experiments.",
+    "outcomes": [
+      "Five primary experiments have been approved with the highest rating by the JLab Program Advisory Committee (PAC).",
+      "Three of these are measurements of Transverse-Momentum-Dependent Distributions (TMDs) describing the three-dimensional structure of the nucleon in momentum space via Semi-Inclusive Deep Inelastic Scattering (SIDIS) with polarized 3He and proton targets.",
+      "The fourth aims at understanding the origin of the proton mass via measurements of near-threshold photo-production and electro-production of the J/\u03c8 meson.",
+      "The final one will test the electroweak sector of the Standard Model at low energy and study hadronic physics in the high-x region through measurements of Parity-Violating Deep Inelastic Scattering (PVDIS)."
+    ],
+    "full_text_markdown": "SoLID is a new spectrometer designed to exploit the full potential of JLab's 12 GeV energy upgrade, with large acceptance and capacity for high luminosity operation. The main feature of SoLID is its large acceptance and the capacity to operate at the full CEBAF luminosity of up to 1039 cm\u22122s\u22121. A rich and diverse science program consisting of a set of high-impact physics experiments has been developed with SoLID. The SoLID proposal was submitted as a Major Item of Equipment (MIE) to the U.S. Department of Energy (DOE) and, after passing several Director\u2019s Reviews at JLab, received a successful Science Review from the DOE in March 2021. We are presently awaiting the full report describing the review outcome.\n\nFive primary experiments have been approved with the highest rating by the JLab Program Advisory Committee (PAC). Three of these are measurements of Transverse-Momentum-Dependent Distributions (TMDs) describing the three-dimensional structure of the nucleon in momentum space via Semi-Inclusive Deep Inelastic Scattering (SIDIS) with polarized 3He and proton targets. The fourth aims at understanding the origin of the proton mass via measurements of near-threshold photo-production and electro-production of the J/\u03c8 meson. The final one will test the electroweak sector of the Standard Model at low energy and study hadronic physics in the high-x region through measurements of Parity-Violating Deep Inelastic Scattering (PVDIS)."
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Solenoidal Large Intensity Device (SoLID)"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "DESIGNED_FOR"
+      }
+    ]
+  },
+  "source_file": "john_the_solenoidal_large_intensity_device_solid_for_jlab_12_gev.pdf"
+}

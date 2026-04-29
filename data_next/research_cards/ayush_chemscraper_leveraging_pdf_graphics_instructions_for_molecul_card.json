@@ -1,0 +1,77 @@
+{
+  "card_id": "chemscraper",
+  "bibliographic_data": {
+    "title": "ChemScraper: Leveraging PDF Graphics Instructions for Molecular Diagram Parsing",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Ayush Kumar Shah"
+      },
+      {
+        "name": "Bryan Manrique Amador"
+      },
+      {
+        "name": "Abhisek Dey"
+      },
+      {
+        "name": "Ming Creekmore"
+      },
+      {
+        "name": "Blake Ocampo"
+      },
+      {
+        "name": "Scott Denmark"
+      },
+      {
+        "name": "Richard Zanibbi",
+        "faculty_id": "Richard Zanibbi",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Most molecular diagram parsers recover chemical structure from raster images (e.g., PNGs). However, many PDFs include commands giving explicit locations and shapes for characters, lines, and polygons. We present a new parser that uses these born-digital PDF primitives as input. The parsing model is fast and accurate, and does not require GPUs, Optical Character Recognition (OCR), or vectorization. We use the parser to annotate raster images and then train a new multi-task neural network for recognizing molecules in raster images. We evaluate our parsers using SMILES and standard benchmarks, along with a novel evaluation protocol comparing molecular graphs directly that supports automatic error compilation and reveals errors missed by SMILES-based evaluation. On the synthetic USPTO benchmark, our born-digital parser obtains a recognition rate of 98.4% (1% higher than previous models) and our relatively simple neural parser for raster images obtains a rate of 85% using less training data than existing neural approaches (thousands vs. millions of molecules).",
+    "arxiv_id": "arXiv:2311.12161v5"
+  },
+  "core_content": {
+    "novelty_claim": "The paper presents a new parser that uses born-digital PDF primitives to parse molecular diagrams, achieving high accuracy and efficiency without requiring GPUs or OCR.",
+    "key_methodology": "The method involves using Minimum Spanning Trees (MST) and visual graphs to construct molecular structures from PDF instructions. The parser is then used to annotate raster images for training a multi-task neural network.",
+    "outcomes": [
+      "A born-digital parser that uses PDF primitives to achieve 98.4% recognition rate on the USPTO benchmark.",
+      "A relatively simple neural parser for raster images that achieves 85% recognition rate with less training data than existing approaches."
+    ],
+    "full_text_markdown": "The paper addresses the need for robust systems to extract molecule drawings from PDF files, which are crucial in chemoinformatics and chemical search applications. The authors present a new method called ChemScraper that leverages born-digital PDF primitives to parse molecular diagrams efficiently without requiring GPUs or OCR. This method involves constructing Minimum Spanning Trees (MST) and visual graphs to identify neighboring primitives and group them into molecular entities. The parser is also used to annotate raster images, which are then used to train a multi-task neural network for recognizing molecules in raster images. Evaluations show that the born-digital parser achieves 98.4% recognition rate on the USPTO benchmark, while the neural parser achieves 85% with less training data.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "born-digital_parser",
+        "type": "Method",
+        "label": "Born-Digital Parser"
+      },
+      {
+        "id": "minimum_spanning_tree",
+        "type": "Concept",
+        "label": "Minimum Spanning Tree (MST)"
+      },
+      {
+        "id": "visual_graph",
+        "type": "Concept",
+        "label": "Visual Graph"
+      }
+    ],
+    "edges": [
+      {
+        "source": "born-digital_parser",
+        "target": "minimum_spanning_tree",
+        "relation": "USES"
+      },
+      {
+        "source": "born-digital_parser",
+        "target": "visual_graph",
+        "relation": "CONSTRUCTS"
+      }
+    ]
+  },
+  "source_file": "ayush_chemscraper_leveraging_pdf_graphics_instructions_for_molecul.pdf"
+}

@@ -1,0 +1,77 @@
+{
+  "card_id": "retovla_architecture",
+  "bibliographic_data": {
+    "title": "RetoVLA: Reusing Register Tokens for Spatial Reasoning in Vision-Language-Action Models",
+    "primary_domain": "cs.AI",
+    "authors": [
+      {
+        "name": "Jiyeon Koo"
+      },
+      {
+        "name": "Taewan Cho"
+      },
+      {
+        "name": "Hyunjoon Kang"
+      },
+      {
+        "name": "Eunseom Pyo"
+      },
+      {
+        "name": "Tae Gyun Oh",
+        "faculty_id": "Tae Oh",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Taeryang Kim"
+      },
+      {
+        "name": "Andrew Jaeyong Choi"
+      }
+    ],
+    "year": 2026,
+    "abstract": "Vision-Language-Action (VLA) models have demonstrated robust performance across diverse robotic tasks. However, their high memory and computational demands often limit real-time deployment. While existing model compression techniques reduce the parameter footprint, they often drop in 3D spatial reasoning and scene layout understanding. This work introduces RetoVLA, an architecture designed to maintain spatial awareness in lightweight models by repurposing Register Tokens\u2014learnable parameters originally introduced to mitigate attention artifacts in Vision Transformers. While these tokens are generally discarded once used, we repurpose them for their dense representation of global spatial context. RetoVLA integrates these recycled tokens directly into the action-planning module through a dedicated spatial context injection path. Our proposed design enables the recovery of global context without increasing the total parameter count. Real-world experiments using a 7-DOF manipulator show a 17.1% improvement in average success rates over the baseline.",
+    "arxiv_id": "arXiv:2509.21243v2"
+  },
+  "core_content": {
+    "novelty_claim": "RetoVLA repurposes Register Tokens to maintain spatial awareness in lightweight VLA models without increasing parameter count.",
+    "key_methodology": "Reusing Register Tokens, originally used to mitigate attention artifacts in Vision Transformers, directly injects global spatial context into the action-planning module of VLA models.",
+    "outcomes": [
+      "Improves real-world average success rates by 17.1% compared to baseline models",
+      "Maintains spatial awareness without increasing total parameter count"
+    ],
+    "full_text_markdown": "RetoVLA is a novel architecture designed for Vision-Language-Action (VLA) models that aims to maintain spatial awareness in lightweight models while addressing the high computational demands of existing VLA models. The key novelty lies in repurposing Register Tokens, which are typically discarded after use but retain meaningful spatial information. These tokens are integrated directly into the action-planning module through a dedicated spatial context injection path, enabling efficient recovery of global context without increasing parameter count. Experiments on a 7-DOF manipulator demonstrate significant improvements in success rates over baseline models.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "RetoVLA"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Register Tokens"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Spatial Context Injection"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "ENABLES"
+      }
+    ]
+  },
+  "source_file": "jiyeon_retovla_reusing_register_tokens_for_spatial_reasoning_in_vis.pdf"
+}

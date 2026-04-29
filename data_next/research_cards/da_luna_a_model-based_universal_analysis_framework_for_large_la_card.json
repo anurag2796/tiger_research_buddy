@@ -1,0 +1,74 @@
+{
+  "card_id": "luna_llm_analysis",
+  "bibliographic_data": {
+    "title": "LUNA: A Model-Based Universal Analysis Framework for Large Language Models",
+    "primary_domain": "cs.AI",
+    "authors": [
+      {
+        "name": "Da Song",
+        "faculty_id": "Xinchao Song",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Xuan Xie"
+      },
+      {
+        "name": "Jiayang Song",
+        "faculty_id": "Xinchao Song",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Derui Zhu",
+        "faculty_id": "Derui Zhu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yuheng Huang"
+      },
+      {
+        "name": "Felix Juefei-Xu"
+      },
+      {
+        "name": "Lei Ma",
+        "faculty_id": "Naveen Sharma",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Over the past decade, Artificial Intelligence (AI) has had great success and is being used in a wide range of academic and industrial fields. More recently, Large Language Models (LLMs) have made rapid advancements that have propelled AI to a new level, enabling and empowering even more diverse applications and industrial domains with intelligence, particularly in areas like software engineering and natural language processing. Nevertheless, a number of emerging trustworthiness concerns and issues exhibited in LLMs, e.g., robustness and hallucination, have already received much attention, without properly solving which the widespread adoption of LLMs could be greatly hindered in practice. The distinctive characteristics of LLMs, such as the self-attention mechanism, extremely large neural network scale, and autoregressive generation usage contexts, differ from classic AI software based on Convolutional Neural Networks and Recurrent Neural Networks and present new challenges for quality analysis. Up to the present, it still lacks universal and systematic analysis techniques for LLMs despite the urgent industrial demand across diverse domains. Towards bridging such a gap, in this paper, we initiate an early exploratory study and propose a universal analysis framework for LLMs LUNA, which is designed to be general and extensible and enables versatile analysis of LLMs from multiple quality perspectives in a human-interpretable manner.",
+    "arxiv_id": "arXiv:2310.14211"
+  },
+  "core_content": {
+    "novelty_claim": "LUNA proposes a universal analysis framework for Large Language Models (LLMs) that addresses trustworthiness concerns such as robustness and hallucination, enabling versatile quality analysis from multiple perspectives.",
+    "key_methodology": "LUNA leverages abstract model construction methods to create an auxiliary analysis asset and proxy. It collects and defines evaluation metrics at both the abstract model level and semantics level to assess the quality of LLMs in terms of trustworthiness perspectives such as OOD detection, adversarial robustness, and truthfulness.",
+    "outcomes": [
+      "The abstract model has the potential to distinguish normal and abnormal behavior in LLMs.",
+      "LUNA is effective for real-world analysis of LLMs in practice, with hyperparameter settings influencing performance.",
+      "Different evaluation metrics are correlated differently with the analysis performance."
+    ],
+    "full_text_markdown": "In recent years, there has been a significant advancement in Large Language Models (LLMs) that have enabled and empowered diverse applications and industrial domains. However, trustworthiness concerns such as robustness and hallucination pose challenges for their widespread adoption. LUNA is proposed as a universal analysis framework to address these issues by leveraging abstract model construction methods and defining evaluation metrics at both the abstract model level and semantics level. The framework aims to provide human-interpretable quality analysis of LLMs from multiple perspectives, including OOD detection, adversarial robustness, and truthfulness. Through large-scale evaluations, it has been demonstrated that LUNA can effectively distinguish normal and abnormal behavior in LLMs and is effective for real-world analysis with performance influenced by hyperparameter settings.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Abstract Model Construction"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "LLM Trustworthiness"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "da_luna_a_model-based_universal_analysis_framework_for_large_la.pdf"
+}

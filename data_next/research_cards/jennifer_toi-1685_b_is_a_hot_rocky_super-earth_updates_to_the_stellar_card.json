@@ -1,0 +1,91 @@
+{
+  "card_id": "TOI-1685_b",
+  "bibliographic_data": {
+    "title": "TOI-1685 b is a Hot Rocky Super-Earth: Updates to the Stellar and Planet Parameters of a Popular JWST Cycle 2 Target",
+    "primary_domain": "astro-ph.EP",
+    "authors": [
+      {
+        "name": "Jennifer A. Burt",
+        "faculty_id": "Jennifer Burt",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Matthew J. Hooton"
+      },
+      {
+        "name": "Eric E. Mamajek"
+      },
+      {
+        "name": "Oscar Barrag\u00e1n"
+      },
+      {
+        "name": "Sarah C. Millholland"
+      },
+      {
+        "name": "Tyler R. Fairnington"
+      },
+      {
+        "name": "Chloe Fisher"
+      },
+      {
+        "name": "Samuel P. Halverson"
+      },
+      {
+        "name": "Chelsea X. Huang"
+      },
+      {
+        "name": "Madison Brady"
+      },
+      {
+        "name": "Andreas Seifahrt"
+      },
+      {
+        "name": "Eric Gaidos"
+      },
+      {
+        "name": "Rafael Luque"
+      },
+      {
+        "name": "David Kasper"
+      },
+      {
+        "name": "Jacob L. Bean"
+      }
+    ],
+    "year": 2024,
+    "abstract": "We present an updated characterization of the TOI-1685 planetary system, which consists of a Pb = 0.69 day USP super-Earth planet orbiting a nearby (d = 37.6 pc) M2.5V star (TIC 28900646, 2MASS J04342248+4302148). This planet was previously featured in two contemporaneous discovery papers, but the best-fit planet mass, radius, and bulk density values were discrepant allowing it to be interpreted either as a hot, bare rock or a 50% H2O / 50% MgSiO3 water world. TOI-1685 b will be observed in three independent JWST cycle two programs, two of which assume the planet is a water world while the third assumes that it is a hot rocky planet. Here we include a refined stellar classification with a focus on addressing the host star\u2019s metallicity, an updated planet radius measurement that includes two sectors of TESS data and multi-color photometry from a variety of ground-based facilities, and a more accurate dynamical mass measurement from a combined CARMENES, IRD, and MAROON-X radial velocity data set. We find that the star is very metal-rich ([Fe/H] \u2243+0.3) and that the planet is systematically smaller, lower mass, and higher density than initially reported, with new best-fit parameters of Rpl= 1.468 +0.050 \u22120.051 R\u2295and Mpl= 3.03+0.33 \u22120.32 M\u2295. These results fall in between the previously derived values and suggest that TOI-1685 b is a hot, rocky planet with an Earth-like density (\u03c1pl= 5.3 \u00b1 0.8 g cm\u22123, or 0.96 \u03c1\u2295), high equilibrium temperature (Teq = 1062 \u00b1 27 K) and negligible volatiles, rather than a water world.",
+    "arxiv_id": "arXiv:2405.14895"
+  },
+  "core_content": {
+    "novelty_claim": "The paper presents updated stellar and planetary parameters for TOI-1685 b, resolving discrepancies in previous measurements to suggest the planet is a hot rocky super-Earth.",
+    "key_methodology": "The authors used new precise radial velocity measurements from MAROON-X, additional ground-based photometry from MuSCAT, and an additional sector of TESS data. They also refined the stellar classification focusing on metallicity.",
+    "outcomes": [
+      "A refined stellar classification with a very metal-rich star ([Fe/H] \u2243+0.3)",
+      "An updated planet radius measurement (Rpl= 1.468 +0.050 \u22120.051 R\u2295) and mass measurement (Mpl= 3.03+0.33 \u22120.32 M\u2295)",
+      "A more accurate interpretation of TOI-1685 b as a hot rocky planet with an Earth-like density, high equilibrium temperature, and negligible volatiles"
+    ],
+    "full_text_markdown": "The paper updates the characterization of the TOI-1685 planetary system. The authors use new data from TESS, radial velocity measurements, and ground-based photometry to refine the stellar and planetary parameters. They find that the star is very metal-rich ([Fe/H] \u2243+0.3) and that the planet has a smaller radius (Rpl= 1.468 +0.050 \u22120.051 R\u2295) and lower mass (Mpl= 3.03+0.33 \u22120.32 M\u2295). These results suggest TOI-1685 b is a hot rocky planet with an Earth-like density, high equilibrium temperature, and negligible volatiles."
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Refined Stellar Classification"
+      },
+      {
+        "id": "concept_2",
+        "type": "Property",
+        "label": "Metallicity"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "INVOLVES"
+      }
+    ]
+  },
+  "source_file": "jennifer_toi-1685_b_is_a_hot_rocky_super-earth_updates_to_the_stellar.pdf"
+}

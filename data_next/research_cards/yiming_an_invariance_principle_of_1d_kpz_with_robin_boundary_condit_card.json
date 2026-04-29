@@ -1,0 +1,49 @@
+{
+  "card_id": "invariance_principle_for_1d_kpz",
+  "bibliographic_data": {
+    "title": "An Invariance Principle of 1D KPZ with Robin Boundary Conditions",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Yiming Tang",
+        "faculty_id": "Yiming Tang",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2025,
+    "abstract": "We consider a discrete one-dimensional random interface on the half-space whose height at any positive point is composed of a function of the heights at its two closest neighbours and an independent random noise background. In [AC24], Adhikari and Chatterjee proved for the full-space model that the height function of such a Markov process converges to the Cole-Hopf solution of the 1D KPZ equation under a parabolic rescaling as the variance of the noise variables goes to zero in the intermediate disorder regime, assuming the dependency of neighboring heights is equivariant, symmetric, and at least six times differentiable in a neighborhood of zero. In this paper, we obtained the same convergence result for the half-space model with a Neumann boundary condition.",
+    "arxiv_id": "2404.19215"
+  },
+  "core_content": {
+    "novelty_claim": "The authors prove that the height function of a discrete one-dimensional random interface on the half-space converges to the log of the mild solution of the SHE with Robin boundary conditions and multiplicative space-time white noise under parabolic rescaling, extending the result from full-space models.",
+    "key_methodology": "The paper considers a growing random surface defined through recursions that involve a function \u03c8 of the heights at two closest neighbors plus independent random noise. The authors use a moment generating function m and parameters \u03b2 and \u03b3N to define the model and prove convergence under parabolic rescaling.",
+    "outcomes": [
+      "The height function converges to the log of the mild solution of the SHE with Robin boundary conditions and multiplicative space-time white noise.",
+      "This result extends the weak KPZ universality from full-space models to half-space models."
+    ],
+    "full_text_markdown": "In this paper, Yiming Tang considers a discrete one-dimensional random interface on the half-space. The height at any positive point is determined by a function of its two closest neighbors and an independent random noise background. Adhikari and Chatterjee in [AC24] proved that for full-space models, under parabolic rescaling as the variance of the noise variables approaches zero in the intermediate disorder regime, the height function converges to the Cole-Hopf solution of the 1D KPZ equation, assuming certain conditions on the dependency of neighboring heights. Tang extends this result to half-space models with a Neumann boundary condition. The main theorem shows that under parabolic rescaling, the height function converges in law to the log of the mild solution of the SHE with Robin boundary conditions and multiplicative space-time white noise.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Discrete One-Dimensional Random Interface"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "Cole-Hopf Solution of the 1D KPZ Equation"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "yiming_an_invariance_principle_of_1d_kpz_with_robin_boundary_condit.pdf"
+}

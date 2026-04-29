@@ -1,0 +1,170 @@
+{
+  "card_id": "huizhou_hadron_spectrometer",
+  "bibliographic_data": {
+    "title": "Huizhou Hadron Spectrometer -- a Proposed High-rate Experimental Setup at the High Intensity Heavy-ion Accelerator Facility",
+    "primary_domain": "physics.hep",
+    "authors": [
+      {
+        "name": "Xurong Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yunyun Fan"
+      },
+      {
+        "name": "Shuangshi Fang"
+      },
+      {
+        "name": "Zhao-Qing Feng"
+      },
+      {
+        "name": "Feng-Kun Guo"
+      },
+      {
+        "name": "Weijia Han"
+      },
+      {
+        "name": "Jun He"
+      },
+      {
+        "name": "Qinghua He"
+      },
+      {
+        "name": "Xionghong He"
+      },
+      {
+        "name": "Hongxia Huang"
+      },
+      {
+        "name": "Xiaolin Kang"
+      },
+      {
+        "name": "Hongli Ma",
+        "faculty_id": "Naveen Sharma",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Weihu Ma",
+        "faculty_id": "Naveen Sharma",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yong-Liang Ma",
+        "faculty_id": "Naveen Sharma",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Norihito Muramatsu"
+      },
+      {
+        "name": "Zaiba Mushtaq"
+      },
+      {
+        "name": "Xiaoyang Niu"
+      },
+      {
+        "name": "Jialun Ping"
+      },
+      {
+        "name": "Hao Qiu"
+      },
+      {
+        "name": "Jun Shi",
+        "faculty_id": "Pengcheng Shi",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Ye Tian"
+      },
+      {
+        "name": "Qian Wang"
+      },
+      {
+        "name": "Rong Wang"
+      },
+      {
+        "name": "Shuai-Chun Wang"
+      },
+      {
+        "name": "Xiao-Yun Wang"
+      },
+      {
+        "name": "Jia-Jun Wu"
+      },
+      {
+        "name": "Chuwen Xiao"
+      },
+      {
+        "name": "Ju-Jun Xie"
+      },
+      {
+        "name": "Haibo Yang",
+        "faculty_id": "Haibo Yang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Xieyang Yu",
+        "faculty_id": "Zhe Yu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Honglin Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Shenghui Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Chengxin Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Kuang-Ta Chao"
+      },
+      {
+        "name": "Qiang Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Bing-Song Zou"
+      }
+    ],
+    "year": 2025,
+    "abstract": "The High-Intensity Heavy-Ion Accelerator Facility (HIAF), currently under construction in Huizhou, Guangdong Province, China, is projected to be completed by 2025. This facility will be capable of producing proton and heavy-ion beams with energies reaching several GeV, thereby offering a versatile platform for advanced fundamental physics research. Key scientific objectives include exploring physics beyond the Standard Model through the search for novel particles and interactions, testing fundamental symmetries, investigating exotic hadronic states such as di-baryons, pentaquark states and multi-strange hypernuclei, conducting precise measurements of hadron and hypernucleus properties, and probing the phase boundary and critical point of nuclear matter. To facilitate these investigations, we propose the development of a dedicated experimental apparatus at HIAF \u2014 the Huizhou Hadron Spectrometer (HHaS). This paper presents the conceptual design of HHaS, comprising a solenoid magnet, a five-dimensional silicon pixel tracker, a Low-Gain Avalanche Detector (LGAD) for time-of-flight measurements, and a Cherenkov-scintillation dual-readout electromagnetic calorimeter. The design anticipates an unprecedented event rate of 1\u2013100 MHz, extensive particle acceptance, a track momentum resolution at 1% level, an electromagnetic energy resolution of \u223c3% @ 1 GeV and multi-particle identification capabilities. Such capabilities position HHaS as a powerful instrument for advancing experimental studies in particle and nuclear physics. The successful realization of HHaS is expected to significantly bolster the development of medium- and high-energy physics research within China.",
+    "arxiv_id": "2511.22864"
+  },
+  "core_content": {
+    "novelty_claim": "The Huizhou Hadron Spectrometer (HHaS) is proposed to significantly enhance the statistical precision of hadron-related physics studies by achieving an unprecedented increase in event rate and performance metrics.",
+    "key_methodology": "HHaS will utilize a solenoid magnet, a five-dimensional silicon pixel tracker, a Low-Gain Avalanche Detector (LGAD), and a Cherenkov-scintillation dual-readout electromagnetic calorimeter to achieve high-resolution tracking and energy measurements of hadrons.",
+    "outcomes": [
+      "Enhanced precision in the study of light hadron decay patterns, mass spectra, and internal structures",
+      "Improved capability for searching new particles and interactions beyond the Standard Model",
+      "Advanced testing of fundamental symmetries like CP symmetry"
+    ],
+    "full_text_markdown": "The High-Intensity Heavy-Ion Accelerator Facility (HIAF) is currently under construction in Huizhou, Guangdong Province, China. This facility will provide intense proton and heavy-ion beams with energies up to 9.3 GeV for protons and 2.45 GeV/u for heavy ions, enabling advanced fundamental physics research. The Huizhou Hadron Spectrometer (HHaS) is proposed as a dedicated experimental apparatus at HIAF. HHaS will include a solenoid magnet, a five-dimensional silicon pixel tracker, a Low-Gain Avalanche Detector (LGAD), and a Cherenkov-scintillation dual-readout electromagnetic calorimeter to achieve high-resolution tracking and energy measurements of hadrons. The design anticipates an unprecedented event rate of 1\u2013100 MHz, extensive particle acceptance, a track momentum resolution at 1% level, an electromagnetic energy resolution of \u223c3% @ 1 GeV, and multi-particle identification capabilities. This setup is expected to significantly enhance the precision of hadron-related physics studies.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "HHaS",
+        "type": "Method",
+        "label": "Huizhou Hadron Spectrometer"
+      }
+    ],
+    "edges": [
+      {
+        "source": "HHaS",
+        "target": "High-Intensity Heavy-Ion Accelerator Facility",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "xurong_huizhou_hadron_spectrometer_--_a_proposed_high-rate_experime.pdf"
+}

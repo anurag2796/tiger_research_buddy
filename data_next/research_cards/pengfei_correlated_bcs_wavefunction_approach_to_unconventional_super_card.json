@@ -1,0 +1,59 @@
+{
+  "card_id": "correlated_bcs_wavefunction_approach",
+  "bibliographic_data": {
+    "title": "Correlated BCS wavefunction approach to unconventional superconductors",
+    "primary_domain": "cond-mat.supr-con",
+    "authors": [
+      {
+        "name": "Pengfei Li",
+        "faculty_id": "Pengfei Li",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Kun Jiang"
+      },
+      {
+        "name": "Jiangping Hu",
+        "faculty_id": "Derui Zhu",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2023,
+    "abstract": "We propose a modified BCS wavefunction as the ground state of a correlated superconductor with correlation specified between k and \u2212k electrons in reciprocal space. Owing to this correlation, low-energy excitations are not conventional BCS Bogoliubov quasiparticles. They display at least four poles in the Green\u2019s function and their particle-hole weights in the tunneling and photon-emission spectrum become asymmetric. The superfluid density or superfluid stiffness also deviates from the BCS predictions with finite paramagnetic terms inside the total diamagnetic response. Moreover, a d-wave correlated pairing state becomes robust against weak disorders. Hence, this state can explain many mysterious features observed in unconventional superconductors like cuprates.",
+    "arxiv_id": "2309.02695v1"
+  },
+  "core_content": {
+    "novelty_claim": "A modified BCS wavefunction is proposed to describe the ground state of a correlated superconductor, which accounts for correlation between k and -k electrons in reciprocal space.",
+    "key_methodology": "The authors propose a correlated BCS (CBCS) wavefunction that includes phenomenological parameters to capture the unique properties of unconventional superconductors. The excitations above this ground state have more poles than conventional BCS excitations, leading to asymmetric particle-hole weights and deviations from BCS predictions in superfluid density.",
+    "outcomes": [
+      "Low-energy excitations display at least four poles in the Green\u2019s function.",
+      "Particle-hole weights in tunneling and photon-emission spectra become asymmetric.",
+      "Superfluid density or stiffness deviates from BCS predictions with finite paramagnetic terms.",
+      "A d-wave correlated pairing state is robust against weak disorders."
+    ],
+    "full_text_markdown": "The paper proposes a modified BCS wavefunction to describe the ground state of a correlated superconductor, focusing on correlation between k and -k electrons in reciprocal space. This approach leads to low-energy excitations with more poles than conventional BCS excitations, resulting in asymmetric particle-hole weights and deviations from BCS predictions in superfluid density. The authors find that this correlated BCS (CBCS) wavefunction can explain many mysterious features observed in unconventional superconductors like cuprates. Specifically, the d-wave correlated pairing state is robust against weak disorders.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "correlated_bcs_wavefunction",
+        "type": "Method",
+        "label": "Correlated BCS Wavefunction"
+      },
+      {
+        "id": "unconventional_superconductors",
+        "type": "Concept",
+        "label": "Unconventional Superconductors"
+      }
+    ],
+    "edges": [
+      {
+        "source": "correlated_bcs_wavefunction",
+        "target": "unconventional_superconductors",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "pengfei_correlated_bcs_wavefunction_approach_to_unconventional_super.pdf"
+}

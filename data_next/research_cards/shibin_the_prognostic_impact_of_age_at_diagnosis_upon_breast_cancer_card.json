@@ -1,0 +1,75 @@
+{
+  "card_id": "impact_of_age_on_different_subtypes",
+  "bibliographic_data": {
+    "title": "The Prognostic Impact of Age at Diagnosis Upon Breast Cancer of Different Immunohistochemical Subtypes: A Surveillance, Epidemiology, and End Results (SEER) Population-Based Analysis",
+    "primary_domain": "q-bio.CB (Quantitative Biology - Cell Behavior)",
+    "authors": [
+      {
+        "name": "Shibin Cai"
+      },
+      {
+        "name": "Wenjia Zuo"
+      },
+      {
+        "name": "Xunxi Lu"
+      },
+      {
+        "name": "Z. Gou"
+      },
+      {
+        "name": "Yi Zhou"
+      },
+      {
+        "name": "Pengpeng Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yin Pan",
+        "faculty_id": "Yin Pan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Shuzheng Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2020,
+    "abstract": "The influence of age at diagnosis upon the prognosis of patients with different immunohistochemical (IHC)-defined subtypes is still incompletely defined. Our study aimed at examining the association of age at diagnosis and risk of breast cancer-specific mortality (BCSM). 172,179 eligible breast cancer patients were obtained for our study cohort using the Surveillance, Epidemiology, and End Results database from 2010 to 2015. Patients were classified into four IHC-defined subtypes according to their ER, PgR, and HER2 status. Kaplan\u2013Meier plots were used to describe BCSM among patients in different age groups. A Cox proportional hazards model was used for multivariate analysis. A multivariable fractional polynomial model within the Cox proportional hazards model was used to evaluate the relationship between age at diagnosis and the risk of BCSM. For the whole cohort, the median follow-up time was 43 months. Patients younger than 40 years and those older than 79 years presented with the worst BCSM (hazard ratio [HR] 1.13, 95% confidence interval [CI] 1.03\u20131.23, and HR 3.52, 95% CI 3.23\u20133.83, respectively, p < 0.01, with age 40\u201349 years as the reference). The log hazard ratios of hormone receptor (HoR)(+)/HER2(\u2013) patients formed a quadratic relationship between age at diagnosis and BCSM, but not in the other three subtypes of breast cancer. In the HoR(+)/HER2(\u2013) subtype, patients younger than 40 years had worse BCSM than those aged at 40\u201349 years (HR 1.26, 95% CI 1.10\u20131.45, and p < 0.01).",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The study examines the relationship between age at diagnosis and breast cancer-specific mortality (BCSM) in different immunohistochemical subtypes of breast cancer.",
+    "key_methodology": "Patients were classified into four IHC-defined subtypes according to their ER, PgR, and HER2 status. Kaplan\u2013Meier plots were used to describe BCSM among patients in different age groups. A Cox proportional hazards model was used for multivariate analysis. A multivariable fractional polynomial model within the Cox proportional hazards model was used to evaluate the relationship between age at diagnosis and the risk of BCSM.",
+    "outcomes": [
+      "Patients younger than 40 years and those older than 79 years presented with the worst breast cancer-specific mortality (BCSM).",
+      "The log hazard ratios of hormone receptor (HoR)(+)/HER2(\u2013) patients formed a quadratic relationship between age at diagnosis and BCSM, but not in the other three subtypes of breast cancer.",
+      "In the HoR(+)/HER2(\u2013) subtype, patients younger than 40 years had worse BCSM than those aged at 40\u201349 years."
+    ],
+    "full_text_markdown": "The study investigates how age affects survival outcomes in different types of breast cancer. Using data from the SEER database, researchers analyzed over 172,000 patients diagnosed between 2010 and 2015. They found that younger (under 40) and older (over 79) patients had worse survival rates compared to those in their 40s. Specifically, for the hormone receptor-positive/HER2-negative subtype, young age was particularly predictive of poor outcomes.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Kaplan\u2013Meier plots"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "Cox proportional hazards model"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "shibin_the_prognostic_impact_of_age_at_diagnosis_upon_breast_cancer.pdf"
+}

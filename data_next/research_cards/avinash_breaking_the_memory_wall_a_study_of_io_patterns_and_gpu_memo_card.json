@@ -1,0 +1,61 @@
+{
+  "card_id": "breaking-the-memory-wall",
+  "bibliographic_data": {
+    "title": "Breaking the Memory Wall: A Study of I/O Patterns and GPU Memory Utilization for Hybrid CPU-GPU Offloaded Optimizers",
+    "primary_domain": "cs.SE",
+    "authors": [
+      {
+        "name": "Avinash Maurya"
+      },
+      {
+        "name": "Jie Ye"
+      },
+      {
+        "name": "M. Rafique",
+        "faculty_id": "M. Mustafa Rafique",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Franck Cappello"
+      },
+      {
+        "name": "Bogdan Nicolae"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Transformers and Large-Language Models (LLMs) have seen increasing adoption in various domains, leading to unprecedented scale of development and discovery across multiple fields. However, the rapid growth in the number of parameters has outpaced available GPU memory, creating a significant 'memory wall' that makes it challenging to train and run these massive models efficiently. In this paper, we aim to fill this gap by characterizing the behavior of offloaded training using the DeepSpeed runtime. Specifically, we study the GPU memory utilization over time during each iteration, the activity on the PCIe related to transfers between the host memory and the GPU memory, and the relationship between resource utilization and the steps involved in each iteration. Thanks to this study, we reveal opportunities for future improvements of offloading solutions, which enable greater flexibility to optimize the cost-performance trade-off in the context of transformer and LLM training.",
+    "arxiv_id": "arXiv:2406.10728"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a detailed characterization of offloaded training behavior using DeepSpeed runtime to reveal opportunities for improving cost-performance trade-offs in transformer and LLM training.",
+    "key_methodology": "The study measures GPU memory utilization over time during each iteration, activity on PCIe related to data transfers between host and GPU memories, and correlates these with resource utilization steps involved in each iteration.",
+    "outcomes": [
+      "Characterized behavior of offloaded training using DeepSpeed runtime",
+      "Revealed opportunities for future improvements of offloading solutions"
+    ],
+    "full_text_markdown": "Transformers and Large-Language Models (LLMs) have seen increasing adoption, leading to unprecedented scale. However, the rapid growth in parameters has outpaced GPU memory, creating a 'memory wall'. The paper aims to fill this gap by studying DeepSpeed runtime for offloaded training. Specifically, it measures GPU memory utilization over time during each iteration and correlates these with resource steps involved.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "DeepSpeed runtime"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Offloaded training behavior"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "CHARACTERIZES"
+      }
+    ]
+  },
+  "source_file": "avinash_breaking_the_memory_wall_a_study_of_io_patterns_and_gpu_memo.pdf"
+}

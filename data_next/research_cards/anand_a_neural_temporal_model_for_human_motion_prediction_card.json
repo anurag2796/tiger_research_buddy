@@ -1,0 +1,71 @@
+{
+  "card_id": "a_neural_temporal_model_for_human_motion_prediction",
+  "bibliographic_data": {
+    "title": "A Neural Temporal Model for Human Motion Prediction",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Anand Gopalakrishnan"
+      },
+      {
+        "name": "A. Mali"
+      },
+      {
+        "name": "Daniel Kifer"
+      },
+      {
+        "name": "C. Lee Giles"
+      },
+      {
+        "name": "Alexander Ororbia",
+        "faculty_id": "Alexander Ororbia",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2018,
+    "abstract": "We propose novel neural temporal models for predicting and synthesizing human motion, achieving state-of-the-art in modeling long-term motion trajectories while being competitive with prior work in short-term prediction and requiring significantly less computation. Key aspects of our proposed system include: 1) a novel, two-level processing architecture that aids in generating planned trajectories, 2) a simple set of easily computable features that integrate derivative information, and 3) a novel multi-objective loss function that helps the model to slowly progress from simple next-step prediction to the harder task of multi-step, closed-loop prediction. Our results demonstrate that these innovations improve the modeling of long-term motion trajectories. Finally, we propose a novel metric, called Normalized Power Spectrum Similarity (NPSS), to evaluate the long-term predictive ability of motion synthesis models, complementing the popular mean-squared error (MSE) measure of Euler joint angles over time.",
+    "arxiv_id": "1809.03036v5"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a novel two-level processing architecture, easily computable features integrating derivative information, and a multi-objective loss function for improving long-term human motion prediction.",
+    "key_methodology": "A neural temporal model with a two-stage processing architecture that includes generating planned trajectories, using derivative information as features, and employing a multi-objective loss function to balance next-step and long-term predictions.",
+    "outcomes": [
+      "Achieved state-of-the-art in modeling long-term motion trajectories",
+      "Competitive performance in short-term prediction with less computation",
+      "Proposed Normalized Power Spectrum Similarity (NPSS) as a novel metric for evaluating long-term motion synthesis"
+    ],
+    "full_text_markdown": "The paper addresses the problem of building predictive models of human movement using motion capture data. It proposes a neural temporal model that includes a two-level processing architecture, derivative information features, and a multi-objective loss function to improve both short-term and long-term predictions. The authors introduce a novel metric called Normalized Power Spectrum Similarity (NPSS) for evaluating the quality of long-term human motion synthesis models. Experiments demonstrate the effectiveness of these innovations in modeling long-term motion trajectories more accurately than previous methods.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Two-Level Processing Architecture"
+      },
+      {
+        "id": "concept_2",
+        "type": "Feature",
+        "label": "Derivative Information Features"
+      },
+      {
+        "id: concept_3, ": "type: Loss Function",
+        "label": "Multi-Objective Loss Function"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "SOLVES"
+      },
+      {
+        "source": "concept_2",
+        "target": "concept_3",
+        "relation": "INTEGRATES"
+      }
+    ]
+  },
+  "source_file": "anand_a_neural_temporal_model_for_human_motion_prediction.pdf"
+}

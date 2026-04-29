@@ -1,0 +1,83 @@
+{
+  "card_id": "efficacy-of-melatonin-with-behavioural-sleep-wake-scheduling",
+  "bibliographic_data": {
+    "title": "Efficacy of melatonin with behavioural sleep-wake scheduling for delayed sleep-wake phase disorder: A double-blind, randomised clinical trial",
+    "primary_domain": "cs.HC (Human-Computer Interaction)",
+    "authors": [
+      {
+        "name": "T. Sletten"
+      },
+      {
+        "name": "Michelle Magee",
+        "faculty_id": "Michelle Magee",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "J. Murray"
+      },
+      {
+        "name": "C. Gordon"
+      },
+      {
+        "name": "N. Lovato"
+      },
+      {
+        "name": "D. Kennaway"
+      },
+      {
+        "name": "S. Gwini"
+      },
+      {
+        "name": "D. Bartlett"
+      },
+      {
+        "name": "S. Lockley"
+      },
+      {
+        "name": "L. Lack"
+      },
+      {
+        "name": "R. Grunstein"
+      },
+      {
+        "name": "S. Rajaratnam"
+      }
+    ],
+    "year": 2018,
+    "abstract": "Background: Delayed Sleep-Wake Phase Disorder (DSWPD) is characterised by sleep initiation insomnia when attempting sleep at conventional times and difficulty waking at the required time for daytime commitments. Although there are published therapeutic guidelines for the administration of melatonin for DSWPD, to our knowledge, randomised controlled trials are lacking. This trial tested the efficacy of 0.5 mg melatonin, combined with behavioural sleep-wake scheduling, for improving sleep initiation in clinically diagnosed DSWPD patients with a delayed endogenous melatonin rhythm relative to patient-desired (or -required) bedtime (DBT). Methods: This randomised, placebo-controlled, double-blind clinical trial was conducted in an Australian outpatient DSWPD population. Following 1-wk baseline, clinically diagnosed DSWPD patients with delayed melatonin rhythm relative to DBT were randomised to 4-wk treatment with 0.5 mg fast-release melatonin or placebo 1 h before DBT for at least 5 consecutive nights per week. The primary outcome was actigraphic sleep onset time. Secondary outcomes were sleep efficiency in the first third of time in bed (SE T1) on treatment nights, subjective sleep-related daytime impairment (Patient Reported Outcomes Measurement Information System [PROMIS]), PROMIS sleep disturbance, measures of daytime sleepiness, clinician-rated change in illness severity, and DLMO time.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The study tested the efficacy of 0.5 mg melatonin combined with behavioural sleep-wake scheduling for improving sleep initiation in DSWPD patients with a delayed endogenous melatonin rhythm relative to patient-desired bedtime.",
+    "key_methodology": "Participants were randomised to receive either 0.5 mg fast-release melatonin or placebo 1 hour before their desired bedtime (DBT) for at least 5 consecutive nights per week over a 4-week period, while also receiving behavioural sleep-wake scheduling.",
+    "outcomes": [
+      "Sleep onset occurred 34 minutes earlier in the melatonin group compared to baseline and placebo.",
+      "SE T1 increased; PROMIS sleep-related impairment, PROMIS sleep disturbance, insomnia severity, and functional disability decreased.",
+      "A greater proportion of patients showed more than minimal clinician-rated improvement following melatonin treatment (52.8%) compared to placebo (24.0%)."
+    ],
+    "full_text_markdown": "The study aimed to test the efficacy of 0.5 mg melatonin combined with behavioural sleep-wake scheduling for improving sleep initiation in DSWPD patients with a delayed endogenous melatonin rhythm relative to patient-desired bedtime. The participants were randomised to receive either 0.5 mg fast-release melatonin or placebo 1 hour before their desired bedtime (DBT) for at least 5 consecutive nights per week over a 4-week period, while also receiving behavioural sleep-wake scheduling. The primary outcome was actigraphic sleep onset time, and secondary outcomes included sleep efficiency in the first third of time in bed (SE T1), subjective sleep-related daytime impairment (PROMIS), PROMIS sleep disturbance, measures of daytime sleepiness, clinician-rated change in illness severity, and DLMO time. The study found that melatonin treatment was efficacious for improving objective and subjective measures of sleep disturbances and sleep-related impairments in DSWPD patients with a delayed circadian phase relative to DBT.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "melatonin",
+        "type": "Drug",
+        "label": "Melatonin"
+      },
+      {
+        "id": "behavioural_sleep_wake_scheduling",
+        "type": "Method",
+        "label": "Behavioural Sleep-Wake Scheduling"
+      }
+    ],
+    "edges": [
+      {
+        "source": "melatonin",
+        "target": "behavioural_sleep_wake_scheduling",
+        "relation": "COMBINED_WITH"
+      }
+    ]
+  },
+  "source_file": "t._efficacy_of_melatonin_with_behavioural_sleep-wake_scheduling.pdf"
+}

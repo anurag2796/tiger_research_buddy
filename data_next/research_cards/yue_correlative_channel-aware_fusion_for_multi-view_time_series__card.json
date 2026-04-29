@@ -1,0 +1,70 @@
+{
+  "card_id": "correlative_channel_aware_fusion",
+  "bibliographic_data": {
+    "title": "Correlative Channel-Aware Fusion for Multi-View Time Series Classification",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Yue Bai"
+      },
+      {
+        "name": "Lichen Wang",
+        "faculty_id": "Linwei Wang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Zhiqiang Tao",
+        "faculty_id": "Zhiqiang Tao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Sheng Li",
+        "faculty_id": "Pengfei Li",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yun Fu"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Multi-view time series classification (MVTSC) aims to improve the performance by fusing the distinctive temporal information from multiple views. Existing methods mainly focus on fusing multi-view information at an early stage, e.g., by learning a common feature subspace among multiple views. However, these early fusion methods may not fully exploit the unique temporal patterns of each view in complicated time series. Moreover, the label correlations of multiple views, which are critical to boosting, are usually under-explored for the MVTSC problem. To address the aforementioned issues, we propose a Correlative Channel-Aware Fusion (C2AF) network. First, C2AF extracts comprehensive and robust temporal patterns by a two-stream structured encoder for each view, and captures the intra-view and inter-view label correlations with a graph-based correlation matrix. Second, a channel-aware learnable fusion mechanism is implemented through convolutional neural networks to further explore the global correlative patterns. These two steps are trained end-to-end in the proposed C2AF network. Extensive experimental results on three real-world datasets demonstrate the superiority of our approach over the state-of-the-art methods. A detailed ablation study is also provided to show the effectiveness of each model component.",
+    "arxiv_id": "arXiv:1911.11561v2"
+  },
+  "core_content": {
+    "novelty_claim": "The proposed C2AF network jointly captures view-specific temporal patterns and automatically fuses multi-view label correlations, addressing the limitations of early fusion methods.",
+    "key_methodology": "C2AF uses a two-stream structured encoder to extract robust temporal features for each view. It then captures intra-view and inter-view label correlations using a graph-based correlation matrix and implements a channel-aware learnable fusion mechanism through convolutional neural networks.",
+    "outcomes": [
+      "The C2AF network demonstrates superior performance over state-of-the-art methods on three real-world datasets.",
+      "A detailed ablation study shows the effectiveness of each model component."
+    ],
+    "full_text_markdown": "Multi-view time series classification (MVTSC) aims to improve the performance by fusing the distinctive temporal information from multiple views. Existing methods mainly focus on fusing multi-view information at an early stage, e.g., by learning a common feature subspace among multiple views. However, these early fusion methods may not fully exploit the unique temporal patterns of each view in complicated time series. Moreover, the label correlations of multiple views, which are critical to boosting, are usually under-explored for the MVTSC problem.\n\nTo address the aforementioned issues, we propose a Correlative Channel-Aware Fusion (C2AF) network. First, C2AF extracts comprehensive and robust temporal patterns by a two-stream structured encoder for each view, and captures the intra-view and inter-view label correlations with a graph-based correlation matrix. Second, a channel-aware learnable fusion mechanism is implemented through convolutional neural networks to further explore the global correlative patterns. These two steps are trained end-to-end in the proposed C2AF network.\n\nExtensive experimental results on three real-world datasets demonstrate the superiority of our approach over the state-of-the-art methods. A detailed ablation study is also provided to show the effectiveness of each model component.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "correlative_channel_aware_fusion",
+        "type": "Method",
+        "label": "C2AF Network"
+      }
+    ],
+    "edges": [
+      {
+        "source": "correlative_channel_aware_fusion",
+        "target": "two_stream_encoder",
+        "relation": "USES"
+      },
+      {
+        "source": "correlative_channel_aware_fusion",
+        "target": "graph_based_correlation_matrix",
+        "relation": "CAPTURES"
+      },
+      {
+        "source": "correlative_channel_aware_fusion",
+        "target": "channel_aware_learnable_fusion_mechanism",
+        "relation": "IMPLEMENTS"
+      }
+    ]
+  },
+  "source_file": "yue_correlative_channel-aware_fusion_for_multi-view_time_series_.pdf"
+}

@@ -1,0 +1,64 @@
+{
+  "card_id": "home-based_biofeedback_speech_treatment",
+  "bibliographic_data": {
+    "title": "Home\u2010based biofeedback speech treatment improves dysarthria in repeat\u2010expansion SCAs",
+    "primary_domain": "q-bio.NC",
+    "authors": [
+      {
+        "name": "A. Vogel"
+      },
+      {
+        "name": "L. Graf"
+      },
+      {
+        "name": "Michelle Magee",
+        "faculty_id": "Michelle Magee",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "L. Sch\u00f6ls"
+      },
+      {
+        "name": "Natalie Rommel"
+      },
+      {
+        "name": "M. Synofzik"
+      }
+    ],
+    "year": 2022,
+    "abstract": "CAG repeat-expansion spinocerebellar ataxias (CAG-SCAs) are genetically defined multisystemic degenerative diseases, resulting in motor symptoms including dysarthria with a substantial impact on daily living. Whilst speech therapy is widely recommended in ataxia, very limited evidence exists for its use. We evaluated the efficacy of a home-delivered, ataxia-tailored biofeedback-driven speech therapy in CAG-SCA in 16 individuals with SCA1, 2, 3, or 6. Treatment was delivered intensively over 20 days. Efficacy was evaluated by blinded ratings of intelligibility (primary) and acoustic measures (secondary) leveraging an intra-individual control design. Intelligibility improved post-treatment (Z = -3.18, p = 0.004) whilst remaining stable prior to treatment (Z = 0.53, p = 1.00).",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The study provides the first well-controlled evidence for the efficacy of speech treatment in SCAs, specifically using a home-based biofeedback-driven approach.",
+    "key_methodology": "A rater-blinded intra-individually controlled trial was conducted with 16 participants. Participants were assessed before and after a 4-week ataxia-tailored speech therapy program delivered via a home-based software called Melbourne Ataxia Speech Treatment (MAST).",
+    "outcomes": [
+      "Intelligibility improved post-treatment",
+      "Stable intelligibility prior to treatment"
+    ],
+    "full_text_markdown": "The study evaluated the efficacy of a home-delivered, ataxia-tailored biofeedback-driven speech therapy in CAG-SCA. Sixteen participants with SCA1, 2, 3, or 6 were recruited and underwent intensive 4-week treatment. The primary outcome was intelligibility, which improved post-treatment (Z = -3.18, p = 0.004), while remaining stable prior to treatment (Z = 0.53, p = 1.00). Secondary outcomes included acoustic measures of prosody, respiration, phonation, resonance, and articulation. The study used a single-arm intra-individual control design with blinded expert listeners for intelligibility assessment.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Home-based biofeedback-driven speech therapy"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "CAG repeat-expansion spinocerebellar ataxias (CAG-SCAs)"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "TREATS"
+      }
+    ]
+  },
+  "source_file": "a._homebased_biofeedback_speech_treatment_improves_dysarthria_i.pdf"
+}

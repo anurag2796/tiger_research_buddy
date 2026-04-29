@@ -1,0 +1,61 @@
+{
+  "card_id": "privacy-preserving-reflection-rendering",
+  "bibliographic_data": {
+    "title": "Privacy-preserving Reflection Rendering for Augmented Reality",
+    "primary_domain": "cs.CR",
+    "authors": [
+      {
+        "name": "Yiqin Zhao",
+        "faculty_id": "Yiqin Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Sheng Wei"
+      },
+      {
+        "name": "Tian Guo"
+      }
+    ],
+    "year": 2022,
+    "abstract": "Many augmented reality (AR) applications rely on omnidirectional environment lighting to render photorealistic virtual objects. When the virtual objects consist of reflective materials, such as a metallic sphere, the required lighting information can consist of privacy-sensitive information that is outside the current camera view. In this paper, we show, for the first time, that accuracy-driven multi-view environment lighting can reveal out-of-camera scene information and compromise privacy. We present a simple yet effective privacy attack that extracts sensitive scene information such as human face and text information from the rendered objects, under a number of application scenarios. To defend against such attacks, we develop a novel IPC2S defense and a conditional R2 defense. Our IPC2S defense, used in conjunction with a generic lighting reconstruction method, preserves the scene geometry while obfuscating privacy-sensitive information.",
+    "arxiv_id": "2207.03056v1"
+  },
+  "core_content": {
+    "novelty_claim": "The paper presents a novel IPC2S defense and a conditional R2 defense to protect visual privacy in augmented reality applications using reflection rendering.",
+    "key_methodology": "The authors use accuracy-driven multi-view environment lighting reconstruction techniques to identify sensitive scene information such as human faces and text from past camera observations, then blur the color pixels associated with detected regions. They leverage existing OCR and face detection models for this purpose.",
+    "outcomes": [
+      "Developed a novel IPC2S defense that preserves scene geometry while obfuscating privacy-sensitive information.",
+      "Achieved up to 0.98 SSIM score in visual quality impact of the defense across various rendering scenarios.",
+      "Reduced automatic extraction success rate of sensitive information to at most 8.8%."
+    ],
+    "full_text_markdown": "Many augmented reality (AR) applications rely on omnidirectional environment lighting to render photorealistic virtual objects. When the virtual objects consist of reflective materials, such as a metallic sphere, the required lighting information can consist of privacy-sensitive information that is outside the current camera view. In this paper, we show, for the first time, that accuracy-driven multi-view environment lighting can reveal out-of-camera scene information and compromise privacy. To defend against such attacks, we develop a novel IPC2S defense and a conditional R2 defense. Our IPC2S defense, used in conjunction with a generic lighting reconstruction method, preserves the scene geometry while obfuscating privacy-sensitive information. We evaluate the visual quality impact of our defense by comparing rendered virtual objects to ones rendered with a generic multi-lighting reconstruction technique, ARKit, and R2 defense. Our visual and quantitative results demonstrate that our defense leads to structurally similar reflections with up to 0.98 SSIM score across a variety of rendering scenarios while preserving sensitive information by reducing the automatic extraction success rate to at most 8.8%.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "IPC2S_defense",
+        "type": "Method",
+        "label": "IPCP2S Defense"
+      },
+      {
+        "id": "R2_defense",
+        "type": "Method",
+        "label": "Conditional R2 Defense"
+      }
+    ],
+    "edges": [
+      {
+        "source": "IPC2S_defense",
+        "target": "multi-view_lighting_reconstruction",
+        "relation": "USES"
+      },
+      {
+        "source": "R2_defense",
+        "target": "generic_multi-lighting_reconstruction_technique",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "yiqin_privacy-preserving_reflection_rendering_for_augmented_realit.pdf"
+}

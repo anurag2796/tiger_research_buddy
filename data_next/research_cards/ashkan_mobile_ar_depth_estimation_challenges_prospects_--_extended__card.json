@@ -1,0 +1,63 @@
+{
+  "card_id": "mobile_ar_depth_estimation",
+  "bibliographic_data": {
+    "title": "Mobile AR Depth Estimation: Challenges & Prospects -- Extended Version",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Ashkan Ganj"
+      },
+      {
+        "name": "Yiqin Zhao",
+        "faculty_id": "Yiqin Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Hang Su"
+      },
+      {
+        "name": "Tian Guo"
+      }
+    ],
+    "year": 2023,
+    "abstract": "Metric depth estimation plays an important role in mobile augmented reality (AR). With accurate metric depth, we can achieve more realistic user interactions such as object placement and occlusion detection. While specialized hardware like LiDAR demonstrates its promise, its restricted availability and performance limitations make it less ideal. Monocular depth estimation, on the other hand, relies solely on mobile cameras, which are ubiquitous, making it a promising alternative for mobile AR. In this paper, we investigate the challenges and opportunities of achieving accurate metric depth estimation in mobile AR. We tested four different state-of-the-art monocular depth estimation models on a newly introduced dataset (ARKitScenes) and identified three types of challenges: hardware, data, and model related challenges. Furthermore, our research provides promising future directions to explore and solve those challenges.",
+    "arxiv_id": "arXiv:2310.14437"
+  },
+  "core_content": {
+    "novelty_claim": "The paper identifies three types of challenges (hardware, data, model) in achieving accurate metric depth estimation for mobile AR and provides promising future directions to address these challenges.",
+    "key_methodology": "Four state-of-the-art monocular depth estimation models were tested on a newly introduced dataset (ARKitScenes).",
+    "outcomes": [
+      "Identified hardware, data, and model related challenges",
+      "Provided three promising directions for improving metric depth estimation in mobile AR"
+    ],
+    "full_text_markdown": "Depth estimation is pivotal to mobile AR as it enables more realistic interaction between virtual and real-world objects. Relative depth estimation provides relative distances of pixels with respect to the camera, while metric depth estimation estimates these distances in metric units like meters. Recent breakthroughs in computer vision have yielded impressive outcomes in relative depth estimation by relying on large-scale data training and specialized scale-invariant loss functions [5, 25]. However, relative depth often falls short of addressing mobile AR\u2019s unique requirements, e.g., the appropriate scales for object placement. Consequently, accurate metric depth is needed. Despite producing reasonable metric depth estimation on specific datasets, existing works often can\u2019t generalize well to other datasets and hence real-world scenarios [14, 26]. Monocular and single-image metric depth estimation solutions are popular options for mobile AR due to low hardware requirements and ease of use. In this paper, through empirical evaluations, we identify and categorize challenges and opportunities to achieve better metric depth for mobile AR. Our analysis of the ARKitScenes [2] reveals interesting attributes of mobile AR scenarios such as diverse object types, LiDAR sensor limitations, unpredictable user movements, and fragmented views. Our evaluations of several SOTA metric depth estimation methods [4, 14, 25] on the ARKitScene have revealed obvious performance gaps on this real-world mobile dataset, although these models have reported impressive generalization performance on tested datasets.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Monocular Depth Estimation"
+      },
+      {
+        "id": "concept_2",
+        "type": "Challenge",
+        "label": "Hardware"
+      },
+      {
+        "id: concept_3, ": ", "
+      },
+      "type: ",
+      "label: "
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "ashkan_mobile_ar_depth_estimation_challenges_prospects_--_extended_.pdf"
+}

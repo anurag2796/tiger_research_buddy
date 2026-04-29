@@ -1,0 +1,48 @@
+{
+  "card_id": "spin_dephasing_mechanism",
+  "bibliographic_data": {
+    "title": "A spin dephasing mechanism mediated by the interplay between the spin-orbit coupling and the asymmetrical confining potential in semiconductor quantum dot",
+    "primary_domain": "cs.CY (Computer Science: Computational Physics)",
+    "authors": [
+      {
+        "name": "Rui Li",
+        "faculty_id": "Rui Li",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2018,
+    "abstract": "Understanding the spin dephasing mechanism is of fundamental importance in all potential applications of the spin qubit. Here we demonstrate a spin dephasing mechanism in semiconductor quantum dot due to the 1/f charge noise. The spin-charge interaction is mediated by the interplay between the spin-orbit coupling and the asymmetrical quantum dot con\ufb01ning potential. The dephasing rate is proportional to both the strength of the spin-orbit coupling and the degree of the asymmetry of the con\ufb01ning potential. For parameters typical of the InSb, InAs, and GaAs quantum dots with a moderate well-height V0 = 10 meV, we \ufb01nd the spin dephasing times are T\u22172 = 7 \u00b5s, 275 \u00b5s, and 55 ms, respectively. In particular, the spin dephasing can be enhanced by lowering the well-height. When the well-height is as small as V0 = 5 meV, the spin depahsing times in the InSb, InAs, and GaAs quantum dots are decreased to T\u22172 = 0.38 \u00b5s, 18 \u00b5s, and 9 ms, respectively.",
+    "arxiv_id": "1805.10792v2"
+  },
+  "core_content": {
+    "novelty_claim": "A spin dephasing mechanism in semiconductor quantum dots due to the interplay between the spin-orbit coupling and asymmetrical con\ufb01ning potential is demonstrated.",
+    "key_methodology": "The authors use a simple model of a nanowire quantum dot with an asymmetrical con\ufb01ning potential and nontrivial Rashba SOC. The Hamiltonian includes terms for the spin-orbit coupling, Zeeman splitting, and the con\ufb01ning potential. They show that the dephasing rate is proportional to both the strength of the spin-orbit coupling and the degree of the asymmetry of the con\ufb01ning potential.",
+    "outcomes": [
+      "The dephasing times for InSb, InAs, and GaAs quantum dots are calculated with typical well-heights.",
+      "Lowering the well-height enhances the spin dephasing."
+    ],
+    "full_text_markdown": "Understanding the spin dephasing mechanism is of fundamental importance in all potential applications of the spin qubit. Here we demonstrate a spin dephasing mechanism in semiconductor quantum dot due to the 1/f charge noise. The spin-charge interaction is mediated by the interplay between the spin-orbit coupling and the asymmetrical quantum dot con\ufb01ning potential. The dephasing rate is proportional to both the strength of the spin-orbit coupling and the degree of the asymmetry of the con\ufb01ning potential. For parameters typical of the InSb, InAs, and GaAs quantum dots with a moderate well-height V0 = 10 meV, we \ufb01nd the spin dephasing times are T\u22172 = 7 \u00b5s, 275 \u00b5s, and 55 ms, respectively. In particular, the spin dephasing can be enhanced by lowering the well-height. When the well-height is as small as V0 = 5 meV, the spin depahsing times in the InSb, InAs, and GaAs quantum dots are decreased to T\u22172 = 0.38 \u00b5s, 18 \u00b5s, and 9 ms, respectively."
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Spin-Orbit Coupling"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "Asymmetrical Confining Potential"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "INTERACTS_WITH"
+      }
+    ]
+  },
+  "source_file": "rui_a_spin_dephasing_mechanism_mediated_by_the_interplay_between.pdf"
+}

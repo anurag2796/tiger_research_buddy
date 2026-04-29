@@ -1,0 +1,66 @@
+{
+  "card_id": "cs-se-abet-accreditation",
+  "bibliographic_data": {
+    "title": "ABET Accreditation: A Way Forward for PDC Education",
+    "primary_domain": "cs.SE",
+    "authors": [
+      {
+        "name": "Sherif G. Aly"
+      },
+      {
+        "name": "Haidar Harmanani"
+      },
+      {
+        "name": "Rajendra K. Raj"
+      },
+      {
+        "name": "Sanaa Sharafeddine"
+      }
+    ],
+    "year": 2021,
+    "abstract": "With parallel and distributed computing (PDC) now wide-spread, modern computing programs must incorporate PDC within the curriculum. ACM and IEEE Computer Society\u2019s Computer Science curricular guidelines have recommended exposure to PDC concepts since 2013. More recently, a variety of initiatives have made PDC curricular content, lectures, and labs freely available for undergraduate computer science programs. Despite these efforts, progress in ensuring computer science students graduate with sufficient PDC exposure has been uneven. This paper discusses the impact of ABET\u2019s revised criteria that have required exposure to PDC to achieve accreditation for computer science programs since 2018. The authors reviewed 20 top ABET-accredited computer science programs and analyzed how they covered the required PDC components in their curricula.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper explores the impact of revised ABET\u2019s CS Program Criteria on incorporating PDC content into modern ABET-accredited computer science programs.",
+    "key_methodology": "The authors reviewed 20 top ABET-accredited computer science programs and analyzed how they covered required PDC components in their curricula using their own institutions as case studies.",
+    "outcomes": [
+      "Detailed analysis of three different approaches to covering PDC requirements",
+      "Demonstration that ACM/IEEE Computer Society curricular guidelines for computer engineering and software engineering programs, along with ABET accreditation criteria, can cover PDC"
+    ],
+    "full_text_markdown": "ABET\u2019s revised criteria have required exposure to parallel and distributed computing (PDC) in order to achieve accreditation for computer science programs since 2018. The paper discusses how this has impacted the incorporation of PDC content into modern ABET-accredited computer science programs, using a review of 20 top programs as an analysis. The authors also examine three different approaches used by these programs to meet the PDC requirements and show that ACM/IEEE Computer Society curricular guidelines can support this.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "ABET Accreditation Criteria"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Parallel and Distributed Computing (PDC)"
+      },
+      {
+        "id": "concept_3",
+        "type": "Method",
+        "label": "Curricular Guidelines"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "REQUIRES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "BASED_ON"
+      }
+    ]
+  },
+  "source_file": "sherif_abet_accreditation_a_way_forward_for_pdc_education.pdf"
+}

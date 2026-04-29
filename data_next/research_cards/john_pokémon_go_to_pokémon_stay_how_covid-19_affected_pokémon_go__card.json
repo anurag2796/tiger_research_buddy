@@ -1,0 +1,87 @@
+{
+  "card_id": "pokemongo_to_pokemonstay",
+  "bibliographic_data": {
+    "title": "Pok\u00e9mon GO to Pok\u00e9mon STAY: How Covid-19 Affected Pok\u00e9mon GO Players",
+    "primary_domain": "cs.HC",
+    "authors": [
+      {
+        "name": "John Dunham"
+      },
+      {
+        "name": "Konstantinos Papangelis",
+        "faculty_id": "Konstantinos Papangelis",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Samuli Laato"
+      },
+      {
+        "name": "Nicolas LaLone",
+        "faculty_id": "Nick LaLone",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jin Ha Lee"
+      },
+      {
+        "name": "Michael Saker"
+      }
+    ],
+    "year": 2022,
+    "abstract": "Since its creation, the Location-Based Game (LBG), Pok\u00e9mon GO, has been embraced by a community of fans across the world. Due to its recency, the impact of COVID-19 on the community of Pok\u00e9mon GO players is underexplored. We address how COVID-19 has impacted the players of Pok\u00e9mon GO by building upon existing work focusing on player gratifications and impacts in Pok\u00e9mon GO. Through semi-structured interviews, we provide a snapshot of the state of LBG play during unprecedented times. These player testimonies demonstrate (1) the importance of in-person socialization to LBG, (2) additional ways players use the game as a coping mechanism, and (3) how intentionality mediates player perceptions of people-place relationships. In demonstrating these behaviors, we provide a glimpse of how a game that forces players to explore the world around them changed when going outside with friends became a source of danger.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The study explores the impact of COVID-19 on Pok\u00e9mon GO players, focusing on socialization changes, coping mechanisms, and redefined people-place relationships.",
+    "key_methodology": "Semi-structured interviews conducted via Zoom with thirty participants.",
+    "outcomes": [
+      "Perceived changes in socialization from in-person to digital interaction",
+      "Use of the game as a coping mechanism during the pandemic",
+      "Redefined perceptions of space and place due to the pandemic"
+    ],
+    "full_text_markdown": "The study investigates how the Location-Based Game (LBG) Pok\u00e9mon GO was affected by the COVID-19 pandemic. Through semi-structured interviews, it explores changes in socialization from in-person to digital interaction, the use of the game as a coping mechanism, and redefined perceptions of space and place. The research contributes insights into the importance of mobility, space, and socialization in LBGs.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Semi-structured interviews"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Socialization changes"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Coping mechanisms"
+      },
+      {
+        "id": "concept_4",
+        "type": "Concept",
+        "label": "People-place relationships"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "ELICITS"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "ELICITS"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_4",
+        "relation": "ELICITS"
+      }
+    ]
+  },
+  "source_file": "john_pok\u00e9mon_go_to_pok\u00e9mon_stay_how_covid-19_affected_pok\u00e9mon_go_.pdf"
+}

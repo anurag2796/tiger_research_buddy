@@ -1,0 +1,58 @@
+{
+  "card_id": "factors_impacting_faculty_adoption_of_pjbl",
+  "bibliographic_data": {
+    "title": "Factors Impacting Faculty Adoption of Project-Based Learning in Computing Education: a Survey",
+    "primary_domain": "cs.SE (Computer Science - Software Engineering)",
+    "authors": [
+      {
+        "name": "Ahmad D. Suleiman"
+      },
+      {
+        "name": "Yiming Tang",
+        "faculty_id": "Yiming Tang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Daqing Hou",
+        "faculty_id": "Daqing Hou",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2025,
+    "abstract": "This research full paper investigates the factors influencing computing educators\u2019 adoption of project-based learning (PjBL) in software engineering and computing curricula. Recognized as a student-centered pedagogical approach, PjBL has the potential to enhance student motivation, engagement, critical thinking, collaboration, and problem-solving skills. Despite these benefits, faculty adoption remains inconsistent due to challenges such as insufficient institutional support, time constraints, limited training opportunities, designing or sourcing projects, and aligning them with course objectives. This research explores these barriers and investigates the strategies and resources that facilitate a successful adoption. Using a mixed-methods approach, data from 80 computing faculty were collected through an online survey comprising closed-ended questions to quantify barriers, enablers, and resource needs, along with an open-ended question to gather qualitative insights. Quantitative data were analyzed using statistical methods, while qualitative responses underwent thematic analysis. Results reveal that while PjBL is widely valued, its adoption is often selective and impacted by challenges in planning and managing the learning process, designing suitable projects, and a lack of institutional support, such as time, funding, and teaching assistants. Faculty are more likely to adopt or sustain PjBL when they have access to peer collaboration, professional development, and institutional incentives. In addition, sourcing projects from research, industry partnerships, and borrowing from peers emerged as key facilitators for new projects. These findings underscore the need for systemic support structures to empower faculty to experiment with and scale PjBL practices.",
+    "arxiv_id": "arXiv:2507.18039v1"
+  },
+  "core_content": {
+    "novelty_claim": "The research explores barriers and facilitators of project-based learning (PjBL) adoption by computing faculty, using a mixed-methods approach.",
+    "key_methodology": "A survey was conducted among 80 computing faculty to quantify barriers, enablers, and resource needs. Quantitative data were analyzed statistically, while qualitative responses underwent thematic analysis.",
+    "outcomes": [
+      "PjBL is widely valued but its adoption remains inconsistent due to challenges such as insufficient institutional support, time constraints, limited training opportunities, designing or sourcing projects, and aligning them with course objectives.",
+      "Faculty are more likely to adopt or sustain PjBL when they have access to peer collaboration, professional development, and institutional incentives.",
+      "Sourcing projects from research, industry partnerships, and borrowing from peers emerged as key facilitators for new projects."
+    ],
+    "full_text_markdown": "This research investigates the factors influencing computing educators\u2019 adoption of project-based learning (PjBL) in software engineering and computing curricula. Despite its benefits, faculty adoption remains inconsistent due to challenges such as insufficient institutional support, time constraints, limited training opportunities, designing or sourcing projects, and aligning them with course objectives. The study uses a mixed-methods approach, collecting data from 80 computing faculty through an online survey comprising closed-ended questions and an open-ended question for qualitative insights. Quantitative data were analyzed statistically, while qualitative responses underwent thematic analysis. Results reveal that PjBL is widely valued but its adoption is impacted by challenges in planning and managing the learning process, designing suitable projects, and a lack of institutional support. Faculty are more likely to adopt or sustain PjBL when they have access to peer collaboration, professional development, and institutional incentives. Sourcing projects from research, industry partnerships, and borrowing from peers emerged as key facilitators for new projects.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Survey"
+      },
+      {
+        "id": "concept_2",
+        "type": "Resource",
+        "label": "Institutional Support"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "REQUIRES"
+      }
+    ]
+  },
+  "source_file": "ahmad_factors_impacting_faculty_adoption_of_project-based_learning.pdf"
+}

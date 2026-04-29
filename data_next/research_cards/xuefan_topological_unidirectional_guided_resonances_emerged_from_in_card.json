@@ -1,0 +1,68 @@
+{
+  "card_id": "topological_unidirectional_guided_resonances",
+  "bibliographic_data": {
+    "title": "Topological unidirectional guided resonances emerged from interband coupling",
+    "primary_domain": "physics.optics",
+    "authors": [
+      {
+        "name": "Xuefan Yin"
+      },
+      {
+        "name": "Takuya Inoue"
+      },
+      {
+        "name": "Chao Peng",
+        "faculty_id": "Chao Peng",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Susumu Noda"
+      }
+    ],
+    "year": 2022,
+    "abstract": "Unidirectional guided resonances (UGRs) are optical modes in photonic crystal (PhC) slabs that radiate towards one side without the need for mirrors on the other, represented from a topological perspective by the merged points of paired, single-sided, half-integer topological charges. In this work, we report a mechanism to realize UGRs by tuning the interband coupling effect originating from up-down symmetry breaking. We theoretically demonstrate that a type of polarization singularity, the circular-polarized states (CPs), emerge from trivial polarization fields owing to the hybridization of two unperturbed states. By tuning structural parameters, two half-charges carried by CPs evolve in momentum space and merge to create UGRs. Our findings show that UGRs are ubiquitous in PhC slabs, and can systematically be found from our method, thus paving the way to new possibilities of light manipulation.",
+    "arxiv_id": "arXiv:2203.02223v1"
+  },
+  "core_content": {
+    "novelty_claim": "A mechanism to realize unidirectional guided resonances (UGRs) by tuning the interband coupling effect originating from up-down symmetry breaking.",
+    "key_methodology": "Theoretical demonstration of how circular-polarized states (CPs) emerge from trivial polarization fields due to hybridization, and how UGRs are created by merging half-charges carried by CPs through adjusting the interband coupling strength.",
+    "outcomes": [
+      "UGRs can be realized without relying on BICs",
+      "A systematic method for finding UGRs in PhC slabs"
+    ],
+    "full_text_markdown": "Unidirectional guided resonances (UGRs) are optical modes in photonic crystal (PhC) slabs that radiate towards one side without the need for mirrors on the other, represented from a topological perspective by the merged points of paired, single-sided, half-integer topological charges. In this work, we report a mechanism to realize UGRs by tuning the interband coupling effect originating from up-down symmetry breaking. We theoretically demonstrate that a type of polarization singularity, the circular-polarized states (CPs), emerge from trivial polarization fields owing to the hybridization of two unperturbed states. By tuning structural parameters, two half-charges carried by CPs evolve in momentum space and merge to create UGRs. Our findings show that UGRs are ubiquitous in PhC slabs, and can systematically be found from our method, thus paving the way to new possibilities of light manipulation.\n\nUnidirectional emission is of fundamental interest in research fields including non-Hermitian physics [1\u20133] and singular optics [4\u20136], and can benefit many realistic applications such as on-chip lasers [7\u201314] and energy-efficient grating couplers [15\u201320]. While most existing methods use mirrors made of metals or photonic-bandgap materials [21\u201323], or by utilizing the non-resonant blazing effect [24, 25] to forbid the radiation of light towards unnecessary ports, recent findings of unidirectional guided resonances (UGRs) [26, 27] revealed that an eigenstate itself can radiate towards only a single side of the photonic crystal (PhC) slab without the need for a mirror on the other. From the view of topological photonics [28\u201331], the UGRs were connected to polarization singularities [32\u201341] in momentum space, represented by topological charges [42\u201347]: they are the merged V points (vortex center of polarization fields) from paired C points (circular-polarized states) that carry the same signed half-integer topological charges on a single side. As reported, such half-charges can originate from splitting an integer charge carried by a bound state in the continuum (BIC) [42, 48\u201350] as q = 1 \u21921/2 + 1/2 [27, 51\u201353], or they can be spawned from \u201cthe void\u201d as q = 0 \u21921/2 + (\u22121/2) [47]. Both cases obey the conservation law of topological charges [42, 46, 50].\n\nFrom such a topological view, the key to realizing UGRs is to create paired circular-polarized states (CPs). Although splitting from an integer charge of a BIC has been shown as a fairly intuitive example, it is still unclear how to deterministically separate and merge the CPs from the trivial polarization field, namely the void. Considering that the UGRs intrinsically do not depend on any symmetry, their realization is a formidable engineering challenge, especially when no appropriate BICs can be found as a starting point.\n\nIn this letter, we report a mechanism to realize UGRs without the premise of BICs. Specifically, we find that the interband couplings raised from up-down mirror symmetry breaking can be utilized as an effective degree of freedom (DOF) to hybridize the orthogonal bands in an unperturbed system.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Interband Coupling"
+      },
+      {
+        "id": "concept_2",
+        "type": "State",
+        "label": "Circular-Polarized States (CPs)"
+      },
+      {
+        "id": "concept_3",
+        "type": "Charge",
+        "label": "Topological Charge"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "HYBRIDIZES"
+      },
+      {
+        "source": "concept_2",
+        "target": "concept_3",
+        "relation": "CARRIES"
+      }
+    ]
+  },
+  "source_file": "xuefan_topological_unidirectional_guided_resonances_emerged_from_in.pdf"
+}

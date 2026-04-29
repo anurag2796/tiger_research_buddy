@@ -1,0 +1,83 @@
+{
+  "card_id": "grasp_disagreement_analysis_framework",
+  "bibliographic_data": {
+    "title": "GRASP: A Disagreement Analysis Framework to Assess Group Associations in Perspectives",
+    "primary_domain": "cs.CL",
+    "authors": [
+      {
+        "name": "Vinodkumar Prabhakaran"
+      },
+      {
+        "name": "Christopher Homan",
+        "faculty_id": "Christopher Homan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Lora Aroyo"
+      },
+      {
+        "name": "Aida Mostafazadeh Davani"
+      },
+      {
+        "name": "Alicia Parrish"
+      },
+      {
+        "name": "Alex Taylor"
+      },
+      {
+        "name": "Mark D\u00edaz"
+      },
+      {
+        "name": "Ding Wang"
+      },
+      {
+        "name": "Gregory Serapio-Garc\u00eda"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Human annotation plays a core role in machine learning \u2014 annotations for supervised models, safety guardrails for generative models, and human feedback for reinforcement learning, to cite a few avenues. However, the fact that many of these human annotations are inherently subjective is often overlooked. Recent work has demonstrated that ignoring rater subjectivity (typically resulting in rater disagreement) is problematic within specific tasks and for specific subgroups. Generalizable methods to harness rater disagreement and thus understand the socio-cultural leanings of subjective tasks remain elusive. In this paper, we propose GRASP, a comprehensive disagreement analysis framework to measure group association in perspectives among different rater subgroups, and demonstrate its utility in assessing the extent of systematic disagreements in two datasets: (1) safety annotations of human-chatbot conversations, and (2) offensiveness annotations of social media posts, both annotated by diverse rater pools across different socio-demographic axes. Our framework (based on disagreement metrics) reveals specific rater groups that have significantly different perspectives than others on certain tasks, and helps identify demographic axes that are crucial to consider in specific task contexts.",
+    "arxiv_id": "arXiv:2311.05074"
+  },
+  "core_content": {
+    "novelty_claim": "GRASP is a framework for measuring the magnitude and strength of systematic diversity of perspectives among rater subgroups, which helps in identifying meaningful diversity in annotator perspectives in subjective tasks.",
+    "key_methodology": "GRASP combines a suite of metrics that measure group associations in annotations with a permutation tests-based significance testing approach to assess the reliability of these associations without any independence assumptions.",
+    "outcomes": [
+      "Reveals specific rater groups that have significantly different perspectives than others on certain tasks",
+      "Helps identify demographic axes that are crucial to consider in specific task contexts"
+    ],
+    "full_text_markdown": "Automatic detection of unsafe, offensive or toxic text has long been an active area of research in Natural Language Processing (NLP). This work relies heavily on human annotation for evaluating and training offensiveness or safety classifiers. Current approaches largely overlook cultural and individual factors that shape raters' perspectives on what is safe or offensive. Systematic rater disagreements are instead circumvented by enforcing a single ground truth or using majority vote, which inadvertently marginalizes minority perspectives and further amplifies societal biases in data. Recent work points to the need for greater diversity in rater pools and proposes ways to incorporate disagreements in the learning pipeline. However, incorporating rater diversity at scale is still a challenge as there are numerous diversity axes to consider, and it is unclear which ones are relevant for particular tasks. The lack of effective metrics that can capture such inter-group and intra-group cohesion at scale to determine group-level associations is a critical issue. In this paper, we propose GRASP (Group Associations in Perspectives), a framework to measure the magnitude and strength of systematic diversity of perspectives among rater subgroups. GRASP combines a suite of metrics that measure group associations in annotations with a permutation tests-based significance testing approach to assess the reliability of these associations without any independence assumptions. We apply GRASP to two datasets: DICES-350 (Aroyo et al., 2023)\u2014350 chatbot conversations annotated for safety by 104 raters from a diverse pool across age, gender, and race; and D3 (Davani et al., 2023b)\u2014social media comments annotated for offensiveness by 4000 raters balanced across cultural regions, gender, and age. GRASP reveals systematic disagreements in annotations along demographic lines and shows that it picks up task-dependent group associations in an efficient and effective manner, furthering the objective of identifying meaningful diversity in annotator perspectives in subjective tasks.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "GRASP"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Disagreement Metrics"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Permutation Tests"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "vinodkumar_grasp_a_disagreement_analysis_framework_to_assess_group_asso.pdf"
+}

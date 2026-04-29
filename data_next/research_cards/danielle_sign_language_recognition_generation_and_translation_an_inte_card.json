@@ -1,0 +1,93 @@
+{
+  "card_id": "sign-language-recognition-generation-and-translation",
+  "bibliographic_data": {
+    "title": "Sign Language Recognition, Generation, and Translation: An Interdisciplinary Perspective",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Danielle Bragg"
+      },
+      {
+        "name": "Oscar Koller"
+      },
+      {
+        "name": "Mary Bellard"
+      },
+      {
+        "name": "Larwan Berke"
+      },
+      {
+        "name": "Patrick Boudrealt"
+      },
+      {
+        "name": "Annelies Braffort"
+      },
+      {
+        "name": "Naomi Caselli"
+      },
+      {
+        "name": "Matt Huenerfauth",
+        "faculty_id": "Matt Huenerfauth",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Hernisa Kacorri"
+      },
+      {
+        "name": "Tessa Verhoef"
+      },
+      {
+        "name": "Christian Vogler"
+      },
+      {
+        "name": "Meredith Ringel Morris"
+      }
+    ],
+    "year": 2019,
+    "abstract": "Developing successful sign language recognition, generation, and translation systems requires expertise in a wide range of fields, including computer vision, computer graphics, natural language processing, human-computer interaction, linguistics, and Deaf culture. Despite the need for deep interdisciplinary knowledge, existing research occurs in separate disciplinary silos, and tackles separate portions of the sign language processing pipeline. This leads to three key questions: 1) What does an interdisciplinary view of the current landscape reveal? 2) What are the biggest challenges facing the field? and 3) What are the calls to action for people working in the field? To help answer these questions, we brought together a diverse group of experts for a two-day workshop. This paper presents the results of that interdisciplinary workshop, providing key background that is often overlooked by computer scientists, a review of the state-of-the-art, a set of pressing challenges, and a call to action for the research community.",
+    "arxiv_id": "arXiv:1908.08597v1"
+  },
+  "core_content": {
+    "novelty_claim": "The paper addresses the need for an interdisciplinary approach in sign language processing by bringing together experts from various fields to identify key challenges and calls to action.",
+    "key_methodology": "A two-day workshop was conducted with 39 participants, including academics from diverse backgrounds. The workshop synthesized state-of-the-art research across disparate domains, discussed major challenges, and formulated a call-to-action for the research community.",
+    "outcomes": [
+      "Provided an interdisciplinary foundation for future sign language processing research",
+      "Highlighted needs and opportunities for interdisciplinary collaboration",
+      "Prioritized important problems in the field for researchers to tackle next"
+    ],
+    "full_text_markdown": "Sign language recognition, generation, and translation is a high-potential research area with significant impact. The paper addresses the need for an interdisciplinary approach by bringing together experts from various fields such as computer vision, natural language processing, linguistics, and Deaf culture to identify key challenges and calls to action. The authors conducted a two-day workshop with 39 participants, synthesizing state-of-the-art research across disparate domains, discussing major challenges, and formulating a call-to-action for the research community. This paper provides an interdisciplinary foundation for future sign language processing research, highlighting needs and opportunities for collaboration, and prioritizing important problems in the field.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Interdisciplinary Workshop"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Sign Language Processing"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Deaf Culture"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "INVOLVES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "INVOLVES"
+      }
+    ]
+  },
+  "source_file": "danielle_sign_language_recognition_generation_and_translation_an_inte.pdf"
+}

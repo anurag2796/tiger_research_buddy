@@ -1,0 +1,58 @@
+{
+  "card_id": "novel-hard-link-switching-scheme",
+  "bibliographic_data": {
+    "title": "Novel Hard Link-Switching Scheme using Pre-Scanning for Indoor VLC Networks",
+    "primary_domain": "cs.NI (Networking and Internet Architecture)",
+    "authors": [
+      {
+        "name": "Sumita Mishra",
+        "faculty_id": "Sumita Mishra",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Sachin Kumar",
+        "faculty_id": "Mohan Kumar",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Shivani Singh"
+      },
+      {
+        "name": "Pallavi Asthana"
+      },
+      {
+        "name": "Nidhi Mathur"
+      }
+    ],
+    "year": 2024,
+    "abstract": "VLC is attracting a lot of attention as an emerging potential technology for deployment in next generation indoor wireless networks. Use of efficient link switching scheme among VLC access points is critical in indoor environment to provide seamless connectivity to mobile users. This paper presents a novel position prediction link switching scheme for indoor visible light communication systems. The method exploits the fact that indoor scenario (light fixtures/furniture) mostly remains unchanged; therefore, this information can be stored at the coordinator end. Thus, the user is not required to search for the best transmitter when RSS is reduced to a threshold value as in conventional methods which cause substantial delay in switching process. Simulation results show that the proposed scheme for indoor VLC System achieves the dual purpose of adequate illumination and mobility to user in considered indoor scenario.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a novel position prediction link switching algorithm for VLC configuration, which reduces the delay caused by conventional methods that require searching for the best transmitter when RSS is reduced to a threshold value.",
+    "key_methodology": "The method exploits the fact that indoor scenarios mostly remain unchanged and stores this information at the coordinator end. The user does not need to search for the best transmitter when RSS is reduced, which reduces switching delay.",
+    "outcomes": [
+      "Achieves adequate illumination",
+      "Provides mobility to users"
+    ],
+    "full_text_markdown": "The paper presents a novel hard link-switching scheme for indoor visible light communication (VLC) systems. The method predicts the position of the user and uses this information to switch links efficiently, reducing delay caused by conventional methods that require searching for the best transmitter when received signal strength (RSS) is reduced. Simulation results show that the proposed scheme achieves both adequate illumination and mobility for users in indoor scenarios.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Position Prediction Link Switching Scheme"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "sumita_novel_hard_link-switching_scheme_using_pre-scanning_for_indo.pdf"
+}

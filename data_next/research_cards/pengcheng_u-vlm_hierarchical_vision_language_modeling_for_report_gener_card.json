@@ -1,0 +1,72 @@
+{
+  "card_id": "u-vlm_hierarchical_vision_language_modeling",
+  "bibliographic_data": {
+    "title": "U-VLM: Hierarchical Vision Language Modeling for Report Generation",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Pengcheng Shi",
+        "faculty_id": "Pengcheng Shi",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Minghui Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Kehan Song",
+        "faculty_id": "Xinchao Song",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jiaqi Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yun Gu"
+      },
+      {
+        "name": "Xinglin Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2026,
+    "abstract": "Automated radiology report generation is key for reducing radiologist workload and improving diagnostic consistency, yet generating accurate reports for 3D medical imaging remains challenging. Existing vision-language models face two limitations: they do not leverage segmentation-pretrained encoders, and they inject visual features only at the input layer of language models, losing multi-scale information. We propose U-VLM, which enables hierarchical vision-language modeling in both training and architecture: (1) progressive training from segmentation to classification to report generation, and (2) multi-layer visual injection that routes U-Net encoder features to corresponding language model layers. Each training stage can leverage different datasets without unified annotations. U-VLM achieves state-of-the-art performance on CT-RATE (F1: 0.414 vs 0.258, BLEU-mean: 0.349 vs 0.305) and AbdomenAtlas 3.0 (F1: 0.624 vs 0.518 for segmentation-based detection) using only a 0.1B decoder trained from scratch, demonstrating that well-designed vision encoder pretraining outweighs the benefits of 7B+ pre-trained language models.",
+    "arxiv_id": "arXiv:2603.00479"
+  },
+  "core_content": {
+    "novelty_claim": "U-VLM proposes progressive training from segmentation to classification to report generation and multi-layer visual injection that routes U-Net encoder features to corresponding language model layers.",
+    "key_methodology": "The method involves a shared U-Net encoder trained through three progressive stages: (1) Segmentation pretraining for learning fine-grained spatial structures, (2) Classification pretraining for disease pattern recognition, and (3) Report generation via multi-layer injection of hierarchical U-Net features to language model layers.",
+    "outcomes": [
+      "Achieves state-of-the-art performance on CT-RATE with F1: 0.414 vs 0.258 and BLEU-mean: 0.349 vs 0.305",
+      "Outperforms both end-to-end methods and segmentation-based detection on AbdomenAtlas with F1: 0.624 vs 0.518"
+    ],
+    "full_text_markdown": "Automated radiology report generation is key for reducing radiologist workload and improving diagnostic consistency, yet generating accurate reports for 3D medical imaging remains challenging. Existing vision-language models face two limitations: they do not leverage segmentation-pretrained encoders, and they inject visual features only at the input layer of language models, losing multi-scale information. U-VLM proposes a hierarchical vision-language modeling approach that includes progressive training from segmentation to classification to report generation, and multi-layer visual injection that routes U-Net encoder features to corresponding language model layers. The method involves a shared U-Net encoder trained through three stages: (1) Segmentation pretraining for learning fine-grained spatial structures, (2) Classification pretraining for disease pattern recognition, and (3) Report generation via multi-layer injection of hierarchical U-Net features to language model layers. U-VLM achieves state-of-the-art performance on CT-RATE with F1: 0.414 vs 0.258 and BLEU-mean: 0.349 vs 0.305, outperforming both end-to-end methods and segmentation-based detection on AbdomenAtlas with F1: 0.624 vs 0.518.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Progressive Training"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "Multi-layer Visual Injection"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "pengcheng_u-vlm_hierarchical_vision_language_modeling_for_report_gener.pdf"
+}

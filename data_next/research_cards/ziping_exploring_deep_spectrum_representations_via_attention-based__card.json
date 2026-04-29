@@ -1,0 +1,71 @@
+{
+  "card_id": "speech_emotion_recognition_2019",
+  "bibliographic_data": {
+    "title": "Exploring Deep Spectrum Representations via Attention-Based Recurrent and Convolutional Neural Networks for Speech Emotion Recognition",
+    "primary_domain": "cs.CL",
+    "authors": [
+      {
+        "name": "Ziping Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Zhongtian Bao"
+      },
+      {
+        "name": "Yiqin Zhao",
+        "faculty_id": "Yiqin Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Zixing Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Nicholas Cummins"
+      },
+      {
+        "name": "Zhao Ren"
+      },
+      {
+        "name": "Bj\u00f6rn Schuller"
+      }
+    ],
+    "year": 2019,
+    "abstract": "The automatic detection of an emotional state from human speech, which plays a crucial role in the area of human\u2013machine interaction, has consistently been shown to be a difficult task for machine learning algorithms. Previous work on emotion recognition has mostly focused on the extraction of carefully hand-crafted and highly engineered features. Results from these works have demonstrated the importance of discriminative spatio-temporal features to model the continual evolutions of different emotions. Recently, spectrogram representations of emotional speech have achieved competitive performance for automatic speech emotion recognition (SER). How machine learning algorithms learn the effective compositional spatio-temporal dynamics for SER has been a fundamental problem of deep representations, herein denoted as deep spectrum representations. In this paper, we develop a model to alleviate this limitation by leveraging a parallel combination of attention-based bidirectional long short-term memory recurrent neural networks with attention-based fully convolutional networks (FCN). The extensive experiments were undertaken on the interactive emotional dyadic motion capture (IEMOCAP) and FAU aibo emotion corpus (FAU-AEC) to highlight the effectiveness of our approach. The experimental results indicate that deep spectrum representations extracted from the proposed model are well-suited to the task of SER, achieving a WA of 68.1 % and a UA of 67.0 % on IEMOCAP, and 45.4% for UA on FAU-AEC dataset.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes an Attention-BLSTM-FCN model that combines attention-based bidirectional long short-term memory recurrent neural networks with attention-based fully convolutional networks to improve speech emotion recognition (SER) performance.",
+    "key_methodology": "The method involves using a parallel combination of attention-based bidirectional LSTM-RNNs and attention-based FCNs to learn effective spatio-temporal dynamics from spectrograms for SER. The model focuses on feature extraction in emotionally salient parts of an utterance by employing concatenation operations between BLSTM and FCN features.",
+    "outcomes": [
+      "Achieved a weighted accuracy (WA) of 68.1% and unweighted accuracy (UA) of 67.0% on the IEMOCAP dataset",
+      "Achieved an UA of 45.4% on the FAU-AEC dataset"
+    ],
+    "full_text_markdown": "The paper addresses the challenge of automatic emotion recognition from speech signals, focusing on extracting discriminative and robust features for SER. Previous work has primarily relied on hand-crafted acoustic features such as prosodic and spectral features. Recently, deep spectrum representations have shown promising results in SER tasks. The proposed model combines attention-based bidirectional LSTM-RNNs with attention-based FCNs to capture both temporal and frequency dependencies from spectrograms. Experiments on IEMOCAP and FAU-AEC datasets demonstrate the effectiveness of this approach, achieving high accuracy rates.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Attention-BLSTM-FCN"
+      },
+      {
+        "id": "concept_2",
+        "type": "Feature",
+        "label": "Spatio-temporal Dynamics"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "LEARN"
+      }
+    ]
+  },
+  "source_file": "ziping_exploring_deep_spectrum_representations_via_attention-based_.pdf"
+}

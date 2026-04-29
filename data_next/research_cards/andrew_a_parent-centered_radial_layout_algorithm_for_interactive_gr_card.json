@@ -1,0 +1,55 @@
+{
+  "card_id": "a_parent_centered_radial_layout_algorithm",
+  "bibliographic_data": {
+    "title": "A parent-centered radial layout algorithm for interactive graph visualization and animation",
+    "primary_domain": "cs.HC",
+    "authors": [
+      {
+        "name": "Andrew Pavlo"
+      },
+      {
+        "name": "Christopher Homan",
+        "faculty_id": "Christopher Homan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jonathan Schull"
+      }
+    ],
+    "year": 2006,
+    "abstract": "We have developed (1) a graph visualization system that allows users to explore graphs by viewing them as a succession of spanning trees selected interactively, (2) a radial graph layout algorithm, and (3) an animation algorithm that generates meaningful visualizations and smooth transitions between graphs while minimizing edge crossings during transitions and in static layouts. Our system is similar to the radial layout system of Yee et al., but differs primarily in that each node is positioned on a coordinate system centered on its own parent rather than on a single coordinate system for all nodes. Our system is thus easy to define recursively and lends itself to parallelization. It also guarantees that layouts have many nice properties, such as: it guarantees certain edges never cross during an animation.",
+    "arxiv_id": "cs/0606007v1"
+  },
+  "core_content": {
+    "novelty_claim": "The system uses a parent-centered radial layout algorithm to minimize edge crossings and ensure smooth transitions between graph layouts, which is different from the approach used by Yee et al.",
+    "key_methodology": "Nodes are positioned on a coordinate system centered on their own parent, allowing for recursive definition and parallelization. The algorithm generates meaningful visualizations and smooth transitions while minimizing edge crossings during both transitions and static layouts.",
+    "outcomes": [
+      "Fewer edge crossings during transitions between graph drawings",
+      "More often involves changes in local scaling rather than structure"
+    ],
+    "full_text_markdown": "The paper introduces a novel approach to interactive graph visualization using a parent-centered radial layout algorithm. The authors developed a system that allows users to explore graphs by viewing them as a succession of spanning trees selected interactively, and an animation algorithm that generates smooth transitions between these layouts while minimizing edge crossings. This method differs from the radial layout systems used by Yee et al., where nodes are positioned on a single coordinate system for all nodes. The new approach is easier to define recursively and lends itself to parallelization, ensuring that certain edges never cross during an animation. Experiments show that this system produces fewer edge crossings and more often involves changes in local scaling rather than structure, suggesting its potential as an interactive graph exploration tool.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Parent-Centered Radial Layout Algorithm"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Graph Visualization System"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "andrew_a_parent-centered_radial_layout_algorithm_for_interactive_gr.pdf"
+}

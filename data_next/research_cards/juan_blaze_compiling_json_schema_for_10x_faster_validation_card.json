@@ -1,0 +1,53 @@
+{
+  "card_id": "blaze_json_schema_validator",
+  "bibliographic_data": {
+    "title": "Blaze: Compiling JSON Schema for 10x Faster Validation",
+    "primary_domain": "cs.DB",
+    "authors": [
+      {
+        "name": "Juan Cruz Viotti"
+      },
+      {
+        "name": "Michael J. Mior",
+        "faculty_id": "Michael Mior",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2025,
+    "abstract": "JSON Schemas provide useful guardrails for developers of Web APIs to guarantee that the semi-structured JSON input provided by clients matches a predefined structure. This is important both to ensure the correctness of the data received as input and also to avoid potential security issues from processing input that is not correctly validated. However, this validation process can be time-consuming and adds overhead to every request. Different keywords in the JSON Schema specification have complex interactions that may increase validation time. Since popular APIs may process thousands of requests per second and schemas change infrequently, we observe that we can resolve some of the complexity ahead of time in order to achieve faster validation.\n\nOur JSON Schema validator, Blaze, compiles complex schemas to an efficient representation in seconds to minutes, adding minimal overhead at build time. Blaze incorporates several unique optimizations to reduce the validation time by an average of approximately 10\u00d7 compared existing validators on a variety of datasets. In some cases, Blaze achieves a reduction in validation time of multiple orders of magnitude compared to the next fastest validator. We also demonstrate that several popular validators produce incorrect results in some cases, while Blaze maintains strict adherence to the JSON Schema specification.",
+    "arxiv_id": "2503.02770"
+  },
+  "core_content": {
+    "novelty_claim": "Blaze reduces validation time by an average of approximately 10\u00d7 compared to existing validators on a variety of datasets, and it maintains strict adherence to the JSON Schema specification.",
+    "key_methodology": "Blaze compiles complex schemas into an efficient representation in seconds to minutes, using several unique optimizations to reduce validation time. These optimizations include converting dynamic references to static ones during compilation, which incurs no overhead at validation time.",
+    "outcomes": [
+      "Achieves a 10\u00d7 reduction in validation time on average compared to existing validators",
+      "Reduces validation time by multiple orders of magnitude in some cases",
+      "Maintains strict adherence to the JSON Schema specification"
+    ],
+    "full_text_markdown": "Blaze is an optimized JSON Schema validator that compiles complex schemas into a more efficient representation, reducing validation times significantly. The paper discusses how Blaze addresses the complexity introduced by different keywords in the JSON Schema specification and provides unique optimizations such as converting dynamic references to static ones during compilation. This approach minimizes overhead at build time while achieving substantial performance gains. The authors demonstrate that Blaze outperforms existing validators both in terms of speed and accuracy, making it a valuable tool for validating semi-structured JSON data in Web APIs.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Schema Compilation"
+      },
+      {
+        "id": "concept_2",
+        "type": "Optimization",
+        "label": "Dynamic References to Static References Conversion"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "juan_blaze_compiling_json_schema_for_10x_faster_validation.pdf"
+}

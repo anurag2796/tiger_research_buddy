@@ -1,0 +1,95 @@
+{
+  "card_id": "optical_interconnect_technology",
+  "bibliographic_data": {
+    "title": "Overview of Optical Interconnect Technology",
+    "primary_domain": "cs.NE",
+    "authors": [
+      {
+        "name": "Sumita Mishra",
+        "faculty_id": "Sumita Mishra",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Naresh K Chaudhary"
+      },
+      {
+        "name": "Kalyan Singh"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Optical interconnect is seen as a potential solution to meet the performance requirements of current and future generation of data processors. Optical interconnects have negligible frequency dependent loss, low cross talk and high band width. Despite significant interest from many groups worldwide, optical interconnects are not much used commercially due to their incompatibility with manufacturing processes and assembly methods currently used in the semiconductor industry. There is a need for efficient and compact optical interconnect modules that use simple optical and electrical interfacing schemes.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper provides an overview of current state-of-the-art optical interconnect technology, highlighting its potential to replace copper interconnects in high-speed data processing systems.",
+    "key_methodology": "Analysis and discussion of the main components of optical interconnect systems such as laser sources, modulators, waveguides, switches, and detectors.",
+    "outcomes": [
+      "Optical interconnects have negligible frequency dependent loss, low cross talk, and high bandwidth.",
+      "Current limitations include incompatibility with semiconductor manufacturing processes and assembly methods."
+    ],
+    "full_text_markdown": "In recent years, the performance of single chip multiprocessors has been roughly doubling every 18 months, leading to a significant increase in clock speed and cache size. This advancement has increased the complexity of these systems, necessitating high-speed interconnects for fast access to memory, cores, and I/O devices. Copper interconnects are currently used for data transmission over chip-to-chip and chip-to-module interfaces, but their performance degrades at frequencies above 1 GHz due to ringing, increased signal latency, crosstalk, and frequency-dependent attenuation. Optical interconnects are seen as a potential solution since they can directly address these problems and meet the performance requirements of current and future data processors. However, despite significant interest from many groups worldwide, optical interconnects are not widely used commercially due to their incompatibility with manufacturing processes and assembly methods currently used in the semiconductor industry. The paper discusses the main components of an optical interconnect system, including laser sources, modulators, waveguides, switches, and detectors, highlighting the challenges and potential solutions for making optical interconnects economically viable.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Optical Interconnect Technology"
+      },
+      {
+        "id": "concept_2",
+        "type": "Component",
+        "label": "Laser Source"
+      },
+      {
+        "id": "concept_3",
+        "type": "Component",
+        "label": "Modulator"
+      },
+      {
+        "id": "concept_4",
+        "type": "Component",
+        "label": "Waveguide"
+      },
+      {
+        "id": "concept_5",
+        "type": "Component",
+        "label": "Switch"
+      },
+      {
+        "id": "concept_6",
+        "type": "Component",
+        "label": "Detector"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_4",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_5",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_6",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "sumita_overview_of_optical_interconnect_technology.pdf"
+}

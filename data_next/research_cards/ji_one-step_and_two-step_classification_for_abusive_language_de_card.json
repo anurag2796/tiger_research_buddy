@@ -1,0 +1,52 @@
+{
+  "card_id": "one_step_two_step_abusive_language_detection",
+  "bibliographic_data": {
+    "title": "One-step and Two-step Classification for Abusive Language Detection on Twitter",
+    "primary_domain": "cs.CL",
+    "authors": [
+      {
+        "name": "Ji Ho Park",
+        "faculty_id": "Ji Hwan Park",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Pascale Fung"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Automatic abusive language detection is a difficult but important task for online social media. Our research explores a two-step approach of performing classification on abusive language and then classifying into specific types and compares it with one-step approach of doing one multi-class classification for detecting sexist and racist languages. With a public English Twitter corpus of 20 thousand tweets in the type of sexism and racism, our approach shows a promising performance of 0.827 F-measure by using HybridCNN in one-step and 0.824 F-measure by using logistic regression in two-steps.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The research proposes a two-step approach for detecting abusive language on Twitter, comparing it with a one-step multi-class classification method.",
+    "key_methodology": "Three CNN-based models (CharCNN, WordCNN, and HybridCNN) were used to classify sexist and racist abusive language. The key components include convolutional layers that compute one-dimensional convolutions over the input with multiple filter sizes and large feature map sizes, followed by max-pooling.",
+    "outcomes": [
+      "The two-step approach achieved an F-measure of 0.824 using logistic regression.",
+      "The one-step approach using HybridCNN achieved an F-measure of 0.827."
+    ],
+    "full_text_markdown": "This research aims to experiment with a two-step approach for detecting abusive language on Twitter and comparing it with a one-step multi-class classification method. The study uses three CNN-based models: CharCNN, WordCNN, and HybridCNN. These models are designed to classify sexist and racist abusive language based on character-level, word-level, or both inputs. The performance of these models is evaluated using F1 scores, precision, recall, and weighted averages. The results show that the two-step approach with logistic regression achieved an F-measure of 0.824, while the one-step approach using HybridCNN achieved a slightly higher F-measure of 0.827.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Two-Step Classification"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "One-Step Multi-Class Classification"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "COMPARES"
+      }
+    ]
+  },
+  "source_file": "ji_one-step_and_two-step_classification_for_abusive_language_de.pdf"
+}

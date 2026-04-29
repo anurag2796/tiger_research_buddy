@@ -1,0 +1,65 @@
+{
+  "card_id": "locally_differentially_private_frequency_estimation",
+  "bibliographic_data": {
+    "title": "Locally Differentially Private Frequency Estimation via Joint Randomized Response",
+    "primary_domain": "cs.CR",
+    "authors": [
+      {
+        "name": "Ye Zheng"
+      },
+      {
+        "name": "Shafizur Rahman Seeam"
+      },
+      {
+        "name": "Yidan Hu",
+        "faculty_id": "Yidan Hu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Rui Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yanchao Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Local Differential Privacy (LDP) has been widely recognized as a powerful tool for providing a strong theoretical guarantee of data privacy to data contributors against an untrusted data collector. Under a typical LDP scheme, each data contributor independently randomly perturbs their data before submitting them to the data collector, which in turn infers valuable statistics about the original data from received perturbed data. Common to existing LDP mechanisms is an inherent trade-off between the level of privacy protection and data utility in the sense that strong data privacy often comes at the cost of reduced data utility. Frequency estimation based on Randomized Response (RR) is a fundamental building block of many LDP mechanisms. In this paper, we propose a novel Joint Randomized Response (JRR) mechanism based on correlated data perturbations to achieve locally differentially private frequency estimation. JRR divides data contributors into disjoint groups of two members and lets those in the same group jointly perturb their binary data to improve frequency-estimation accuracy and achieve the same level of data privacy by hiding the group membership information in contrast to the classical RR mechanism. Theoretical analysis and detailed simulation studies using both real and synthetic datasets show that JRR achieves the same level of data privacy as the classical RR mechanism while improving the frequency-estimation accuracy in the overwhelming majority of the cases by up to two orders of magnitude.",
+    "arxiv_id": "arXiv:2505.10349v2"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a novel Joint Randomized Response (JRR) mechanism for locally differentially private frequency estimation, which improves data utility without sacrificing LDP guarantees.",
+    "key_methodology": "JRR divides data contributors into disjoint groups of two members and lets those in the same group jointly perturb their binary data to improve frequency-estimation accuracy while maintaining the same level of data privacy as the classical RR mechanism.",
+    "outcomes": [
+      "Achieves the same level of data privacy as the classical RR mechanism",
+      "Improves frequency-estimation accuracy by up to two orders of magnitude in the overwhelming majority of cases"
+    ],
+    "full_text_markdown": "Local Differential Privacy (LDP) is a powerful tool for providing strong theoretical guarantees of data privacy. The paper proposes a novel Joint Randomized Response (JRR) mechanism that divides data contributors into groups and jointly perturbs their binary data to improve frequency-estimation accuracy while maintaining the same level of data privacy as classical RR mechanisms. Theoretical analysis and simulations show significant improvements in accuracy without sacrificing privacy.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Joint Randomized Response (JRR)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Local Differential Privacy (LDP)"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "ye_locally_differentially_private_frequency_estimation_via_join.pdf"
+}

@@ -1,0 +1,65 @@
+{
+  "card_id": "birds_of_a_feather_flock_together",
+  "bibliographic_data": {
+    "title": "Birds of A Feather Flock Together: Category-Divergence Guidance for Domain Adaptive Segmentation",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Bo Yuan",
+        "faculty_id": "Bo Yuan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Danpei Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Shuai Shao"
+      },
+      {
+        "name": "Zehuan Yuan",
+        "faculty_id": "Bo Yuan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Changhu Wang"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Unsupervised domain adaptation (UDA) aims to enhance the generalization capability of a certain model from a source domain to a target domain. Present UDA models focus on alleviating the domain shift by minimizing the feature discrepancy between the source domain and the target domain but usually ignore the class confusion problem. In this work, we propose an Inter-class Separation and Intra-class Aggregation (ISIA) mechanism. It encourages the cross-domain representative consistency between the same categories and differentiation among diverse categories. By measuring the align complexity of each category, we design an Adaptive-weighted Instance Matching (AIM) strategy to further optimize the instance-level adaptation. Based on our proposed methods, we also raise a hierarchical unsupervised domain adaptation framework for cross-domain semantic segmentation task. Through performing the image-level, feature-level, category-level and instance-level alignment, our method achieves a stronger generalization performance of the model from the source domain to the target domain. In two typical cross-domain semantic segmentation tasks, i.e., GTA5\u2192Cityscapes and SYNTHIA\u2192Cityscapes, our method achieves the state-of-the-art segmentation accuracy.",
+    "arxiv_id": "arXiv:2204.02111"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes an Inter-class Separation and Intra-class Aggregation (ISIA) mechanism to address the class confusion problem in unsupervised domain adaptation for semantic segmentation.",
+    "key_methodology": "The ISIA mechanism encourages cross-domain representative consistency between same categories while differentiating diverse categories. An Adaptive-weighted Instance Matching (AIM) strategy is designed to optimize instance-level adaptation based on category alignment complexity.",
+    "outcomes": [
+      "Achieves state-of-the-art segmentation accuracy in GTA5\u2192Cityscapes and SYNTHIA\u2192Cityscapes tasks",
+      "Proposes a hierarchical unsupervised domain adaptation framework for cross-domain semantic segmentation"
+    ],
+    "full_text_markdown": "Unsupervised domain adaptation (UDA) aims to enhance the generalization capability of a certain model from a source domain to a target domain. Present UDA models focus on alleviating the domain shift by minimizing the feature discrepancy between the source and target domains but usually ignore the class confusion problem. In this work, we propose an Inter-class Separation and Intra-class Aggregation (ISIA) mechanism. It encourages the cross-domain representative consistency between the same categories and differentiation among diverse categories. By measuring the align complexity of each category, we design an Adaptive-weighted Instance Matching (AIM) strategy to further optimize the instance-level adaptation. Based on our proposed methods, we also raise a hierarchical unsupervised domain adaptation framework for cross-domain semantic segmentation task. Through performing the image-level, feature-level, category-level and instance-level alignment, our method achieves a stronger generalization performance of the model from the source domain to the target domain. In two typical cross-domain semantic segmentation tasks, i.e., GTA5\u2192Cityscapes and SYNTHIA\u2192Cityscapes, our method achieves the state-of-the-art segmentation accuracy.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Inter-class Separation and Intra-class Aggregation (ISIA)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Strategy",
+        "label": "Adaptive-weighted Instance Matching (AIM)"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "bo_birds_of_a_feather_flock_together_category-divergence_guidan.pdf"
+}

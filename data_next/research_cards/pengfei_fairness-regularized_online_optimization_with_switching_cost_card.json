@@ -1,0 +1,68 @@
+{
+  "card_id": "fairness-regularized-online-optimization",
+  "bibliographic_data": {
+    "title": "Fairness-Regularized Online Optimization with Switching Costs",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Pengfei Li",
+        "faculty_id": "Pengfei Li",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yuelin Han"
+      },
+      {
+        "name": "Adam Wierman"
+      },
+      {
+        "name": "Shaolei Ren"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Fairness and action smoothness are two crucial considerations in many online optimization problems, but they have yet to be addressed simultaneously. In this paper, we study a new and challenging setting of fairness-regularized smoothed online convex optimization with switching costs. First, to highlight the fundamental challenges introduced by the long-term fairness regularizer evaluated based on the entire sequence of actions, we prove that even without switching costs, no online algorithms can possibly achieve a sublinear regret or finite competitive ratio compared to the offline optimal algorithm as the problem episode length T increases. Then, we propose FairOBD (Fairness-regularized Online Balanced Descent), which reconciles the tension between minimizing the hitting cost, switching cost, and fairness cost. Concretely, FairOBD decomposes the long-term fairness cost into a sequence of online costs by introducing an auxiliary variable and then leverages the auxiliary variable to regularize the online actions for fair outcomes. Based on a new approach to account for switching costs, we prove that FairOBD offers a worst-case asymptotic competitive ratio against a novel benchmark\u2014the optimal offline algorithm with parameterized constraints\u2014by considering T \u2192\u221e. Finally, we run trace-driven experiments of dynamic computing resource provisioning for socially responsible AI inference to empirically evaluate FairOBD, showing that FairOBD can effectively reduce the total fairness-regularized cost and better promote fair outcomes compared to existing baseline solutions.",
+    "arxiv_id": "2512.11131"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes FairOBD, a method that reconciles the tension between minimizing hitting cost, switching cost, and fairness cost in fairness-regularized smoothed online convex optimization with switching costs.",
+    "key_methodology": "FairOBD decomposes the long-term fairness cost into a sequence of online costs by introducing an auxiliary variable to regularize the online actions for fair outcomes. It leverages a new approach to account for switching costs, providing a worst-case asymptotic competitive ratio against a novel benchmark\u2014the optimal offline algorithm with parameterized constraints.",
+    "outcomes": [
+      "FairOBD can effectively reduce the total fairness-regularized cost and better promote fair outcomes compared to existing baseline solutions.",
+      "The paper rigorously analyzes the inherent hardness of incorporating long-term fairness regularization into online optimization, establishing fundamental lower bounds in the dynamic benchmark under two standard performance metrics: regret and competitive ratio."
+    ],
+    "full_text_markdown": "Fairness and action smoothness are critical considerations in many online optimization problems. This paper introduces FairOBD (Fairness-regularized Online Balanced Descent), a method that addresses both fairness and switching costs in online convex optimization. The authors prove that no algorithm can achieve sublinear regret or finite competitive ratio without considering the long-term fairness regularizer. They propose decomposing the long-term fairness cost into a sequence of online costs using an auxiliary variable, which helps in achieving fair outcomes while minimizing hitting and switching costs. Through experiments on dynamic computing resource provisioning for socially responsible AI inference, they demonstrate that FairOBD outperforms existing methods.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "fairness-regularized-online-optimization",
+        "type": "Method",
+        "label": "FairOBD"
+      },
+      {
+        "id": "switching-costs",
+        "type": "Concept",
+        "label": "Switching Costs"
+      },
+      {
+        "id": "long-term-fairness",
+        "type": "Concept",
+        "label": "Long-Term Fairness"
+      }
+    ],
+    "edges": [
+      {
+        "source": "fairness-regularized-online-optimization",
+        "target": "switching-costs",
+        "relation": "HAS_COMPONENT"
+      },
+      {
+        "source": "fairness-regularized-online-optimization",
+        "target": "long-term-fairness",
+        "relation": "HAS_OBJECTIVE"
+      }
+    ]
+  },
+  "source_file": "pengfei_fairness-regularized_online_optimization_with_switching_cost.pdf"
+}

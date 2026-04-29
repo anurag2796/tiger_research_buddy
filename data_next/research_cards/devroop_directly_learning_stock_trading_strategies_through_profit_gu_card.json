@@ -1,0 +1,81 @@
+{
+  "card_id": "directly_learning_stock_trading_strategies",
+  "bibliographic_data": {
+    "title": "Directly Learning Stock Trading Strategies Through Profit Guided Loss Functions",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Devroop Kar"
+      },
+      {
+        "name": "Zimeng Lyu"
+      },
+      {
+        "name": "Sheeraja Rajakrishnan"
+      },
+      {
+        "name": "Hao Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Alex Ororbia",
+        "faculty_id": "Alexander Ororbia",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Travis Desell"
+      },
+      {
+        "name": "Daniel Krutz",
+        "faculty_id": "Daniel Krutz",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Stock trading has always been a challenging task due to the highly volatile nature of the stock market. Making sound trading decisions to generate profit is particularly difficult under such conditions. To address this, we propose four novel loss functions to drive decision-making for a portfolio of stocks. These functions account for the potential profits or losses based with respect to buying or shorting respective stocks, enabling potentially any artificial neural network to directly learn an effective trading strategy. Despite the high volatility in stock market fluctuations over time, training time-series models such as transformers on these loss functions resulted in trading strategies that generated significant profits on a portfolio of 50 different S&P 500 company stocks as compared to a benchmark reinforcement learning techniques and a baseline buy and hold method. As an example, using 2021, 2022 and 2023 as three test periods, the Crossformer model adapted with our best loss function was most consistent, resulting in returns of 51.42%, 51.04% and 48.62% respectively. In comparison, the best performing state-of-the-art reinforcement learning methods, PPO and DDPG, only delivered maximum profits of around 41%, 2.81% and 41.58% for the same periods.",
+    "arxiv_id": "arXiv:2507.19639"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes four novel loss functions to guide artificial neural networks in learning effective trading strategies directly, which outperformed state-of-the-art reinforcement learning methods and a baseline buy-and-hold strategy.",
+    "key_methodology": "Four custom loss functions were designed to account for potential profits or losses based on buying or shorting stocks. These loss functions were used to train transformer-based models, enabling the network to learn trading strategies directly without relying on time-series forecasts or historical data as in reinforcement learning methods.",
+    "outcomes": [
+      "Transformer models trained with custom loss functions generated significant profits compared to benchmark reinforcement learning techniques and a buy-and-hold strategy.",
+      "The Crossformer model adapted with the best loss function showed consistent returns of 51.42%, 51.04%, and 48.62% for the test periods of 2021, 2022, and 2023 respectively."
+    ],
+    "full_text_markdown": "The paper addresses the challenge of stock trading by proposing four novel loss functions that enable artificial neural networks to directly learn effective trading strategies. The authors demonstrate that these loss functions outperform state-of-the-art reinforcement learning methods and a baseline buy-and-hold strategy, particularly in generating significant profits on a portfolio of 50 different S&P 500 company stocks. For instance, the Crossformer model adapted with the best loss function achieved consistent returns of 51.42%, 51.04%, and 48.62% for the test periods of 2021, 2022, and 2023 respectively, compared to maximum profits of around 41%, 2.81%, and 41.58% from PPO and DDPG methods.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Custom Loss Functions"
+      },
+      {
+        "id": "concept_2",
+        "type": "Model",
+        "label": "Transformer-Based Models"
+      },
+      {
+        "id": "concept_3",
+        "type": "Strategy",
+        "label": "Trading Strategies"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "GUIDES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "ENABLING"
+      }
+    ]
+  },
+  "source_file": "devroop_directly_learning_stock_trading_strategies_through_profit_gu.pdf"
+}

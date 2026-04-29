@@ -1,0 +1,52 @@
+{
+  "card_id": "efficient_semantic_uncertainty_quantification",
+  "bibliographic_data": {
+    "title": "Efficient semantic uncertainty quantification in language models via diversity-steered sampling",
+    "primary_domain": "cs.CL",
+    "authors": [
+      {
+        "name": "Ji Won Park",
+        "faculty_id": "Ji Hwan Park",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Kyunghyun Cho"
+      }
+    ],
+    "year": 2026,
+    "abstract": "Accurately estimating semantic aleatoric and epistemic uncertainties in large language models (LLMs) is particularly challenging in free-form question answering, where obtaining stable estimates often requires many expensive generations. We introduce a diversity-steered sampler that discourages semantically redundant outputs during decoding, covers both autoregressive and masked diffusion paradigms, and yields substantial sample-efficiency gains. The key idea is to inject a continuous semantic-similarity penalty into the model\u2019s proposal distribution using a natural language inference (NLI) model lightly finetuned on partial prefixes or intermediate diffusion states. We debias downstream uncertainty estimates with importance reweighting and shrink their variance with control variates. Across four QA benchmarks, our method matches or surpasses baselines while covering more semantic clusters with the same number of samples. Being modular and requiring no gradient access to the base LLM, the framework promises to serve as a drop-in enhancement for uncertainty estimation in risk-sensitive model deployments.",
+    "arxiv_id": "arXiv:2510.21310"
+  },
+  "core_content": {
+    "novelty_claim": "The paper introduces a diversity-steered sampler that reduces semantically redundant outputs during decoding, improving sample efficiency for uncertainty estimation in language models.",
+    "key_methodology": "A continuous semantic-similarity penalty is injected into the model\u2019s proposal distribution using an NLI model lightly finetuned on partial prefixes or intermediate diffusion states. This method covers both autoregressive and masked diffusion paradigms and uses importance reweighting and control variates to debias downstream uncertainty estimates.",
+    "outcomes": [
+      "Matches or surpasses baselines while covering more semantic clusters with the same number of samples.",
+      "Improves sample efficiency for uncertainty estimation in language models."
+    ],
+    "full_text_markdown": "The paper addresses the challenge of accurately estimating semantic uncertainties in large language models (LLMs) during free-form question answering. It introduces a diversity-steered sampler that reduces semantically redundant outputs, improving sample efficiency. The method uses an NLI model to inject a continuous semantic-similarity penalty into the model\u2019s proposal distribution and employs importance reweighting and control variates for downstream uncertainty estimates. Experiments across four QA benchmarks show that this approach matches or surpasses baselines while covering more semantic clusters with fewer samples.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "semantic_similarity_penalty",
+        "type": "Method",
+        "label": "Semantic Similarity Penalty"
+      },
+      {
+        "id": "natural_language_inference_model",
+        "type": "Concept",
+        "label": "Natural Language Inference Model"
+      }
+    ],
+    "edges": [
+      {
+        "source": "semantic_similarity_penalty",
+        "target": "natural_language_inference_model",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "ji_efficient_semantic_uncertainty_quantification_in_language_mo.pdf"
+}

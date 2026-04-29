@@ -1,0 +1,71 @@
+{
+  "card_id": "improving_decision_making_process",
+  "bibliographic_data": {
+    "title": "Improving the Decision-Making Process of Self-Adaptive Systems by Accounting for Tactic Volatility",
+    "primary_domain": "cs.AI",
+    "authors": [
+      {
+        "name": "Jeffrey Palmerino"
+      },
+      {
+        "name": "Qi Yu",
+        "faculty_id": "Zhe Yu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Travis Desell"
+      },
+      {
+        "name": "Daniel E. Krutz",
+        "faculty_id": "Daniel Krutz",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2020,
+    "abstract": "When self-adaptive systems encounter changes within their surrounding environments, they enact tactics to perform necessary adaptations. Unfortunately, current self-adaptive approaches do not account for tactic volatility in their decision-making processes, and merely assume that tactics do not experience volatility. This limitation creates uncertainty in the decision-making process and may adversely impact the system\u2019s ability to effectively and efficiently adapt. To address this challenge, we propose a Tactic Volatility Aware (TVA) solution using Multiple Regression Analysis (MRA) for accurate estimation of tactic cost and time requirements, and Autoregressive Integrated Moving Average (ARIMA) for proactive maintenance of specifications.",
+    "arxiv_id": "arXiv:2004.11302v1"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a Tactic Volatility Aware (TVA) solution that uses Multiple Regression Analysis (MRA) and Autoregressive Integrated Moving Average (ARIMA) to account for tactic volatility in self-adaptive systems.",
+    "key_methodology": "Using MRA, TVA enables self-adaptive systems to accurately estimate the cost and time required to execute tactics. ARIMA is utilized for time series forecasting, allowing the system to proactively maintain specifications.",
+    "outcomes": [
+      "Demonstrated that accounting for tactic volatility is essential in self-adaptive systems, especially when unpredictable behavior is known.",
+      "Proposed TVA as the first process that accounts for tactic volatility by using runtime predictions of latency and cost.",
+      "Conducted experiments to show positive impact on decision-making processes."
+    ],
+    "full_text_markdown": "The paper addresses the challenge of accounting for tactic volatility in self-adaptive systems. Current approaches assume tactics do not experience volatility, leading to uncertainty in decision-making. The authors propose a Tactic Volatility Aware (TVA) solution that uses Multiple Regression Analysis (MRA) and Autoregressive Integrated Moving Average (ARIMA). MRA helps estimate the cost and time required for tactic execution, while ARIMA forecasts future tactic behavior. Experiments demonstrate TVA's positive impact on decision-making processes.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "tactic_volatility",
+        "type": "Concept",
+        "label": "Tactic Volatility"
+      },
+      {
+        "id": "multiple_regression_analysis",
+        "type": "Method",
+        "label": "Multiple Regression Analysis (MRA)"
+      },
+      {
+        "id": "autoregressive_integrated_moving_average",
+        "type": "Method",
+        "label": "Autoregressive Integrated Moving Average (ARIMA)"
+      }
+    ],
+    "edges": [
+      {
+        "source": "tactic_volatility",
+        "target": "multiple_regression_analysis",
+        "relation": "USES"
+      },
+      {
+        "source": "tactic_volatility",
+        "target": "autoregressive_integrated_moving_average",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "jeffrey_improving_the_decision-making_process_of_self-adaptive_syste.pdf"
+}

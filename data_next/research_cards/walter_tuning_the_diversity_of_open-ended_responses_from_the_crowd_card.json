@@ -1,0 +1,50 @@
+{
+  "card_id": "tuning_diversity_open_ended_responses",
+  "bibliographic_data": {
+    "title": "Tuning the Diversity of Open-Ended Responses from the Crowd",
+    "primary_domain": "cs.HC",
+    "authors": [
+      {
+        "name": "Walter S. Lasecki"
+      },
+      {
+        "name": "Christopher M. Homan",
+        "faculty_id": "Christopher Homan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jeffrey P. Bigham"
+      }
+    ],
+    "year": 2021,
+    "abstract": "Crowdsourcing can solve problems that current fully automated systems cannot. Its effectiveness depends on the reliability, accuracy, and speed of the crowd workers that drive it. These objectives are frequently at odds with one another. For instance, how much time should workers be given to discover and propose new solutions versus deliberate over those currently proposed? How do we determine if discovering a new answer is appropriate at all? And how do we manage workers who lack the expertise or attention needed to provide useful input to a given task? We present a mechanism that uses distinct payoffs for three possible worker actions\u2014propose, vote, or abstain\u2014to provide workers with the necessary incentives to guarantee an effective (or even optimal) balance between searching for new answers, assessing those currently available, and, when they have insufficient expertise or insight for the task at hand, abstaining. We provide a novel game-theoretic analysis for this mechanism and test it experimentally on an image-labeling problem and show that it allows a system to reliably control the balance between discovering new answers and converging to existing ones.",
+    "arxiv_id": "arXiv:1408.6621"
+  },
+  "core_content": {
+    "novelty_claim": "The paper presents a mechanism using distinct payoffs for three worker actions\u2014propose, vote, or abstain\u2014to balance the search for new answers and assessment of existing ones in crowdsourcing tasks.",
+    "key_methodology": "A game-theoretic analysis is provided to design incentives that encourage workers to propose, vote, or abstain based on their expertise and task requirements. The mechanism was tested experimentally on an image-labeling problem.",
+    "outcomes": [
+      "The proposed mechanism allows for reliable control of the balance between discovering new answers and converging to existing ones.",
+      "A novel game-theoretic analysis is provided for the mechanism."
+    ],
+    "full_text_markdown": "Crowdsourcing can solve problems that current fully automated systems cannot. Its effectiveness depends on the reliability, accuracy, and speed of the crowd workers that drive it. These objectives are frequently at odds with one another. For instance, how much time should workers be given to discover and propose new solutions versus deliberate over those currently proposed? How do we determine if discovering a new answer is appropriate at all? And how do we manage workers who lack the expertise or attention needed to provide useful input to a given task? The paper presents a mechanism that uses distinct payoffs for three possible worker actions\u2014propose, vote, or abstain\u2014to provide workers with the necessary incentives to guarantee an effective (or even optimal) balance between searching for new answers, assessing those currently available, and, when they have insufficient expertise or insight for the task at hand, abstaining. The mechanism was tested experimentally on an image-labeling problem and showed that it allows a system to reliably control the balance between discovering new answers and converging to existing ones.\n\nThe relationship between data production and filtering is complex. In general, more workers contributing data means more filtering is necessary, which increases the overall cost of the task in terms of computing resources. On the other hand, if too little effort is spent on discovery then the results may be unsatisfying. Additionally, if as here we assume that humans perform both tasks then we need to respect the competencies and preferences of these workers and route them to the particular tasks that they are most fit to perform.\n\nIn this paper, game-theoretic principals are used to achieve the right balance between data production and filtering. The propose-vote-decline mechanism is presented where each crowd worker has a choice among proposing an answer, voting among the answers proposed so far, or abstaining. Workers are paid a base amount with bonuses if they propose or vote for the winning answer.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Propose-Vote-Abstain Mechanism"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "walter_tuning_the_diversity_of_open-ended_responses_from_the_crowd.pdf"
+}

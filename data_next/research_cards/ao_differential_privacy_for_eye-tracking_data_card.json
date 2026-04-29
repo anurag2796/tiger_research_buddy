@@ -1,0 +1,77 @@
+{
+  "card_id": "differential_privacy_eye_tracking",
+  "bibliographic_data": {
+    "title": "Differential Privacy for Eye-Tracking Data",
+    "primary_domain": "cs.CR",
+    "authors": [
+      {
+        "name": "Ao Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Lirong Xia"
+      },
+      {
+        "name": "Andrew Duchowski"
+      },
+      {
+        "name": "Reynold Bailey",
+        "faculty_id": "Reynold Bailey",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Kenneth Holmqvist"
+      },
+      {
+        "name": "Eakta Jain"
+      }
+    ],
+    "year": 2019,
+    "abstract": "As large eye-tracking datasets are created, data privacy is a pressing concern for the eye-tracking community. De-identifying data does not guarantee privacy because multiple datasets can be linked for inferences. A common belief is that aggregating individuals\u2019 data into composite representations such as heatmaps protects the individual. However, we analytically examine the privacy of (noise-free) heatmaps and show that they do not guarantee privacy. We further propose two noise mechanisms that guarantee privacy and analyze their privacy-utility tradeoff. Analysis reveals that our Gaussian noise mechanism is an elegant solution to preserve privacy for heatmaps. Our results have implications for interdisciplinary research to create differentially private mechanisms for eye tracking.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper introduces differential privacy mechanisms specifically for eye-tracking data, showing that noise-free heatmaps do not guarantee privacy and proposes two noise mechanisms to improve privacy while preserving utility.",
+    "key_methodology": "The authors propose using differential privacy (DP) techniques to ensure the privacy of aggregated gaze data. They introduce a Gaussian noise mechanism as an effective solution.",
+    "outcomes": [
+      "Demonstrated that heatmaps do not guarantee privacy from a DP perspective.",
+      "Proposed two mechanisms for improving the privacy of aggregated gaze data.",
+      "Analyzed the privacy-utility tradeoff of these mechanisms."
+    ],
+    "full_text_markdown": "The paper addresses the growing concern of data privacy in eye-tracking research. It highlights that de-identifying data does not guarantee privacy, and common practices like aggregating data into heatmaps do not ensure individual privacy. The authors propose using differential privacy (DP) techniques to enhance privacy while maintaining utility. They introduce a Gaussian noise mechanism as an effective solution for preserving privacy in aggregated gaze data.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "differential_privacy",
+        "type": "Method",
+        "label": "Differential Privacy"
+      },
+      {
+        "id": "heatmaps",
+        "type": "Concept",
+        "label": "Heatmaps"
+      },
+      {
+        "id": "noise_mechanisms",
+        "type": "Method",
+        "label": "Noise Mechanisms"
+      }
+    ],
+    "edges": [
+      {
+        "source": "differential_privacy",
+        "target": "noise_mechanisms",
+        "relation": "SOLVES"
+      },
+      {
+        "source": "heatmaps",
+        "target": "noise_mechanisms",
+        "relation": "REQUIRES"
+      }
+    ]
+  },
+  "source_file": "ao_differential_privacy_for_eye-tracking_data.pdf"
+}

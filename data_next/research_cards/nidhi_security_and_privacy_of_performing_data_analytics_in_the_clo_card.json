@@ -1,0 +1,65 @@
+{
+  "card_id": "security_privacy_cloud_data_analytics",
+  "bibliographic_data": {
+    "title": "Security and Privacy of performing Data Analytics in the cloud - A three-way handshake of Technology, Policy, and Management",
+    "primary_domain": "cs.CR",
+    "authors": [
+      {
+        "name": "Nidhi Rastogi",
+        "faculty_id": "Nidhi Rastogi",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Marie Joan Kristine Gloria"
+      },
+      {
+        "name": "James Hendler"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Cloud platform came into existence primarily to accelerate IT delivery and promote innovation. However, concerns around security and privacy of user information have suppressed wider acceptance and deployment of the cloud platform. This paper discusses security and privacy concerns that occur due to data exchanging hands between a cloud service provider (CSP) and the primary cloud user \u2013 the data collector. Solutions are offered that encompass technology, policy, and sound management of the cloud service asserting that this approach has the potential to provide a holistic solution.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a three-pronged strategy involving technology, internal policy and management, and state/federal policies to address security and privacy concerns in cloud data analytics.",
+    "key_methodology": "The authors discuss existing privacy and security concerns related to cloud platforms and propose solutions that encompass technological advancements, internal policies, and external regulatory frameworks.",
+    "outcomes": [
+      "Proposed a three-pronged strategy for addressing security and privacy concerns",
+      "Emphasized the importance of homomorphic encryption and parallel homomorphic encryption in maintaining data privacy"
+    ],
+    "full_text_markdown": "Cloud computing has emerged as a powerful tool to accelerate IT delivery and promote innovation. However, concerns over user data security and privacy have hindered its widespread adoption. This paper proposes a three-pronged strategy involving technology, internal policy and management, and state/federal policies to address these issues. The authors highlight the importance of homomorphic encryption and parallel homomorphic encryption in maintaining data privacy while performing computations on encrypted data.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "homomorphic_encryption",
+        "type": "Method",
+        "label": "Homomorphic Encryption"
+      },
+      {
+        "id": "parallel_homomorphic_encryption",
+        "type": "Method",
+        "label": "Parallel Homomorphic Encryption (PHE)"
+      },
+      {
+        "id": "cloud_service_provider",
+        "type": "Entity",
+        "label": "Cloud Service Provider (CSP)"
+      }
+    ],
+    "edges": [
+      {
+        "source": "homomorphic_encryption",
+        "target": "cloud_service_provider",
+        "relation": "SOLVES"
+      },
+      {
+        "source": "parallel_homomorphic_encryption",
+        "target": "cloud_service_provider",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "nidhi_security_and_privacy_of_performing_data_analytics_in_the_clo.pdf"
+}

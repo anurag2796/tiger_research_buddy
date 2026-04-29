@@ -1,0 +1,111 @@
+{
+  "card_id": "litar_visually_coherent_lighting",
+  "bibliographic_data": {
+    "title": "LitAR: Visually Coherent Lighting for Mobile Augmented Reality",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Yiqin Zhao",
+        "faculty_id": "Yiqin Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Chongyang Ma",
+        "faculty_id": "Naveen Sharma",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Haibin Huang"
+      },
+      {
+        "name": "Tian Guo"
+      }
+    ],
+    "year": 2022,
+    "abstract": "Mobile augmented reality (AR) has attracted increasing interest from academia and industry to better engage users by allowing seamless integration of physical and virtual environments. The current mobile AR ecosystem is infused with new hardware development, improved frameworks, advancing vision and graphics algorithms, as well as end-user facing applications ranging from e-commerce ones to educational ones. Given the interactive nature of AR applications, users often prefer virtual objects of high visual quality. To achieve both realistic and visually coherent rendering, mobile AR applications require access to an accurate representation of omnidirectional environment lighting (often represented as environment map for image-based lighting) at the user-specified rendering position. However, obtaining a high-quality environment map for mobile AR has to overcome several key challenges: spatial variation of indoor environment lighting, natural user mobility-induced noise in necessary data, heterogeneous sensing capability of mobile devices, and computational limitations.",
+    "arxiv_id": "2301.06184"
+  },
+  "core_content": {
+    "novelty_claim": "LitAR addresses the challenges of spatial variance, noise tolerance, computation efficiency, and quality-performance trade-offs in lighting reconstruction for mobile AR.",
+    "key_methodology": "LitAR uses two-field lighting reconstruction (near-field and far-field), guided bootstrapped movement, motion-based automatic capturing, multi-resolution projection, and anchor extrapolation to achieve visually coherent rendering.",
+    "outcomes": [
+      "Achieves more visually coherent rendering effects than ARKit",
+      "Reduces the time of point cloud projection from about 3 seconds to 14.6 milliseconds",
+      "Averages up to 44.1% higher PSNR value compared to a recent work Xihe on two complex objects with physically-based materials"
+    ],
+    "full_text_markdown": "The paper introduces LitAR, a lighting reconstruction framework for mobile augmented reality that addresses the challenges of spatial variance, noise tolerance, computation efficiency, and quality-performance trade-offs. LitAR uses two-field lighting reconstruction (near-field and far-field), guided bootstrapped movement, motion-based automatic capturing, multi-resolution projection, and anchor extrapolation to achieve visually coherent rendering. The framework is evaluated using a small-scale testbed experiment and a controlled simulation, showing that it achieves more visually coherent rendering effects than ARKit. Additionally, the design of multi-resolution projection significantly reduces the time of point cloud projection from about 3 seconds to 14.6 milliseconds, with an average PSNR value up to 44.1% higher compared to a recent work Xihe on two complex objects with physically-based materials.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "litar",
+        "type": "Method",
+        "label": "LitAR"
+      },
+      {
+        "id": "near_field_reconstruction",
+        "type": "Concept",
+        "label": "Near-field Reconstruction"
+      },
+      {
+        "id": "far_field_reconstruction",
+        "type": "Concept",
+        "label": "Far-field Reconstruction"
+      },
+      {
+        "id": "guided_bootstrapped_movement",
+        "type": "Method",
+        "label": "Guided Bootstrapped Movement"
+      },
+      {
+        "id": "motion_based_auto_capturing",
+        "type": "Method",
+        "label": "Motion-based Automatic Capturing"
+      },
+      {
+        "id": "multi_resolution_projection",
+        "type": "Method",
+        "label": "Multi-resolution Projection"
+      },
+      {
+        "id": "anchor_extrapolation",
+        "type": "Method",
+        "label": "Anchor Extrapolation"
+      }
+    ],
+    "edges": [
+      {
+        "source": "litar",
+        "target": "near_field_reconstruction",
+        "relation": "USES"
+      },
+      {
+        "source": "litar",
+        "target": "far_field_reconstruction",
+        "relation": "USES"
+      },
+      {
+        "source": "litar",
+        "target": "guided_bootstrapped_movement",
+        "relation": "USES"
+      },
+      {
+        "source": "litar",
+        "target": "motion_based_auto_capturing",
+        "relation": "USES"
+      },
+      {
+        "source": "litar",
+        "target": "multi_resolution_projection",
+        "relation": "USES"
+      },
+      {
+        "source": "litar",
+        "target": "anchor_extrapolation",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "yiqin_litar_visually_coherent_lighting_for_mobile_augmented_realit.pdf"
+}

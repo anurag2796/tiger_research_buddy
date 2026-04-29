@@ -1,0 +1,55 @@
+{
+  "card_id": "elements_of_trust_in_named_data_networking",
+  "bibliographic_data": {
+    "title": "Elements of Trust in Named-Data Networking",
+    "primary_domain": "cs.CR",
+    "authors": [
+      {
+        "name": "Cesar Ghali"
+      },
+      {
+        "name": "Gene Tsudik"
+      },
+      {
+        "name": "Ersin Uzun",
+        "faculty_id": "Ersin Uzun",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2014,
+    "abstract": "In contrast to today\u2019s IP-based host-oriented Internet architecture, Information-Centric Networking (ICN) emphasizes content by making it directly addressable and routable. Named Data Networking (NDN) is an instance of ICN that is being developed as a candidate next-generation Internet architecture. By opportunistically caching content within the network (in routers), NDN appears to be well-suited for large-scale content distribution and for meeting the needs of increasingly mobile and bandwidth-hungry applications that dominate today\u2019s Internet. One key feature of NDN is the requirement for each content object to be digitally signed by its producer. Thus, NDN should be, in principle, immune to distributing fake (aka \u201cpoisoned\u201d) content. However, in practice, this poses two challenges for detecting fake content in NDN routers: (1) overhead due to signature verification and certificate chain traversal, and (2) lack of trust context, i.e., determining which public keys are trusted to verify which content. Because of these issues, NDN does not force routers to verify content signatures, which makes the architecture susceptible to content poisoning attacks.",
+    "arxiv_id": "1402.3332v5"
+  },
+  "core_content": {
+    "novelty_claim": "The paper explores root causes of and some cures for content poisoning attacks in NDN, emphasizing the need for a network-layer trust management architecture.",
+    "key_methodology": "The authors analyze NDN architecture and its susceptibility to content poisoning attacks, postulate goals for routers to support trust management and content validation, and present simple rules that allow NDN parties (consumers, producers, and routers) to mitigate content poisoning while minimizing trust-related complexity for routers.",
+    "outcomes": [
+      "Identified the challenges of signature verification in NDN routers due to overhead and lack of trust context.",
+      "Proposed rules for mitigating content poisoning attacks that do not require changes to the fundamentals of the NDN architecture."
+    ],
+    "full_text_markdown": "The Internet usage model has changed considerably over the last two decades. Limitations of the current Internet are becoming more pronounced as network services and applications become increasingly mobile and data-centric. In recent years, a number of research efforts have sprung up aiming to design the next-generation Internet architecture. Some are based on the notion of Information-Centric Networking (ICN) which emphasizes efficient and scalable content distribution. Named Data Networking (NDN), a fork from PARC\u2019s Content Centric Networking (CCNx) architecture, is one such research effort. One of the main tenets of NDN is named content. NDN also stipulates in-network content caching by routers. To secure each content, NDN requires it to be cryptographically signed by its producer. This way, globally addressable and routable content can be authenticated by anyone, which allows NDN to decouple trust in content from trust in entities that store and disseminate it. NDN entities that request content are called consumers. A consumer is expected to verify content signatures in order to assert: \u2022 Integrity \u2013 a valid signature (computed over a content hash) guarantees that signed content is intact; \u2022 Origin Authentication \u2013 since a signature is bound to the public key of the signer, anyone can verify whether content originates with its claimed producer; \u2022 Correctness \u2013 since a signature binds content name to its payload, a consumer can securely determine whether delivered content corresponds to what was requested. Although any NDN entity can verify any content signature, NDN routers are not required, to do so. This is not only because of the overhead stemming from the actual cryptographic verification of the signature itself. There are two other, more important, reasons for not mandating router verification of content signatures: 1. First, a router must be aware of the specific trust model for each content-producing application. Given the wide range of possible applications, it is very unlikely that they will all use the same trust model. Some applications will probably use trust hierarchies, while others might adopt a flat peer-based trust models, or hybrid versions thereof. Furthermore, the set of NDN applications will change over time. Also, the trust model of a particular application might not be static in the long term. 2. Second, depending on the trust model of an application associated with a particular content, a router needs access to \u2013 and thus might need to fetch1 \u2013 multiple public key certificates or similar structures in order to trust the public key that verifies a content signature. For example, if an application uses a hierarchical PKI, an entire root-to-leaf path might have to be traversed and all intermediate certificates would need to be separately verified. This would need to include ancillary activities for each such certificate, i.e., expiration and revocation checking. These issues greatly complicate network-layer trust management in NDN. One easy alternative \u2013 adopted by the current version of NDN \u2013 is to make it optional for routers to verify content signatures. Unfortunately, this decision leaves NDN vulnerable to content poisoning attacks on router caches. To make matters worse, NDN does not provide any definitive mechanism for a consumer to request genuine desired content. Instead, a consumer that receives fake content can explicitly exclude the latter (by referring to its hash) in subsequent requests. This does not guarantee eventual success, due to the potentially unbounded number of fake content objects sharing the same name.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "content_poisoning_attack",
+        "type": "Attack",
+        "label": "Content Poisoning Attack"
+      },
+      {
+        "id": "ndn_architecture",
+        "type": "Architecture",
+        "label": "NDN Architecture"
+      }
+    ],
+    "edges": [
+      {
+        "source": "content_poisoning_attack",
+        "target": "ndn_architecture",
+        "relation": "TARGETS"
+      }
+    ]
+  },
+  "source_file": "cesar_elements_of_trust_in_named-data_networking.pdf"
+}

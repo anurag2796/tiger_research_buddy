@@ -1,0 +1,98 @@
+{
+  "card_id": "multimodal_search_chemical_documents",
+  "bibliographic_data": {
+    "title": "Multimodal Search in Chemical Documents and Reactions",
+    "primary_domain": "cs.CL",
+    "authors": [
+      {
+        "name": "Ayush Kumar Shah"
+      },
+      {
+        "name": "Abhisek Dey"
+      },
+      {
+        "name": "Leo Luo"
+      },
+      {
+        "name": "Bryan Amador"
+      },
+      {
+        "name": "Patrick Philippy"
+      },
+      {
+        "name": "Ming Zhong"
+      },
+      {
+        "name": "Siru Ouyang"
+      },
+      {
+        "name": "David Mark Friday"
+      },
+      {
+        "name": "David Bianchi"
+      },
+      {
+        "name": "Nick Jackson"
+      },
+      {
+        "name": "Richard Zanibbi",
+        "faculty_id": "Richard Zanibbi",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jiawei Han"
+      }
+    ],
+    "year": 2025,
+    "abstract": "We present a multimodal search tool that facilitates retrieval of chemical reactions, molecular structures, and associated text from scientific literature. Queries may combine molecular diagrams, textual descriptions, and reaction data, allowing users to connect different representations of chemical information. To support this, the indexing process includes chemical diagram extraction and parsing, extraction of reaction data from text in tabular form, and cross-modal linking of diagrams and their mentions in text. We describe the system\u2019s architecture, key functionalities, and retrieval process, along with expert assessments of the system.",
+    "arxiv_id": "2502.16865"
+  },
+  "core_content": {
+    "novelty_claim": "The system supports direct retrieval of relevant passages, which are returned along with their associated molecular structures, enabling chemists and researchers to explore linked reaction steps efficiently.",
+    "key_methodology": "The system uses two parallel pipelines for processing textual and graphical content. Text is processed using ReactionMiner to isolate and categorize reaction-related content, while diagrams are parsed to extract molecular structures. The outputs from both pipelines build a unified index of chemical entities, paragraph texts, and reactions.",
+    "outcomes": [
+      "Supports text-based search using BM25",
+      "SMILES-based molecular search using structural similarity and substructure matching provided by RDKit",
+      "Enables direct navigation between reaction text, associated molecule diagrams, and extracted chemical entities"
+    ],
+    "full_text_markdown": "The scientific literature contains vast amounts of chemical knowledge represented in textual descriptions and diagrams. Our system facilitates retrieval of chemical reactions, molecular structures, and associated text from scientific literature by supporting multimodal queries that combine molecular diagrams, textual descriptions, and reaction data. The indexing process includes the extraction of chemical diagram information and parsing of reaction data from text in tabular form, as well as cross-modal linking of diagrams and their mentions in text. This system addresses the limitations of traditional CIR systems which do not explicitly associate molecular figures with their textual descriptions, making it difficult to retrieve reactions found in diagrams with their details and context provided in text.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "reactionminer",
+        "type": "Method",
+        "label": "ReactionMiner"
+      },
+      {
+        "id": "bm25",
+        "type": "Algorithm",
+        "label": "BM25"
+      },
+      {
+        "id": "rdkit",
+        "type": "Tool",
+        "label": "RDKit"
+      }
+    ],
+    "edges": [
+      {
+        "source": "reactionminer",
+        "target": "bm25",
+        "relation": "USES"
+      },
+      {
+        "source": "reactionminer",
+        "target": "rdkit",
+        "relation": "USES"
+      },
+      {
+        "source": "reactionminer",
+        "target": "multimodal_search",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "ayush_multimodal_search_in_chemical_documents_and_reactions.pdf"
+}

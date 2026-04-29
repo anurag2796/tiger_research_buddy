@@ -1,0 +1,77 @@
+{
+  "card_id": "constrained_approximate_similarity_search",
+  "bibliographic_data": {
+    "title": "Constrained Approximate Similarity Search on Proximity Graph",
+    "primary_domain": "cs.AI",
+    "authors": [
+      {
+        "name": "Weijie Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Shulong Tan"
+      },
+      {
+        "name": "Ping Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Search engines and recommendation systems are built to efficiently display relevant information from massive amounts of candidates. Typically a three-stage mechanism is employed in those systems: (i) a small collection of items are first retrieved by approximate near neighbor search algorithms; (ii) then a collection of constraints are applied on the retrieved items; (iii) a fine-grained ranking neural network is employed to determine the final recommendation. We observe a major defect of the original three-stage pipeline: Although we only target to retrieve k vectors in the final recommendation, we have to preset a sufficiently large s (s > k) for each query, and \u201chope\u201d the number of survived vectors after the filtering is not smaller than k. That is, at least k vectors in the s similar candidates satisfy the query constraints. In this paper, we investigate this constrained similarity search problem and attempt to merge the similarity search stage and the filtering stage into one single search operation. We introduce AIRSHIP, a system that integrates a user-defined function filtering into the similarity search framework. The proposed system does not need to build extra indices nor require prior knowledge of the query constraints. We propose three optimization strategies: (1) starting point selection, (2) multi-direction search, and (3) biased priority queue selection.",
+    "arxiv_id": "arXiv:2210.14958v2"
+  },
+  "core_content": {
+    "novelty_claim": "The paper introduces AIRSHIP, a system that integrates user-defined function filtering into the similarity search framework to merge the similarity search stage and the filtering stage into one single operation.",
+    "key_methodology": "Three optimization strategies are proposed: (1) starting point selection, (2) multi-direction search, and (3) biased priority queue selection. The first strategy locates good starting points for graph searching inside a cluster of satisfied vectors. The second strategy enables multi-direction searching with two priority queues to keep track of satisfied and unsatisfied vectors. The third strategy adaptively selects the queue for searching based on the quality of candidates.",
+    "outcomes": [
+      "Improved similarity search performance through optimized strategies",
+      "No need to build extra indices or require prior knowledge of query constraints"
+    ],
+    "full_text_markdown": "The task of searching for similar items is a standard routine in numerous industrial applications and research problems. The paper focuses on constrained graph-based approximate near neighbor (ANN) search, where the retrieved items must satisfy certain pre-specified constraints. The authors introduce AIRSHIP, which integrates user-defined function filtering into the similarity search framework to merge the similarity search stage and the filtering stage into one single operation. Three optimization strategies are proposed: starting point selection, multi-direction search, and biased priority queue selection. Starting point selection locates good starting points for graph searching inside a cluster of satisfied vectors. Multi-direction search enables multi-directional searching with two priority queues to keep track of satisfied and unsatisfied vectors. Biased priority queue selection adaptively selects the queue for searching based on the quality of candidates. The proposed algorithm has a hyper-parameter alter_ratio that is data/query dependent, and an estimation method is provided to choose this parameter. Experimental evaluations confirm the effectiveness of the proposed AIRSHIP algorithm.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "AIRSHIP"
+      },
+      {
+        "id": "concept_2",
+        "type": "Optimization Strategy",
+        "label": "Starting Point Selection"
+      },
+      {
+        "id": "concept_3",
+        "type": "Optimization Strategy",
+        "label": "Multi-Direction Search"
+      },
+      {
+        "id": "concept_4",
+        "type": "Optimization Strategy",
+        "label": "Biased Priority Queue Selection"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_4",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "weijie_constrained_approximate_similarity_search_on_proximity_graph.pdf"
+}

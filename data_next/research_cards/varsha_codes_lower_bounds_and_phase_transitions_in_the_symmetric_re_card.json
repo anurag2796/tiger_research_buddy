@@ -1,0 +1,58 @@
+{
+  "card_id": "arXiv:1609.01582v1",
+  "bibliographic_data": {
+    "title": "Codes, Lower Bounds, and Phase Transitions in the Symmetric Rendezvous Problem",
+    "primary_domain": "cs.DS",
+    "authors": [
+      {
+        "name": "Varsha Dani",
+        "faculty_id": "Varsha Dani",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Thomas P. Hayes"
+      },
+      {
+        "name": "Cristopher Moore"
+      },
+      {
+        "name": "Alexander Russell"
+      }
+    ],
+    "year": 2016,
+    "abstract": "In the rendezvous problem, two parties with different labelings of the vertices of a complete graph are trying to meet at some vertex at the same time. It is well-known that if the parties have predetermined roles, then the strategy where one of them waits at one vertex, while the other visits all n vertices in random order is optimal, taking at most n steps and averaging about n/2. Anderson and Weber [3] considered the symmetric rendezvous problem, where both parties must use the same randomized strategy. They analyzed strategies where the parties repeatedly play the optimal asymmetric strategy, determining their role independently each time by a biased coin-flip. By tuning the bias, Anderson and Weber achieved an expected meeting time of about 0.829n, which they conjectured to be asymptotically optimal. We change perspective slightly: instead of minimizing the expected meeting time, we seek to maximize the probability of meeting within a specified time T . The Anderson-Weber strategy, which fails with constant probability when T = \u0398(n), is not asymptotically optimal for large T in this setting. Speci\ufb01cally, we exhibit a symmetric strategy that succeeds with probability 1 \u2212o(1) in T = 4n steps. This is tight: for any \u03b1 < 4, any symmetric strategy with T = \u03b1n fails with constant probability. Our strategy uses a new combinatorial object that we dub a \u201crendezvous code,\u201d which may be of independent interest.",
+    "arxiv_id": "1609.01582v1"
+  },
+  "core_content": {
+    "novelty_claim": "The paper introduces a symmetric strategy for the rendezvous problem that succeeds with probability 1 \u2212 o(1) in T = 4n steps, which is tight and outperforms previous strategies.",
+    "key_methodology": "The authors use a new combinatorial object called a 'rendezvous code' to develop their strategy.",
+    "outcomes": [
+      "A symmetric strategy that succeeds with probability 1 \u2212 o(1) in T = 4n steps",
+      "New lower bounds on the expected meeting time for large T"
+    ],
+    "full_text_markdown": "In this paper, we explore the rendezvous problem where two parties must meet at a vertex of a complete graph using the same randomized strategy. Previous work by Anderson and Weber [3] showed that their strategy achieves an expected meeting time of about 0.829n but is not asymptotically optimal for large T. We introduce a new symmetric strategy that succeeds with probability 1 \u2212 o(1) in T = 4n steps, which we prove to be tight. This work also provides new lower bounds on the expected meeting time for large T, showing that no symmetric strategy can succeed within T = \u03b1n steps for any \u03b1 < 4.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "rendezvous_code",
+        "type": "Method",
+        "label": "Rendezvous Code"
+      },
+      {
+        "id": "symmetric_strategy",
+        "type": "Strategy",
+        "label": "Symmetric Strategy"
+      }
+    ],
+    "edges": [
+      {
+        "source": "rendezvous_code",
+        "target": "symmetric_strategy",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "varsha_codes_lower_bounds_and_phase_transitions_in_the_symmetric_re.pdf"
+}

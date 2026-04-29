@@ -1,0 +1,83 @@
+{
+  "card_id": "centerline_boundary_dice_loss",
+  "bibliographic_data": {
+    "title": "Centerline Boundary Dice Loss for Vascular Segmentation",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Pengcheng Shi",
+        "faculty_id": "Pengcheng Shi",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jiesi Hu",
+        "faculty_id": "Derui Zhu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yanwu Yang",
+        "faculty_id": "Haibo Yang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Zilve Gao"
+      },
+      {
+        "name": "Wei Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Ting Ma",
+        "faculty_id": "Naveen Sharma",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Vascular segmentation in medical imaging plays a crucial role in analyzing morphological and functional assessments. Traditional methods, like the centerline Dice (clDice) loss, ensure topology preservation but falter in capturing geometric details, especially under translation and deformation. The combination of clDice with traditional Dice loss can lead to diameter imbalance, favoring larger vessels. Addressing these challenges, we introduce the centerline boundary Dice (cbDice) loss function, which harmonizes topological integrity and geometric nuances, ensuring consistent segmentation across various vessel sizes. cbDice enriches the clDice approach by including boundary-aware aspects, thereby improving geometric detail recognition. It matches the performance of the boundary difference over union (B-DoU) loss through a mask-distance-based approach, enhancing translation sensitivity. Crucially, cbDice incorporates radius information from vascular skeletons, enabling uniform adaptation to vascular diameter changes and maintaining balance in branch growth and fracture impacts.",
+    "arxiv_id": "arXiv:2407.01517"
+  },
+  "core_content": {
+    "novelty_claim": "The centerline boundary Dice (cbDice) loss function harmonizes topological integrity and geometric nuances, ensuring consistent segmentation across various vessel sizes.",
+    "key_methodology": "The cbDice loss integrates boundary awareness with radius information extracted from vascular skeletons to improve geometric detail recognition while maintaining topological integrity.",
+    "outcomes": [
+      "Harmonizes topological integrity and geometric nuances in vascular segmentation.",
+      "Improves geometric detail recognition through the inclusion of boundary-aware aspects.",
+      "Matches performance of B-DoU loss through a mask-distance-based approach, enhancing translation sensitivity."
+    ],
+    "full_text_markdown": "Advancements in deep learning have significantly enhanced medical image segmentation, particularly in vasculature. However, traditional metrics often neglect domain-specific needs, leading to significant deficiencies. Vascular segmentation faces three main challenges: preserving the topology of the vascular network for accurate hemodynamic analysis; capturing intricate geometric morphologies vital for diagnosing conditions like stenosis; and achieving balanced segmentation across vessel diameters with consistent width adjustments within each branch to mitigate diameter imbalance. The centerline boundary Dice (cbDice) loss function addresses these challenges by integrating boundary awareness with radius information from vascular skeletons, ensuring topological integrity while improving geometric detail recognition. It matches the performance of the boundary difference over union (B-DoU) loss through a mask-distance-based approach and enhances translation sensitivity. The method was validated on three diverse vascular segmentation datasets, including 2D and 3D binary and multi-class tasks, demonstrating outstanding performance in the MICCAI 2023 TopCoW Challenge dataset.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "cbDice",
+        "type": "Method",
+        "label": "Centerline Boundary Dice Loss"
+      },
+      {
+        "id": "clDice",
+        "type": "Method",
+        "label": "Centerline Dice Loss"
+      },
+      {
+        "id": "B-DoU",
+        "type": "Loss Function",
+        "label": "Boundary Difference Over Union Loss"
+      }
+    ],
+    "edges": [
+      {
+        "source": "cbDice",
+        "target": "clDice",
+        "relation": "ENHANCES"
+      },
+      {
+        "source": "cbDice",
+        "target": "B-DoU",
+        "relation": "MATCHES_PERFORMANCE"
+      }
+    ]
+  },
+  "source_file": "pengcheng_centerline_boundary_dice_loss_for_vascular_segmentation.pdf"
+}

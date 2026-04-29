@@ -1,0 +1,64 @@
+{
+  "card_id": "fast_abc_boost",
+  "bibliographic_data": {
+    "title": "Package for Fast ABC-Boost",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Ping Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Weijie Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2022,
+    "abstract": "This report presents the open-source package https://github.com/pltrees/abcboost which implements a series of boosting works over the past many years (Li, 2008, 2009, 2010a,b; Li and Zhao, 2022a,c). In particular, this package includes mainly three lines of techniques, among which two are already standard implementations in popular boosted tree platforms: (i) The histogram-based approach makes the tree implementation convenient and efficient. (ii) The explicit gain formula for tree splitting based on second-order derivatives of the loss function typically improves over first-order methods. The main contribution is the ABC-Boost (adaptive base class boosting) for multi-class classification, which can substantially improve classification accuracy if the base class is chosen properly.",
+    "arxiv_id": "2207.08770"
+  },
+  "core_content": {
+    "novelty_claim": "The package introduces a new framework called 'Fast ABC-Boost' with parameters to flexibly and efficiently choose the proper search space for the base class in multi-class classification tasks.",
+    "key_methodology": "The package implements techniques such as histogram-based feature binning, explicit gain formula based on second-order derivatives of the loss function, and adaptive base class boosting (ABC-Boost) for multi-class classification. The ABC-Boost method rewrites the derivatives of the classical multi-class logistic regression loss function to improve accuracy.",
+    "outcomes": [
+      "Improved accuracy in multi-class classification tasks through proper selection of the base class",
+      "Flexibility and efficiency in choosing the search space for the base class"
+    ],
+    "full_text_markdown": "The 'Fast ABC-Boost' package is an open-source implementation that combines a series of boosting techniques developed over several years. It includes methods such as histogram-based feature binning, explicit gain formula based on second-order derivatives, and adaptive base class boosting (ABC-Boost) for multi-class classification. The package aims to improve the accuracy of multi-class classification tasks by re-writing the derivatives of the classical multi-class logistic regression loss function. This approach can substantially enhance performance if the base class is chosen properly. The main contribution is a unified framework called 'Fast ABC-Boost' that introduces parameters to flexibly and efficiently choose the search space for the base class.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Histogram-based Feature Binning"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "Explicit Gain Formula for Tree Splitting"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Adaptive Base Class Boosting (ABC-Boost)"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      },
+      {
+        "source": "concept_2",
+        "target": "concept_3",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "ping_package_for_fast_abc-boost.pdf"
+}

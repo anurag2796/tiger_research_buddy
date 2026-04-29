@@ -1,0 +1,60 @@
+{
+  "card_id": "cxr_lanic",
+  "bibliographic_data": {
+    "title": "CXR-LanIC: Language-Grounded Interpretable Classifier for Chest X-Ray Diagnosis",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Yiming Tang",
+        "faculty_id": "Yiming Tang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Wenjia Zhong"
+      },
+      {
+        "name": "Rushi Shah"
+      },
+      {
+        "name": "Dianbo Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2026,
+    "abstract": "Deep learning models have achieved remarkable accuracy in chest X-ray diagnosis, yet their widespread clinical adoption remains limited by the black-box nature of their predictions. Clinicians require transparent, verifiable explanations to trust automated diagnoses and identify potential failure modes. We introduce CXR-LanIC (Language-Grounded Interpretable Classifier for Chest X-rays), a novel framework that addresses this interpretability challenge through task-aligned pattern discovery. Our approach trains transcoder-based sparse autoencoders on a BiomedCLIP diagnostic classifier to decompose medical image representations into interpretable visual patterns. By training an ensemble of 100 transcoders on multimodal embeddings from the MIMIC-CXR dataset, we discover approximately 5,000 monosemantic patterns spanning cardiac, pulmonary, pleural, structural, device, and artifact categories. Each pattern exhibits consistent activation behavior across images sharing specific radiological features, enabling transparent attribution where predictions decompose into 20-50 interpretable patterns with verifiable activation galleries. CXR-LanIC achieves competitive diagnostic accuracy on five key findings while providing the foundation for natural language explanations through planned large multimodal model annotation. Our key innovation lies in extracting interpretable features from a classifier trained on specific diagnostic objectives rather than general-purpose embeddings, ensuring discovered patterns are directly relevant to clinical decision-making, demonstrating that medical AI systems can be both accurate and interpretable, supporting safer clinical deployment through transparent, clinically grounded explanations.",
+    "arxiv_id": "arXiv:2510.21464v2"
+  },
+  "core_content": {
+    "novelty_claim": "CXR-LanIC introduces a novel framework for interpreting deep learning models in chest X-ray diagnosis by decomposing medical image representations into interpretable visual patterns.",
+    "key_methodology": "The approach trains transcoder-based sparse autoencoders on a BiomedCLIP diagnostic classifier to discover approximately 5,000 monosemantic patterns spanning various categories. Each pattern exhibits consistent activation behavior across images sharing specific radiological features, enabling transparent attribution of predictions into interpretable patterns.",
+    "outcomes": [
+      "CXR-LanIC achieves competitive diagnostic accuracy on five key findings while providing the foundation for natural language explanations through planned large multimodal model annotation.",
+      "The framework ensures discovered patterns are directly relevant to clinical decision-making by training transcoders on specific diagnostic objectives."
+    ],
+    "full_text_markdown": "Deep learning models have achieved remarkable accuracy in chest X-ray diagnosis, yet their widespread clinical adoption remains limited by the black-box nature of their predictions. Clinicians require transparent, verifiable explanations to trust automated diagnoses and identify potential failure modes. We introduce CXR-LanIC (Language-Grounded Interpretable Classifier for Chest X-rays), a novel framework that addresses this interpretability challenge through task-aligned pattern discovery. Our approach trains transcoder-based sparse autoencoders on a BiomedCLIP diagnostic classifier to decompose medical image representations into interpretable visual patterns. By training an ensemble of 100 transcoders on multimodal embeddings from the MIMIC-CXR dataset, we discover approximately 5,000 monosemantic patterns spanning cardiac, pulmonary, pleural, structural, device, and artifact categories. Each pattern exhibits consistent activation behavior across images sharing specific radiological features, enabling transparent attribution where predictions decompose into 20-50 interpretable patterns with verifiable activation galleries. CXR-LanIC achieves competitive diagnostic accuracy on five key findings while providing the foundation for natural language explanations through planned large multimodal model annotation. Our key innovation lies in extracting interpretable features from a classifier trained on specific diagnostic objectives rather than general-purpose embeddings, ensuring discovered patterns are directly relevant to clinical decision-making, demonstrating that medical AI systems can be both accurate and interpretable, supporting safer clinical deployment through transparent, clinically grounded explanations.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "CXR-LanIC"
+      },
+      {
+        "id": "concept_2",
+        "type": "Pattern Discovery",
+        "label": "Task-aligned pattern discovery"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "yiming_cxr-lanic_language-grounded_interpretable_classifier_for_che.pdf"
+}

@@ -1,0 +1,86 @@
+{
+  "card_id": "hd_ndes_hallucination_detection",
+  "bibliographic_data": {
+    "title": "HD-NDEs: Neural Differential Equations for Hallucination Detection in LLMs",
+    "primary_domain": "cs.CL",
+    "authors": [
+      {
+        "name": "Qing Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jiahui Geng"
+      },
+      {
+        "name": "Zongxiong Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Derui Zhu",
+        "faculty_id": "Derui Zhu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yuxia Wang"
+      },
+      {
+        "name": "Congbo Ma",
+        "faculty_id": "Naveen Sharma",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Chenyang Lyu"
+      },
+      {
+        "name": "Fakhri Karray"
+      }
+    ],
+    "year": 2025,
+    "abstract": "In recent years, large language models (LLMs) have made remarkable advancements, yet hallucination, where models produce inaccurate or non-factual statements, remains a significant challenge for real-world deployment. Although current classification-based methods, such as SAPLMA, are highly efficient in mitigating hallucinations, they struggle when non-factual information arises in the early or mid-sequence of outputs, reducing their reliability. To address these issues, we propose Hallucination Detection-Neural Differential Equations (HD-NDEs), a novel method that systematically assesses the truthfulness of statements by capturing the full dynamics of LLMs within their latent space.",
+    "arxiv_id": "arXiv:2506.00088v1"
+  },
+  "core_content": {
+    "novelty_claim": "HD-NDEs introduces a novel method for hallucination detection in LLMs by applying neural differential equations to model the dynamic system within the latent space of LLMs.",
+    "key_methodology": "The method applies neural differential equations (Neural DEs) to model the dynamic system in the latent space of LLMs. The sequence in the latent space is then mapped to the classification space for truth assessment.",
+    "outcomes": [
+      "HD-NDEs outperforms existing approaches with a 14% improvement in AUC-ROC on the True-False dataset compared to state-of-the-art techniques.",
+      "The method explicitly models the trajectory of intermediate states in the latent space using Neural DEs, providing a more accurate and dynamic approach to detecting hallucinations."
+    ],
+    "full_text_markdown": "In recent years, large language models (LLMs) have made remarkable advancements, yet hallucination, where models produce inaccurate or non-factual statements, remains a significant challenge for real-world deployment. Although current classification-based methods, such as SAPLMA, are highly efficient in mitigating hallucinations, they struggle when non-factual information arises in the early or mid-sequence of outputs, reducing their reliability. To address these issues, we propose Hallucination Detection-Neural Differential Equations (HD-NDEs), a novel method that systematically assesses the truthfulness of statements by capturing the full dynamics of LLMs within their latent space.\n\nOur approaches apply neural differential equations (Neural DEs) to model the dynamic system in the latent space of LLMs. Then, the sequence in the latent space is mapped to the classification space for truth assessment. The extensive experiments across five datasets and six widely used LLMs demonstrate the effectiveness of HD-NDEs, especially achieving over 14% improvement in AUC-ROC on the True-False dataset compared to state-of-the-art techniques.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "hd_ndes",
+        "type": "Method",
+        "label": "HD-NDEs"
+      },
+      {
+        "id": "neural_differential_equations",
+        "type": "Concept",
+        "label": "Neural Differential Equations"
+      },
+      {
+        "id": "latent_space",
+        "type": "Concept",
+        "label": "Latent Space"
+      }
+    ],
+    "edges": [
+      {
+        "source": "hd_ndes",
+        "target": "neural_differential_equations",
+        "relation": "APPLIES"
+      },
+      {
+        "source": "hd_ndes",
+        "target": "latent_space",
+        "relation": "MODELS"
+      }
+    ]
+  },
+  "source_file": "qing_hd-ndes_neural_differential_equations_for_hallucination_dete.pdf"
+}

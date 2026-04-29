@@ -1,0 +1,68 @@
+{
+  "card_id": "face_concept_extraction",
+  "bibliographic_data": {
+    "title": "FACE: Faithful Automatic Concept Extraction",
+    "primary_domain": "cs.AI",
+    "authors": [
+      {
+        "name": "Dipkamal Bhusal"
+      },
+      {
+        "name": "Michael Clifford"
+      },
+      {
+        "name": "Sara Rampazzi"
+      },
+      {
+        "name": "Nidhi Rastogi",
+        "faculty_id": "Nidhi Rastogi",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Interpreting deep neural networks through concept-based explanations offers a bridge between low-level features and high-level human-understandable semantics. However, existing automatic concept discovery methods often fail to align these extracted concepts with the model\u2019s true decision-making process, thereby compromising explanation faithfulness. In this work, we propose FACE (Faithful Automatic Concept Extraction), a novel framework that augments Non-negative Matrix Factorization (NMF) with a Kullback-Leibler (KL) divergence regularization term to ensure alignment between the model's original and concept-based predictions. Unlike prior methods that operate solely on encoder activations, FACE incorporates classifier supervision during concept learning, enforcing predictive consistency and enabling faithful explanations. We provide theoretical guarantees showing that minimizing the KL divergence bounds the deviation in predictive distributions, thereby promoting faithful local linearity in the learned concept space. Systematic evaluations on ImageNet, COCO, and CelebA datasets demonstrate that FACE outperforms existing methods across faithfulness and sparsity metrics.",
+    "arxiv_id": "2510.11675"
+  },
+  "core_content": {
+    "novelty_claim": "FACE proposes a novel framework for concept extraction by augmenting NMF with KL divergence regularization, ensuring alignment between the model\u2019s original and concept-based predictions through classifier supervision.",
+    "key_methodology": "FACE uses Non-negative Matrix Factorization (NMF) augmented with Kullback-Leibler (KL) divergence regularization to ensure that the extracted concepts align closely with the model's true predictive reasoning. It incorporates classifier supervision during concept learning, promoting faithful explanations.",
+    "outcomes": [
+      "FACE outperforms existing methods across faithfulness and sparsity metrics on ImageNet, COCO, and CelebA datasets.",
+      "Theoretical guarantees show that minimizing KL divergence bounds the deviation in predictive distributions, promoting faithful local linearity."
+    ],
+    "full_text_markdown": "Interpreting deep neural networks through concept-based explanations offers a bridge between low-level features and high-level human-understandable semantics. However, existing automatic concept discovery methods often fail to align these extracted concepts with the model\u2019s true decision-making process, thereby compromising explanation faithfulness. In this work, we propose FACE (Faithful Automatic Concept Extraction), a novel framework that augments Non-negative Matrix Factorization (NMF) with a Kullback-Leibler (KL) divergence regularization term to ensure alignment between the model's original and concept-based predictions. Unlike prior methods that operate solely on encoder activations, FACE incorporates classifier supervision during concept learning, enforcing predictive consistency and enabling faithful explanations. We provide theoretical guarantees showing that minimizing the KL divergence bounds the deviation in predictive distributions, thereby promoting faithful local linearity in the learned concept space. Systematic evaluations on ImageNet, COCO, and CelebA datasets demonstrate that FACE outperforms existing methods across faithfulness and sparsity metrics.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "FACE",
+        "type": "Method",
+        "label": "Faithful Automatic Concept Extraction"
+      },
+      {
+        "id": "NMF",
+        "type": "Method",
+        "label": "Non-negative Matrix Factorization"
+      },
+      {
+        "id:": "KL_divergence",
+        "type": "Concept",
+        "label": "Kullback-Leibler Divergence"
+      }
+    ],
+    "edges": [
+      {
+        "source": "FACE",
+        "target": "NMF",
+        "relation": "USES"
+      },
+      {
+        "source": "FACE",
+        "target": "KL_divergence",
+        "relation": "REGULARIZES"
+      }
+    ]
+  },
+  "source_file": "dipkamal_face_faithful_automatic_concept_extraction.pdf"
+}

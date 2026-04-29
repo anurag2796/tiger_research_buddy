@@ -1,0 +1,115 @@
+{
+  "card_id": "sif_framework",
+  "bibliographic_data": {
+    "title": "SIF: A Framework for Solidity Code Instrumentation and Analysis",
+    "primary_domain": "cs.SE",
+    "authors": [
+      {
+        "name": "Chao Peng",
+        "faculty_id": "Chao Peng",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Sefa Akca"
+      },
+      {
+        "name": "Ajitha Rajan"
+      }
+    ],
+    "year": 2019,
+    "abstract": "Solidity is an object-oriented and high-level language for writing smart contracts that are used to execute, verify, and enforce credible transactions on permissionless blockchains. In the last few years, analysis of smart contracts has raised considerable interest and numerous techniques have been proposed to check the presence of vulnerabilities in them. Current techniques lack traceability in source code and have widely differing workflows. There is no single unifying framework for analysis, instrumentation, optimisation, and code generation of Solidity contracts. In this paper, we present SIF, a comprehensive framework for Solidity contract analysis, query, instrumentation, and code generation. SIF provides support for Solidity contract developers and testers to build source level techniques for analysis, understanding, diagnostics, optimisations, and code generation. We show feasibility and applicability of the framework by building practical tools on top of it and running them on 1838 real smart contracts deployed on the Ethereum network.",
+    "arxiv_id": "arXiv:1905.01659v2"
+  },
+  "core_content": {
+    "novelty_claim": "SIF is a comprehensive framework for Solidity contract analysis, query, instrumentation, and code generation that provides traceability back to the source code.",
+    "key_methodology": "SIF supports querying the Abstract Syntax Tree (AST) of Solidity code, code instrumentation or transformation using predefined helper functions, and Solidity code generation from AST. It includes 7 different tools for various purposes such as function listing, call graph generation, control flow graph generation, AST diff, renaming identifiers, fault seeding, and assertion analysis.",
+    "outcomes": [
+      "SIF provides a unified framework for Solidity contract development that supports traceability back to the source code.",
+      "The 7 tools built on top of SIF are easy to use, highly automated, and new tools can be easily implemented with helper functions."
+    ],
+    "full_text_markdown": "In recent years, there has been a significant interest in analyzing smart contracts written in Solidity. However, current techniques lack traceability back to the source code and have varying workflows. This paper introduces SIF (Solidity Instrumentation Framework), a comprehensive framework for Solidity contract analysis, query, instrumentation, and code generation. SIF supports querying the Abstract Syntax Tree (AST) of Solidity code, code instrumentation or transformation using predefined helper functions, and Solidity code generation from AST. The authors demonstrate the feasibility and applicability of SIF by building 7 different tools on top of it and running them on a collection of 1838 real smart contracts deployed on the Ethereum network.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Solidity Instrumentation Framework (SIF)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Tool",
+        "label": "Function Listing"
+      },
+      {
+        "id": "concept_3",
+        "type": "Tool",
+        "label": "Call Graph Generator"
+      },
+      {
+        "id": "concept_4",
+        "type": "Tool",
+        "label": "Control Flow Graph Generator"
+      },
+      {
+        "id": "concept_5",
+        "type": "Tool",
+        "label": "AST Diff"
+      },
+      {
+        "id": "concept_6",
+        "type": "Tool",
+        "label": "SIF Rename"
+      },
+      {
+        "id": "concept_7",
+        "type": "Tool",
+        "label": "Fault Seeder"
+      },
+      {
+        "id": "concept_8",
+        "type": "Tool",
+        "label": "Assertion Analyser"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "SOLVES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_4",
+        "relation": "SOLVES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_5",
+        "relation": "SOLVES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_6",
+        "relation": "SOLVES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_7",
+        "relation": "SOLVES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_8",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "chao_sif_a_framework_for_solidity_code_instrumentation_and_analys.pdf"
+}

@@ -1,0 +1,65 @@
+{
+  "card_id": "frequency_estimation_ldp",
+  "bibliographic_data": {
+    "title": "Frequency Estimation of Correlated Multi-attribute Data under Local Differential Privacy",
+    "primary_domain": "cs.CR",
+    "authors": [
+      {
+        "name": "Shafizur Rahman Seeam"
+      },
+      {
+        "name": "Ye Zheng"
+      },
+      {
+        "name": "Yidan Hu",
+        "faculty_id": "Yidan Hu",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Large-scale data collection, from national censuses to IoT-enabled smart homes, routinely gathers dozens of attributes per individual. These multi-attribute datasets are crucial for analytics but pose significant privacy risks. Local Differential Privacy (LDP) is a powerful tool for protecting user privacy by allowing users to locally perturb their records before releasing them to an untrusted data aggregator. However, existing LDP mechanisms either split the privacy budget across all attributes or treat each attribute independently, thereby ignoring natural inter-attribute correlations. This leads to excessive noise and, consequently, significant utility loss, particularly in high-dimensional datasets. We introduce a two-phase LDP framework that overcomes these limitations by privately learning and exploiting inter-attribute dependencies. In Phase I, a small subset of users applies a standard per-attribute LDP mechanism, enabling the aggregator to derive dependency information from the privatized data. In Phase II, each remaining user perturbs a single randomly chosen attribute with the full privacy budget, while the unreported attributes are reconstructed using Phase I statistics, incurring no additional privacy cost. As a concrete instantiation, we develop Correlated Randomized Response (Corr-RR), which employs correlation-aware probabilistic mappings to substantially improve estimation accuracy. We prove that Corr-RR satisfies \ud835\udf16-LDP, and demonstrate through extensive experiments on synthetic and real-world datasets that it consistently outperforms state-of-the-art baselines, with the largest gains in high-dimensional and strongly correlated datasets.",
+    "arxiv_id": "arXiv:2507.17516"
+  },
+  "core_content": {
+    "novelty_claim": "The paper introduces a two-phase LDP framework that leverages inter-attribute dependencies to improve the utility of multi-attribute frequency estimation.",
+    "key_methodology": "A two-phase approach where Phase I involves learning inter-attribute correlations from privatized data, and Phase II uses these learned correlations to perturb attributes with full privacy budget while reconstructing unreported attributes.",
+    "outcomes": [
+      "Developed Correlated Randomized Response (Corr-RR) which improves estimation accuracy in high-dimensional datasets.",
+      "Proved that Corr-RR satisfies \ud835\udf16-LDP and outperforms state-of-the-art baselines."
+    ],
+    "full_text_markdown": "The paper addresses the challenge of frequency estimation under Local Differential Privacy (LDP) for multi-attribute data. It highlights existing limitations such as excessive noise due to independent attribute perturbation, leading to significant utility loss in high-dimensional datasets. The authors propose a two-phase LDP framework that leverages inter-attribute dependencies. In Phase I, a subset of users applies standard per-attribute LDP mechanisms to derive dependency information. In Phase II, each user perturbs one randomly chosen attribute with the full privacy budget while reconstructing other attributes using learned correlations. The proposed method, Correlated Randomized Response (Corr-RR), is shown to outperform existing techniques in synthetic and real-world datasets.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "correlation",
+        "type": "Concept",
+        "label": "Inter-Attribute Correlations"
+      },
+      {
+        "id": "ldp",
+        "type": "Method",
+        "label": "Local Differential Privacy"
+      },
+      {
+        "id": "corr_rr",
+        "type": "Method",
+        "label": "Correlated Randomized Response"
+      }
+    ],
+    "edges": [
+      {
+        "source": "correlation",
+        "target": "ldp",
+        "relation": "SOLVES"
+      },
+      {
+        "source": "correlation",
+        "target": "corr_rr",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "shafizur_frequency_estimation_of_correlated_multi-attribute_data_unde.pdf"
+}

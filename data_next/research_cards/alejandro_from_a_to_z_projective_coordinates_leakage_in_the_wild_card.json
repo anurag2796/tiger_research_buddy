@@ -1,0 +1,65 @@
+{
+  "card_id": "projective_coordinates_leakage_in_the_wild",
+  "bibliographic_data": {
+    "title": "From A to Z: Projective coordinates leakage in the wild",
+    "primary_domain": "cs.CR",
+    "authors": [
+      {
+        "name": "Alejandro Cabrera Aldaya"
+      },
+      {
+        "name": "Cesar Pereida Garc\u00eda"
+      },
+      {
+        "name": "B. Brumley",
+        "faculty_id": "Billy Brumley",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2020,
+    "abstract": "At EUROCRYPT 2004, Naccache et al. showed that the projective coordinates representation of the resulting point of an elliptic curve scalar multiplication potentially allows to recover some bits of the scalar. However, this attack has received little attention by the scientific community, and the status of deployed mitigations to prevent it in widely adopted cryptography libraries is unknown. In this paper, we aim to fill this gap, by analyzing several cryptography libraries in this context. To demonstrate the applicability of the attack, we use a side-channel attack to exploit this vulnerability within libgcrypt in the context of ECDSA. To the best of our knowledge, this is the first practical attack instance. It targets the insecure binary extended Euclidean algorithm implementation using a microarchitectural side-channel attack that allows recovering the projective representation of the output point of scalar multiplication during ECDSA signature generation. We captured 100k traces to estimate the number of traces an attacker would need to compromise the libgcrypt ECDSA implementation, resulting in less than 2k for commonly used elliptic curve secp256r1, demonstrating the attack feasibility.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper provides a practical demonstration of an attack on projective coordinates leakage within libgcrypt's ECDSA implementation and identifies several vulnerabilities in widely-used cryptography libraries.",
+    "key_methodology": "The authors use a side-channel attack to exploit the vulnerability in the binary extended Euclidean algorithm implementation of libgcrypt, capturing 100k traces to estimate the number of required traces for compromising the implementation.",
+    "outcomes": [
+      "First practical instance of an attack exploiting projective coordinates leakage within ECDSA implementations",
+      "Identification of two additional vulnerabilities in libgcrypt: single-trace ECDSA nonce recovery and recovery of a countermeasure mask"
+    ],
+    "full_text_markdown": "The paper addresses the projective coordinates leakage vulnerability, first identified by Naccache et al. at EUROCRYPT 2004. Despite its potential to recover some bits of the scalar in elliptic curve scalar multiplication, this attack has received little attention from the scientific community. The authors aim to fill this gap by analyzing several cryptography libraries and demonstrating a practical side-channel attack on libgcrypt's ECDSA implementation using microarchitectural leakage. They captured 100k traces and found that less than 2k are needed for commonly used elliptic curves, highlighting the feasibility of the attack. The paper also identifies new vulnerabilities in libgcrypt.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "projective_coordinates_leak",
+        "type": "Method",
+        "label": "Projective Coordinates Leakage"
+      },
+      {
+        "id": "libgcrypt",
+        "type": "Library",
+        "label": "libgcrypt"
+      },
+      {
+        "id": "ecdsa",
+        "type": "Algorithm",
+        "label": "ECDSA"
+      }
+    ],
+    "edges": [
+      {
+        "source": "projective_coordinates_leak",
+        "target": "libgcrypt",
+        "relation": "AFFECTS"
+      },
+      {
+        "source": "projective_coordinates_leak",
+        "target": "ecdsa",
+        "relation": "TARGET_OF"
+      }
+    ]
+  },
+  "source_file": "alejandro_from_a_to_z_projective_coordinates_leakage_in_the_wild.pdf"
+}

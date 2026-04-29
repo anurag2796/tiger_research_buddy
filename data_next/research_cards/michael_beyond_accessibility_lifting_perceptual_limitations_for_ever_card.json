@@ -1,0 +1,67 @@
+{
+  "card_id": "beyond_accessibility",
+  "bibliographic_data": {
+    "title": "Beyond Accessibility: Lifting Perceptual Limitations for Everyone",
+    "primary_domain": "cs.HC",
+    "authors": [
+      {
+        "name": "Michael Mauderer"
+      },
+      {
+        "name": "Garreth W. Tigwell",
+        "faculty_id": "Garreth Tigwell",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Benjamin M. Gorman"
+      },
+      {
+        "name": "David R. Flatla"
+      }
+    ],
+    "year": 2017,
+    "abstract": "We propose that accessibility research can lay the foundation for technology that can be used to augment the perception of everyone. To show how this can be achieved, we present three case studies of our research in which we demonstrate our approaches for impaired colour vision, situational visual impairments and situational hearing impairment.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes that accessibility technologies designed to help people with disabilities can also benefit everyone by augmenting perception.",
+    "key_methodology": "Case studies of three research approaches: impaired colour vision, situational visual impairments, and situational hearing impairment.",
+    "outcomes": [
+      "Developed techniques for improving color identification and discrimination in individuals with impaired color vision.",
+      "Investigated solutions to situational visual impairments when using mobile devices under bright lighting conditions."
+    ],
+    "full_text_markdown": "The paper explores the potential of accessibility research to benefit everyone by augmenting perception. It presents three case studies: (1) Impaired colour vision, where techniques like ColourNames and ColourPopper were developed to improve color identification; (2) Situational visual impairments, focusing on challenges faced when using mobile devices in bright lighting conditions; (3) Situational hearing impairment, though not detailed here. The authors argue that technologies initially designed for people with disabilities can enhance the perception of everyone.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Situation-Specific Modelling (SSM)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Technique",
+        "label": "ColourID"
+      },
+      {
+        "id": "concept_3",
+        "type": "Impaired Colour Vision (ICV)"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "APPLIES_TO"
+      }
+    ]
+  },
+  "source_file": "michael_beyond_accessibility_lifting_perceptual_limitations_for_ever.pdf"
+}

@@ -1,0 +1,72 @@
+{
+  "card_id": "text_mass_modeling",
+  "bibliographic_data": {
+    "title": "Text Is MASS: Modeling as Stochastic Embedding for Text-Video Retrieval",
+    "primary_domain": "cs.CL",
+    "authors": [
+      {
+        "name": "Jiamian Wang"
+      },
+      {
+        "name": "Guohao Sun"
+      },
+      {
+        "name": "Pichao Wang"
+      },
+      {
+        "name": "Dongfang Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "S. Dianat"
+      },
+      {
+        "name": "Majid Rabbani"
+      },
+      {
+        "name": "Raghuveer Rao"
+      },
+      {
+        "name": "Zhiqiang Tao",
+        "faculty_id": "Zhiqiang Tao",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2024,
+    "abstract": "The increasing prevalence of video clips has sparked growing interest in text-video retrieval. Recent advances focus on establishing a joint embedding space for text and video, relying on consistent embedding representations to compute similarity. However, the text content in existing datasets is generally short and concise, making it hard to fully describe the redundant semantics of a video. Correspondingly, a single text embedding may be less expressive to capture the video embedding and empower the retrieval. In this study, we propose a new stochastic text modeling method T-MASS, i.e., text is modeled as a stochastic embedding, to enrich text embedding with a flexible and resilient semantic range, yielding a text mass. To be specific, we introduce a similarity-aware radius module to adapt the scale of the text mass upon the given text-video pairs. Plus, we design and develop a support text regularization to further control the text mass during the training. The inference pipeline is also tailored to fully exploit the text mass for accurate retrieval. Empirical evidence suggests that T-MASS not only effectively attracts relevant text-video pairs while distancing irrelevant ones, but also enables the determination of precise text embeddings for relevant pairs. Our experimental results show a substantial improvement over baseline (3% \u223c6.3% by R@1). Also, T-MASS achieves state-of-the-art performance on five benchmark datasets, including MSRVTT, LSMDC, DiDeMo, VATEX, and Charades.",
+    "arxiv_id": "2403.17998"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes T-MASS (Text is Modeled As a Stochastic embedding) to enrich text embeddings with a flexible semantic range, improving text-video retrieval.",
+    "key_methodology": "T-MASS introduces a similarity-aware radius module and support text regularization during training. The inference pipeline is tailored to fully exploit the text mass for accurate retrieval.",
+    "outcomes": [
+      "Improves baseline performance by 3% \u223c6.3% at R@1",
+      "Achieves state-of-the-art performance on five benchmark datasets"
+    ],
+    "full_text_markdown": "The paper addresses the challenge of text-video retrieval, where existing methods focus on establishing a joint embedding space for text and video but struggle with short and concise text content that cannot fully describe the semantics of videos. The authors propose T-MASS (Text is Modeled As a Stochastic embedding) to model text as a stochastic embedding, providing a flexible semantic range to better capture video clues and align text and video semantics in joint space. Key components include a similarity-aware radius module for adaptive scaling and support text regularization during training. During inference, the method samples multiple stochastic text embeddings for each query text and chooses the closest one to the video embedding for evaluation. Empirical results show significant improvements over baselines on five benchmark datasets.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "T-MASS"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Stochastic Embedding"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "jiamian_text_is_mass_modeling_as_stochastic_embedding_for_text-video.pdf"
+}

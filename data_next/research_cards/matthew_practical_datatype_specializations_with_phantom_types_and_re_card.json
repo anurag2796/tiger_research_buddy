@@ -1,0 +1,52 @@
+{
+  "card_id": "practical_datatype_specializations",
+  "bibliographic_data": {
+    "title": "Practical Datatype Specializations with Phantom Types and Recursion Schemes",
+    "primary_domain": "cs.PL",
+    "authors": [
+      {
+        "name": "Matthew Fluet",
+        "faculty_id": "Matthew Fluet",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Riccardo Pucella"
+      }
+    ],
+    "year": 2005,
+    "abstract": "Datatype specialization is a form of subtyping that captures program invariants on data structures expressed using the convenient and intuitive datatype notation. Of particular interest are structural invariants such as well-formedness. We investigate the use of phantom types for describing datatype specializations. We show that it is possible to express statically-checked specializations within the type system of Standard ML. We also show that this can be done in a way that does not lose useful programming facilities such as pattern matching in case expressions.",
+    "arxiv_id": "cs/0510074"
+  },
+  "core_content": {
+    "novelty_claim": "The paper presents a method to implement datatype specializations using phantom types and recursion schemes within the type system of Standard ML, allowing for static checking while maintaining useful programming facilities.",
+    "key_methodology": "The authors use an informal translation based on phantom types from a set of specializations of a datatype to an interface providing constructors, destructors, and coercions corresponding to the specializations. They then draw on recursion schemes to provide an improved interface that integrates naturally with standard SML usage while still enforcing invariants.",
+    "outcomes": [
+      "Developed a method for implementing datatype specializations using phantom types within Standard ML",
+      "Created an improved interface through recursion schemes that maintains pattern matching and other useful programming facilities"
+    ],
+    "full_text_markdown": "Datatype specialization is a form of subtyping that captures program invariants on data structures expressed using the convenient and intuitive datatype notation. Of particular interest are structural invariants such as well-formedness. The authors investigate the use of phantom types for describing datatype specializations, showing it is possible to express statically-checked specializations within the type system of Standard ML without losing useful programming facilities like pattern matching in case expressions.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Phantom Types"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "Recursion Schemes"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "matthew_practical_datatype_specializations_with_phantom_types_and_re.pdf"
+}

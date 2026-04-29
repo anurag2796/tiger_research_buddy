@@ -1,0 +1,57 @@
+{
+  "card_id": "are_there_still_social_barriers_to_womens_rugby",
+  "bibliographic_data": {
+    "title": "SPORT, PHYSICAL DANGER, AND INJURY: THE EXPERIENCES OF ELITE WOMEN ATHLETES",
+    "primary_domain": "cs.SI",
+    "authors": [
+      {
+        "name": "K. Young"
+      },
+      {
+        "name": "P. White",
+        "faculty_id": "Philip White",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 1995,
+    "abstract": "In 1969, the French Minister for Sports stated that rugby is inappropriate for girls or women due to psychological and physical reasons. The French Rugby Union Federation only opened its doors to women in 1989. This study investigates how and when women start playing rugby and if there are still social barriers to their practice by interviewing 15 persons from the world of French rugby and almost 200 female players. Results show that people around the players are reserved, mainly for fear of physical risk and injuries, with a lesser concern about becoming more masculine. Actors in the French rugby sphere do not seem afraid of physical risks but perceive social risks.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The study investigates the social barriers to women's participation in rugby and how these barriers manifest through perceptions of risk among players and those around them.",
+    "key_methodology": "The researchers interviewed 15 individuals from the French rugby sphere and surveyed almost 200 female players to understand their experiences and perceptions regarding physical and social risks associated with playing rugby.",
+    "outcomes": [
+      "People around the players are reserved, mainly due to fear of physical risk and injuries, as well as a lesser concern about becoming more masculine.",
+      "Actors in the French rugby sphere do not seem afraid of physical risks but perceive social risks."
+    ],
+    "full_text_markdown": "For a long time, rugby union was reserved for men in France. The French Rugby Union Federation only opened its doors to women in 1989. Twenty years later, this study asked how and when women start playing rugby and if there are still social barriers to their practice. By interviewing 15 persons from the world of French rugby and surveying almost 200 female players, it was found that people around the players are reserved, mainly for fear of physical risk and injuries, with a lesser concern about becoming more masculine. Actors in the French rugby sphere do not seem afraid of physical risks but perceive social risks.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "social_risks",
+        "type": "Risk",
+        "label": "Social Risks"
+      },
+      {
+        "id": "physical_risks",
+        "type": "Risk",
+        "label": "Physical Risks"
+      }
+    ],
+    "edges": [
+      {
+        "source": "social_risks",
+        "target": "actors_of_french_rugby_sphere",
+        "relation": "PERCEIVES"
+      },
+      {
+        "source": "physical_risks",
+        "target": "players",
+        "relation": "EXPOSED_TO"
+      }
+    ]
+  },
+  "source_file": "k._sport_physical_danger_and_injury_the_experiences_of_elite_wo.pdf"
+}

@@ -1,0 +1,67 @@
+{
+  "card_id": "kleene-algebra-undecidability",
+  "bibliographic_data": {
+    "title": "Kleene algebra with commutativity conditions is undecidable",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Arthur Azevedo de Amorim",
+        "faculty_id": "Arthur Azevedo de Amorim",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Cheng Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Marco Gaboardi"
+      }
+    ],
+    "year": 2024,
+    "abstract": "We prove that the equational theory of Kleene algebra with commutativity conditions on primitives (or atomic terms) is undecidable, thereby settling a longstanding open question in the theory of Kleene algebra. While this question has also been recently solved independently by Kuznetsov, our results hold even for weaker theories that do not support the induction axioms of Kleene algebra.",
+    "arxiv_id": "arXiv:2411.15979"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proves that the equational theory of Kleene algebra with commutativity conditions on primitives is undecidable, settling a longstanding open question in the theory of Kleene algebra.",
+    "key_methodology": "The authors use inequalities between Kleene algebra terms to model machine transitions and construct a set of inequalities that allow distinguishing whether a machine accepts a given input or not. If such inequalities were decidable, it would lead to a contradiction by diagonalization.",
+    "outcomes": [
+      "Proved the undecidability of the equational theory of Kleene algebra with commutativity conditions on primitives",
+      "Showed that this result holds even for weaker theories without induction axioms"
+    ],
+    "full_text_markdown": "The paper addresses a longstanding open question in the theory of Kleene algebra by proving that the equational theory of Kleene algebra with commutativity conditions on primitives is undecidable. This work settles a significant problem and has implications for decidability in program verification, especially when extending Kleene algebra with commutativity conditions. The authors use inequalities between Kleene algebra terms to model machine transitions and construct a set of inequalities that allow distinguishing whether a machine accepts a given input or not. If such inequalities were decidable, it would lead to a contradiction by diagonalization.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Kleene Algebra"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Undecidability"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Commutativity Conditions"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "HAS_PROPERTY"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "EXTENDS"
+      }
+    ]
+  },
+  "source_file": "arthur_kleene_algebra_with_commutativity_conditions_is_undecidable.pdf"
+}

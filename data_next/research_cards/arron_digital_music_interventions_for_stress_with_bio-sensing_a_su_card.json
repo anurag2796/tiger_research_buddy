@@ -1,0 +1,66 @@
+{
+  "card_id": "digital_music_interventions_for_stress",
+  "bibliographic_data": {
+    "title": "Digital music interventions for stress with bio-sensing: a survey",
+    "primary_domain": "cs.CL",
+    "authors": [
+      {
+        "name": "Arron Ferguson"
+      },
+      {
+        "name": "C. Castellanos",
+        "faculty_id": "Carlos Castellanos",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Philippe Pasquier"
+      }
+    ],
+    "year": 2023,
+    "abstract": "Music therapy is used to treat stress and anxiety in patients for a broad range of reasons such as cancer treatment, substance abuse, addressing trauma, and just daily stress in life. However, access to treatment is limited by the need for trained music therapists and the difficulty of quantitatively measuring efficacy in treatment. We present a survey of digital music systems that utilize biosensing for the purpose of reducing stress and anxiety with therapeutic use of music. The survey analyzes biosensing instruments for brain activity, cardiovascular, electrodermal, and respiratory measurements for efficacy in reduction in stress and anxiety. The survey also emphasizes digital music systems where biosensing is utilized to adapt music playback to the subject, forming a biofeedback loop. We also discuss how these digital music systems can use biofeedback coupled with machine learning to provide improved efficacy. Lastly, we posit that such digital music systems can be realized using consumer-grade biosensing wearables coupled with smartphones.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper surveys digital music systems utilizing biosensing for reducing stress and anxiety, emphasizing the use of biofeedback and machine learning to adapt music playback.",
+    "key_methodology": "Survey analysis of biosensing instruments and digital music systems that utilize biosensing to adapt music playback based on user physiological data.",
+    "outcomes": [
+      "Digital music systems can be adapted using biosensing for stress reduction",
+      "Biofeedback coupled with machine learning improves efficacy",
+      "Consumer-grade biosensing wearables enable more accessible therapeutic use of music"
+    ],
+    "full_text_markdown": "Music therapy is a widely used method to treat stress and anxiety, but access to treatment is limited due to the need for trained therapists and difficulty in quantitatively measuring its effectiveness. This paper surveys digital music systems that utilize biosensing technologies to reduce stress and anxiety through therapeutic use of music. The survey analyzes various biosensing instruments such as ECG machines, EEG headsets, and consumer-grade wearables like Apple Watch and BrainBit headband. These devices can record physiological data like heart rate, brain waves, and other vital signs, which are used to adapt the music playback in real-time, forming a biofeedback loop. Additionally, machine learning is discussed as a tool to further enhance the efficacy of these systems by customizing the music based on individual preferences. The paper concludes that such digital music systems can be realized using consumer-grade biosensing wearables coupled with smartphones, making them more accessible for both music therapists and individuals seeking stress relief.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Biosensing"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "Machine Learning"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Digital Music Systems"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "SOLVES"
+      },
+      {
+        "source": "concept_2",
+        "target": "concept_3",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "arron_digital_music_interventions_for_stress_with_bio-sensing_a_su.pdf"
+}

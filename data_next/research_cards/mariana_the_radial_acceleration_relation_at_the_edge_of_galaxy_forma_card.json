@@ -1,0 +1,74 @@
+{
+  "card_id": "aa57106-25",
+  "bibliographic_data": {
+    "title": "The radial acceleration relation at the EDGE of galaxy formation: testing its universality in low-mass dwarf galaxies",
+    "primary_domain": "astro-ph.GA",
+    "authors": [
+      {
+        "name": "Mariana P. J\u00falio"
+      },
+      {
+        "name": "Justin I. Read"
+      },
+      {
+        "name": "Marcel S. Pawlowski"
+      },
+      {
+        "name": "Pengfei Li",
+        "faculty_id": "Pengfei Li",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Daniel Vaz"
+      },
+      {
+        "name": "Jarle Brinchmann"
+      },
+      {
+        "name": "Martin P. Rey"
+      },
+      {
+        "name": "Oscar Agertz"
+      },
+      {
+        "name": "Tom Holmes"
+      }
+    ],
+    "year": 2025,
+    "abstract": "A tight correlation between the baryonic and observed acceleration of galaxies has been reported over a wide range of mass (108 < Mbar/M\u2299< 1011) \u2013 the Radial Acceleration Relation (RAR). This has been interpreted as evidence that dark matter is actually a manifestation of some modified weak-field gravity theory. In this paper, we study the radially resolved RAR of 12 nearby dwarf galaxies, with baryonic masses in the range 104 < Mbar/M\u2299< 107.5, using a combination of literature data and data from the MUSE-Faint survey. We use stellar line-of-sight velocities and the Jeans modelling code GravSphere to infer the mass distributions of these galaxies, allowing us to compute the RAR. We compare the results with the EDGE simulations of isolated dwarf galaxies with similar stellar masses in a \u039bCDM cosmology. We find that most of the observed dwarf galaxies lie systematically above the low-mass extrapolation of the RAR. Each galaxy traces a locus in the RAR space that can have a multi-valued observed acceleration for a given baryonic acceleration, while there is significant scatter from galaxy to galaxy. Our results indicate that the RAR does not apply to low-mass dwarf galaxies, and that the inferred baryonic acceleration of these dwarfs does not contain enough information, on its own, to derive the observed acceleration. The simulated EDGE dwarfs behave similarly to the real data, with a higher observed acceleration at a fixed baryonic acceleration than the extrapolated RAR. We show that, in the context of modified weak-field gravity theories, these results cannot be explained by differential tidal forces from the Milky Way, nor by the galaxies being far from dynamical equilibrium, since none of the galaxies in our sample seems to experience strong tides. As such, our results provide further evidence for the need for invisible dark matter in the smallest dwarf galaxies.",
+    "arxiv_id": "2510.06905"
+  },
+  "core_content": {
+    "novelty_claim": "The study investigates the Radial Acceleration Relation (RAR) in low-mass dwarf galaxies and finds that most of these galaxies lie systematically above the extrapolated RAR, suggesting that dark matter is necessary for explaining their dynamics.",
+    "key_methodology": "Stellar line-of-sight velocities were used along with the Jeans modelling code GravSphere to infer mass distributions of 12 nearby dwarf galaxies. The results were compared with EDGE simulations in a \u039bCDM cosmology.",
+    "outcomes": [
+      "Most observed dwarf galaxies lie above the low-mass extrapolation of the RAR.",
+      "Significant scatter is found between different galaxies.",
+      "The inferred baryonic acceleration does not fully explain the observed acceleration."
+    ],
+    "full_text_markdown": "This paper investigates the Radial Acceleration Relation (RAR) in 12 nearby dwarf galaxies with baryonic masses ranging from 10^4 to 10^7.5 M\u2299, using a combination of literature data and data from the MUSE-Faint survey. The authors use stellar line-of-sight velocities and the Jeans modelling code GravSphere to infer mass distributions, allowing them to compute the RAR for these galaxies. They compare their findings with EDGE simulations in a \u039bCDM cosmology. The results indicate that most dwarf galaxies lie systematically above the low-mass extrapolation of the RAR, suggesting significant scatter between different galaxies and highlighting the need for dark matter to explain their dynamics.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "GravSphere"
+      },
+      {
+        "id": "concept_2",
+        "type": "Theory",
+        "label": "Modified Weak-Field Gravity Theory"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "mariana_the_radial_acceleration_relation_at_the_edge_of_galaxy_forma.pdf"
+}

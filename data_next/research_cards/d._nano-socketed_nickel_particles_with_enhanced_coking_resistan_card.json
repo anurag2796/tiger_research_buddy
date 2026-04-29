@@ -1,0 +1,72 @@
+{
+  "card_id": "nano_socketed_nickel_particles",
+  "bibliographic_data": {
+    "title": "Nano-socketed nickel particles with enhanced coking resistance grown in situ by redox exsolution",
+    "primary_domain": "cs.CY (Computer Science: Cybersecurity and Materials)",
+    "authors": [
+      {
+        "name": "D. Neagu"
+      },
+      {
+        "name": "T. Oh",
+        "faculty_id": "Tae Oh",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "David N. Miller"
+      },
+      {
+        "name": "H. M\u00e9nard"
+      },
+      {
+        "name": "Syed M. Bukhari"
+      },
+      {
+        "name": "S. Gamble"
+      },
+      {
+        "name": "R. Gorte"
+      },
+      {
+        "name": "J. Vohs"
+      },
+      {
+        "name": "J. Irvine"
+      }
+    ],
+    "year": 2015,
+    "abstract": "Several particle characteristics, including size and morphology, but most importantly interaction with the oxide support determine the activity, selectivity and stability of supported metal catalysts; thus, controlling these aspects is essential for both fundamental and applicative reasons1\u20133. The vast majority of supported particles are prepared by deposition methods (for example, infiltration, Supplementary Fig. 1a), which although widely applicable, provide limited control over particle interaction with the support, during deposition and over time4,5. This leads to deactivation by agglomeration5 or by coking (carbon accumulation on the metal in hydrocarbon environment) in industrially critical processes such as syngas production by methane steam reforming6,7. Several post-particle growth procedures have been developed to delay agglomeration, by partly embedding or fully encapsulating the particles in thin oxide layers8,9, while coking may be diminished by mild conditioning or alloying10, although these intricate solutions may be temporary or compromise activity. Previous studies demonstrated that catalytically active transition metals can be substituted on the B-site of perovskite oxides (ABO3), in oxidizing conditions, and released (exsolved) on the surface as metal particles following reduction (Supplementary Fig. 1b), with applications in catalysis ranging from automotive emission control to solid oxide fuel/electrolysis cells11\u201317. Interestingly, several reports find exsolved particles to be more resilient to agglomeration and coking as compared to deposited analogues, although the origin of this stability is unclear11,18. Here we reveal that this stability is due to exsolved particles being partially embedded in the surface of a parent perovskite and thus exsolution may be regarded as an elegant one-step environmentally friendly method to grow pinned, coking-resistant, socketed particles. We also provide critical insights into surface effects and defect interactions relevant for the future development of exsolution process but also for perovskite bulk or surface related applications.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "Exsolved nickel particles are shown to be more resilient to agglomeration and coking due to being partially embedded in the parent perovskite, providing a one-step environmentally friendly method for growing pinned, coking-resistant particles.",
+    "key_methodology": "The study employs compositions derived from SrTiO3 with A-site deficiency (LaxSr1 3x/2TiO3) and modest Ni2+ doping levels to promote B-site redox exsolution. The surface effects controlling this exsolution are investigated, revealing that the stability of exsolved particles is due to their partial embedding in the perovskite.",
+    "outcomes": [
+      "Exsolved nickel particles are more stable and less prone to coking compared to deposited analogues.",
+      "The study provides insights into surface effects and defect interactions relevant for future development of exsolution-based perovskite materials."
+    ],
+    "full_text_markdown": "Several particle characteristics, including size and morphology, but most importantly interaction with the oxide support determine the activity, selectivity and stability of supported metal catalysts; thus, controlling these aspects is essential for both fundamental and applicative reasons1\u20133. The vast majority of supported particles are prepared by deposition methods (for example, infiltration, Supplementary Fig. 1a), which although widely applicable, provide limited control over particle interaction with the support, during deposition and over time4,5. This leads to deactivation by agglomeration5 or by coking (carbon accumulation on the metal in hydrocarbon environment) in industrially critical processes such as syngas production by methane steam reforming6,7. Several post-particle growth procedures have been developed to delay agglomeration, by partly embedding or fully encapsulating the particles in thin oxide layers8,9, while coking may be diminished by mild conditioning or alloying10, although these intricate solutions may be temporary or compromise activity. Previous studies demonstrated that catalytically active transition metals can be substituted on the B-site of perovskite oxides (ABO3), in oxidizing conditions, and released (exsolved) on the surface as metal particles following reduction (Supplementary Fig. 1b), with applications in catalysis ranging from automotive emission control to solid oxide fuel/electrolysis cells11\u201317. Interestingly, several reports find exsolved particles to be more resilient to agglomeration and coking as compared to deposited analogues, although the origin of this stability is unclear11,18. Here we reveal that this stability is due to exsolved particles being partially embedded in the surface of a parent perovskite and thus exsolution may be regarded as an elegant one-step environmentally friendly method to grow pinned, coking-resistant, socketed particles. We also provide critical insights into surface effects and defect interactions relevant for the future development of exsolution process but also for perovskite bulk or surface related applications."
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Exsolution"
+      },
+      {
+        "id": "concept_2",
+        "type": "Material",
+        "label": "Perovskite Oxide"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "d._nano-socketed_nickel_particles_with_enhanced_coking_resistan.pdf"
+}

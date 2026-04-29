@@ -1,0 +1,52 @@
+{
+  "card_id": "novel_model_for_distributed_big_data_service_composition",
+  "bibliographic_data": {
+    "title": "A Novel Model for Distributed Big Data Service Composition using Stratified Functional Graph Matching",
+    "primary_domain": "cs.DB (Database)",
+    "authors": [
+      {
+        "name": "Carlos R. Rivero",
+        "faculty_id": "Carlos R. Rivero",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Hasan M. Jamil"
+      }
+    ],
+    "year": 2016,
+    "abstract": "A significant number of current industrial applications rely on web services. A cornerstone task in these applications is discovering a suitable service that meets the threshold of some user needs, which can then be composed to perform specific functionalities. The prevailing approach based on the 'all or nothing' paradigm limits this process and leads to high rejection of potentially suitable services. Contemporary models do not allow 'mix and match' composition from atomic services of different composite services when binary matching is not possible or desired. In this paper, we propose a new model for service composition based on 'strati\ufb01ed graph summarization' and 'service stitching'. We discuss the limitations of existing approaches with a motivating example, present our approach to overcome these limitations, and outline a possible architecture for service composition from atomic services.",
+    "arxiv_id": "1607.02669v1"
+  },
+  "core_content": {
+    "novelty_claim": "Proposes a new model for service composition based on 'strati\ufb01ed graph summarization' and 'service stitching', addressing the limitations of existing approaches.",
+    "key_methodology": "Represent services as graphs, use 'graph summarization' to describe them at multiple layers, and match services at different description granularities to improve precision and recall. Allow composing services from partial matches and stitch them together.",
+    "outcomes": [
+      "Reduces latency in service discovery",
+      "Improves efficiency and accuracy of matchmaking and composition"
+    ],
+    "full_text_markdown": "A significant number of current industrial applications rely on web services, with a cornerstone task being the discovery of suitable services that meet user needs. The prevailing 'all or nothing' approach limits this process, leading to high rejection rates for potentially suitable services. Contemporary models do not support 'mix and match' composition from atomic services when binary matching is not possible. This paper proposes a new model based on 'strati\ufb01ed graph summarization' and 'service stitching'. The limitations of existing approaches are discussed with an example, and the proposed approach aims to reduce service discovery latency and improve matchmaking accuracy by considering different layers of abstraction.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Strati\ufb01ed Graph Summarization"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "Service Stitching"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "carlos_a_novel_model_for_distributed_big_data_service_composition_u.pdf"
+}

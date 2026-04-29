@@ -1,0 +1,61 @@
+{
+  "card_id": "neuroevolution_neural_architecture_search",
+  "bibliographic_data": {
+    "title": "Neuroevolution Neural Architecture Search for Evolving RNNs in Stock Return Prediction and Portfolio Trading",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Zimeng Lyu"
+      },
+      {
+        "name": "Amulya Saxena"
+      },
+      {
+        "name": "Rohaan Nadeem"
+      },
+      {
+        "name": "Hao Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Travis Desell"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Stock return forecasting is a major component of numerous finance applications. Predicted stock returns can be incorporated into portfolio trading algorithms to make informed buy or sell decisions which can optimize returns. In such portfolio trading applications, the predictive performance of a time series forecasting model is crucial. In this work, we propose the use of the Evolutionary eXploration of Augmenting Memory Models (EXAMM) algorithm to progressively evolve recurrent neural networks (RNNs) for stock return predictions. RNNs are evolved independently for each stocks and portfolio trading decisions are made based on the predicted stock returns. The portfolio used for testing consists of the 30 companies in the Dow-Jones Index (DJI) with each stock have the same weight. Results show that using these evolved RNNs and a simple daily long-short strategy can generate higher returns than both the DJI index and the S&P 500 Index for both 2022 (bear market) and 2023 (bull market).",
+    "arxiv_id": "arXiv:2410.17212"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes the use of the Evolutionary eXploration of Augmenting Memory Models (EXAMM) algorithm to evolve recurrent neural networks (RNNs) for stock return predictions, which can generate higher returns than traditional indices.",
+    "key_methodology": "The EXAMM algorithm is used to progressively evolve RNNs for each stock in the Dow-Jones Index. The evolved RNNs are then used to make portfolio trading decisions based on predicted stock returns.",
+    "outcomes": [
+      "Generated higher returns than both the DJI index and the S&P 500 Index for both 2022 (bear market) and 2023 (bull market)",
+      "RNNs evolved independently for each stock in the Dow-Jones Index"
+    ],
+    "full_text_markdown": "Stock return forecasting is a critical component of finance applications, particularly in portfolio trading. Predicted stock returns are used to make informed buy or sell decisions that can optimize returns. This paper proposes using the Evolutionary eXploration of Augmenting Memory Models (EXAMM) algorithm to evolve recurrent neural networks (RNNs) for stock return predictions. The RNNs are evolved independently for each stock, and portfolio trading decisions are made based on these predicted returns. The testing portfolio consists of 30 companies in the Dow-Jones Index with equal weighting. Results show that using these evolved RNNs and a simple daily long-short strategy can generate higher returns than both the DJI index and the S&P 500 Index, even during bear and bull market conditions.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "EXAMM",
+        "type": "Method",
+        "label": "Evolutionary eXploration of Augmenting Memory Models"
+      },
+      {
+        "id": "RNNs",
+        "type": "Concept",
+        "label": "Recurrent Neural Networks"
+      }
+    ],
+    "edges": [
+      {
+        "source": "EXAMM",
+        "target": "RNNs",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "zimeng_neuroevolution_neural_architecture_search_for_evolving_rnns_.pdf"
+}

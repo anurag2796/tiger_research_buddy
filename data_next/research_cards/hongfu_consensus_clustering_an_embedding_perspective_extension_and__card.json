@@ -1,0 +1,68 @@
+{
+  "card_id": "consensus_clustering_embedding",
+  "bibliographic_data": {
+    "title": "Consensus Clustering: An Embedding Perspective, Extension and Beyond",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Hongfu Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Zhiqiang Tao",
+        "faculty_id": "Zhiqiang Tao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Zhengming Ding"
+      }
+    ],
+    "year": 2019,
+    "abstract": "Consensus clustering fuses diverse basic partitions (i.e., clustering results obtained from conventional clustering methods) into an integrated one, which has attracted increasing attention in both academic and industrial areas due to its robust and effective performance. Tremendous research efforts have been made to thrive this domain in terms of algorithms and applications. Although there are some survey papers to summarize the existing literature, they neglect to explore the underlying connection among different categories. Differently, in this paper we aim to provide an embedding prospective to illustrate the consensus mechanism, which transfers categorical basic partitions to other representations (e.g., binary coding, spectral embedding, etc) for the clustering purpose.",
+    "arxiv_id": "1906.00120"
+  },
+  "core_content": {
+    "novelty_claim": "The paper provides an embedding perspective to illustrate the consensus mechanism in consensus clustering, transferring categorical basic partitions to other representations such as binary coding and spectral embedding.",
+    "key_methodology": "Unified two major categories of consensus clustering (with or without explicit global objective function) and built connections between consensus clustering and graph embedding. Extended classical consensus clustering to address tasks like constrained clustering, domain adaptation, feature selection, and outlier detection.",
+    "outcomes": [
+      "Unified two main categories of consensus clustering",
+      "Built an intuitive connection between consensus clustering and graph embedding",
+      "Discussed several extensions of classical consensus clustering"
+    ],
+    "full_text_markdown": "Consensus clustering is a method that integrates diverse basic partitions from conventional clustering methods into one robust partition. This paper provides an embedding perspective to understand the consensus mechanism, transferring categorical basic partitions to other representations such as binary coding and spectral embedding for clustering purposes. It unifies two major categories of consensus clustering: those with or without explicit global objective functions. The paper also discusses several extensions of classical consensus clustering and demonstrates how it can be leveraged to address tasks like constrained clustering, domain adaptation, feature selection, and outlier detection.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "consensus_clustering",
+        "type": "Method",
+        "label": "Consensus Clustering"
+      },
+      {
+        "id": "embedding",
+        "type": "Concept",
+        "label": "Embedding Perspective"
+      },
+      {
+        "id": "graph_embedding",
+        "type": "Method",
+        "label": "Graph Embedding"
+      }
+    ],
+    "edges": [
+      {
+        "source": "consensus_clustering",
+        "target": "embedding",
+        "relation": "USES"
+      },
+      {
+        "source": "consensus_clustering",
+        "target": "graph_embedding",
+        "relation": "CONNECTS"
+      }
+    ]
+  },
+  "source_file": "hongfu_consensus_clustering_an_embedding_perspective_extension_and_.pdf"
+}

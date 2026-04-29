@@ -1,0 +1,52 @@
+{
+  "card_id": "subtle_censorship_via_adversarial_fakeness",
+  "bibliographic_data": {
+    "title": "Subtle Censorship via Adversarial Fakeness in Kyrgyzstan",
+    "primary_domain": "cs.CY",
+    "authors": [
+      {
+        "name": "Christopher Schwartz",
+        "faculty_id": "Christopher Schwartz",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Rebekah Overdorf"
+      }
+    ],
+    "year": 2019,
+    "abstract": "With the shift of public discourse to social media, we see simultaneously an expansion of civic engagement as the bar to enter the conversation is lowered, and the reaction by both state and non-state adversaries of free speech to silence these voices. Traditional forms of censorship struggle in this new situation to enforce the preferred narrative of those in power. Consequently, they have developed new methods for controlling the conversation that use the social media platform itself.",
+    "arxiv_id": "1906.08021"
+  },
+  "core_content": {
+    "novelty_claim": "The paper introduces a new form of 'subtle censorship' through adversarial fakeness, which uses fake news and profiles to silence voices on social media.",
+    "key_methodology": "The authors examine the use of fake news and profiles as methods of subtle censorship in Kyrgyzstan.",
+    "outcomes": [
+      "Identified three forms of silencing: through attacks, noise, and misinformation.",
+      "Illustrated these concepts with examples from Kyrgyzstan."
+    ],
+    "full_text_markdown": "The paper discusses the shift towards social media as a platform for public discourse and how this has led to new methods of censorship. Traditional forms of censorship struggle in this environment, leading to the development of 'subtle' censorship through adversarial fakeness. The authors examine Kyrgyzstan as a case study, where fake news and profiles are used to silence voices. They identify three main tactics: silencing through attacks, noise, and misinformation. These methods are illustrated with specific examples, such as the use of Twitter accounts to intimidate journalists.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Adversarial Fakeness"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Subtle Censorship"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "christophe_subtle_censorship_via_adversarial_fakeness_in_kyrgyzstan.pdf"
+}

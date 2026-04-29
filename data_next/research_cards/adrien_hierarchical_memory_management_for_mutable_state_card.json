@@ -1,0 +1,61 @@
+{
+  "card_id": "hierarchical_memory_management_for_mutable_state",
+  "bibliographic_data": {
+    "title": "Hierarchical Memory Management for Mutable State",
+    "primary_domain": "cs.SE",
+    "authors": [
+      {
+        "name": "Adrien Guatto"
+      },
+      {
+        "name": "Sam Westrick"
+      },
+      {
+        "name": "Ram Raghunathan"
+      },
+      {
+        "name": "Umut Acar"
+      },
+      {
+        "name": "Matthew Fluet",
+        "faculty_id": "Matthew Fluet",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2018,
+    "abstract": "It is well known that modern functional programming languages are naturally amenable to parallel programming. Achieving efficient parallelism using functional languages, however, remains difficult. Perhaps the most important reason for this is their lack of support for efficient in-place updates, i.e., mutation, which is important for the implementation of both parallel algorithms and the run-time system services (e.g., schedulers and synchronization primitives) used to execute them. In this paper, we propose techniques for efficient mutation in parallel functional languages. To this end, we couple the memory manager with the thread scheduler to make reading and updating data allocated by nested threads efficient. We describe the key algorithms behind our technique, implement them in the MLton Standard ML compiler, and present an empirical evaluation. Our experiments show that the approach performs well, significantly improving efficiency over existing functional language implementations.",
+    "arxiv_id": "1801.04618"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes techniques for efficient mutation in parallel functional languages by coupling the memory manager with the thread scheduler to make reading and updating data allocated by nested threads efficient.",
+    "key_methodology": "The authors couple the memory manager with the thread scheduler to enable efficient in-place updates (mutation) of data. They implement this technique in the MLton Standard ML compiler and evaluate its performance through empirical experiments.",
+    "outcomes": [
+      "Significantly improved efficiency over existing functional language implementations",
+      "Techniques can be implemented efficiently"
+    ],
+    "full_text_markdown": "Modern functional programming languages, such as Haskell and the ML family (OCaml, Standard ML), are known for their ability to distinguish between pure and impure code. This makes it easier to write correct parallel programs by avoiding race conditions. However, achieving efficient parallelism using these languages remains challenging due to a lack of support for in-place updates or mutation. The paper proposes techniques for efficient mutation in parallel functional languages by coupling the memory manager with the thread scheduler to make reading and updating data allocated by nested threads efficient. This approach is implemented in the MLton Standard ML compiler, and empirical evaluations show that it performs well, significantly improving efficiency over existing implementations.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "hierarchical_heaps",
+        "type": "Method",
+        "label": "Hierarchical Heaps"
+      },
+      {
+        "id": "memory_manager_thread_scheduler_coupling",
+        "type": "Concept",
+        "label": "Memory Manager and Thread Scheduler Coupling"
+      }
+    ],
+    "edges": [
+      {
+        "source": "hierarchical_heaps",
+        "target": "memory_manager_thread_scheduler_coupling",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "adrien_hierarchical_memory_management_for_mutable_state.pdf"
+}

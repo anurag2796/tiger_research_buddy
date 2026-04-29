@@ -1,0 +1,84 @@
+{
+  "card_id": "cat_android_gui_testing",
+  "bibliographic_data": {
+    "title": "CAT: Change-focused Android GUI Testing",
+    "primary_domain": "cs.SE",
+    "authors": [
+      {
+        "name": "Chao Peng",
+        "faculty_id": "Chao Peng",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Ajitha Rajan"
+      }
+    ],
+    "year": 2020,
+    "abstract": "Android Apps are frequently updated, every couple of weeks, to keep up with changing user, hardware and business demands. Correctness of App updates is checked through extensive testing. Recent research has proposed tools for automated GUI event generation in Android Apps. These techniques, however, are not efficient at checking App updates as the generated GUI events do not prioritise updates, and instead explore other App behaviours. We address this need in this paper with CAT (Change-focused Android GUI Testing). For App updates, at the source code or GUI level, CAT performs change impact analysis to identify GUI elements affected by the update. CAT then generates length-3 GUI event sequences to interact with these GUI elements. Our empirical evaluations using 21 publicly available open source Android Apps demonstrated that CAT is able to automatically identify GUI elements affected by App updates, generate and execute length-3 GUI event sequences focusing on change-affected GUI elements. Comparison with two popular GUI event generation tools, DroidBot and DroidMate, revealed that CAT was more effective at interacting with the change-affected GUI elements. Finally, CAT was able to detect previously unknown change-related bugs in two Apps.",
+    "arxiv_id": "2011.11766v1"
+  },
+  "core_content": {
+    "novelty_claim": "CAT (Change-focused Android GUI Testing) is a novel approach for generating GUI events targeting App updates, with support for change impact analysis from source code to GUI level.",
+    "key_methodology": "CAT performs change impact analysis to identify GUI elements affected by the update and generates length-3 GUI event sequences to interact with these elements. It customises an existing model-based android testing tool, DroidBot, to prioritise event generation for target elements.",
+    "outcomes": [
+      "Automatically identifies GUI elements affected by App updates",
+      "Generates and executes length-3 GUI event sequences focusing on change-affected GUI elements",
+      "More effective at interacting with the change-affected GUI elements compared to DroidBot and DroidMate",
+      "Detects previously unknown change-related bugs in two Apps"
+    ],
+    "full_text_markdown": "Android apps are frequently updated, typically every week or two, to keep up with changing user, hardware, and business demands. To ensure security and correctness, updates need thorough testing. Existing test generation techniques for mobile apps do not effectively handle app updates as they explore other app behaviors instead of prioritizing changes. This paper introduces CAT (Change-focused Android GUI Testing), a novel approach that performs change impact analysis to identify affected GUI elements and generates length-3 event sequences to interact with these elements. Empirical evaluations using 21 open-source apps demonstrated that CAT is more effective at interacting with the change-affected elements compared to DroidBot and DroidMate, and it can detect previously unknown bugs.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Change Impact Analysis"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "Length-3 Event Sequences Generation"
+      },
+      {
+        "id": "concept_3",
+        "type": "Tool",
+        "label": "CAT (Changed-focused Android GUI Testing)"
+      },
+      {
+        "id": "concept_4",
+        "type": "Tool",
+        "label": "DroidBot"
+      },
+      {
+        "id": "concept_5",
+        "type": "Tool",
+        "label": "DroidMate"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_3",
+        "target": "concept_1",
+        "relation": "PERFORMS"
+      },
+      {
+        "source": "concept_3",
+        "target": "concept_2",
+        "relation": "GENERATES"
+      },
+      {
+        "source": "concept_3",
+        "target": "concept_4",
+        "relation": "COMPARES_BETTER_THAN"
+      },
+      {
+        "source": "concept_3",
+        "target": "concept_5",
+        "relation": "COMPARES_BETTER_THAN"
+      }
+    ]
+  },
+  "source_file": "chao_cat_change-focused_android_gui_testing.pdf"
+}

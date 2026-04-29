@@ -1,0 +1,55 @@
+{
+  "card_id": "density_estimation_metric_spaces",
+  "bibliographic_data": {
+    "title": "Pointwise density estimation on metric spaces and applications in seismology",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Galatia Cleanthous"
+      },
+      {
+        "name": "Athanasios G. Georgiadis"
+      },
+      {
+        "name": "Philip A. White",
+        "faculty_id": "Philip White",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2023,
+    "abstract": "We are studying the problem of estimating density in a wide range of metric spaces, including the Euclidean space, the sphere, the ball, and various Riemannian manifolds. Our framework involves a metric space with a doubling measure and a self-adjoint operator, whose heat kernel exhibits Gaussian behavior. We begin by reviewing the construction of kernel density estimators and the related background information. As a novel result, we present a pointwise kernel density estimation for probability density functions that belong to general H\u00a8older spaces. The study is accompanied by an application in Seismology. Precisely, we analyze a globally-indexed dataset of earthquake occurrence and compare the out-of-sample performance of several approximated kernel density estimators indexed on the sphere.",
+    "arxiv_id": "2304.00085"
+  },
+  "core_content": {
+    "novelty_claim": "The paper presents a pointwise kernel density estimation for probability density functions that belong to general H\u00a8older spaces and applies this method in seismology to analyze earthquake occurrence data.",
+    "key_methodology": "The authors use a metric space with a doubling measure and a self-adjoint operator, whose heat kernel exhibits Gaussian behavior. They construct kernel density estimators and apply them to the sphere for out-of-sample performance comparison.",
+    "outcomes": [
+      "Developed pointwise kernel density estimation for H\u00a8older spaces",
+      "Applied method in seismology to analyze earthquake occurrence data"
+    ],
+    "full_text_markdown": "In this paper, we explore the problem of estimating density in a wide range of metric spaces, including Euclidean space, the sphere, and various Riemannian manifolds. The framework involves a metric space with a doubling measure and a self-adjoint operator whose heat kernel exhibits Gaussian behavior. We review the construction of kernel density estimators and present novel results on pointwise estimation for probability density functions in H\u00a8older spaces. Additionally, we apply our method to seismology by analyzing earthquake occurrence data on the sphere, comparing out-of-sample performance of different approximated kernel density estimators.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Kernel Density Estimation"
+      },
+      {
+        "id": "concept_2",
+        "type": "Space",
+        "label": "Metric Space with Doubling Measure"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "APPLIES_TO"
+      }
+    ]
+  },
+  "source_file": "galatia_pointwise_density_estimation_on_metric_spaces_and_applicatio.pdf"
+}

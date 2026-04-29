@@ -1,0 +1,53 @@
+{
+  "card_id": "tracs-trajectory-collection",
+  "bibliographic_data": {
+    "title": "TraCS: Trajectory Collection in Continuous Space under Local Differential Privacy",
+    "primary_domain": "cs.CR",
+    "authors": [
+      {
+        "name": "Ye Zheng"
+      },
+      {
+        "name": "Yidan Hu",
+        "faculty_id": "Yidan Hu",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2026,
+    "abstract": "Trajectory collection is essential for location-based services, yet it can reveal highly sensitive information about users, such as daily routines and activities, raising serious privacy concerns. Local Differential Privacy (LDP) offers strong privacy guarantees for users even when the data collector is untrusted. However, existing trajectory collection methods under LDP are largely confined to discrete location spaces, where the size of the location space affects both privacy guarantees and trajectory utility. Moreover, many real-world applications\u2014such as flying trajectories or wearable-sensor traces\u2014naturally operate in continuous spaces, making these discrete-space methods inadequate. This paper shifts the focus from discrete to continuous spaces for trajectory collection under LDP. We propose two methods: TraCS-D, which perturbs the direction and distance of locations, and TraCS-C, which perturbs the Cartesian coordinates of locations. Both methods are theoretically and experimentally analyzed for trajectory utility in continuous spaces. TraCS can also be applied to discrete spaces by rounding perturbed locations to any discrete space embedded in the continuous space. In this case, the privacy and utility guarantees of TraCS are independent of the number of locations in the space, and each perturbation requires only \u0398(1) time complexity. Evaluation results on discrete location spaces validate the efficiency advantage and demonstrate that TraCS outperforms state-of-the-art methods with improved trajectory utility, particularly for large privacy parameters.",
+    "arxiv_id": "2412.00620v3"
+  },
+  "core_content": {
+    "novelty_claim": "This paper proposes two LDP methods (TraCS-D and TraCS-C) for trajectory collection in continuous spaces, addressing the limitations of existing discrete-space methods.",
+    "key_methodology": "The authors decompose the 2D continuous space into 1D subspaces and design mechanisms for each subspace. TraCS-D treats the continuous space as a composition of direction and distance spaces, while TraCS-C treats it as the Cartesian product of two distance spaces.",
+    "outcomes": [
+      "TraCS methods ensure LDP for the entire 2D continuous space.",
+      "Both methods can be applied to discrete spaces by rounding perturbed locations.",
+      "Evaluation results show that TraCS outperforms state-of-the-art methods with improved trajectory utility, especially for large privacy parameters."
+    ],
+    "full_text_markdown": "Trajectory data from users\u2014sequences of locations describing movement over time\u2014are a fundamental resource for activity analysis and location-based services. However, directly collecting such data raises significant privacy concerns due to the sensitive nature of the information involved. Local Differential Privacy (LDP) provides strong privacy guarantees by ensuring that it is hard to distinguish an individual's data from any released data. This paper addresses the limitations of existing LDP methods for trajectory collection, which are largely confined to discrete location spaces and suffer from inherent privacy and utility trade-offs. The authors propose two novel methods: TraCS-D, which perturbs direction and distance in 2D space, and TraCS-C, which perturbs Cartesian coordinates. Both methods are designed to ensure LDP for the entire continuous space and can be applied to discrete spaces by rounding perturbed locations. Experimental results validate the efficiency of these methods and demonstrate their superior performance compared to existing techniques, particularly when privacy parameters are large.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "TraCS-D"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "TraCS-C"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "ye_tracs_trajectory_collection_in_continuous_space_under_local_.pdf"
+}

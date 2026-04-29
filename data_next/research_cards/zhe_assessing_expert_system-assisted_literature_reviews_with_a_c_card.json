@@ -1,0 +1,68 @@
+{
+  "card_id": "assessing-expert-system-assisted-literature-reviews",
+  "bibliographic_data": {
+    "title": "Assessing Expert System-Assisted Literature Reviews With a Case Study",
+    "primary_domain": "cs.SE (Software Engineering)",
+    "authors": [
+      {
+        "name": "Zhe Yu",
+        "faculty_id": "Zhe Yu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jeffrey C. Carver"
+      },
+      {
+        "name": "Gregg Rothermel"
+      },
+      {
+        "name": "Tim Menzies"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Given the large numbers of publications in software engineering, frequent literature reviews are required to keep current on work in specific areas. One tedious task in literature reviews is finding relevant studies amongst thousands of non-relevant search results. In theory, expert systems can assist in finding relevant work but those systems have primarily been tested in simulations rather than in application to actual literature reviews. Hence, few researchers have faith in such expert systems. Accordingly, using a realistic case study, this paper assesses how well our state-of-the-art expert system can help with literature reviews.",
+    "arxiv_id": "1909.07249v4"
+  },
+  "core_content": {
+    "novelty_claim": "The paper assesses the effectiveness of a state-of-the-art expert system in assisting with literature reviews, specifically for identifying test case prioritization techniques.",
+    "key_methodology": "An expert system called FAST was used to screen and label papers from IEEE Xplore. The authors compared the results with manual screening by other graduate students to validate the findings.",
+    "outcomes": [
+      "The expert system identified 242 relevant papers in three hours, achieving 90% recall with only 6% of the human effort cost compared to a conventional manual method.",
+      "The same 12 state-of-the-art test case prioritization techniques were identified by both the expert system and the manual method."
+    ],
+    "full_text_markdown": "In this paper, the authors assess the effectiveness of an expert system in assisting with literature reviews. Specifically, they explore how well a state-of-the-art human-in-the-loop active learning tool called FAST can help identify test case prioritization techniques for automated UI testing from 8,349 papers on IEEE Xplore. Using this tool, the authors found 242 relevant papers in three hours and identified 12 state-of-the-art techniques. These results were validated by six other graduate students who manually screened a subset of the candidate papers. The expert system achieved 90% recall with only 6% of the human effort cost compared to manual screening, indicating its potential for reducing the time and effort required for literature reviews.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "FAST (Human-in-the-loop Expert System)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Technique",
+        "label": "Test Case Prioritization"
+      },
+      {
+        "id": "concept_3",
+        "type": "Systematic Literature Review",
+        "label": "SLR"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "ASSISTS"
+      }
+    ]
+  },
+  "source_file": "zhe_assessing_expert_system-assisted_literature_reviews_with_a_c.pdf"
+}

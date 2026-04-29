@@ -1,0 +1,56 @@
+{
+  "card_id": "structural_and_dynamical_mechanisms_of_prion_protein",
+  "bibliographic_data": {
+    "title": "Structural and Dynamical Mechanisms of a Naturally Occurring Variant of the Human Prion Protein in Preventing Prion Conversion",
+    "primary_domain": "cs.BI (Biological Sciences)",
+    "authors": [
+      {
+        "name": "Yiming Tang",
+        "faculty_id": "Yiming Tang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yifei Yao"
+      },
+      {
+        "name": "Guanghong Wei"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Prion diseases are associated with the misfolding of the normal helical cellular form of prion protein (PrPC) into the beta-sheet-rich scrapie form (PrPSc) and the subsequent aggregation of PrPSc into amyloid fibrils. Recent studies demonstrated that a naturally occurring variant V127 of human PrPC is intrinsically resistant to prion conversion and aggregation, and can completely prevent prion diseases. However, the underlying molecular mechanism remains elusive. Herein we perform multiple microsecond molecular dynamics simulations on both wildtype (WT) and V127 variant of human PrPC to understand at atomic level the protective effect of V127 variant. Our simulations show that G127V mutation not only increases the rigidity of the S2-H2 loop between strand-2 (S2) and helix-2 (H2), but also allosterically enhances the stability of the H2 C-terminal region. Interestingly, previous studies reported that animals with rigid S2-H2 loop usually do not develop prion diseases, and the increase in H2 C-terminal stability can prevent misfolding and oligomerization of prion protein. The allosteric paths from G/V127 to H2 C-terminal region are identified using dynamical network analyses. Moreover, community network analyses illustrate that G127V mutation enhances the global correlations and intra-molecular interactions of PrP, thus stabilizing the overall PrPC structure and inhibiting its conversion into PrPSc. This study provides mechanistic understanding of human V127 variant in preventing prion conversion which may be helpful for the rational design of potent anti-prion compounds.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The study identifies atomic-level mechanisms by which a naturally occurring variant (V127) of human PrPC prevents prion conversion, focusing on increased rigidity and stability in the S2-H2 loop and H2 C-terminal region.",
+    "key_methodology": "Microsecond molecular dynamics simulations were performed on both wildtype (WT) and V127 variant of human PrPC to understand the protective effect of the V127 variant at an atomic level.",
+    "outcomes": [
+      "The G127V mutation increases the rigidity of the S2-H2 loop between strand-2 (S2) and helix-2 (H2).",
+      "Allosteric enhancement of H2 C-terminal region stability is observed due to the G127V mutation.",
+      "Community network analyses show that G127V mutation enhances global correlations and intra-molecular interactions, stabilizing PrPC structure."
+    ],
+    "full_text_markdown": "The study investigates the protective effect of a naturally occurring variant (V127) of human prion protein (PrPC) in preventing prion conversion. Using microsecond molecular dynamics simulations on both wildtype (WT) and V127 variants, it was found that the G127V mutation increases the rigidity of the S2-H2 loop between strand-2 (S2) and helix-2 (H2), and allosterically enhances the stability of the H2 C-terminal region. These findings support previous studies indicating that rigid S2-H2 loops prevent prion diseases, while increased H2 C-terminal stability can inhibit misfolding and oligomerization of PrP. Community network analyses further reveal that G127V mutation enhances global correlations and intra-molecular interactions, stabilizing the overall structure of PrPC and inhibiting its conversion into PrPSc.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Microsecond Molecular Dynamics Simulations"
+      },
+      {
+        "id": "concept_2",
+        "type": "Mechanism",
+        "label": "S2-H2 Loop Rigidity and H2 C-terminal Stability"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "ELUCIDATES"
+      }
+    ]
+  },
+  "source_file": "yiming_structural_and_dynamical_mechanisms_of_a_naturally_occurring.pdf"
+}

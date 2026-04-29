@@ -1,0 +1,62 @@
+{
+  "card_id": "1811.03932v2",
+  "bibliographic_data": {
+    "title": "A Generalized-Jacobi-Function Spectral Method for Space-Time Fractional Reaction-Diffusion Equations with Viscosity Terms",
+    "primary_domain": "math.OC",
+    "authors": [
+      {
+        "name": "Zhe Yu",
+        "faculty_id": "Zhe Yu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Boying Wu"
+      },
+      {
+        "name": "Jiebao Sun"
+      },
+      {
+        "name": "Wenjie Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2019,
+    "abstract": "In this work, we study a new spectral Petrov-Galerkin approximation of space-time fractional reaction-di\ufb00usion equations with viscosity terms built by Riemann-Liouville fractional-order derivatives. The proposed method is reliant on generalized Jacobi functions (GJFs) for our problems. The contributions are threefold: First, thanks to the theoretical framework of variational problems, the well-posedness of the problem is proved. Second, new GJF-basis functions are established to fit weak solutions, which take full advantages of the global properties of fractional derivatives. Moreover, the basis functions conclude singular terms, in order to solve our problems with given smooth source term. Finally, we get a numerical analysis of error estimates to depend on GJF-basis functions. Numerical experiments confirm the expected convergence. In addition, they are given to show the effect of the viscosity terms in anomalous di\ufb00usion.",
+    "arxiv_id": "1811.03932v2"
+  },
+  "core_content": {
+    "novelty_claim": "The paper presents a new spectral Petrov-Galerkin approximation method for space-time fractional reaction-di\ufb00usion equations with viscosity terms using generalized Jacobi functions (GJFs).",
+    "key_methodology": "The method relies on GJF-basis functions to fit weak solutions and directly compute Riemann-Liouville fractional derivatives, leading to a sparse linear system that is cheaper to solve.",
+    "outcomes": [
+      "Well-posedness of the problem proved",
+      "New GJF-basis functions established for weak solutions",
+      "Error estimates obtained based on GJF-basis functions",
+      "Numerical experiments confirm expected convergence"
+    ],
+    "full_text_markdown": "This paper introduces a novel spectral Petrov-Galerkin approximation method for space-time fractional reaction-di\ufb00usion equations with viscosity terms. The key contribution is the use of generalized Jacobi functions (GJFs) to construct basis functions that fit weak solutions, leveraging their global properties and singular terms to handle smooth source terms effectively. The method avoids discretization, reducing computational complexity. Numerical experiments confirm the convergence and demonstrate the impact of viscosity terms on anomalous di\ufb00usion.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Generalized Jacobi Function Spectral Method"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Space-Time Fractional Reaction-Di\ufb00usion Equations"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "APPLIES_TO"
+      }
+    ]
+  },
+  "source_file": "zhe_a_generalized-jacobi-function_spectral_method_for_space-time.pdf"
+}

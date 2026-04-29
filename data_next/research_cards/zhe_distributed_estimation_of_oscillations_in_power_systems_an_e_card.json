@@ -1,0 +1,70 @@
+{
+  "card_id": "distributed_estimation_oscillations",
+  "bibliographic_data": {
+    "title": "Distributed Estimation of Oscillations in Power Systems: an Extended Kalman Filtering Approach",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Zhe Yu",
+        "faculty_id": "Zhe Yu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Di Shi",
+        "faculty_id": "Pengcheng Shi",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Zhiwei Wang"
+      },
+      {
+        "name": "Qibing Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Junhui Huang"
+      },
+      {
+        "name": "Sen Pan",
+        "faculty_id": "Yin Pan",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2017,
+    "abstract": "Online estimation of electromechanical oscillation parameters provides essential information to prevent system instability and blackout and helps to identify event categories and locations. We formulate the problem as a state space model and employ the extended Kalman filter to estimate oscillation frequencies and damping factors directly based on data from phasor measurement units. Due to considerations of communication burdens and privacy concerns, a fully distributed algorithm is proposed using diffusion extended Kalman filter. The effectiveness of proposed algorithms is confirmed by both simulated and real data collected during events in State Grid Jiangsu Electric Power Company.",
+    "arxiv_id": "1706.05355v1"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a fully distributed algorithm using diffusion extended Kalman filter to estimate oscillation frequencies and damping factors directly based on data from phasor measurement units.",
+    "key_methodology": "The authors formulate the problem as a nonlinear state space model, where the states include frequencies, damping factors, and magnitudes of various oscillation modes. They propose a centralized EKF for online implementation and develop a fully distributed EKF framework in which PMUs communicate only with neighbors to estimate oscillation parameters.",
+    "outcomes": [
+      "Developed a fully distributed algorithm using diffusion extended Kalman filter",
+      "Confirmed the effectiveness through simulated and real data"
+    ],
+    "full_text_markdown": "This paper addresses the problem of online estimation of electromechanical oscillation parameters in power systems. The authors propose a state space model and use an extended Kalman filter to estimate frequencies and damping factors based on data from phasor measurement units (PMUs). To address communication burdens and privacy concerns, they develop a fully distributed algorithm using diffusion extended Kalman filtering. The effectiveness of the proposed algorithms is confirmed through both simulated and real data collected during events in State Grid Jiangsu Electric Power Company.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Extended Kalman Filter"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "Distributed Estimation"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "zhe_distributed_estimation_of_oscillations_in_power_systems_an_e.pdf"
+}

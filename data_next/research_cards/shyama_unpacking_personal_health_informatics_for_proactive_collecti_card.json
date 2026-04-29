@@ -1,0 +1,66 @@
+{
+  "card_id": "unpacking-personal-health-informatics",
+  "bibliographic_data": {
+    "title": "Unpacking Personal(?!) Health Informatics for Proactive Collective Care in India",
+    "primary_domain": "cs.HC",
+    "authors": [
+      {
+        "name": "Shyama Sastha Krishnamoorthy Srinivasan"
+      },
+      {
+        "name": "Mohan Kumar",
+        "faculty_id": "Mohan Kumar",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Pushpendra Singh"
+      }
+    ],
+    "year": 2018,
+    "abstract": "Personal Health Informatics (PHI) involves using information systems and tools to assess health and wellbeing, holding significant promise for empowering individuals and transforming healthcare by enabling proactive self-management. Globally, PHI leverages technologies such as smartphone applications and wearable devices, often facilitating continuous health monitoring. However, in India, infrastructural, sociocultural, and technological challenges intersect and further constrain the potential of PHI for proactive care. Through a sequential mixed-methods study involving surveys, interviews, and co-design workshops, we identify ways PHI can be better utilized for proactive care in the Indian context, deriving concrete design requirements and presenting a culturally grounded design vision.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The research provides a deeper understanding of Personal Health Informatics (PHI) challenges and opportunities for proactive collective care in India, offering recommendations for designers and developers to create more reliable and integrated PHI systems that are culturally appropriate.",
+    "key_methodology": "A sequential mixed-methods study involving an initial survey (n=87), semi-structured interviews (n=22), follow-up survey (n=116), co-design workshops (n=6), and evaluation of a Figma prototype to understand usability and design recommendations.",
+    "outcomes": [
+      "Identified ways PHI can be better utilized for proactive care in the Indian context",
+      "Derived concrete design requirements including user-controlled sharing, accessible analytics, and verifiable health information",
+      "Presented a culturally grounded design vision for an integrated platform for collective care"
+    ],
+    "full_text_markdown": "The paper explores Personal Health Informatics (PHI) in India, focusing on its adoption, integration, and perception. Through surveys, interviews, and co-design workshops, the authors identify challenges such as low health and technology literacy, usability issues, fragmented ecosystems, and mistrust of digital platforms. They derive design requirements for better PHI systems and present a culturally grounded vision for collective care.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Sequential Mixed-Methods Study"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Personal Health Informatics (PHI)"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Cultural Grounded Design Vision"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "INVOLVES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "YIELDS"
+      }
+    ]
+  },
+  "source_file": "shyama_unpacking_personal_health_informatics_for_proactive_collecti.pdf"
+}

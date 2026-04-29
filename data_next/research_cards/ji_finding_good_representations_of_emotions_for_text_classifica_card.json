@@ -1,0 +1,49 @@
+{
+  "card_id": "finding-good-representations-of-emotions-for-text-classification",
+  "bibliographic_data": {
+    "title": "Finding Good Representations of Emotions for Text Classification",
+    "primary_domain": "cs.CL",
+    "authors": [
+      {
+        "name": "Ji Ho Park",
+        "faculty_id": "Ji Hwan Park",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2018,
+    "abstract": "This thesis presents a study on finding good representations of emotions for text classification. It includes methodologies and experiments to improve the accuracy of emotion analysis in natural language processing (NLP). The work covers both word-level and sentence-level emotion representation, as well as applications such as abusive language detection.",
+    "arxiv_id": "1808.07235v1"
+  },
+  "core_content": {
+    "novelty_claim": "The thesis proposes methodologies to enhance the accuracy of emotion representations in text classification tasks.",
+    "key_methodology": "The author uses a CNN model for predicting emotion labels and evaluates it on various datasets, including Twitter hashtag corpus and SemEval-2018. The work also explores abusive language detection using two-step classification with CNN.",
+    "outcomes": [
+      "Improved accuracy in emotion analysis tasks through better representation learning",
+      "Development of methods to detect abusive language using CNN models"
+    ],
+    "full_text_markdown": "The thesis focuses on finding good representations of emotions for text classification. It explores methodologies and experiments to improve the accuracy of sentiment and emotion analysis in natural language processing (NLP). The work covers both word-level and sentence-level emotion representation, as well as applications such as abusive language detection using CNN models. Key findings include enhanced accuracy in emotion analysis tasks through better representation learning and the development of methods for detecting abusive language.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "CNN Model"
+      },
+      {
+        "id": "concept_2",
+        "type": "Dataset",
+        "label": "Twitter Hashtag Corpus"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "APPLIED_TO"
+      }
+    ]
+  },
+  "source_file": "ji_finding_good_representations_of_emotions_for_text_classifica.pdf"
+}

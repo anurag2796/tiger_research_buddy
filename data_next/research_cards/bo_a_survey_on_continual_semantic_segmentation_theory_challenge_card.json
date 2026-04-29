@@ -1,0 +1,63 @@
+{
+  "card_id": "survey_css",
+  "bibliographic_data": {
+    "title": "A Survey on Continual Semantic Segmentation: Theory, Challenge, Method and Application",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Bo Yuan",
+        "faculty_id": "Bo Yuan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Danpei Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Continual learning (CL), also known as incremental learning or life-long learning, is an approach that focuses on acquiring knowledge in a sequential manner. It breaks through the obstacle of one-way training on close sets and enables continuous adaptive learning on open-set conditions. In recent decades, continual learning has been explored and applied in multiple fields especially in computer vision covering classification, detection and segmentation tasks. Continual semantic segmentation (CSS), of which the dense prediction peculiarity makes it a challenging, intricate and burgeoning task. In this paper, we present a review of CSS, committing to building a comprehensive survey on problem formulations, primary challenges, universal datasets, neoteric theories and multifarious applications.",
+    "arxiv_id": "arXiv:2310.14277"
+  },
+  "core_content": {
+    "novelty_claim": "The paper provides a comprehensive review of continual semantic segmentation (CSS), categorizing current models into data-replay and data-free sets, and introduces four specialities with diverse application scenarios.",
+    "key_methodology": "The authors sort out and categorize CSS models based on their approaches to solving the challenge of catastrophic forgetting in continual learning. They also introduce a benchmark for CSS encompassing representative references, evaluation results, and reproductions.",
+    "outcomes": [
+      "Categorization of CSS models into data-replay and data-free sets",
+      "Introduction of four specialities with diverse application scenarios"
+    ],
+    "full_text_markdown": "The paper reviews continual semantic segmentation (CSS), a dense prediction task that is challenging due to its complexity. It provides an overview of the problem definitions, primary challenges, and categorizes current CSS models into data-replay and data-free sets based on their approaches to solving catastrophic forgetting. The authors also introduce four specialities with diverse application scenarios and develop a benchmark for CSS."
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Continual Learning"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Catastrophic Forgetting"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Semantic Drift"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "bo_a_survey_on_continual_semantic_segmentation_theory_challenge.pdf"
+}

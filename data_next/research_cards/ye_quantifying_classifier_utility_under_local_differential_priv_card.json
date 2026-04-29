@@ -1,0 +1,52 @@
+{
+  "card_id": "quantifying_classifier_utility_under_ldp",
+  "bibliographic_data": {
+    "title": "Quantifying Classifier Utility under Local Differential Privacy",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Ye Zheng"
+      },
+      {
+        "name": "Yidan Hu",
+        "faculty_id": "Yidan Hu",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2026,
+    "abstract": "Local differential privacy (LDP) offers rigorous, quantifiable privacy guarantees for personal data by introducing perturbations at the data source. Understanding how these perturbations affect classifier utility is crucial for both designers and users. However, a general theoretical framework for quantifying this impact is lacking and also challenging, especially for complex or black-box classifiers. This paper presents a unified framework for theoretically quantifying classifier utility under LDP mechanisms. The key insight is that LDP perturbations are concentrated around the original data with a specific probability, allowing utility analysis to be reframed as robustness analysis within this concentrated region. Our framework thus connects the concentration properties of LDP mechanisms with the robustness of classifiers, treating LDP mechanisms as general distributional functions and classifiers as black boxes. This generality enables applicability to any LDP mechanism and classifier. A direct application of our utility quantification is guiding the selection of LDP mechanisms and privacy parameters for a given classifier. Notably, our analysis shows that a piecewise-based mechanism often yields better utility than alternatives in common scenarios.",
+    "arxiv_id": "2507.02727v3"
+  },
+  "core_content": {
+    "novelty_claim": "The paper presents a unified framework for theoretically quantifying classifier utility under LDP mechanisms, connecting the concentration properties of LDP with robustness analysis of classifiers.",
+    "key_methodology": "The authors leverage established robustness analysis techniques to find the maximum permissible perturbation that preserves a classifier\u2019s output. By combining the concentration analysis of LDP mechanisms with the robustness analysis of classifiers, they establish theoretical data utility quantification in relation to the privacy parameter \ud835\udf00.",
+    "outcomes": [
+      "Developed a framework for theoretically quantifying classifier utility under LDP mechanisms.",
+      "Showed that piecewise-based mechanisms often yield better utility than alternatives in common scenarios."
+    ],
+    "full_text_markdown": "This paper addresses the challenge of understanding how local differential privacy (LDP) perturbations affect classifier utility. The authors present a unified framework for theoretically quantifying this impact, connecting concentration properties of LDP with robustness analysis of classifiers. They show that LDP perturbations are concentrated around the original data with a specific probability, allowing utility analysis to be reframed as robustness analysis within this region. This generality enables applicability to any LDP mechanism and classifier. The framework is applied to guide the selection of LDP mechanisms and privacy parameters for a given classifier, demonstrating that piecewise-based mechanisms often yield better utility than alternatives in common scenarios.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Concentration Analysis of LDP Mechanisms"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Robustness Analysis of Classifiers"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "CONNECTS"
+      }
+    ]
+  },
+  "source_file": "ye_quantifying_classifier_utility_under_local_differential_priv.pdf"
+}

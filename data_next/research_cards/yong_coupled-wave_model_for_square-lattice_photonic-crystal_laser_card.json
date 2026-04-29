@@ -1,0 +1,62 @@
+{
+  "card_id": "physics-optics-1107.1772v1",
+  "bibliographic_data": {
+    "title": "Coupled-wave model for square-lattice photonic-crystal lasers with TE polarization -- a general approach",
+    "primary_domain": "physics.optics",
+    "authors": [
+      {
+        "name": "Yong Liang"
+      },
+      {
+        "name": "Chao Peng",
+        "faculty_id": "Chao Peng",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Kyosuke Sakai"
+      },
+      {
+        "name": "Seita Iwahashi"
+      },
+      {
+        "name": "Susumu Noda"
+      }
+    ],
+    "year": 2011,
+    "abstract": "A general coupled-wave model is presented for square-lattice photonic crystal (PC) lasers with transverse-electric polarization. This model incorporates the high-order coupling effects that are important for two-dimensional PC laser cavities and gives a general and rigorous coupled-wave formulation for the full three-dimensional structures of typical laser devices. Numerical examples based on our model are presented for PC structures with different air-hole shapes. The accuracy of the results obtained is verified using three-dimensional finite-difference time-domain simulations.",
+    "arxiv_id": "1107.1772"
+  },
+  "core_content": {
+    "novelty_claim": "The paper presents a general coupled-wave model for square-lattice photonic crystal lasers with TE polarization, incorporating high-order coupling effects and providing accurate results through 3D simulations.",
+    "key_methodology": "A rigorous coupled-wave formulation is developed by extending the approach from Streifer et al. to include more wavevectors in 3D systems, applicable to arbitrary air-hole shapes.",
+    "outcomes": [
+      "Developed a general coupled-wave model for square-lattice photonic crystal lasers with TE polarization",
+      "Incorporated high-order coupling effects and accurately modeled three-dimensional structures",
+      "Verified results using 3D finite-difference time-domain simulations"
+    ],
+    "full_text_markdown": "The paper presents a novel approach to modeling square-lattice photonic crystal (PC) lasers with transverse-electric polarization. The authors develop a general coupled-wave model that incorporates high-order coupling effects, which are crucial for two-dimensional PC laser cavities. This model is extended from the one-dimensional distributed feedback (DFB) lasers by Streifer et al., to include more wavevectors in three-dimensional systems and apply it to arbitrary air-hole shapes. Numerical examples based on this model are provided for different air-hole shapes, and the accuracy of the results is confirmed through 3D finite-difference time-domain simulations.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Coupled-wave model"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Square-lattice photonic crystal laser"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "APPLIES_TO"
+      }
+    ]
+  },
+  "source_file": "yong_coupled-wave_model_for_square-lattice_photonic-crystal_laser.pdf"
+}

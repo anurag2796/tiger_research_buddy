@@ -1,0 +1,61 @@
+{
+  "card_id": "too-much-to-trust",
+  "bibliographic_data": {
+    "title": "Too Much to Trust? Measuring the Security and Cognitive Impacts of Explainability in AI-Driven SOCs",
+    "primary_domain": "cs.CR",
+    "authors": [
+      {
+        "name": "Nidhi Rastogi",
+        "faculty_id": "Nidhi Rastogi",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Shirid Pant"
+      },
+      {
+        "name": "Devang Dhanuka"
+      },
+      {
+        "name": "Amulya Saxena"
+      },
+      {
+        "name": "Pranjal Mairal"
+      }
+    ],
+    "year": 2018,
+    "abstract": "Explainable AI (XAI) holds significant promise for enhancing the transparency and trustworthiness of AI-driven threat detection in Security Operations Centers (SOCs). However, identifying the appropriate level and format of explanation, particularly in environments that demand rapid decision-making under high-stakes conditions, remains a complex and underexplored challenge. To address this gap, we conducted a three-month mixed-methods study combining an online survey (N1=248) with in-depth interviews (N2=24) to examine how SOC analysts conceptualize AI-generated explanations and which types of explanations are perceived as actionable and trustworthy across different analyst roles. Our findings reveal that participants were consistently willing to accept XAI outputs, even in cases of lower predictive accuracy, when explanations were perceived as relevant and evidence-backed. Analysts repeatedly emphasized the importance of understanding the rationale behind AI decisions, expressing a strong preference for contextual depth over a mere presentation of outcomes on dashboards. Building on these insights, this study re-evaluates current explanation methods within security contexts and demonstrates that role-aware, context-rich XAI designs aligned with SOC workflows can substantially improve practical utility. Such tailored explainability enhances analyst comprehension, increases triage efficiency, and supports more confident responses to evolving threats.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The study introduces CORTEX, a framework that tailors AI explanations for SOC analysts based on their role, the operational context of alerts, and current cognitive load, enhancing practical utility in high-stakes environments.",
+    "key_methodology": "A three-month mixed-methods study combining an online survey (N1=248) with in-depth interviews (N2=24) to examine how SOC analysts conceptualize AI-generated explanations and which types of explanations are perceived as actionable and trustworthy across different analyst roles.",
+    "outcomes": [
+      "Participants were consistently willing to accept XAI outputs, even in cases of lower predictive accuracy, when explanations were perceived as relevant and evidence-backed.",
+      "Analysts emphasized the importance of understanding the rationale behind AI decisions, expressing a strong preference for contextual depth over mere dashboard presentations."
+    ],
+    "full_text_markdown": "Modern Security Operations Centers (SOCs) ingest a continuous stream of security alerts that require immediate analyst assessment. While alert detection has become increasingly automated, interpreting and responding to these alerts remains a cognitively demanding task. The study addresses the challenge between interpretability and usability in high-stakes domains like security by introducing CORTEX, an XAI framework tailored for SOC analysts based on their role, operational context of alerts, and current cognitive load. The research combines an online survey (N1=248) with in-depth interviews (N2=24) to understand how SOC analysts conceptualize AI-generated explanations and which types of explanations are perceived as actionable and trustworthy across different analyst roles. Findings reveal that participants were willing to accept XAI outputs, even in cases of lower predictive accuracy, when explanations were relevant and evidence-backed. Analysts emphasized the importance of understanding the rationale behind AI decisions, preferring contextual depth over mere dashboard presentations.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "CORTEX",
+        "type": "Framework",
+        "label": "Contextual Role and Trust-aware EXplanation framework"
+      },
+      {
+        "id": "XAI",
+        "type": "Method",
+        "label": "Explainable AI"
+      }
+    ],
+    "edges": [
+      {
+        "source": "CORTEX",
+        "target": "XAI",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "nidhi_too_much_to_trust_measuring_the_security_and_cognitive_impac.pdf"
+}

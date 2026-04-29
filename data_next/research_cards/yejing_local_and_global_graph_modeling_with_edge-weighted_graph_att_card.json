@@ -1,0 +1,66 @@
+{
+  "card_id": "local_global_graph_modeling",
+  "bibliographic_data": {
+    "title": "Local and Global Graph Modeling with Edge-weighted Graph Attention Network for Handwritten Mathematical Expression Recognition",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Yejing Xie"
+      },
+      {
+        "name": "Richard Zanibbi",
+        "faculty_id": "Richard Zanibbi",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Harold Mouch\u00e8re"
+      }
+    ],
+    "year": 2024,
+    "abstract": "In this paper, we present a novel approach to Handwritten Mathematical Expression Recognition (HMER) by leveraging graph-based modeling techniques. We introduce an End-to-end model with an Edge-weighted Graph Attention Mechanism (EGAT), designed to perform simultaneous node and edge classification. This model effectively integrates node and edge features, facilitating the prediction of symbol classes and their relationships within mathematical expressions. Additionally, we propose a stroke-level Graph Modeling method for both local (LGM) and global (GGM) information, which applies an end-to-end model to Online HMER tasks, transforming the recognition problem into node and edge classification tasks in graph structure. By capturing both local and global graph features, our method ensures comprehensive understanding of the expression structure. Through the combination of these components, our system demonstrates superior performance in symbol detection, relation classification, and expression-level recognition.",
+    "arxiv_id": "2410.18555"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a novel End-to-end model with an Edge-weighted Graph Attention Mechanism (EGAT) for simultaneous node and edge classification in Handwritten Mathematical Expression Recognition (HMER).",
+    "key_methodology": "The method involves using EGAT to integrate node and edge features, facilitating the prediction of symbol classes and their relationships within mathematical expressions. Additionally, it introduces stroke-level Local Graph Modeling (LGM) and Global Graph Modeling (GGM) for Online HMER tasks.",
+    "outcomes": [
+      "Superior performance in symbol detection",
+      "Improved relation classification",
+      "Enhanced expression-level recognition"
+    ],
+    "full_text_markdown": "The paper addresses the challenge of Handwritten Mathematical Expression Recognition (HMER) by proposing a novel approach that leverages graph-based modeling techniques. The authors introduce an End-to-end model with an Edge-weighted Graph Attention Mechanism (EGAT), which performs simultaneous node and edge classification, effectively integrating features to predict symbol classes and their relationships within mathematical expressions. Additionally, the paper proposes stroke-level Local Graph Modeling (LGM) and Global Graph Modeling (GGM) for Online HMER tasks, transforming recognition into a graph structure problem. The combination of these components ensures comprehensive understanding of expression structures and demonstrates superior performance in various aspects of HMER.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "EGAT",
+        "type": "Method",
+        "label": "Edge-weighted Graph Attention Mechanism"
+      },
+      {
+        "id": "LGM",
+        "type": "Concept",
+        "label": "Local Graph Modeling"
+      },
+      {
+        "id": "GGM",
+        "type": "Concept",
+        "label": "Global Graph Modeling"
+      }
+    ],
+    "edges": [
+      {
+        "source": "EGAT",
+        "target": "LGM",
+        "relation": "USES_IN"
+      },
+      {
+        "source": "EGAT",
+        "target": "GGM",
+        "relation": "USES_IN"
+      }
+    ]
+  },
+  "source_file": "yejing_local_and_global_graph_modeling_with_edge-weighted_graph_att.pdf"
+}

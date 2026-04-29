@@ -1,0 +1,66 @@
+{
+  "card_id": "flat-top-solitons-anomalous-interactions",
+  "bibliographic_data": {
+    "title": "Flat-top solitons and anomalous interactions in media with even-order dispersions and competing nonlinearities",
+    "primary_domain": "physics.optics",
+    "authors": [
+      {
+        "name": "Xueqing He"
+      },
+      {
+        "name": "Shijie Hao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Lijing Xing"
+      },
+      {
+        "name": "Dumitru Mihalache"
+      },
+      {
+        "name": "Boris A. Malomed"
+      },
+      {
+        "name": "Pengfei Li",
+        "faculty_id": "Pengfei Li",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2026,
+    "abstract": "Flat-top (FT) solitons are optical pulses that arise from the balance of dispersion and self-phase modulation in media with the competing cubic-quintic nonlinearity. Previously, FT solitons were studied only in the case of the second-order dispersion (m = 2). Following the recent observation of pure-quartic solitons (corresponding to m = 4), we here construct families of FT solitons in the setting with pure-high-even-order dispersion (PHEOD), including m = 4, 6, 8, and 10, and address interactions between them. The PHEOD solitons are completely stable, and, unlike the conventional solitons, they feature oscillatory tails. Interactions between the PHEOD solitons are anomalous, featuring repulsion and attraction between in- and out-of-phase solitons, respectively. These results expand the variety of optical solitons maintained by diverse dispersive nonlinear media.",
+    "arxiv_id": "arXiv:2602.16114"
+  },
+  "core_content": {
+    "novelty_claim": "The paper constructs families of flat-top (FT) solitons in the setting with pure-high-even-order dispersion (PHEOD), including m = 4, 6, 8, and 10, and addresses their anomalous interactions.",
+    "key_methodology": "The authors use a modified one-dimensional nonlinear Schr\u00f6dinger equation to model the propagation of optical pulses in media with PHEOD and competing cubic-quintic nonlinearity. They numerically solve for stationary solutions using the Newton-conjugate gradient method.",
+    "outcomes": [
+      "Families of PHEOD solitons are characterized by their energy, which is a dynamical invariant of the equation.",
+      "The propagation constant vs. the soliton\u2019s energy exhibits oscillations before approaching the limit value determined by the cubic-quintic nonlinearity.",
+      "Interactions between PHEOD solitons are anomalous, featuring repulsion and attraction between in- and out-of-phase solitons."
+    ],
+    "full_text_markdown": "The paper explores flat-top (FT) solitons arising from the balance of dispersion and self-phase modulation in media with competing nonlinearities. Previously, FT solitons were studied only for second-order dispersion (m = 2). The authors construct families of FT solitons using pure-high-even-order dispersion (PHEOD), including m = 4, 6, 8, and 10. They use a modified one-dimensional nonlinear Schr\u00f6dinger equation to model the propagation of these pulses. Numerical methods are employed to find stationary solutions, revealing that the propagation constant vs. soliton\u2019s energy exhibits oscillations before approaching the limit value determined by the cubic-quintic nonlinearity. The interactions between PHEOD solitons are found to be anomalous, featuring repulsion and attraction based on their phase alignment."
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Modified NLSE"
+      },
+      {
+        "id": "concept_2",
+        "type": "Soliton",
+        "label": "PHEOD Soliton"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "MODELS"
+      }
+    ]
+  },
+  "source_file": "xueqing_flat-top_solitons_and_anomalous_interactions_in_media_with_e.pdf"
+}

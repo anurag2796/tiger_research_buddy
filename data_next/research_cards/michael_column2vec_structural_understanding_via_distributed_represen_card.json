@@ -1,0 +1,64 @@
+{
+  "card_id": "column2vec",
+  "bibliographic_data": {
+    "title": "Column2Vec: Structural Understanding via Distributed Representations of Database Schemas",
+    "primary_domain": "cs.DB",
+    "authors": [
+      {
+        "name": "Michael J. Mior",
+        "faculty_id": "Michael Mior",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Alexander G. Ororbia",
+        "faculty_id": "Alexander Ororbia",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2019,
+    "abstract": "We present Column2Vec, a distributed representation of database columns based on column metadata. Our distributed representation has several applications. Using known names for groups of columns (i.e., a table name), we train a model to generate an appropriate name for columns in an unnamed table. We demonstrate the viability of our approach using schema information collected from open source applications on GitHub.",
+    "arxiv_id": "1903.08621"
+  },
+  "core_content": {
+    "novelty_claim": "Column2Vec proposes a method for generating meaningful names for database tables based on the distributed representations of column names.",
+    "key_methodology": "The approach involves training word embeddings using fastText and then using these embeddings to predict table names by summing the vectors of column names and finding the closest match in the training set.",
+    "outcomes": [
+      "Generated appropriate names for columns in unnamed tables",
+      "Demonstrated viability using schema information from open source applications on GitHub"
+    ],
+    "full_text_markdown": "Column2Vec is a method that generates meaningful names for database tables based on column metadata. The approach involves two main steps: first, generating word embeddings for each table and column name; second, predicting the most appropriate table name by summing the vectors of column names and finding the closest match in the training set. This technique can be applied to unnamed tables using known group names (table names). The method was demonstrated on schema information from open source applications on GitHub.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Column2Vec"
+      },
+      {
+        "id": "concept_2",
+        "type": "Model",
+        "label": "Word Embeddings"
+      },
+      {
+        "id": "concept_3",
+        "type": "Technique",
+        "label": "FastText"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "michael_column2vec_structural_understanding_via_distributed_represen.pdf"
+}

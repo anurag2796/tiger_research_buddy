@@ -1,0 +1,59 @@
+{
+  "card_id": "wake_effects_offshore_wind_farms",
+  "bibliographic_data": {
+    "title": "Wake effects of offshore wind farm clusters revealed by SAR and WRF",
+    "primary_domain": "physics.ao-ph (Atmospheric and Oceanic Physics)",
+    "authors": [
+      {
+        "name": "Rui Li",
+        "faculty_id": "Rui Li",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jincheng Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Xiaowei Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2023,
+    "abstract": "Wake effects, i.e., the reduced momentum and increased turbulence caused by upstream wind farms, have a significant adverse impact on downstream wind farms. However, due to the lack of ground truth for flow scenarios without wind farms in place (as the wind farm has already been constructed on site), it is extremely difficult to quantify the real impact caused by the presence of upstream wind farms for the downstream area. This paper seeks to develop a potential solution by taking advantage of both SAR and WRF. Specifically, the real-world wind speed with wind farms is retrieved from the SAR images using the C-band model, while the scenario without wind farms is simulated by the WRF model. By combining these two technologies, the potential impact of long-distance wind farm wakes is revealed and analysed.",
+    "arxiv_id": "2312.13942v1"
+  },
+  "core_content": {
+    "novelty_claim": "The paper combines SAR and WRF to reveal wake effects in offshore wind farm clusters, providing a potential solution for quantifying the impact of upstream wind farms on downstream areas.",
+    "key_methodology": "Wind speed with wind farms is retrieved from SAR images using CMOD5.N, while scenarios without wind farms are simulated by the WRF model. The impact of wake effects is then compared and visualized.",
+    "outcomes": [
+      "The paper demonstrates the clear visibility of wind farm wake effects in SAR-retrieved data.",
+      "WRF simulations provide a basis for comparing wind speeds with and without wind farms."
+    ],
+    "full_text_markdown": "This paper addresses the challenge of quantifying the impact of upstream offshore wind farms on downstream areas. Traditional methods like mesoscale simulations or in-situ measurements are limited due to their inability to fully capture multi-scale physical characteristics, especially in real-world operational scenarios. The authors propose a novel approach using both SAR and WRF models. They retrieve wind speeds from SAR images with the C-band model (CMOD5.N) for areas with wind farms and simulate these conditions without wind farms using the WRF model. By comparing the two sets of data, they effectively illustrate the impact of wake effects on downstream wind farms. This method provides a valuable tool for optimizing the design and operations of offshore wind farms.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "SAR Wind Speed Retrieval"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "WRF Simulation"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "COMPLIMENTS"
+      }
+    ]
+  },
+  "source_file": "rui_wake_effects_of_offshore_wind_farm_clusters_revealed_by_sar_.pdf"
+}

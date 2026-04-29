@@ -1,0 +1,600 @@
+{
+  "card_id": "observations_of_forbush_decreases",
+  "bibliographic_data": {
+    "title": "Observations of Forbush Decreases of cosmic ray electrons and positrons with the Dark Matter Particle Explorer",
+    "primary_domain": "astro-ph.HE",
+    "authors": [
+      {
+        "name": "Francesca Alemanno"
+      },
+      {
+        "name": "Qi An",
+        "faculty_id": "Jill Flanagan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Philipp Azzarello"
+      },
+      {
+        "name": "Felicia Carla Tiziana Barbato"
+      },
+      {
+        "name": "Paolo Bernardini"
+      },
+      {
+        "name": "XiaoJun Bi",
+        "faculty_id": "Richard Zanibbi",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "MingSheng Cai"
+      },
+      {
+        "name": "Elisabetta Casilli"
+      },
+      {
+        "name": "Enrico Catanzani"
+      },
+      {
+        "name": "Jin Chang"
+      },
+      {
+        "name": "DengYi Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "JunLing Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "ZhanFang Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "MingYang Cui",
+        "faculty_id": "Feng Cui",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "TianShu Cui",
+        "faculty_id": "Feng Cui",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "YuXing Cui",
+        "faculty_id": "Feng Cui",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "HaoTing Dai"
+      },
+      {
+        "name": "Antonio De Benedittis"
+      },
+      {
+        "name": "Ivan De Mitri"
+      },
+      {
+        "name": "Francesco de Palma"
+      },
+      {
+        "name": "Maksym Deliyergiyev"
+      },
+      {
+        "name": "Margherita Di Santo"
+      },
+      {
+        "name": "Qi Ding"
+      },
+      {
+        "name": "TieKuang Dong"
+      },
+      {
+        "name": "ZhenXing Dong"
+      },
+      {
+        "name": "Giacinto Donvito"
+      },
+      {
+        "name": "David Droz"
+      },
+      {
+        "name": "JingLai Duan"
+      },
+      {
+        "name": "KaiKai Duan"
+      },
+      {
+        "name": "Domenico D'Urso"
+      },
+      {
+        "name": "RuiRui Fan"
+      },
+      {
+        "name": "YiZhong Fan"
+      },
+      {
+        "name": "Fang Fang"
+      },
+      {
+        "name": "Kun Fang"
+      },
+      {
+        "name": "ChangQing Feng"
+      },
+      {
+        "name": "Lei Feng"
+      },
+      {
+        "name": "Piergiorgio Fusco"
+      },
+      {
+        "name": "Min Gao"
+      },
+      {
+        "name": "Fabio Gargano"
+      },
+      {
+        "name": "Ke Gong"
+      },
+      {
+        "name": "YiZhong Gong"
+      },
+      {
+        "name": "DongYa Guo"
+      },
+      {
+        "name": "JianHua Guo"
+      },
+      {
+        "name": "ShuangXue Han"
+      },
+      {
+        "name": "YiMing Hu",
+        "faculty_id": "Derui Zhu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "GuangShun Huang"
+      },
+      {
+        "name": "XiaoYuan Huang"
+      },
+      {
+        "name": "YongYi Huang"
+      },
+      {
+        "name": "Maria Ionica"
+      },
+      {
+        "name": "Wei Jiang"
+      },
+      {
+        "name": "Jie Kong",
+        "faculty_id": "Hidy Kong",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Andrii Kotenko"
+      },
+      {
+        "name": "Dimitrios Kyratzis"
+      },
+      {
+        "name": ". Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "ShiJun Lei"
+      },
+      {
+        "name": "WenHao Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "WeiLiang Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Xiang Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "XianQiang Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "YaoMing Liang"
+      },
+      {
+        "name": "ChengMing Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Hao Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jie Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "ShuBin Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yang Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Francesco Loparco"
+      },
+      {
+        "name": "ChuanNing Luo"
+      },
+      {
+        "name": "Miao Ma",
+        "faculty_id": "Naveen Sharma",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "PengXiong Ma",
+        "faculty_id": "Naveen Sharma",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Tao Ma",
+        "faculty_id": "Naveen Sharma",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "XiaoYong Ma",
+        "faculty_id": "Naveen Sharma",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Giovanni Marsella"
+      },
+      {
+        "name": "Mario Nicola Mazziotta"
+      },
+      {
+        "name": "Dan Mo"
+      },
+      {
+        "name": "XiaoYang Niu"
+      },
+      {
+        "name": "Xu Pan",
+        "faculty_id": "Yin Pan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Andrea Parenti"
+      },
+      {
+        "name": "WenXi Peng",
+        "faculty_id": "Chao Peng",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "XiaoYan Peng",
+        "faculty_id": "Chao Peng",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Chiara Perrina"
+      },
+      {
+        "name": "Rui Qiao"
+      },
+      {
+        "name": "JiaNing Rao"
+      },
+      {
+        "name": "Arshia Ruina"
+      },
+      {
+        "name": "MariaMunoz Salinas"
+      },
+      {
+        "name": "Zhi Shangguan"
+      },
+      {
+        "name": "WeiHua Shen"
+      },
+      {
+        "name": "ZhaoQiang Shen"
+      },
+      {
+        "name": "ZhongTao Shen"
+      },
+      {
+        "name": "Leandro Silveri"
+      },
+      {
+        "name": "JingXing Song",
+        "faculty_id": "Xinchao Song",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Mikhail Stolpovskiy"
+      },
+      {
+        "name": "Hong Su"
+      },
+      {
+        "name": "Meng Su"
+      },
+      {
+        "name": "HaoRan Sun"
+      },
+      {
+        "name": "ZhiYu Sun"
+      },
+      {
+        "name": "Antonio Surdo"
+      },
+      {
+        "name": "XueJian Teng"
+      },
+      {
+        "name": "Andrii Tykhonov"
+      },
+      {
+        "name": "JinZhou Wang"
+      },
+      {
+        "name": "LianGuo Wang"
+      },
+      {
+        "name": "Shen Wang"
+      },
+      {
+        "name": "ShuXin Wang"
+      },
+      {
+        "name": "XiaoLian Wang"
+      },
+      {
+        "name": "Ying Wang"
+      },
+      {
+        "name": "YanFang Wang"
+      },
+      {
+        "name": "YuanZhu Wang"
+      },
+      {
+        "name": "DaMing Wei"
+      },
+      {
+        "name": "JiaJu Wei"
+      },
+      {
+        "name": "YiFeng Wei"
+      },
+      {
+        "name": "Di Wu"
+      },
+      {
+        "name": "Jian Wu"
+      },
+      {
+        "name": "LiBo Wu"
+      },
+      {
+        "name": "Sha Sha Wu"
+      },
+      {
+        "name": "Xin Wu"
+      },
+      {
+        "name": "ZiQing Xia"
+      },
+      {
+        "name": "EnHeng Xu"
+      },
+      {
+        "name": "HaiTao Xu"
+      },
+      {
+        "name": "ZhiHui Xu"
+      },
+      {
+        "name": "ZunLei Xu"
+      },
+      {
+        "name": "GuoFeng Xue"
+      },
+      {
+        "name": "ZiZong Xu"
+      },
+      {
+        "name": "HaiBo Yang",
+        "faculty_id": "Haibo Yang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Peng Yang",
+        "faculty_id": "Haibo Yang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "YaQing Yang",
+        "faculty_id": "Haibo Yang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Hui Jun Yao"
+      },
+      {
+        "name": "YuHong Yu",
+        "faculty_id": "Zhe Yu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "GuanWen Yuan",
+        "faculty_id": "Bo Yuan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Qiang Yuan",
+        "faculty_id": "Bo Yuan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Chuan Yue"
+      },
+      {
+        "name": "JingJing Zang"
+      },
+      {
+        "name": "ShengXia Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "WenZhang Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yan Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yi Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "YongJie Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "YunLong Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "YaPeng Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "YongQiang Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "ZhiYong Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Zhe Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Cong Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "HongYun Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "XunFeng Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "ChangYi Zhou"
+      },
+      {
+        "name": "Yan Zhu",
+        "faculty_id": "Derui Zhu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Wei Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Li Feng"
+      },
+      {
+        "name": "Xi Luo"
+      },
+      {
+        "name": "ChengRui Zhu",
+        "faculty_id": "Derui Zhu",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2021,
+    "abstract": "The Forbush Decrease (FD) represents the rapid decrease of the intensities of charged particles accompanied with coronal mass ejections (CMEs) or high-speed streams from coronal holes. It has been mainly explored with ground-based neutron monitors network which indirectly measure the integrated intensities of all species of cosmic rays by counting secondary neutrons produced from interaction between atmosphere atoms and cosmic rays. The space-based experiments can resolve the species of particles but the energy ranges are limited by the relative small acceptances except for the most abundant particles like protons and helium. Therefore, the FD of cosmic ray electrons and positrons have just been investigated by the PAMELA experiment in the low energy range (< 5 GeV) with limited statistics. In this paper, we study the FD event occurred in September, 2017, with the electron and positron data recorded by the Dark Matter Particle Explorer. The evolution of the FDs from 2 GeV to 20 GeV with a time resolution of 6 hours are given. We observe two solar energetic particle events in the time profile of the intensity of cosmic rays, the earlier and weak one has not been shown in the neutron monitor data. Furthermore, both the amplitude and recovery time of fluxes of electrons and positrons show clear energy-dependence, which is important in probing the disturbances of the interplanetary environment by the coronal mass ejections.",
+    "arxiv_id": "2110.00123v1"
+  },
+  "core_content": {
+    "novelty_claim": "The study provides detailed observations of Forbush Decreases (FDs) in cosmic ray electrons and positrons with the Dark Matter Particle Explorer, extending previous findings to higher energy ranges.",
+    "key_methodology": "Data from the Dark Matter Particle Explorer were used to observe FD events at energies ranging from 2 GeV to 20 GeV with a time resolution of 6 hours.",
+    "outcomes": [
+      "Observation of two solar energetic particle events in the intensity profile of cosmic rays, one earlier and weaker than those observed by neutron monitors.",
+      "Clear energy-dependence in both the amplitude and recovery time of fluxes of electrons and positrons."
+    ],
+    "full_text_markdown": "The paper investigates Forbush Decreases (FDs) of cosmic ray electrons and positrons using data from the Dark Matter Particle Explorer. FDs are rapid decreases in charged particle intensities associated with coronal mass ejections or high-speed streams from coronal holes. Previous studies have mainly relied on ground-based neutron monitors, which can only provide integrated intensity measurements due to their limited energy resolution and composition information. The PAMELA experiment has previously measured FDs of protons and helium nuclei in the low-energy range (< 5 GeV), but this study extends these observations to higher energies (2-20 GeV) with improved time resolution. The authors observed two solar energetic particle events, one earlier and weaker than those seen by neutron monitors. Additionally, they found clear energy-dependence in both the amplitude and recovery time of electron and positron fluxes, which is significant for understanding interplanetary disturbances caused by coronal mass ejections."
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Dark Matter Particle Explorer"
+      },
+      {
+        "id": "concept_2",
+        "type": "Observation",
+        "label": "Forbush Decrease (FD)"
+      },
+      {
+        "id": "concept_3",
+        "type": "Particle",
+        "label": "Cosmic Ray Electrons and Positrons"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "OBSERVES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "MEASURES"
+      }
+    ]
+  },
+  "source_file": "francesca_observations_of_forbush_decreases_of_cosmic_ray_electrons_an.pdf"
+}

@@ -1,0 +1,58 @@
+{
+  "card_id": "can_we_ignore_labels_in_out_of_distribution_detection",
+  "bibliographic_data": {
+    "title": "Can We Ignore Labels In Out of Distribution Detection?",
+    "primary_domain": "cs.AI",
+    "authors": [
+      {
+        "name": "Hong Yang",
+        "faculty_id": "Haibo Yang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Qi Yu",
+        "faculty_id": "Zhe Yu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Travis Desell"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Out-of-distribution (OOD) detection methods have recently become more prominent, serving as a core element in safety-critical autonomous systems. Due to the cost of labeled data, recent works have investigated the feasibility of self-supervised learning (SSL) OOD detection, unlabeled OOD detection, and zero shot OOD detection. In this work, we identify a set of conditions for a theoretical guarantee of failure in unlabeled OOD detection algorithms from an information-theoretic perspective. These conditions are present in all OOD tasks dealing with real-world data: I) we provide theoretical proof of unlabeled OOD detection failure when there exists zero mutual information between the learning objective and the in-distribution labels, a.k.a. \u2018label blindness\u2019, II) we define a new OOD task \u2013 Adjacent OOD detection \u2013 that tests for label blindness and accounts for a previously ignored safety gap in all OOD detection benchmarks, and III) we perform experiments demonstrating that existing unlabeled OOD methods fail under conditions suggested by our label blindness theory and analyze the implications for future research in unlabeled OOD methods.",
+    "arxiv_id": "arXiv:2504.14704"
+  },
+  "core_content": {
+    "novelty_claim": "The work identifies theoretical guarantees of failure for unlabeled OOD detection algorithms and introduces a new Adjacent OOD detection task to test for label blindness.",
+    "key_methodology": "The authors use an information-theoretic perspective to prove that any SSL or unsupervised learning algorithm will fail when its required information is independent of the labels. They introduce the concept of 'label blindness' and demonstrate this through experiments with existing methods.",
+    "outcomes": [
+      "Theoretical proof of failure in unlabeled OOD detection due to label blindness.",
+      "Introduction of Adjacent OOD detection task to evaluate performance on overlapping data.",
+      "Demonstration that existing SSL and unsupervised learning OOD methods fail under the conditions suggested by their theory."
+    ],
+    "full_text_markdown": "# CAN WE IGNORE LABELS IN OUT-OF-DISTRIBUTION DETECTION?\n\n## Abstract\nOut-of-distribution (OOD) detection methods have recently become more prominent, serving as a core element in safety-critical autonomous systems. Due to the cost of labeled data, recent works have investigated the feasibility of self-supervised learning (SSL) OOD detection, unlabeled OOD detection, and zero shot OOD detection. In this work, we identify a set of conditions for a theoretical guarantee of failure in unlabeled OOD detection algorithms from an information-theoretic perspective. These conditions are present in all OOD tasks dealing with real-world data: I) we provide theoretical proof of unlabeled OOD detection failure when there exists zero mutual information between the learning objective and the in-distribution labels, a.k.a. \u2018label blindness\u2019, II) we define a new OOD task \u2013 Adjacent OOD detection \u2013 that tests for label blindness and accounts for a previously ignored safety gap in all OOD detection benchmarks, and III) we perform experiments demonstrating that existing unlabeled OOD methods fail under conditions suggested by our label blindness theory and analyze the implications for future research in unlabeled OOD methods.\n\n## Introduction\nSafety-critical applications of deep neural networks have recently become an important area of investigation in the domain of artificial intelligence, ranging from autonomous driving (Ramanagopal et al., 2018) to biometric authentication (Wang & Deng, 2021) to medical diagnosis (Bakator & Radosav, 2018). In the setting of safety-critical systems, it is no longer possible to rely on the closed-world assumption (Krizhevsky et al., 2012), where test data is drawn i.i.d. from the same distribution as the training data, known as the in-distribution (ID). These models will be deployed in an open-world scenario (Drummond & Shearer, 2006), where test samples can be out-of-distribution (OOD) and therefore should be handled with caution. OOD detection seeks to identify inputs containing a label that was never present in the training distribution. The motivation for OOD detection is simple: we do not want safety-critical systems to act on an invalid prediction, where the predicted label cannot be correct because the label was never present in training.\n\nThere is significant interest in unlabeled OOD detection due to various factors. A method that does not rely on labels can save significant costs in labeling data, as proposed by (Sehwag et al., 2021). It is also possible to skip training on the in distribution data if such a model is generalizable, as proposed by (Wang et al., 2023). Self-supervised and unlabeled learning methods can also scale to much larger datasets and it is important for these models to be robust to OOD data. Recent work in unlabeled OOD detection methods, including (Sehwag et al., 2021; Tack et al., 2020; Liu et al., 2023; Guille-Escuret et al., 2024; Wang et al., 2023), promise to improve safety using only unlabeled data. These methods can achieve even greater performance than a simple supervised baseline (Hendrycks & Gimpel, 2016), suggesting that one could replace supervised training with self-supervised learning (SSL) for a safety critical OOD detection task.\n\n## Preliminaries\nWhen we view SSL from an information-theoretic perspective, the selection of features depends solely on the SSL objective and not on the labels. This, however, provides no guarantee that any features relevant for label prediction will be retained. Figure 1 provides an example of how SSL features can be less effective for identifying a label. Our theory importantly shows that, when the label-relevant features are independent of the features relevant for the SSL algorithm\u2019s successful operation, OOD detection is guaranteed to fail due to what we call \u2018label blindness\u2019 and that this label blindness occurs regardless of how one selects the ID dataset from the population of all data.\n\nOur experiments also suggest that Zero Shot OOD methods (Wang et al., 2023; Esmaeilpour et al., 2022) may also suffer from this issue. We show that unsupervised OOD detection methods behave in the same way as SSL in the context of information theory.\n\nFigure 1: An example failure case by visualizing the heatmaps of the gradient of a unlabeled SimCLR trained Resnet (Chen et al., 2020) using the GradCAM method (Selvaraju et al., 2017). The OOD detection task is to detect OOD facial expressions. In this case, the OOD detection method fails as justified by our theoretical work, where the representations do not exhibit a strong gradient in regions commonly associated with facial expressions (i.e., eyebrows, mouth, etc.). However, one can unintentionally avoid label blindness problem via the selection of the OOD dataset when constructing OOD benchmarks. Existing methods generally consider ID and OOD data from different datasets, e.g., (Fort et al., 2021), (Sehwag et al., 2021), and (Hendrycks et al., 2019). In these benchmarks, there is no significant overlap between the ID and OOD input data, allowing OOD detection algorithms to succeed on features independent of the label. To address this issue and to test for label blindness, we introduce the Adjacent OOD detection task to evaluate the performance on OOD detection algorithms when there is significant overlap between the OOD input data and ID input data. We also prove that it is impossible to guarantee that a real world system will never encounter OOD input data that significantly overlaps ID input data.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "label_blindness",
+        "type": "Concept",
+        "label": "Label Blindness"
+      },
+      {
+        "id": "adjacent_ood_detection",
+        "type": "Method",
+        "label": "Adjacent OOD Detection"
+      }
+    ],
+    "edges": [
+      {
+        "source": "label_blindness",
+        "target": "adjacent_ood_detection",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "hong_can_we_ignore_labels_in_out_of_distribution_detection.pdf"
+}

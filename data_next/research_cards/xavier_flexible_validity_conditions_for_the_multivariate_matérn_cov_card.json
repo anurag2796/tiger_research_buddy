@@ -1,0 +1,55 @@
+{
+  "card_id": "flexible_validity_conditions_multivariate_matern",
+  "bibliographic_data": {
+    "title": "Flexible Validity Conditions for the Multivariate Mat\u00e9rn Covariance in any Spatial Dimension and for any Number of Components",
+    "primary_domain": "math.OC",
+    "authors": [
+      {
+        "name": "Xavier Emery"
+      },
+      {
+        "name": "Emilio Porcu"
+      },
+      {
+        "name": "Philip White",
+        "faculty_id": "Philip White",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2024,
+    "abstract": "This paper addresses the problem of finding parametric constraints that ensure the validity of the multivariate Mat\u00e9rn covariance for modeling the spatial correlation structure of coregionalized variables defined in an Euclidean space. To date, much attention has been given to the bivariate setting, while the multivariate setting has been explored to a limited extent only. The existing conditions often imply severe restrictions on the upper bounds for the collocated correlation coefficients, which makes the multivariate Mat\u00e9rn model appealing for the case of weak spatial cross-dependence only. We provide a collection of sufficient validity conditions for the multivariate Mat\u00e9rn covariance that allows for more flexible parameterizations than those currently available, and prove that one can attain considerably higher upper bounds for the collocated correlation coefficients in comparison with our competitors. We conclude with an illustration on a trivariate geochemical data set and show that our enlarged parametric space yields better fitting performances.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper provides new sufficient validity conditions for the multivariate Mat\u00e9rn covariance model, allowing for more flexible parameterizations than those currently available.",
+    "key_methodology": "The authors derive a collection of sufficient conditions that ensure the positive semidefiniteness of the multivariate Mat\u00e9rn covariance function, which is crucial for its use in modeling spatial correlation structures.",
+    "outcomes": [
+      "The paper proves higher upper bounds for collocated correlation coefficients compared to existing models.",
+      "Illustration on a trivariate geochemical data set demonstrates better fitting performances."
+    ],
+    "full_text_markdown": "This work addresses the problem of finding parametric constraints that ensure the validity of the multivariate Mat\u00e9rn covariance in modeling spatial correlation structures. The authors provide new sufficient conditions for this model, which allow for more flexible parameterizations than existing ones. These conditions are illustrated on a trivariate geochemical data set, showing improved fitting performances.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "multivariate_matern_covariance",
+        "type": "Method",
+        "label": "Multivariate Mat\u00e9rn Covariance"
+      },
+      {
+        "id": "positive_semidefinite_matrix",
+        "type": "Concept",
+        "label": "Positive Semidefinite Matrix"
+      }
+    ],
+    "edges": [
+      {
+        "source": "multivariate_matern_covariance",
+        "target": "positive_semidefinite_matrix",
+        "relation": "REQUIRES"
+      }
+    ]
+  },
+  "source_file": "xavier_flexible_validity_conditions_for_the_multivariate_mat\u00e9rn_cov.pdf"
+}

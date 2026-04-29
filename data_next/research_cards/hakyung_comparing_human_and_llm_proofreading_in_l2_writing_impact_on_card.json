@@ -1,0 +1,58 @@
+{
+  "card_id": "arxiv:2506.09021",
+  "bibliographic_data": {
+    "title": "Comparing human and LLM proofreading in L2 writing: Impact on lexical and syntactic features",
+    "primary_domain": "cs.CL",
+    "authors": [
+      {
+        "name": "Hakyung Sung",
+        "faculty_id": "Hakyung Sung",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Karla Csuros"
+      },
+      {
+        "name": "Min-Chang Sung",
+        "faculty_id": "Hakyung Sung",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2025,
+    "abstract": "This study examines the lexical and syntactic interventions of human and LLM proofreading aimed at improving overall intelligibility in identical second language writings, and evaluates the consistency of outcomes across three LLMs (ChatGPT-4o, Llama3.1-8b, Deepseekr1-8b). Findings show that both human and LLM proofreading enhance bigram lexical features, which may contribute to better coherence and contextual connectedness between adjacent words. However, LLM proofreading exhibits a more generative approach, extensively reworking vocabulary and sentence structures, such as employing more diverse and sophisticated vocabulary and incorporating a greater number of adjective modifiers in noun phrases. The proofreading outcomes are highly consistent in major lexical and syntactic features across the three models.",
+    "arxiv_id": "2506.09021"
+  },
+  "core_content": {
+    "novelty_claim": "This study compares the impact of human and LLM proofreading on lexical and syntactic features in second language writing, focusing on the generative approach of LLMs.",
+    "key_methodology": "The study evaluates the consistency of outcomes across three different LLM models (ChatGPT-4o, Llama3.1-8b, Deepseekr1-8b) and compares their interventions with human proofreading in terms of lexical and syntactic features.",
+    "outcomes": [
+      "Both human and LLM proofreading enhance bigram lexical features, contributing to better coherence and contextual connectedness between adjacent words.",
+      "LLM proofreading exhibits a more generative approach, extensively reworking vocabulary and sentence structures by employing more diverse and sophisticated vocabulary and incorporating a greater number of adjective modifiers in noun phrases.",
+      "The proofreading outcomes are highly consistent across the three LLM models."
+    ],
+    "full_text_markdown": "# Introduction\nThe use of generative large language models (LLMs) in second language (L2) writing has gained popularity for providing real-time feedback on vocabulary, grammar, and style. This study examines the lexical and syntactic interventions of human and LLM proofreading aimed at improving overall intelligibility in identical second language writings, evaluating the consistency of outcomes across three LLMs (ChatGPT-4o, Llama3.1-8b, Deepseekr1-8b). Findings show that both human and LLM proofreading enhance bigram lexical features, which may contribute to better coherence and contextual connectedness between adjacent words. However, LLM proofreading exhibits a more generative approach, extensively reworking vocabulary and sentence structures, such as employing more diverse and sophisticated vocabulary and incorporating a greater number of adjective modifiers in noun phrases. The proofreading outcomes are highly consistent in major lexical and syntactic features across the three models.\n\n# Background\nProofreading is a complex issue in writing research, particularly for L2 writers, involving varying scopes of interventions. Previous studies have shown that human proofreading displays variability not just in scope but also in quality. Research highlights the generative approach of LLMs and their impact on broader lexical and syntactic characteristics of L2 writing compared to human proofreading.\n\n# Methodology\nThe study evaluates the consistency of outcomes across three different LLM models (ChatGPT-4o, Llama3.1-8b, Deepseekr1-8b) and compares their interventions with human proofreading in terms of lexical and syntactic features.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "LLM Proofreading"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "Human Proofreading"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "hakyung_comparing_human_and_llm_proofreading_in_l2_writing_impact_on.pdf"
+}

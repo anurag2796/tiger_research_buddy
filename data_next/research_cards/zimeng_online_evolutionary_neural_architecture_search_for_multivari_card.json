@@ -1,0 +1,57 @@
+{
+  "card_id": "online-evolutionary-nas-for-ts",
+  "bibliographic_data": {
+    "title": "Online Evolutionary Neural Architecture Search for Multivariate Non-Stationary Time Series Forecasting",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Zimeng Lyu"
+      },
+      {
+        "name": "Alexander Ororbia",
+        "faculty_id": "Alexander Ororbia",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Travis Desell",
+        "faculty_id": "Travis Desell",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2023,
+    "abstract": "Time series forecasting (TSF) is one of the most important tasks in data science given the fact that accurate time series (TS) predictive models play a major role across a wide variety of domains including finance, transportation, health care, and power systems. Real-world utilization of machine learning (ML) typically involves (pre-)training models on collected, historical data and then applying them to unseen data points. However, in real-world applications, time series data streams are usually non-stationary and trained ML models usually, over time, face the problem of data or concept drift. To address this issue, models must be periodically retrained or redesigned, which takes significant human and computational resources. Additionally, historical data may not even exist to re-train or re-design model with. As a result, it is highly desirable that models are designed and trained in an online fashion. This work presents the Online NeuroEvolution-based Neural Architecture Search (ONE-NAS) algorithm, which is a novel neural architecture search method capable of automatically designing and dynamically training recurrent neural networks (RNNs) for online forecasting tasks. Without any pre-training, ONE-NAS utilizes populations of RNNs that are continuously updated with new network structures and weights in response to new multivariate input data.",
+    "arxiv_id": "2302.10347"
+  },
+  "core_content": {
+    "novelty_claim": "ONE-NAS is the first online NE neural architecture search (NAS) algorithm for TSF with RNNs, utilizing distributed islands and Lamarckian weight initialization to dynamically adapt architectures while minimizing computational costs.",
+    "key_methodology": "ONE-NAS uses populations of RNNs that are continuously updated in response to new multivariate input data. It employs a Lamarckian weight initialization strategy and island repopulation to improve performance over traditional methods.",
+    "outcomes": [
+      "Outperforms traditional statistical time series forecasting methods, including online linear regression, fixed LSTM and GRU models trained online, as well as state-of-the-art, online ARIMA strategies.",
+      "Demonstrates robustness to catastrophic forgetting in the presence of data drift."
+    ],
+    "full_text_markdown": "Time series forecasting (TSF) is a critical task in various domains such as finance, transportation, health care, and power systems. Traditional offline models are trained on stationary data but can break down when applied to non-stationary real-world data due to concept drift. To address this issue, the Online NeuroEvolution-based Neural Architecture Search (ONE-NAS) algorithm is introduced. ONE-NAS dynamically trains recurrent neural networks (RNNs) for online forecasting tasks without pre-training. It uses populations of RNNs that are continuously updated with new network structures and weights in response to incoming multivariate data. The method employs a Lamarckian weight initialization strategy, island repopulation, and distributed islands to enhance performance. Experiments on real-world datasets show that ONE-NAS outperforms traditional methods and state-of-the-art online ARIMA strategies.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "ONE-NAS"
+      },
+      {
+        "id": "concept_2",
+        "type": "Algorithm",
+        "label": "Neuroevolution"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "zimeng_online_evolutionary_neural_architecture_search_for_multivari.pdf"
+}

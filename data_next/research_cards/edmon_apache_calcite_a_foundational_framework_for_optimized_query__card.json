@@ -1,0 +1,92 @@
+{
+  "card_id": "apache_calcite",
+  "bibliographic_data": {
+    "title": "Apache Calcite: A Foundational Framework for Optimized Query Processing Over Heterogeneous Data Sources",
+    "primary_domain": "cs.DB",
+    "authors": [
+      {
+        "name": "Edmon Begoli"
+      },
+      {
+        "name": "Jes\u00fas Camacho Rodr\u00edguez"
+      },
+      {
+        "name": "Julian Hyde"
+      },
+      {
+        "name": "Michael J. Mior",
+        "faculty_id": "Michael Mior",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Daniel Lemire"
+      }
+    ],
+    "year": 2018,
+    "abstract": "Apache Calcite is a foundational software framework that provides query processing, optimization, and query language support to many popular open-source data processing systems such as Apache Hive, Apache Storm, Apache Flink, Druid, and MapD. Calcite\u2019s architecture consists of a modular and extensible query optimizer with hundreds of built-in optimization rules, a query processor capable of processing a variety of query languages, an adapter architecture designed for extensibility, and support for heterogeneous data models and stores (relational, semi-structured, streaming, and geospatial). This flexible, embeddable, and extensible architecture is what makes Calcite an attractive choice for adoption in big-data frameworks. It is an active project that continues to introduce support for the new types of data sources, query languages, and approaches to query processing and optimization.",
+    "arxiv_id": "1802.10233"
+  },
+  "core_content": {
+    "novelty_claim": "Apache Calcite provides a modular and extensible framework for optimized query processing across heterogeneous data sources, supporting various query languages and data models.",
+    "key_methodology": "Calcite\u2019s architecture includes a modular query optimizer with built-in optimization rules, a flexible query processor, an adapter architecture, and support for different data models and stores.",
+    "outcomes": [
+      "Supports multiple open-source data processing systems such as Apache Hive, Apache Storm, Apache Flink, Druid, and MapD.",
+      "Enables cross-platform optimization by exposing a common interface to multiple systems.",
+      "Flexible query optimizer with pluggable components and support for multiple planning engines."
+    ],
+    "full_text_markdown": "Apache Calcite is a foundational software framework that provides query processing, optimization, and query language support to many popular open-source data processing systems such as Apache Hive, Apache Storm, Apache Flink, Druid, and MapD. The architecture of Calcite includes a modular and extensible query optimizer with hundreds of built-in optimization rules, a flexible query processor capable of handling various query languages, an adapter architecture designed for extensibility, and support for heterogeneous data models and stores (relational, semi-structured, streaming, and geospatial). This framework is highly attractive due to its flexibility, embeddability, and extensibility. It continues to evolve by supporting new types of data sources, query languages, and approaches to query processing and optimization.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Modular Query Optimizer"
+      },
+      {
+        "id": "concept_2",
+        "type": "DataModel",
+        "label": "Relational Data Model"
+      },
+      {
+        "id": "concept_3",
+        "type": "DataModel",
+        "label": "Semi-Structured Data Model"
+      },
+      {
+        "id": "concept_4",
+        "type": "DataModel",
+        "label": "Streaming Data Model"
+      },
+      {
+        "id": "concept_5",
+        "type": "DataModel",
+        "label": "Geospatial Data Model"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SUPPORTS"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "SUPPORTS"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_4",
+        "relation": "SUPPORTS"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_5",
+        "relation": "SUPPORTS"
+      }
+    ]
+  },
+  "source_file": "edmon_apache_calcite_a_foundational_framework_for_optimized_query_.pdf"
+}

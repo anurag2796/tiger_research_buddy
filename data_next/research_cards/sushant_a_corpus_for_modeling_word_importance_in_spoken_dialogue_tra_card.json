@@ -1,0 +1,53 @@
+{
+  "card_id": "arxiv:1801.09746v3",
+  "bibliographic_data": {
+    "title": "A Corpus for Modeling Word Importance in Spoken Dialogue Transcripts",
+    "primary_domain": "cs.CL (Computation and Language)",
+    "authors": [
+      {
+        "name": "Sushant Kafle"
+      },
+      {
+        "name": "Matt Huenerfauth",
+        "faculty_id": "Matt Huenerfauth",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2019,
+    "abstract": "Motivated by a project to create a system for people who are deaf or hard-of-hearing that would use automatic speech recognition (ASR) to produce real-time text captions of spoken English during in-person meetings with hearing individuals, we have augmented a transcript of the Switchboard conversational dialogue corpus with an overlay of word-importance annotations, with a numeric score for each word, to indicate its importance to the meaning of each dialogue turn. Further, we demonstrate the utility of this corpus by training an automatic word importance labeling model; our best performing model has an F-score of 0.60 in an ordinal 6-class word-importance classification task with an agreement (concordance correlation coefficient) of 0.839 with the human annotators (agreement score between annotators is 0.89). Finally, we discuss our intended future applications of this resource, particularly for the task of evaluating ASR performance, i.e. creating metrics that predict ASR-output caption text usability for DHH users better than Word Error Rate (WER).",
+    "arxiv_id": "1801.09746v3"
+  },
+  "core_content": {
+    "novelty_claim": "The paper presents a corpus with word-importance annotations to improve the evaluation of ASR performance for real-time captioning systems used by DHH users.",
+    "key_methodology": "The authors trained an automatic word importance labeling model on the Switchboard corpus, which was augmented with word-importance annotations. The best performing model achieved an F-score of 0.60 in a classification task and had high agreement (concordance correlation coefficient) with human annotators.",
+    "outcomes": [
+      "Developed a corpus for modeling word importance in spoken dialogue transcripts.",
+      "Trained a model that can predict word-importance with reasonable accuracy.",
+      "Demonstrated the utility of this resource for evaluating ASR performance."
+    ],
+    "full_text_markdown": "# A Corpus for Modeling Word Importance in Spoken Dialogue Transcripts\nAuthors: Sushant Kafl\u00e9, Matt Huenerfauth\n\n## Abstract\nMotivated by a project to create a system for people who are deaf or hard-of-hearing that would use automatic speech recognition (ASR) to produce real-time text captions of spoken English during in-person meetings with hearing individuals, we have augmented a transcript of the Switchboard conversational dialogue corpus with an overlay of word-importance annotations, with a numeric score for each word, to indicate its importance to the meaning of each dialogue turn. Further, we demonstrate the utility of this corpus by training an automatic word importance labeling model; our best performing model has an F-score of 0.60 in an ordinal 6-class word-importance classification task with an agreement (concordance correlation coefficient) of 0.839 with the human annotators (agreement score between annotators is 0.89). Finally, we discuss our intended future applications of this resource, particularly for the task of evaluating ASR performance, i.e. creating metrics that predict ASR-output caption text usability for DHH users better than Word Error Rate (WER).\n\n## Introduction\nThere has been increasing interest among researchers of speech and language technology applications to identify the importance of individual words, for the overall meaning of the text. Depending on the context of how the importance of a word is defined, this task has found use in various applications such as text summarization, text classification, or speech synthesis.\n\nOur laboratory is currently designing a system to benefit people who are deaf or hard-of-hearing (DHH) who are engaged in a live meeting with hearing colleagues. In many settings, sign language interpreting or professional captioning (where a human types the speech, displayed as text on a screen for the user), are unavailable, e.g., in impromptu conversations in the workplace. A system that uses automatic speech recognition (ASR) to generate captions in real-time could display this text on mobile devices for DHH users, but text output from ASR systems inevitably contains errors. Thus, we were motivated to understand which words in the text were most important to the overall meaning, to inform our evaluation of ASR accuracy for this task.\n\n## ASR Evaluation\nASR researchers generally report the performance of their systems using a metric called Word Error Rate (WER). The metric considers the number of errors in the output of the ASR system, normalized by the number of words human actually said in the audio recording. While WER has been the most commonly used intrinsic measure for the evaluation of ASR, there have been criticisms of WER and several researchers have recommended alternative measures to better predict human task-performance in applications that depend on ASR.\n\nAmong these newly proposed metrics, a common theme has been: rather than simply counting the number of errors, it would be better to consider the importance of the individual words that are incorrect - suggesting that it would be better to more heavily penalize systems that make errors on words that are important (with the definition of importance based on the specific application or task). This approach of penalizing errors differentially has been shown to be useful in various application settings, e.g., in our research for DHH users, we have found that an evaluation metric designed for predicting the usability of an ASR-generated transcription as a caption text for these users could benefit from word importance information.\n\n## Word Importance Estimation\nPrior research on identifying and scoring important words in a text has largely focused on the task of keyword extraction, which involves identifying a set of descriptive words in a document that serves as a dense summary of the document. Several automatic keyword extraction techniques have been investigated over the years, including unsupervised methods using, e.g., Term Frequency x Inverse Document Frequency (TF-IDF) weighting and word co-occurrence probability estimation \u2013 as well as supervised methods that leverage various linguistic features from text to achieve strong predictive performance.\n\nWhile this conceptualization of word importance as a keyword-extraction problem has led to positive results in the field of text summarization, this approach may not generalize to other applications. For instance, given the sometimes meandering nature of topic transition in spontaneous speech dialogue, applications that process transcripts of such dialogue may benefit from a model of word importance that is more local, i.e., based on the importance of a word at sentential, utterance, or local dialogue level, rather than at a document-level. Furthermore, the dyadic nature of dialogue, with interleaved contributions from multiple speakers, may require special consideration when evaluating word importance.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Word Importance Annotation"
+      },
+      {
+        "id": "concept_2",
+        "type": "Evaluation Metric",
+        "label": "Word Error Rate (WER)"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "sushant_a_corpus_for_modeling_word_importance_in_spoken_dialogue_tra.pdf"
+}

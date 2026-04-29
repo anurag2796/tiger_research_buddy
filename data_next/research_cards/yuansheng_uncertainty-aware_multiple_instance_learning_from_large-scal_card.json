@@ -1,0 +1,88 @@
+{
+  "card_id": "time_series_classification_mil",
+  "bibliographic_data": {
+    "title": "Uncertainty-Aware Multiple Instance Learning from Large-Scale Long Time Series Data",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Yuansheng Zhu",
+        "faculty_id": "Derui Zhu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Weishi Shi",
+        "faculty_id": "Pengcheng Shi",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Deep Shankar Pandey"
+      },
+      {
+        "name": "Yang Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Xiaofan Que",
+        "faculty_id": "M. Mustafa Rafique",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Daniel E. Krutz",
+        "faculty_id": "Daniel Krutz",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Qi Yu",
+        "faculty_id": "Zhe Yu",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2021,
+    "abstract": "We propose a novel framework to classify large-scale time series data with long duration. Long time series classification (L-TSC) is a challenging problem because the data often contains a large amount of irrelevant information to the classification target. The irrelevant period degrades the classification performance while the relevance is unknown to the system. This paper proposes an uncertainty-aware multiple instance learning (MIL) framework to identify the most relevant period automatically. The predictive uncertainty enables designing an attention mechanism that forces the MIL model to learn from the possibly discriminant period. Moreover, the predicted uncertainty yields a principled estimator to identify whether a prediction is trustworthy or not. We further incorporate another modality to accommodate unreliable predictions by training a separate model based on its availability and conduct uncertainty aware fusion to produce the final prediction. Systematic evaluation is conducted on the Automatic Identification System (AIS) data, which is collected to identify and track real-world vessels. Empirical results demonstrate that the proposed method can effectively detect the types of vessels based on the trajectory and the uncertainty-aware fusion with other available data modality (Synthetic-Aperture Radar or SAR imagery is used in our experiments) can further improve the detection accuracy.",
+    "arxiv_id": "2111.08625"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes an uncertainty-aware multiple instance learning (MIL) framework to classify large-scale time series data, focusing on identifying relevant periods and incorporating multimodal data fusion.",
+    "key_methodology": "The authors use a MIL approach where the whole sequence is referred as a bag while each sub-sequence is an instance. The predictive uncertainty guides the attention mechanism to focus on discriminant instances. They also incorporate uncertainty-aware multimodal data fusion for improved prediction confidence.",
+    "outcomes": [
+      "Developed a novel framework for large-scale time series classification using MIL",
+      "Proposed an uncertainty-guided loss function to improve model robustness",
+      "Demonstrated effectiveness in real-world ship type classification tasks"
+    ],
+    "full_text_markdown": "The paper addresses the challenge of classifying long time series data, particularly from trajectory information collected by the Automatic Identification System (AIS). The authors propose a novel framework that uses multiple instance learning (MIL) to identify relevant periods within large-scale time series. By leveraging predictive uncertainty, they design an attention mechanism to focus on discriminant sub-sequences. Additionally, they incorporate multimodal data fusion using Synthetic-Aperture Radar (SAR) imagery to improve prediction accuracy. The method is evaluated on real-world ship type classification tasks and shown to be effective in detecting vessel types based on trajectory data.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Multiple Instance Learning (MIL)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Predictive Uncertainty"
+      },
+      {
+        "id": "concept_3",
+        "type": "Modality",
+        "label": "Synthetic-Aperture Radar (SAR) Imagery"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "FUSION_WITH"
+      }
+    ]
+  },
+  "source_file": "yuansheng_uncertainty-aware_multiple_instance_learning_from_large-scal.pdf"
+}

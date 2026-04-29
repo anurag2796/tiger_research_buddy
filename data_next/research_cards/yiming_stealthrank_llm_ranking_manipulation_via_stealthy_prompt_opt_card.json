@@ -1,0 +1,92 @@
+{
+  "card_id": "stealthrank_llm_ranking_manipulation",
+  "bibliographic_data": {
+    "title": "StealthRank: LLM Ranking Manipulation via Stealthy Prompt Optimization",
+    "primary_domain": "cs.AI",
+    "authors": [
+      {
+        "name": "Yiming Tang",
+        "faculty_id": "Yiming Tang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yi Fan"
+      },
+      {
+        "name": "Chenxiao Yu",
+        "faculty_id": "Zhe Yu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Tiankai Yang",
+        "faculty_id": "Haibo Yang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yue Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Xiyang Hu",
+        "faculty_id": "Derui Zhu",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2025,
+    "abstract": "The integration of large language models (LLMs) into information retrieval systems introduces new attack surfaces, particularly for adversarial ranking manipulations. We present StealthRank, a novel adversarial attack method that manipulates LLM-driven ranking systems while maintaining textual fluency and stealth. Unlike existing methods that often introduce detectable anomalies, StealthRank employs an energy-based optimization framework combined with Langevin dynamics to generate StealthRank Prompts (SRPs)\u2014adversarial text sequences embedded within item or document descriptions that subtly yet effectively influence LLM ranking mechanisms. We evaluate StealthRank across multiple LLMs, demonstrating its ability to covertly boost the ranking of target items while avoiding explicit manipulation traces. Our results show that StealthRank consistently outperforms state-of-the-art adversarial ranking baselines in both effectiveness and stealth, highlighting critical vulnerabilities in LLM-driven ranking systems.",
+    "arxiv_id": "arXiv:2504.05804"
+  },
+  "core_content": {
+    "novelty_claim": "StealthRank introduces a novel adversarial attack method that manipulates LLM-driven ranking systems while maintaining textual fluency and stealth, outperforming existing methods in both effectiveness and stealth.",
+    "key_methodology": "StealthRank uses an energy-based optimization framework combined with Langevin dynamics to generate StealthRank Prompts (SRPs) that subtly influence LLM ranking mechanisms without introducing detectable anomalies.",
+    "outcomes": [
+      "StealthRank outperforms state-of-the-art adversarial ranking baselines in both effectiveness and stealth.",
+      "StealthRank demonstrates the ability to covertly boost the ranking of target items while avoiding explicit manipulation traces."
+    ],
+    "full_text_markdown": "Large language models (LLMs) have transformed information retrieval and content generation pipelines. However, their integration into ranking components introduces new vulnerabilities, particularly in adversarial manipulation. Attackers can exploit LLM ranking mechanisms to promote specific content, posing risks to fairness, robustness, and security. Existing adversarial attacks on LLMs, such as prompt injection and jailbreaking, illustrate how small perturbations can significantly alter outputs (Liu et al., 2023; Yi et al., 2024; Zou et al., 2023). Prior work on adversarial ranking often produces unnatural or overtly manipulative patterns, making them easier to detect via perplexity or keyword filtering. StealthRank addresses this by employing an energy-based optimization framework combined with Langevin dynamics to generate StealthRank Prompts (SRPs) that subtly influence LLM ranking mechanisms without introducing detectable anomalies. The method enforces constraints such as grammatical fluency and contextual coherence, making it harder for detection systems to identify the manipulation. Evaluations across four commercially available LLMs\u2014Llama-3.1-8B, Vicuna-7B, Mistral-7B, and DeepSeek-7B\u2014show that StealthRank outperforms both the strongest known baseline (Kumar and Lakkaraju, 2024) and (Pfrommer et al., 2024) in terms of both effectiveness and naturalness. This work highlights critical vulnerabilities in LLM-driven ranking systems and provides insights into designing defenses against such manipulations.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "StealthRank",
+        "type": "Method",
+        "label": "StealthRank"
+      },
+      {
+        "id": "LLM_Ranking_Mechanisms",
+        "type": "Concept",
+        "label": "LLM Ranking Mechanisms"
+      },
+      {
+        "id": "Energy_Based_Optimization_Framework",
+        "type": "Method",
+        "label": "Energy-Based Optimization Framework"
+      },
+      {
+        "id": "Langevin_Dynamics",
+        "type": "Method",
+        "label": "Langevin Dynamics"
+      }
+    ],
+    "edges": [
+      {
+        "source": "StealthRank",
+        "target": "LLM_Ranking_Mechanisms",
+        "relation": "TARGETS"
+      },
+      {
+        "source": "StealthRank",
+        "target": "Energy_Based_Optimization_Framework",
+        "relation": "USES"
+      },
+      {
+        "source": "StealthRank",
+        "target": "Langevin_Dynamics",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "yiming_stealthrank_llm_ranking_manipulation_via_stealthy_prompt_opt.pdf"
+}

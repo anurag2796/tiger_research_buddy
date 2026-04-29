@@ -1,0 +1,78 @@
+{
+  "card_id": "highly_tunable_ru_dimer_molecular_orbital_state",
+  "bibliographic_data": {
+    "title": "Highly Tunable Ru-dimer Molecular Orbital State in 6H-perovskite Ba$_3$MRu$_2$O$_9$",
+    "primary_domain": "cond-mat.str-el",
+    "authors": [
+      {
+        "name": "Bo Yuan",
+        "faculty_id": "Bo Yuan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Beom Hyun Kim"
+      },
+      {
+        "name": "Qiang Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Daniel Dobrowolski"
+      },
+      {
+        "name": "Monika Azmanska"
+      },
+      {
+        "name": "G. M. Luke"
+      },
+      {
+        "name": "Shiyu Fan"
+      },
+      {
+        "name": "Valentina Bisogni"
+      },
+      {
+        "name": "Jonathan Pelliciari"
+      },
+      {
+        "name": "J. P. Clancy"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Molecular orbital (MO) systems with clusters of heavy transition metal (TM) ions are one of the most important classes of model materials for studying the interplay between local physics and effects of itinerancy. Despite a large number of candidates identified in the family of 4d TM materials, an understanding of their physics from competing microscopic energy scales is still missing. We bridge this gap by reporting the first resonant inelastic X-ray scattering (RIXS) measurement on a well-known series of Ru dimer systems with a 6H-perovskite structure, Ba3MRu2O9 (M3+=In3+, Y3+, La3+). Our RIXS measurements reveal an extremely fragile MO state in these Ru dimer compounds, evidenced by an abrupt change in the RIXS spectrum accompanying a tiny change in the local structure tuned by the M-site ion. By modelling the RIXS spectra, we attribute the enhanced electronic instability in Ba3MRu2O9 to the combined effect of a large hopping and a small spin-orbit coupling in the Ru dimers. The unique combination of energy scales uncovered in the present study make Ru MO systems ideal model systems for studying quantum phase transitions with molecular orbitals.",
+    "arxiv_id": "arXiv:2405.09418v1"
+  },
+  "core_content": {
+    "novelty_claim": "The first RIXS measurement on a well-known series of Ru dimer systems in 6H-perovskite Ba3MRu2O9 reveals an extremely fragile MO state, attributed to the combined effect of large hopping and small spin-orbit coupling.",
+    "key_methodology": "Resonant inelastic X-ray scattering (RIXS) was used to measure the electronic excitations in Ru dimer compounds with a 6H-perovskite structure. The measurements revealed an abrupt change in the RIXS spectrum with only a tiny change in local structure, indicating enhanced electronic instability.",
+    "outcomes": [
+      "The RIXS spectra show an abrupt change with minimal structural changes, providing direct evidence for the fragility of electronic states in Ru dimer compounds.",
+      "Theoretical modelling attributes the enhanced electronic instability to large inter-site hopping and reduced spin-orbit coupling compared to Ir counterparts."
+    ],
+    "full_text_markdown": "In this study, we address the gap in understanding the physics of 4d transition metal (TM) materials by reporting the first RIXS measurement on a well-known series of Ru dimer systems with a 6H-perovskite structure, Ba3MRu2O9. Our measurements reveal an extremely fragile molecular orbital (MO) state in these compounds, evidenced by abrupt changes in the RIXS spectrum accompanying tiny structural changes. By modelling the RIXS spectra, we attribute this enhanced electronic instability to the combined effect of large hopping and small spin-orbit coupling in the Ru dimers. The unique combination of energy scales uncovered in this study makes Ru MO systems ideal for studying quantum phase transitions with molecular orbitals.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "RIXS"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Ru dimer systems"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "APPLIED_TO"
+      }
+    ]
+  },
+  "source_file": "bo_highly_tunable_ru-dimer_molecular_orbital_state_in_6h-perovs.pdf"
+}

@@ -1,0 +1,66 @@
+{
+  "card_id": "sq-llava",
+  "bibliographic_data": {
+    "title": "SQ-LLaVA: Self-Questioning for Large Vision-Language Assistant",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Guohao Sun"
+      },
+      {
+        "name": "Can Qin"
+      },
+      {
+        "name": "Jiamian Wang"
+      },
+      {
+        "name": "Zeyuan Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Ran Xu"
+      },
+      {
+        "name": "Zhiqiang Tao",
+        "faculty_id": "Zhiqiang Tao",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Recent advances in vision-language models have shown notable generalization in broad tasks through visual instruction tuning. However, bridging the gap between the pre-trained vision encoder and the large language models (LLMs) becomes the whole network\u2019s bottleneck. To improve cross-modality alignment, existing works usually consider more visual instruction data covering a broader range of vision tasks to fine-tune the model for question-answering, which, however, is costly to obtain and has not thoroughly explored the rich contextual information contained in images. This paper first attempts to harness the overlooked context within visual instruction data, training the model to self-supervised \u2018learning\u2019 how to ask high-quality questions. In this way, we introduce a novel framework named SQ-LLaVA: Self-Questioning for Large Vision-Language Assistant. SQ-LLaVA exhibits proficiency in generating flexible and meaningful image-related questions while analyzing the visual clue and prior language knowledge, signifying an advanced level of generalized visual understanding. Moreover, fine-tuning SQ-LLaVA on higher-quality instruction data shows a performance improvement compared with traditional visual-instruction tuning methods. This improvement highlights the efficacy of self-questioning techniques in achieving a deeper and more nuanced comprehension of visual content across various contexts.",
+    "arxiv_id": "2403.11299"
+  },
+  "core_content": {
+    "novelty_claim": "SQ-LLaVA introduces a novel framework for training large vision-language models to self-supervised \u2018learning\u2019 how to ask high-quality questions, thereby improving cross-modality alignment and general visual understanding.",
+    "key_methodology": "The model is trained on visual instruction data to generate image-related questions that contain more relevant information than the answers. This approach aims to leverage the rich contextual information in images without requiring additional data collection.",
+    "outcomes": [
+      "SQ-LLaVA demonstrates proficiency in generating flexible and meaningful image-related questions while analyzing visual clues and prior language knowledge.",
+      "Fine-tuning SQ-LLaVA on higher-quality instruction data shows a performance improvement compared with traditional visual-instruction tuning methods."
+    ],
+    "full_text_markdown": "Recent advances in vision-language models have shown notable generalization in broad tasks through visual instruction tuning. However, bridging the gap between the pre-trained vision encoder and the large language models (LLMs) becomes the whole network\u2019s bottleneck. To improve cross-modality alignment, existing works usually consider more visual instruction data covering a broader range of vision tasks to fine-tune the model for question-answering, which, however, is costly to obtain and has not thoroughly explored the rich contextual information contained in images. This paper first attempts to harness the overlooked context within visual instruction data, training the model to self-supervised \u2018learning\u2019 how to ask high-quality questions. In this way, we introduce a novel framework named SQ-LLaVA: Self-Questioning for Large Vision-Language Assistant. SQ-LLaVA exhibits proficiency in generating flexible and meaningful image-related questions while analyzing the visual clue and prior language knowledge, signifying an advanced level of generalized visual understanding. Moreover, fine-tuning SQ-LLaVA on higher-quality instruction data shows a performance improvement compared with traditional visual-instruction tuning methods. This improvement highlights the efficacy of self-questioning techniques in achieving a deeper and more nuanced comprehension of visual content across various contexts.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Self-Questioning"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Visual Instruction Tuning"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "guohao_sq-llava_self-questioning_for_large_vision-language_assistan.pdf"
+}

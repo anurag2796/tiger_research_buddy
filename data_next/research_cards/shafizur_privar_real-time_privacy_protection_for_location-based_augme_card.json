@@ -1,0 +1,61 @@
+{
+  "card_id": "privar_real_time_privacy_protection",
+  "bibliographic_data": {
+    "title": "PrivAR: Real-Time Privacy Protection for Location-Based Augmented Reality Applications",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Shafizur Rahman Seeam"
+      },
+      {
+        "name": "Ye Zheng"
+      },
+      {
+        "name": "Zhengxiong Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yidan Hu",
+        "faculty_id": "Yidan Hu",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Location-based augmented reality (LB-AR) applications, such as Pok\u00e9mon Go, stream sub-second GPS updates to deliver responsive and immersive user experiences. However, this high-frequency location reporting introduces serious privacy risks. Protecting privacy in LB-AR is significantly more challenging than in traditional location-based services (LBS), as it demands real-time location protection with strong per-location and trajectory-level privacy guaranteed while maintaining low latency and high quality of service (QoS). Existing methods fail to meet these combined demands. To fill the gap, we present PrivAR, the first client-side privacy framework for real-time LB-AR. PrivAR introduces two lightweight mechanisms: (i) Planar Staircase Mechanism (PSM) which designs a staircase-shaped distribution to generate noisy location with strong per-location privacy and low expected error; and (ii) Thresholded Reporting with PSM (TR-PSM), a selective scheme that releases a noisy location update only when a displacement exceeds a private threshold, enabling many-to-one mappings for enhanced trace-level privacy while preserving high QoS. We present theoretical analysis, extensive experiments on two public datasets and our proprietary GeoTrace dataset, and validate PrivAR on a Pok\u00e9mon-Go-style prototype. Results show PrivAR improves QoS (Gamescore) by up to 50%, while increasing attacker error by 1.8x over baseline with an additional 0.06 milliseconds runtime overhead.",
+    "arxiv_id": "arXiv:2508.02551"
+  },
+  "core_content": {
+    "novelty_claim": "PrivAR introduces two lightweight mechanisms, Planar Staircase Mechanism (PSM) and Thresholded Reporting with PSM (TR-PSM), to protect real-time privacy in location-based augmented reality applications.",
+    "key_methodology": "PSM generates noisy locations using a staircase-shaped distribution for strong per-location privacy. TR-PSM selectively releases noisy location updates only when displacement exceeds a private threshold, enhancing trace-level privacy while preserving high QoS.",
+    "outcomes": [
+      "PSM can achieve up to 2\u00d7 QoS vs. PLM",
+      "TR-PSM enhances privacy for trace (trajectory) data, increasing the Bayes risk of location inference attacks by up to 1.2x",
+      "PrivAR improves AR QoS (Gamescore) up to 50% with an additional 0.06 milliseconds runtime overhead"
+    ],
+    "full_text_markdown": "Location-based augmented reality (LB-AR) applications, such as Pok\u00e9mon Go, stream sub-second GPS updates to deliver responsive and immersive user experiences. However, this high-frequency location reporting introduces serious privacy risks. Protecting privacy in LB-AR is significantly more challenging than in traditional location-based services (LBS), as it demands real-time location protection with strong per-location and trajectory-level privacy guarantees while maintaining low latency and high quality of service (QoS). Existing methods fail to meet these combined demands.\n\nTo fill the gap, we present PrivAR, the first client-side privacy framework for real-time LB-AR. PrivAR introduces two lightweight mechanisms: (i) Planar Staircase Mechanism (PSM), which designs a staircase-shaped distribution to generate noisy location with strong per-location privacy and low expected error; and (ii) Thresholded Reporting with PSM (TR-PSM), a selective scheme that releases a noisy location update only when a displacement exceeds a private threshold, enabling many-to-one mappings for enhanced trace-level privacy while preserving high QoS. We present theoretical analysis, extensive experiments on two public datasets and our proprietary GeoTrace dataset, and validate PrivAR on a Pok\u00e9mon-Go-style prototype. Results show PrivAR improves QoS (Gamescore) by up to 50%, while increasing attacker error by 1.8x over baseline with an additional 0.06 milliseconds runtime overhead.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Planar Staircase Mechanism (PSM)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "Thresholded Reporting with PSM (TR-PSM)"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "shafizur_privar_real-time_privacy_protection_for_location-based_augme.pdf"
+}

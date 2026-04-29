@@ -1,0 +1,49 @@
+{
+  "card_id": "symmetric_dft_promotion",
+  "bibliographic_data": {
+    "title": "A promotion for odd symmetric discrete Fourier transform",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Rui Li",
+        "faculty_id": "Rui Li",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Abstract\u2014Discrete Fourier transform (DFT) has two main forms: the ordinary form and the symmetric form. The most widely used DFT is ordinary DFT (ODFT), but it has the problem of phase aliasing. Symmetric DFT (SDFT) has more FT properties, making it a better choice for applications like interpolation, data compression, and noise removal. This study corrects the unsymmetrical time-domain issue in even SDFT and advocates using odd-length signals for SDFT.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes corrections to the unsymmetrical time-domain issue in even symmetric DFT (SDFT) and advocates for using odd-length signals for SDFT, which has more FT properties than ordinary DFT.",
+    "key_methodology": "The author corrects the unsymmetrical time-domain issue in even SDFT by adjusting the window function, sampling function, complex orthogonal basis, transform matrix, and phase spectrum. The corrected SDFT is then compared with ODFT to highlight its advantages.",
+    "outcomes": [
+      "Corrected even SDFT has a symmetric time-domain",
+      "Advocates for using odd-length signals in SDFT"
+    ],
+    "full_text_markdown": "The paper discusses the two main forms of DFT: ordinary DFT (ODFT) and symmetric DFT (SDFT). ODFT is widely used due to its computational efficiency, but it suffers from phase aliasing. SDFT has more FT properties and is better suited for applications such as interpolation, data compression, and noise removal. The study corrects the unsymmetrical time-domain issue in even SDFT by adjusting various components of the transform. It also advocates using odd-length signals for SDFT to ensure symmetry. The corrected SDFT is compared with ODFT to highlight its advantages.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Symmetric DFT Correction"
+      },
+      {
+        "id": "concept_2",
+        "type": "Property",
+        "label": "Phase Spectrum"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "IMPROVES"
+      }
+    ]
+  },
+  "source_file": "rui_a_promotion_for_odd_symmetric_discrete_fourier_transform.pdf"
+}

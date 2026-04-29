@@ -1,0 +1,64 @@
+{
+  "card_id": "pb-hash",
+  "bibliographic_data": {
+    "title": "Pb-Hash: Partitioned b-bit Hashing",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Ping Li",
+        "faculty_id": "Pengfei Li",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Weijie Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2023,
+    "abstract": "Many hashing algorithms including minwise hashing (MinHash), one permutation hashing (OPH), and consistent weighted sampling (CWS) generate integers of B bits. With k hashes for each data vector, the storage would be B \u00d7 k bits; and when used for large-scale learning, the model size would be 2B \u00d7 k, which can be expensive. A standard strategy is to use only the lowest b bits out of the B bits and somewhat increase k, the number of hashes. In this study, we propose to re-use the hashes by partitioning the B bits into m chunks, e.g., b \u00d7 m = B. Correspondingly, the model size becomes m \u00d7 2b \u00d7 k, which can be substantially smaller than the original 2B \u00d7 k.",
+    "arxiv_id": "arXiv:2306.15944v1"
+  },
+  "core_content": {
+    "novelty_claim": "Proposes partitioned b-bit hashing (Pb-Hash) to re-use hashes by dividing B bits into m chunks, reducing the model size while maintaining accuracy.",
+    "key_methodology": "Partitioning hash values into m chunks of B/m bits and using embedding tables for each hash.",
+    "outcomes": [
+      "Reduces storage and model size",
+      "Maintains accuracy with m = 2 \u223c4"
+    ],
+    "full_text_markdown": "Many hashing algorithms, such as minwise hashing (MinHash), generate integers of B bits. Using k hashes per data vector results in a large storage requirement of B \u00d7 k bits for machine learning models. To reduce this, the common approach is to use only the lowest b bits out of B bits and increase the number of hashes k. This paper proposes partitioned b-bit hashing (Pb-Hash), where B bits are divided into m chunks, each with b bits, reducing the model size to m \u00d7 2b \u00d7 k. Theoretical analysis shows that accuracy drops when using fewer than 4 chunks but still works well for larger values of m. Pb-Hash is evaluated in machine learning tasks, including linear SVM models and deep learning models, with an empirical evaluation on four pooling schemes: concatenation, max pooling, mean pooling, and product pooling.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Partitioned b-bit Hashing (Pb-Hash)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "Embedding Tables"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Collision Probability"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_3",
+        "target": "concept_1",
+        "relation": "INVOLVES"
+      }
+    ]
+  },
+  "source_file": "ping_pb-hash_partitioned_b-bit_hashing.pdf"
+}

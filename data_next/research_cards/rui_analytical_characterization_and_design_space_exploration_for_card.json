@@ -1,0 +1,61 @@
+{
+  "card_id": "analytical_characterization_and_design_space_exploration_for_optimization_of_cnn",
+  "bibliographic_data": {
+    "title": "Analytical Characterization and Design Space Exploration for Optimization of CNNs",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Rui Li",
+        "faculty_id": "Rui Li",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yufan Xu"
+      },
+      {
+        "name": "Aravind Sukumaran-Rajam"
+      },
+      {
+        "name": "Atanas Rountev"
+      },
+      {
+        "name": "P. Sadayappan"
+      }
+    ],
+    "year": 2021,
+    "abstract": "Moving data through the memory hierarchy is a fundamental bottleneck that can limit the performance of core algorithms of machine learning, such as convolutional neural networks (CNNs). Loop-level optimization, including loop tiling and loop permutation, are fundamental transformations to reduce data movement. However, the search space for finding the best loop-level optimization configuration is explosively large. This paper develops an analytical modeling approach for finding the best loop-level optimization configuration for CNNs on multi-core CPUs. Experimental evaluation shows that this approach achieves comparable or better performance than state-of-the-art libraries and auto-tuning based optimizers for CNNs.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper develops an analytical modeling approach to find the best loop-level optimization configuration for CNNs on multi-core CPUs, which achieves comparable or better performance than state-of-the-art libraries and auto-tuning based optimizers.",
+    "key_methodology": "Developing an analytical model to explore the entire search space of permutations and tile sizes for minimizing bandwidth-scaled data movement in the limiting level of the memory hierarchy. The approach reduces the vast search space by using off-the-shelf solvers to solve non-linear optimization problems.",
+    "outcomes": [
+      "Achieved comparable or better performance than state-of-the-art libraries and auto-tuning based optimizers for CNNs",
+      "Provided a comprehensive design space exploration method that can be applied to various hardware targets"
+    ],
+    "full_text_markdown": "The paper addresses the challenge of optimizing convolutional neural networks (CNNs) by developing an analytical modeling approach. The authors highlight the fundamental bottleneck in data movement through the memory hierarchy and propose loop tiling as a crucial transformation for reducing this movement. However, they note that the search space for finding the best configuration is explosively large due to the 7-dimensional loop nest and multiple levels of tiling. To tackle this problem, the paper introduces an analytical model that can explore the entire search space efficiently. The approach reduces the vast number of permutations and tile size choices by leveraging off-the-shelf solvers for non-linear optimization problems. Experimental evaluation demonstrates that their method achieves performance comparable to or better than state-of-the-art libraries and auto-tuning based optimizers.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Analytical Modeling Approach"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Loop Tiling and Permutation"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "rui_analytical_characterization_and_design_space_exploration_for.pdf"
+}

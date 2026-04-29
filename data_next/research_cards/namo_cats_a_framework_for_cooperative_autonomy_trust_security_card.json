@@ -1,0 +1,67 @@
+{
+  "card_id": "cats_framework_for_cooperative_autonomy",
+  "bibliographic_data": {
+    "title": "CATS: A framework for Cooperative Autonomy Trust & Security",
+    "primary_domain": "cs.RO",
+    "authors": [
+      {
+        "name": "Namo Asavisanu"
+      },
+      {
+        "name": "Tina Khezresmaeilzadeh"
+      },
+      {
+        "name": "Rohan Sequeira"
+      },
+      {
+        "name": "Hang Qiu"
+      },
+      {
+        "name": "Fawad Ahmad",
+        "faculty_id": "Fawad Ahmad",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Konstantinos Psounis"
+      },
+      {
+        "name": "Ramesh Govindan"
+      }
+    ],
+    "year": 2025,
+    "abstract": "With cooperative perception, autonomous vehicles can wirelessly share sensor data and representations to overcome sensor occlusions, improving situational awareness. Securing such data exchanges is crucial for connected autonomous vehicles. Existing, automated reputation-based approaches often suffer from a delay between detection and exclusion of misbehaving vehicles, while majority-based approaches have communication overheads that limits scalability. In this paper, we introduce CATS, a novel automated system that blends together the best traits of reputation-based and majority-based detection mechanisms to secure vehicle-to-everything (V2X) communications for cooperative perception, while preserving the privacy of cooperating vehicles.",
+    "arxiv_id": "arXiv:2503.00659v1"
+  },
+  "core_content": {
+    "novelty_claim": "CATS introduces a novel hybrid solution between reputation-based and majority-based systems for determining vehicle trust, providing the best of both worlds.",
+    "key_methodology": "CATS combines long-term reputational voting with passive majority view to filter out bad messages from misbehaving vehicles while maintaining low communication overhead and risk for denial of service attacks.",
+    "outcomes": [
+      "A 230x reduction in bad messages compared to other approaches",
+      "A small tradeoff (4.2x on average) for blocking good messages"
+    ],
+    "full_text_markdown": "Recent advancements in autonomous driving technologies have led to the deployment of self-driving cars closer to commercial realization. However, challenges such as limited visibility due to occlusions and degraded perception at long ranges require cooperative perception systems that leverage V2X communication to share sensor data among vehicles. While these systems enhance performance for tasks like detection and motion prediction, they rely on the trustworthiness of the cooperating agents. Misbehaving or malfunctioning vehicles can inject false data, leading to safety hazards such as traffic backlogs or rear-end collisions. To address this issue, CATS is introduced as a framework that blends reputation-based and majority-based detection mechanisms to secure V2X communications for cooperative perception while preserving privacy.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "CATS Framework"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Reputation-Based Detection"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "INTEGRATES"
+      }
+    ]
+  },
+  "source_file": "namo_cats_a_framework_for_cooperative_autonomy_trust_security.pdf"
+}

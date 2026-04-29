@@ -1,0 +1,72 @@
+{
+  "card_id": "hierarchical_inference_of_lensing_convergence",
+  "bibliographic_data": {
+    "title": "Hierarchical Inference of the Lensing Convergence from Photometric Catalogs with Bayesian Graph Neural Networks",
+    "primary_domain": "cs.AI",
+    "authors": [
+      {
+        "name": "Ji Won Park",
+        "faculty_id": "Ji Hwan Park",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Simon Birrer"
+      },
+      {
+        "name": "Madison Ueland"
+      },
+      {
+        "name": "Miles Cranmer"
+      },
+      {
+        "name": "Adriano Agnello"
+      },
+      {
+        "name": "Sebastian Wagner-Carena"
+      },
+      {
+        "name": "Philip J. Marshall"
+      },
+      {
+        "name": "Aaron Roodman"
+      },
+      {
+        "name": "the LSST Dark Energy Science Collaboration"
+      }
+    ],
+    "year": 2024,
+    "abstract": "We present a Bayesian graph neural network (BGNN) that can estimate the weak lensing convergence ($\u03c6$) from photometric measurements of galaxies along a given line of sight. The method is of particular interest in strong gravitational time delay cosmography (TDC), where characterizing the \u201cexternal convergence\u201d ($\u03c6_{ext}$) from the lens environment and line of sight is necessary for precise Hubble constant ($H_0$) inference. Starting from a large-scale simulation with a $\u03c6$ resolution of $\\sim1'$, we introduce fluctuations on galaxy-galaxy lensing scales of $\\sim1''$ and extract random sightlines to train our BGNN. We then evaluate the model on test sets with varying degrees of overlap with the training distribution. For each test set of 1,000 sightlines, the BGNN infers the individual $\u03c6$ posteriors, which we combine in a hierarchical Bayesian model to yield constraints on the hyperparameters governing the population. For a test field well sampled by the training set, the BGNN recovers the population mean of $\u03c6$ precisely and without bias, resulting in a contribution to the $H_0$ error budget well under 1%. In the tails of the training set with sparse samples, the BGNN, which can ingest all available information about each sightline, extracts more $\u03c6$ signal compared to a simplified version of the traditional method based on matching galaxy number counts, which is limited by sample variance. Our hierarchical inference pipeline using BGNNs promises to improve the $\u03c6_{ext}$ characterization for precision TDC.",
+    "arxiv_id": "2211.07807"
+  },
+  "core_content": {
+    "novelty_claim": "The paper presents a Bayesian graph neural network (BGNN) that can estimate the weak lensing convergence ($\u03c6$) from photometric measurements of galaxies, improving the characterization of external convergence ($\u03c6_{ext}$) for precision TDC.",
+    "key_methodology": "The authors use a large-scale simulation with $\u03c6$ resolution to introduce fluctuations on galaxy-galaxy lensing scales and train their BGNN. They then evaluate the model on test sets, combining individual $\u03c6$ posteriors in a hierarchical Bayesian model.",
+    "outcomes": [
+      "The BGNN recovers the population mean of $\u03c6$ precisely and without bias for well-sampled fields.",
+      "In sparse samples, the BGNN extracts more $\u03c6$ signal compared to traditional methods based on matching galaxy number counts."
+    ],
+    "full_text_markdown": "The paper presents a Bayesian graph neural network (BGNN) that can estimate the weak lensing convergence ($\u03c6$) from photometric measurements of galaxies along a given line of sight. The method is particularly useful in strong gravitational time delay cosmography (TDC), where characterizing the \u201cexternal convergence\u201d ($\u03c6_{ext}$) is crucial for precise Hubble constant ($H_0$) inference. Starting from a large-scale simulation with $\u03c6$ resolution of $\\sim1'$, the authors introduce fluctuations on galaxy-galaxy lensing scales of $\\sim1''$ and extract random sightlines to train their BGNN. They evaluate the model on test sets with varying degrees of overlap with the training distribution. For each test set of 1,000 sightlines, the BGNN infers individual $\u03c6$ posteriors, which are combined in a hierarchical Bayesian model to yield constraints on hyperparameters governing the population. The results show that for well-sampled fields, the BGNN recovers the population mean of $\u03c6$ precisely and without bias, contributing less than 1% to the $H_0$ error budget. In sparse samples, the BGNN extracts more $\u03c6$ signal compared to traditional methods based on matching galaxy number counts."
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Bayesian Graph Neural Network (BGNN)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Weak Lensing Convergence ($\u03c6$)"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "ESTIMATES"
+      }
+    ]
+  },
+  "source_file": "ji_hierarchical_inference_of_the_lensing_convergence_from_photo.pdf"
+}

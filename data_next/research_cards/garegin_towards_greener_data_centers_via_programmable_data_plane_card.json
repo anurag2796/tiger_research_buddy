@@ -1,0 +1,62 @@
+{
+  "card_id": "towards-greener-data-centers",
+  "bibliographic_data": {
+    "title": "Towards Greener Data Centers via Programmable Data Plane",
+    "primary_domain": "cs.NI",
+    "authors": [
+      {
+        "name": "Garegin Grigoryan"
+      },
+      {
+        "name": "Minseok Kwon",
+        "faculty_id": "Minseok Kwon",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2023,
+    "abstract": "The energy demands of data centers are increasing and are expected to grow exponentially. Reducing the energy consumption of data centers decreases operational expenses, as well as their carbon footprint. We design techniques to reduce data center power consumption by leveraging Software-Defined Networking (SDN) and programmable data plane concepts. Relying solely on in-data plane registers, our proposed system P4Green consolidates traffic in the least number of network switches and shifts workloads to the servers with available renewable energy. Unlike existing SDN-based solutions, P4Green\u2019s operation does not depend on a centralized controller, making the system scalable and failure-resistant. Our proof-of-concept simulations show that traffic consolidation can reduce data centers\u2019 aggregation switch usage by 36% compared to standard data center load balancing techniques, while workload control can boost renewable energy consumption for 46% of the daily traffic.",
+    "arxiv_id": "2306.13983"
+  },
+  "core_content": {
+    "novelty_claim": "P4Green leverages Software-Defined Networking (SDN) and programmable data plane concepts to reduce energy consumption by consolidating traffic in the least number of network switches and shifting workloads to servers with available renewable energy, without relying on a centralized controller.",
+    "key_methodology": "P4Green uses P4 programming language for the data plane and P4Runtime API for the control plane. It dynamically adjusts packet forwarding algorithms based on traffic volume and evaluates data center traffic per predefined time epochs. The system collects information about server renewable energy capacities, makes workload allocation decisions, and forwards traffic to the most appropriate server.",
+    "outcomes": [
+      "36% reduction in data centers\u2019 aggregation switch usage compared to standard load balancing techniques",
+      "46% boost in daily traffic's renewable energy consumption"
+    ],
+    "full_text_markdown": "The rapid growth of cloud-based data aggregation and computation has made data centers major consumers of electrical power, producing a significant carbon footprint. A Data Center Network (DCN) that includes servers and network infrastructure consumes about 40-50% of the total energy consumed by a data center overall. To address this issue, we present P4Green, a system designed to reduce the energy consumption of server and network components in data centers using Software-Defined Networking (SDN) and programmable data plane concepts. Unlike existing SDN-based solutions, P4Green consolidates traffic in the least number of switches based on traffic volume and shifts workloads to servers with available renewable energy without relying on a centralized controller. Our simulations show that this approach can reduce aggregation switch usage by 36% compared to standard load balancing techniques while boosting renewable energy consumption for 46% of daily traffic.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "P4Green"
+      },
+      {
+        "id": "concept_2",
+        "type": "Technology",
+        "label": "Software-Defined Networking (SDN)"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Programmable Data Plane"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "LEVERAGES"
+      }
+    ]
+  },
+  "source_file": "garegin_towards_greener_data_centers_via_programmable_data_plane.pdf"
+}

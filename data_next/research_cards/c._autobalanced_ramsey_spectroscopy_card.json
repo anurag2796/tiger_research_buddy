@@ -1,0 +1,81 @@
+{
+  "card_id": "auto_balanced_ramsey_spectroscopy",
+  "bibliographic_data": {
+    "title": "Autobalanced Ramsey Spectroscopy.",
+    "primary_domain": "physics.atom-ph",
+    "authors": [
+      {
+        "name": "C. Sanner"
+      },
+      {
+        "name": "N. Huntemann"
+      },
+      {
+        "name": "R. Lange",
+        "faculty_id": "Richard Lange",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "C. Tamm"
+      },
+      {
+        "name": "E. Peik"
+      }
+    ],
+    "year": 2017,
+    "abstract": "We devise a perturbation-immune version of Ramsey\u2019s method of separated oscillatory fields. Spectroscopy of an atomic clock transition without compromising the clock\u2019s accuracy is accomplished by actively balancing the spectroscopic responses from phase-congruent Ramsey probe cycles of unequal durations. Our simple and universal approach eliminates a wide variety of interrogation-induced line shifts often encountered in high precision spectroscopy, among them, in particular, light shifts, phase chirps, and transient Zeeman shifts. We experimentally demonstrate auto-balanced Ramsey spectroscopy on the light shift prone 171Yb+ electric octupole optical clock transition and show that interrogation defects are not turned into clock errors. This opens up frequency accuracy perspectives below the 10\u221218 level for the Yb+ system and for other types of optical clocks.",
+    "arxiv_id": "arXiv:1707.02630v1"
+  },
+  "core_content": {
+    "novelty_claim": "A balanced version of Ramsey\u2019s method is proposed to eliminate interrogation-induced line shifts in atomic clock transitions, particularly light shifts and phase chirps.",
+    "key_methodology": "The authors devise an auto-balancing scheme that provides universal immunity to various interaction pulse aberrations including drive-induced AC Stark shifts (light shifts), phase chirps, transient Zeeman shifts, and other pulse-synchronous shifts.",
+    "outcomes": [
+      "Elimination of light shifts, phase chirps, and transient Zeeman shifts",
+      "No systematic clock errors for arbitrary drive pulses"
+    ],
+    "full_text_markdown": "In this work, the authors propose a perturbation-immune version of Ramsey\u2019s method to measure unperturbed transition frequencies in ultra-narrow atomic reference transitions that suffer from significant frequency shifts due to spectroscopic interrogation. The key innovation is an auto-balancing scheme that eliminates various interaction pulse aberrations and associated systematic shifts, including light shifts, phase chirps, transient Zeeman shifts, and other pulse-synchronous shifts. They demonstrate this method on the 171Yb+ electric octupole (E3) optical clock transition at 467 nm, showing no systematic clock errors even with arbitrary drive pulses. This opens up the possibility of achieving frequency accuracy below the 10^-18 level for Yb+ systems and other types of optical clocks.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Auto-Balanced Ramsey Spectroscopy"
+      },
+      {
+        "id": "concept_2",
+        "type": "Shift",
+        "label": "Light Shifts"
+      },
+      {
+        "id": "concept_3",
+        "type": "Shift",
+        "label": "Phase Chirps"
+      },
+      {
+        "id": "concept_4",
+        "type": "Shift",
+        "label": "Transient Zeeman Shifts"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "ELIMINATES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "ELIMINATES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_4",
+        "relation": "ELIMINATES"
+      }
+    ]
+  },
+  "source_file": "c._autobalanced_ramsey_spectroscopy.pdf"
+}

@@ -1,0 +1,70 @@
+{
+  "card_id": "automated_detection_of_acute_leukemia",
+  "bibliographic_data": {
+    "title": "Automated Detection of Acute Leukemia using K-mean Clustering Algorithm",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Sachin Kumar",
+        "faculty_id": "Mohan Kumar",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Sumita Mishra",
+        "faculty_id": "Sumita Mishra",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Pallavi Asthana"
+      },
+      {
+        "name": " Pragya"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Leukemia is a hematologic cancer which develops in blood tissue and triggers rapid production of immature and abnormal shaped white blood cells. Based on statistics, it is found that the leukemia is one of the leading causes of death in men and women alike. Microscopic examination of blood sample or bone marrow smear is the most effective technique for diagnosis of leukemia. Pathologists analyze microscopic samples to make diagnostic assessments based on characteristic cell features. Recently, computerized methods for cancer detection have been explored towards minimizing human intervention and providing accurate clinical information. This paper presents an algorithm for automated image-based acute leukemia detection systems. The method implemented uses basic enhancement, morphology, filtering, and segmenting techniques to extract region of interest using k-means clustering algorithm. The proposed algorithm achieved an accuracy of 92.8% and is tested with Nearest Neighbor (kNN) and Na\u00efve Bayes Classifier on the dataset of 60 samples.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper presents an algorithm for automated image-based acute leukemia detection using k-means clustering, achieving a high accuracy rate of 92.8%.",
+    "key_methodology": "The method involves basic enhancement, morphology, filtering, and segmenting techniques to extract the region of interest using k-means clustering algorithm. The extracted features are then classified using Nearest Neighbor (kNN) and Na\u00efve Bayes Classifier.",
+    "outcomes": [
+      "Achieved an accuracy of 92.8% in detecting acute leukemia",
+      "Implemented a combination of morphological, color, geometric, textural, and statistical features for classification"
+    ],
+    "full_text_markdown": "Leukemia is a type of cancer that develops in blood tissue. This paper presents an algorithm for automated image-based detection of acute leukemia using k-means clustering. The method involves preprocessing steps such as noise removal, histogram equalization, and brightness thresholding to enhance the image features relevant for analysis. K-means clustering is used to segment the region of interest, followed by feature extraction based on color, textural, geometric, and statistical properties. These features are then classified using Nearest Neighbor (kNN) and Na\u00efve Bayes Classifier algorithms. The proposed system achieved an accuracy of 92.8% in detecting acute leukemia from a dataset of 60 samples.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "K-means Clustering"
+      },
+      {
+        "id": "concept_2",
+        "type": "Classifier",
+        "label": "Nearest Neighbor (kNN)"
+      },
+      {
+        "id": "concept_3",
+        "type": "Classifier",
+        "label": "Na\u00efve Bayes Classifier"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "sachin_automated_detection_of_acute_leukemia_using_k-mean_clusterin.pdf"
+}

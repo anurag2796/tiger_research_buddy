@@ -1,0 +1,70 @@
+{
+  "card_id": "deep_reinforced_attention_regression",
+  "bibliographic_data": {
+    "title": "Deep Reinforced Attention Regression for Partial Sketch Based Image Retrieval",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Dingrong Wang"
+      },
+      {
+        "name": "Hitesh Sapkota"
+      },
+      {
+        "name": "Xumin Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Qi Yu",
+        "faculty_id": "Zhe Yu",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Fine-Grained Sketch-Based Image Retrieval (FG-SBIR) aims at finding a specific image from a large gallery given a query sketch. Despite the widespread applicability of FG-SBIR in many critical domains, existing approaches still suffer from low accuracy while being sensitive to external noises such as unnecessary strokes in the sketch. The retrieval performance will further deteriorate under a more practical on-the-fly setting, where only a partially complete sketch with only a few (noisy) strokes are available to retrieve corresponding images. We propose a novel framework that leverages a uniquely designed deep reinforcement learning model that performs a dual-level exploration to deal with partial sketch training and attention region selection. By enforcing the model\u2019s attention on the important regions of the original sketches, it remains robust to unnecessary stroke noises and improve the retrieval accuracy by a large margin.",
+    "arxiv_id": "2111.10917v1"
+  },
+  "core_content": {
+    "novelty_claim": "The proposed framework employs Deep reinforced Attention Regression for Partial Sketch Based Image Retrieval (DARP-SBIR) to deal with partial sketches while being robust to noisy strokes.",
+    "key_methodology": "A dual-level exploration approach using a bootstrapped policy gradient for global exploration and adjusting a standard deviation term that governs a locator network for local exploration. The model is guided by a hybrid loss integrating reinforcement and supervised losses, with a dynamic ranking reward developed for on-the-fly image retrieval.",
+    "outcomes": [
+      "Improves retrieval accuracy by robustly handling noisy strokes in partial sketches.",
+      "Achieves state-of-the-art performance on partial sketch-based image retrieval."
+    ],
+    "full_text_markdown": "Fine-Grained Sketch-Based Image Retrieval (FG-SBIR) aims at finding a specific image from a large gallery given a query sketch. Despite the widespread applicability of FG-SBIR in many critical domains, existing approaches still suffer from low accuracy while being sensitive to external noises such as unnecessary strokes in the sketch. The retrieval performance will further deteriorate under a more practical on-the-fly setting, where only a partially complete sketch with only a few (noisy) strokes are available to retrieve corresponding images. We propose a novel framework that leverages a uniquely designed deep reinforcement learning model that performs a dual-level exploration to deal with partial sketch training and attention region selection. By enforcing the model\u2019s attention on the important regions of the original sketches, it remains robust to unnecessary stroke noises and improve the retrieval accuracy by a large margin. To sufficiently explore partial sketches and locate the important regions to attend, the model performs bootstrapped policy gradient for global exploration while adjusting a standard deviation term that governs a locator network for local exploration. The training process is guided by a hybrid loss that integrates a reinforcement loss and a supervised loss. A dynamic ranking reward is developed to fit the on-the-fly image retrieval process using partial sketches. Extensive experimentation performed on three public datasets shows that our proposed approach achieves state-of-the-art performance on partial sketch-based image retrieval.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Deep Reinforced Attention Regression for Partial Sketch Based Image Retrieval (DARP-SBIR)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Dual-Level Exploration"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Bootstrapped Policy Gradient"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "INVOLVES"
+      }
+    ]
+  },
+  "source_file": "dingrong_deep_reinforced_attention_regression_for_partial_sketch_base.pdf"
+}

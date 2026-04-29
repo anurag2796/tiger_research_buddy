@@ -1,0 +1,78 @@
+{
+  "card_id": "privacy_in_con",
+  "bibliographic_data": {
+    "title": "Privacy in Content-Oriented Networking: Threats and Countermeasures",
+    "primary_domain": "cs.CR",
+    "authors": [
+      {
+        "name": "Abdelberi Chaabane"
+      },
+      {
+        "name": "Emiliano De Cristofaro"
+      },
+      {
+        "name": "Mohammed-Ali Kaafar"
+      },
+      {
+        "name": "Ersin Uzun",
+        "faculty_id": "Ersin Uzun",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2013,
+    "abstract": "As the Internet struggles to cope with scalability, mobility, and security issues, new network architectures are being proposed to better accommodate the needs of modern systems and applications. In particular, Content-Oriented Networking (CON) has emerged as a promising next-generation Internet architecture: it sets to decouple content from hosts, at the network layer, by naming data rather than hosts. CON comes with a potential for a wide range of benefits, including reduced congestion and improved delivery speed by means of content caching, simpler configuration of network devices, and security at the data level. However, it remains an interesting open question whether or not, and to what extent, this emerging networking paradigm bears new privacy challenges. In this paper, we provide a systematic privacy analysis of CON and the common building blocks among its various architectural instances in order to highlight emerging privacy threats, and analyze a few potential countermeasures. Finally, we present a comparison between CON and today\u2019s Internet in the context of a few privacy concepts, such as anonymity, censoring, traceability, and confidentiality.",
+    "arxiv_id": "arXiv:1211.5183v4"
+  },
+  "core_content": {
+    "novelty_claim": "The paper provides a systematic analysis of privacy challenges in Content-Oriented Networking (CON) and suggests potential countermeasures.",
+    "key_methodology": "The authors analyze the implications of caching, content privacy, name privacy, and signature privacy on user privacy in CON. They also compare the feasibility and effectiveness of privacy-enhancing technologies in CON to those in today\u2019s Internet.",
+    "outcomes": [
+      "Identified several privacy threats in CON such as caching, content privacy, name privacy, and signature privacy.",
+      "Proposed potential countermeasures for addressing these privacy issues."
+    ],
+    "full_text_markdown": "The paper discusses the challenges of privacy in Content-Oriented Networking (CON) by analyzing its implications on user privacy. It highlights several privacy threats including caching, content privacy, name privacy, and signature privacy. The authors also compare CON with today\u2019s Internet in terms of privacy concepts such as anonymity, censoring, traceability, and confidentiality. This systematic analysis provides insights into the potential privacy issues that arise from the new networking paradigm and suggests possible countermeasures.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "content_caching",
+        "type": "Method",
+        "label": "Caching"
+      },
+      {
+        "id": "content_privacy",
+        "type": "Concept",
+        "label": "Content Privacy"
+      },
+      {
+        "id": "name_privacy",
+        "type": "Concept",
+        "label": "Name Privacy"
+      },
+      {
+        "id": "signature_privacy",
+        "type": "Concept",
+        "label": "Signature Privacy"
+      }
+    ],
+    "edges": [
+      {
+        "source": "content_caching",
+        "target": "content_privacy",
+        "relation": "AFFECTS"
+      },
+      {
+        "source": "content_caching",
+        "target": "name_privacy",
+        "relation": "AFFECTS"
+      },
+      {
+        "source": "content_caching",
+        "target": "signature_privacy",
+        "relation": "AFFECTS"
+      }
+    ]
+  },
+  "source_file": "abdelberi_privacy_in_content-oriented_networking_threats_and_counterme.pdf"
+}

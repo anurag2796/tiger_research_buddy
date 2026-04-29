@@ -1,0 +1,127 @@
+{
+  "card_id": "benchmarking_large_language_models_for_cybersecurity",
+  "bibliographic_data": {
+    "title": "SECURE: Benchmarking Large Language Models for Cybersecurity",
+    "primary_domain": "cs.AI",
+    "authors": [
+      {
+        "name": "Dipkamal Bhusal"
+      },
+      {
+        "name": "Md Tanvirul Alam"
+      },
+      {
+        "name": "Le Nguyen"
+      },
+      {
+        "name": "Ashim Mahara"
+      },
+      {
+        "name": "Zachary Lightcap"
+      },
+      {
+        "name": "Rodney Frazier"
+      },
+      {
+        "name": "Romy Fieblinger"
+      },
+      {
+        "name": "Grace Long Torales"
+      },
+      {
+        "name": "Benjamin A. Blakely"
+      },
+      {
+        "name": "Nidhi Rastogi",
+        "faculty_id": "Nidhi Rastogi",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Large Language Models (LLMs) have demonstrated potential in cybersecurity applications but have also caused lower confidence due to problems like hallucinations and a lack of truthfulness. Existing benchmarks provide general evaluations but do not sufficiently address the practical and applied aspects of LLM performance in cybersecurity-specific tasks. To address this gap, we introduce the SECURE (Security Extraction, Understanding & Reasoning Evaluation), a benchmark designed to assess LLMs performance in realistic cybersecurity scenarios. SECURE includes six datasets focused on the Industrial Control System sector to evaluate knowledge extraction, understanding, and reasoning based on industry-standard sources. Our study evaluates seven state-of-the-art models on these tasks, providing insights into their strengths and weaknesses in cybersecurity contexts. We also offer recommendations for improving LLMs reliability as cyber advisory tools and release our benchmark datasets and framework for community use at https://github.com/aiforsec/SECURE.",
+    "arxiv_id": "arXiv:2405.20441"
+  },
+  "core_content": {
+    "novelty_claim": "The paper introduces SECURE, a benchmark designed to assess LLMs performance in realistic cybersecurity scenarios, focusing on knowledge extraction, understanding, and reasoning.",
+    "key_methodology": "SECURE includes six datasets (MAET, CWET, KCV, VOOD, RERT, CPST) focused on the Industrial Control System sector. The study evaluates seven state-of-the-art models on these tasks to provide insights into their strengths and weaknesses in cybersecurity contexts.",
+    "outcomes": [
+      "Evaluates LLMs' performance in realistic cybersecurity scenarios",
+      "Provides recommendations for improving LLMs reliability as cyber advisory tools",
+      "Releases benchmark datasets and framework for community use"
+    ],
+    "full_text_markdown": "Large Language Models (LLMs) have demonstrated potential in cybersecurity applications but have also caused lower confidence due to problems like hallucinations and a lack of truthfulness. Existing benchmarks provide general evaluations but do not sufficiently address the practical and applied aspects of LLM performance in cybersecurity-specific tasks. To address this gap, we introduce the SECURE (Security Extraction, Understanding & Reasoning Evaluation), a benchmark designed to assess LLMs performance in realistic cybersecurity scenarios. SECURE includes six datasets focused on the Industrial Control System sector to evaluate knowledge extraction, understanding, and reasoning based on industry-standard sources. Our study evaluates seven state-of-the-art models on these tasks, providing insights into their strengths and weaknesses in cybersecurity contexts. We also offer recommendations for improving LLMs reliability as cyber advisory tools and release our benchmark datasets and framework for community use at https://github.com/aiforsec/SECURE.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "SECURE Benchmark"
+      },
+      {
+        "id": "concept_2",
+        "type": "Dataset",
+        "label": "MAET: Mitre Attack Extraction Task"
+      },
+      {
+        "id": "concept_3",
+        "type": "Dataset",
+        "label": "CWET: Common Weakness Extraction Task"
+      },
+      {
+        "id": "concept_4",
+        "type": "Dataset",
+        "label": "KCV: Knowledge test on Common Vulnerabilities"
+      },
+      {
+        "id": "concept_5",
+        "type": "Dataset",
+        "label": "VOOD: Vulnerability Out-of-Distribution task"
+      },
+      {
+        "id": "concept_6",
+        "type": "Dataset",
+        "label": "RERT: Risk Evaluation Reasoning Task"
+      },
+      {
+        "id": "concept_7",
+        "type": "Dataset",
+        "label": "CPST: CVSS Problem Solving Task"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "CONTAINS"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "CONTAINS"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_4",
+        "relation": "CONTAINS"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_5",
+        "relation": "CONTAINS"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_6",
+        "relation": "CONTAINS"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_7",
+        "relation": "CONTAINS"
+      }
+    ]
+  },
+  "source_file": "dipkamal_secure_benchmarking_large_language_models_for_cybersecurity.pdf"
+}

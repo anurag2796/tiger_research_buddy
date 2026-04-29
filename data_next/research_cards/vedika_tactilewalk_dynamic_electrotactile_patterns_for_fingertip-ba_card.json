@@ -1,0 +1,72 @@
+{
+  "card_id": "tactilewalk_2026",
+  "bibliographic_data": {
+    "title": "TactileWalk: Dynamic Electrotactile Patterns for Fingertip-Based Interaction During Walking",
+    "primary_domain": "cs.HC",
+    "authors": [
+      {
+        "name": "Vedika Nimbalkar"
+      },
+      {
+        "name": "Roshan Peiris",
+        "faculty_id": "Roshan Peiris",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2026,
+    "abstract": "TactileWalk evaluates dynamic electrotactile patterns on fingertips for wearable navigation. We developed a fingertip stimulation prototype featuring a 10 \u00d7 6 electrode grid driven by an ESP32 microcontroller and high-voltage drivers to enable rapid, independent electrode activation for spatiotemporal pattern rendering. This research compares three dynamic patterns: Single Line, Double Line, and Box\u2014across eight directions presented on the tactile display at the fingertip. Study 1 (stationary) revealed that simple linear patterns were recognized significantly more accurately than complex shapes. Study 2 (walking) confirmed these cues remain robust under movement, where the Double Line pattern yielded the highest accuracy (90.83%). Participants consistently preferred the 'reinforcing' Double Line and found vertical motion more intuitive while walking. We propose design implications for mobile haptics, advocating for simple, spatially redundant patterns to minimize cognitive load during eyes-free navigation.",
+    "arxiv_id": "2603.01974"
+  },
+  "core_content": {
+    "novelty_claim": "The research evaluates dynamic electrotactile patterns on fingertips for wearable navigation and finds that the Double Line pattern yields the highest accuracy under movement.",
+    "key_methodology": "A fingertip stimulation prototype with a 10 \u00d7 6 electrode grid was developed to test three dynamic patterns: Single Line, Double Line, and Box. The study compared these patterns in both stationary (Study 1) and walking conditions (Study 2).",
+    "outcomes": [
+      "Simple linear patterns were recognized more accurately than complex shapes.",
+      "The Double Line pattern yielded the highest accuracy during walking (90.83%)."
+    ],
+    "full_text_markdown": "Tactile feedback is crucial for human-computer interaction, especially in wearable devices and mobile applications. This paper evaluates dynamic electrotactile patterns on fingertips to support navigation. The authors developed a prototype with an 10 \u00d7 6 electrode grid driven by an ESP32 microcontroller and high-voltage drivers. They tested three patterns: Single Line, Double Line, and Box across eight directions in both stationary (Study 1) and walking conditions (Study 2). Study 1 found that simple linear patterns were recognized more accurately than complex shapes. However, during walking (Study 2), the Double Line pattern performed best with an accuracy of 90.83%. Participants preferred the 'reinforcing' Double Line and found vertical motion more intuitive while walking. The study suggests using simple, spatially redundant patterns to minimize cognitive load in eyes-free navigation.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Fingertip Stimulation Prototype"
+      },
+      {
+        "id": "concept_2",
+        "type": "Pattern",
+        "label": "Single Line"
+      },
+      {
+        "id": "concept_3",
+        "type": "Pattern",
+        "label": "Double Line"
+      },
+      {
+        "id": "concept_4",
+        "type": "Pattern",
+        "label": "Box"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "RENDERS"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "RENDERS"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_4",
+        "relation": "RENDERS"
+      }
+    ]
+  },
+  "source_file": "vedika_tactilewalk_dynamic_electrotactile_patterns_for_fingertip-ba.pdf"
+}

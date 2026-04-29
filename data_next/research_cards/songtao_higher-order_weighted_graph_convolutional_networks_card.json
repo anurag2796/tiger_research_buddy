@@ -1,0 +1,78 @@
+{
+  "card_id": "higher-order-weighted-gcn",
+  "bibliographic_data": {
+    "title": "Higher-order Weighted Graph Convolutional Networks",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Songtao Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Lingwei Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Hanze Dong"
+      },
+      {
+        "name": "Zihao Wang",
+        "faculty_id": "Linwei Wang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Dinghao Wu"
+      },
+      {
+        "name": "Zengfeng Huang"
+      }
+    ],
+    "year": 2019,
+    "abstract": "Graph Convolution Network (GCN) has been recognized as one of the most effective graph models for semi-supervised learning, but it extracts merely the first-order or few-order neighborhood information through information propagation, which suffers performance drop-off for deeper structure. Existing approaches that deal with the higher-order neighbors tend to take advantage of adjacency matrix power. In this paper, we assume a seemly trivial condition that the higher-order neighborhood information may be similar to that of the first-order neighbors. Accordingly, we present an unsupervised approach to describe such similarities and learn the weight matrices of higher-order neighbors automatically through Lasso that minimizes the feature loss between the first-order and higher-order neighbors, based on which we formulate the new convolutional filter for GCN to learn the better node representations. Our model, called higher-order weighted GCN (HWGCN), has achieved the state-of-the-art results on a number of node classification tasks over Cora, Citeseer and Pubmed datasets.",
+    "arxiv_id": "1911.04129"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes HWGCN, which leverages Lasso to learn higher-order neighborhood information in a weighted, orthogonal, and unsupervised manner for better node representation learning.",
+    "key_methodology": "HWGCN uses an unsupervised approach to minimize the feature loss between first-order and higher-order neighbors through Lasso. It formulates new convolutional filters based on this similarity assumption to capture expressive representations from the graph.",
+    "outcomes": [
+      "Achieved state-of-the-art results in node classification tasks",
+      "Improved model representational capacity by incorporating higher-order neighborhood information"
+    ],
+    "full_text_markdown": "Graph Convolution Networks (GCNs) have been widely used for semi-supervised learning, but they primarily rely on first-order or few-order neighborhood information. This limitation can lead to performance degradation with deeper structures. The paper introduces HWGCN, which assumes that higher-order neighbors share similar information with first-order neighbors and uses Lasso to learn the weight matrices of these higher-order neighbors. By formulating new convolutional filters based on this assumption, HWGCN aims to capture more expressive representations from the graph. Experimental results show that HWGCN outperforms existing models in node classification tasks such as Cora, Citeseer, and Pubmed.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Higher-order Weighted Graph Convolutional Networks (HWGCN)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Technique",
+        "label": "Lasso"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "First-order Neighbors"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "BASED_ON"
+      }
+    ]
+  },
+  "source_file": "songtao_higher-order_weighted_graph_convolutional_networks.pdf"
+}

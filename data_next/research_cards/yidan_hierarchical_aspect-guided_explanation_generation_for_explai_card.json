@@ -1,0 +1,83 @@
+{
+  "card_id": "hag_explainable_recommendation",
+  "bibliographic_data": {
+    "title": "Hierarchical Aspect-guided Explanation Generation for Explainable Recommendation",
+    "primary_domain": "cs.SE",
+    "authors": [
+      {
+        "name": "Yidan Hu",
+        "faculty_id": "Yidan Hu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yong Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Chunyan Miao"
+      },
+      {
+        "name": "Gongqi Lin"
+      },
+      {
+        "name": "Yuan Miao"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Explainable recommendation systems provide explanations for recommendation results to improve their transparency and persuasiveness. The existing explainable recommendation methods generate textual explanations without explicitly considering the user\u2019s preferences on different aspects of the item. In this paper, we propose a novel explanation generation framework, named Hierarchical Aspect-guided explanation Generation (HAG), for explainable recommendation. Specifically, HAG employs a review-based syntax graph to provide a unified view of the user/item details. An aspect-guided graph pooling operator is proposed to extract the aspect-relevant information from the review-based syntax graphs to model the user\u2019s preferences on an item at the aspect level. Then, a hierarchical explanation decoder is developed to generate aspects and aspect-relevant explanations based on the attention mechanism. The experimental results on three real datasets indicate that HAG outperforms state-of-the-art explanation generation methods in both single-aspect and multi-aspect explanation generation tasks, and also achieves comparable or even better preference prediction accuracy than strong baseline methods.",
+    "arxiv_id": "arXiv:2110.10358v2"
+  },
+  "core_content": {
+    "novelty_claim": "HAG proposes a novel hierarchical aspect-guided explanation generation framework for explainable recommendation, which outperforms state-of-the-art methods in both single-aspect and multi-aspect tasks.",
+    "key_methodology": "HAG uses a review-based syntax graph to model user preferences at the aspect level. It employs an aspect-guided graph pooling operator and a hierarchical explanation decoder based on attention mechanisms.",
+    "outcomes": [
+      "Outperforms state-of-the-art methods in single-aspect and multi-aspect explanation generation tasks.",
+      "Achieves comparable or better preference prediction accuracy than strong baseline methods."
+    ],
+    "full_text_markdown": "The paper introduces HAG, a novel framework for explainable recommendation. It addresses the limitations of existing methods by generating textual explanations that consider user preferences on different aspects of items. The key contributions are the use of review-based syntax graphs and an aspect-guided graph pooling operator to model user preferences at the aspect level. A hierarchical explanation decoder is also developed, which uses attention mechanisms to generate detailed explanations. Experiments on three real datasets show HAG's superior performance in both single-aspect and multi-aspect tasks compared to existing methods.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "hag",
+        "type": "Method",
+        "label": "Hierarchical Aspect-guided Explanation Generation"
+      },
+      {
+        "id": "review_based_syntax_graph",
+        "type": "Concept",
+        "label": "Review-based Syntax Graph"
+      },
+      {
+        "id": "aspect_guided_graph_pooling_operator",
+        "type": "Method",
+        "label": "Aspect-guided Graph Pooling Operator"
+      },
+      {
+        "id": "hierarchical_explanation_decoder",
+        "type": "Method",
+        "label": "Hierarchical Explanation Decoder"
+      }
+    ],
+    "edges": [
+      {
+        "source": "hag",
+        "target": "review_based_syntax_graph",
+        "relation": "USES"
+      },
+      {
+        "source": "hag",
+        "target": "aspect_guided_graph_pooling_operator",
+        "relation": "USES"
+      },
+      {
+        "source": "hag",
+        "target": "hierarchical_explanation_decoder",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "yidan_hierarchical_aspect-guided_explanation_generation_for_explai.pdf"
+}

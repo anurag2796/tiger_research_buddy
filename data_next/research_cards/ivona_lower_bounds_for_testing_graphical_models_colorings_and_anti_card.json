@@ -1,0 +1,63 @@
+{
+  "card_id": "1901.07361v2",
+  "bibliographic_data": {
+    "title": "Lower bounds for testing graphical models: colorings and antiferromagnetic Ising models",
+    "primary_domain": "cs.DS",
+    "authors": [
+      {
+        "name": "Ivona Bezakova",
+        "faculty_id": "Ivona Bezakova",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Antonio Blanca"
+      },
+      {
+        "name": "Zongchen Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Daniel \u0160tefankovi\u010d"
+      },
+      {
+        "name": "Eric Vigoda"
+      }
+    ],
+    "year": 2019,
+    "abstract": "We study the identity testing problem in the context of spin systems or undirected graphical models, where it takes the following form: given the parameter speci\ufb01cation of the model M and a sampling oracle for the distribution \u00b5M\u2217of an unknown model M \u2217, can we e\ufb03ciently determine if the two models M and M \u2217are the same? We consider identity testing for both soft-constraint and hard-constraint systems. In particular, we prove hardness results in two prototypical cases, the Ising model and proper colorings, and explore whether identity testing is any easier than structure learning.",
+    "arxiv_id": "1901.07361v2"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proves hardness results for identity testing in the antiferromagnetic setting of the Ising model and proper colorings, showing that it is as hard as structure learning.",
+    "key_methodology": "The authors utilize insights into the design of gadgets using random graphs to prove computational lower bounds under the (randomized) exponential time hypothesis.",
+    "outcomes": [
+      "Proved hardness results for identity testing in antiferromagnetic Ising models and proper colorings",
+      "Showed that identity testing is as hard as structure learning in these settings"
+    ],
+    "full_text_markdown": "The paper investigates the identity testing problem within spin systems or undirected graphical models. It focuses on both soft-constraint (Ising model) and hard-constraint (proper colorings) systems, proving hardness results for these cases. Specifically, it demonstrates that in the antiferromagnetic setting of the Ising model, there is no polynomial running time identity testing algorithm unless RP = NP. The authors also establish computational lower bounds under the exponential time hypothesis. This work suggests that identity testing is as challenging as structure learning in these systems.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Gadgets using random graphs"
+      },
+      {
+        "id": "concept_2",
+        "type": "Problem",
+        "label": "Identity testing in antiferromagnetic Ising models"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "ivona_lower_bounds_for_testing_graphical_models_colorings_and_anti.pdf"
+}

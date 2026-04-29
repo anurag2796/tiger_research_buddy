@@ -1,0 +1,78 @@
+{
+  "card_id": "parameter-efficient-masking-networks",
+  "bibliographic_data": {
+    "title": "Parameter-Efficient Masking Networks",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Yue Bai"
+      },
+      {
+        "name": "Huan Wang"
+      },
+      {
+        "name": "Xu Ma",
+        "faculty_id": "Naveen Sharma",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yitian Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Zhiqiang Tao",
+        "faculty_id": "Zhiqiang Tao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yun Fu"
+      }
+    ],
+    "year": 2022,
+    "abstract": "A deeper network structure generally handles more complicated non-linearity and performs more competitively. Nowadays, advanced network designs often contain a large number of repetitive structures (e.g., Transformer). They empower the network capacity to a new level but also increase the model size inevitably, which is unfriendly to either model restoring or transferring. In this study, we are the first to investigate the representative potential of fixed random weights with limited unique values by learning diverse masks and introduce the Parameter-Ef\ufb01cient Masking Networks (PEMN). It also naturally leads to a new paradigm for model compression to diminish the model size. Concretely, motivated by the repetitive structures in modern neural networks, we utilize one random initialized layer, accompanied with different masks, to convey different feature mappings and represent repetitive network modules. Therefore, the model can be expressed as one-layer with a bunch of masks, which signi\ufb01cantly reduce the model storage cost. Furthermore, we enhance our strategy by learning masks for a model \ufb01lled by padding a given random weights vector. In this way, our method can further lower the space complexity, especially for models without many repetitive architectures. We validate the potential of PEMN learning masks on random weights with limited unique values and test its effectiveness for a new compression paradigm based on different network architectures.",
+    "arxiv_id": "2210.06699"
+  },
+  "core_content": {
+    "novelty_claim": "The paper introduces Parameter-Ef\ufb01cient Masking Networks (PEMN) to explore the representative potential of fixed random weights with limited unique values and proposes a new model compression paradigm.",
+    "key_methodology": "One random initialized layer is used, accompanied by different masks to convey feature mappings. The method can be applied in both repetitive network modules and non-repetitive architectures by padding a given random weights vector.",
+    "outcomes": [
+      "PEMN significantly reduces the model storage cost by expressing the model as one-layer with a bunch of masks.",
+      "The method further lowers space complexity, especially for models without many repetitive architectures."
+    ],
+    "full_text_markdown": "Deep neural networks have emerged in several application fields and achieved state-of-the-art performances. However, they suffer from their growing size, which causes inconvenience for both model storage and transferring. To address this issue, the paper introduces Parameter-Ef\ufb01cient Masking Networks (PEMN) to explore the representative potential of fixed random weights with limited unique values by learning diverse masks. The method utilizes one random initialized layer accompanied by different masks to convey feature mappings and represent repetitive network modules. For non-repetitive architectures, a given random weights vector is padded to further lower space complexity. Experiments validate PEMN's effectiveness in compressing models based on different network architectures.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Parameter-Ef\ufb01cient Masking Networks (PEMN)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Fixed Random Weights"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Masks"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "LEVERAGES"
+      }
+    ]
+  },
+  "source_file": "yue_parameter-efficient_masking_networks.pdf"
+}

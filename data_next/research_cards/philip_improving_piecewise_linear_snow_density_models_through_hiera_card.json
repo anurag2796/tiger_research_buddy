@@ -1,0 +1,68 @@
+{
+  "card_id": "improving-piecewise-linear-snow-density-models",
+  "bibliographic_data": {
+    "title": "Improving Piecewise Linear Snow Density Models through Hierarchical Spatial and Orthogonal Functional Smoothing",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Philip White",
+        "faculty_id": "Philip White",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Durban Keeler"
+      },
+      {
+        "name": "Daniel Sheanshang"
+      },
+      {
+        "name": "Summer Rupper"
+      }
+    ],
+    "year": 2021,
+    "abstract": "Snow density estimates as a function of depth are used for understanding climate processes, evaluating water accumulation trends in polar regions, and estimating glacier mass balances. The common and interpretable physically-derived differential equation models for snow density are piecewise linear as a function of depth (on a transformed scale); thus, they can fail to capture important data features. Moreover, the differential equation parameters show strong spatial autocorrelation. To address these issues, we allow the parameters of the physical model, including random change points over depth, to vary spatially. We also develop a framework for functionally smoothing the physically-motivated model. To preserve inference on the interpretable physical model, we project the smoothing function into the physical model\u2019s spatially varying null space. The proposed spatially and functionally smoothed snow density model better fits the data while preserving inference on physical parameters.",
+    "arxiv_id": "2006.09329"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a spatially varying co-efficient model (SVSD) that allows for random change points and reaction rates to vary over space, while preserving inference on the physical parameters of the HL model.",
+    "key_methodology": "The authors develop a framework where the smoothing function is projected into the null space of the physically-motivated model. This approach preserves the interpretability of the physical model's parameters while allowing for more flexible functional forms.",
+    "outcomes": [
+      "Significant spatial variation in the parameters that govern snow densification was found.",
+      "The proposed SVSD model better fits the data compared to traditional piecewise linear models."
+    ],
+    "full_text_markdown": "This paper addresses the limitations of common physically-derived differential equation models for snow density, which are piecewise linear and fail to capture important data features. The authors propose a spatially varying co-efficient model (SVSD) that allows parameters such as reaction rates and densification change points to vary over space while preserving inference on the physical parameters of the HL model. By projecting the smoothing function into the null space of the physically-motivated model, they achieve better data fit without losing interpretability. The analysis reveals significant spatial variation in snow density parameters, which is crucial for understanding climate processes and estimating glacier mass balances.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Spatially Varying Co-efficient Model (SVSD)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Piecewise Linear Models"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Physical Parameters of HL Model"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "IMPROVES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "PRESERVES_INFERENCE_ON"
+      }
+    ]
+  },
+  "source_file": "philip_improving_piecewise_linear_snow_density_models_through_hiera.pdf"
+}

@@ -1,0 +1,68 @@
+{
+  "card_id": "arxiv_2507_00198",
+  "bibliographic_data": {
+    "title": "Exploring AR Label Placements in Visually Cluttered Scenarios",
+    "primary_domain": "cs.HC",
+    "authors": [
+      {
+        "name": "Ji Hwan Park",
+        "faculty_id": "Ji Hwan Park",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Braden Roper"
+      },
+      {
+        "name": "Amirhossein Arezoumand"
+      },
+      {
+        "name": "Tien Tran"
+      }
+    ],
+    "year": 2025,
+    "abstract": "We investigate methods for placing labels in AR environments that have visually cluttered scenes. As the number of items increases in a scene within the user\u2019s FOV, it is challenging to effectively place labels based on existing label placement guidelines. To address this issue, we implemented three label placement techniques for in-view objects for AR applications. We specifically target a scenario, where various items of different types are scattered within the user\u2019s field of view, and multiple items of the same type are situated close together. We evaluate three placement techniques for three target tasks. Our study shows that using a label to spatially group the same types of items is beneficial for identifying, comparing, and summarizing data.",
+    "arxiv_id": "2507.00198"
+  },
+  "core_content": {
+    "novelty_claim": "The paper investigates three new label placement techniques in AR environments with visually cluttered scenes to improve task performance.",
+    "key_methodology": "Three label placement techniques were implemented: Situated Individual, Situated Grouped, and Centered Grouped. These methods were evaluated through a user study using a VR application to simulate an AR environment.",
+    "outcomes": [
+      "Using a label to spatially group the same types of items is beneficial for identifying, comparing, and summarizing data.",
+      "The Situated and Grouped placement method helped users perform tasks faster in the study."
+    ],
+    "full_text_markdown": "In this paper, we explore methods for placing labels in AR environments with visually cluttered scenes. The authors implemented three label placement techniques: Situated Individual, Situated Grouped, and Centered Grouped. These methods were evaluated through a user study using a VR application to simulate an AR environment. The study shows that spatially grouping the same types of items is beneficial for identifying, comparing, and summarizing data. Additionally, the Situated and Grouped placement method helped users perform tasks faster in the study.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Situated Individual"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "Situated Grouped"
+      },
+      {
+        "id": "concept_3",
+        "type": "Method",
+        "label": "Centered Grouped"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      },
+      {
+        "source": "concept_2",
+        "target": "concept_3",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "ji_exploring_ar_label_placements_in_visually_cluttered_scenario.pdf"
+}

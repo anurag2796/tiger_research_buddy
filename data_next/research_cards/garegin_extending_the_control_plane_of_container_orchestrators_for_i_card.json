@@ -1,0 +1,67 @@
+{
+  "card_id": "extending-control-plane-container",
+  "bibliographic_data": {
+    "title": "Extending the Control Plane of Container Orchestrators for I/O Virtualization",
+    "primary_domain": "cs.SE",
+    "authors": [
+      {
+        "name": "Garegin Grigoryan"
+      },
+      {
+        "name": "Minseok Kwon",
+        "faculty_id": "Minseok Kwon",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "M. Mustafa Rafique",
+        "faculty_id": "M. Mustafa Rafique",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Single Root Input/Output Virtualization (SR-IOV) is a standard technology for forking a single PCI express device and providing it to applications while ensuring performance isolation. It enables container orchestrators to share a limited number of physical network interfaces without incurring significant virtualization overhead. The allocation of virtualized network devices to containers, however, needs to be more configurable based on the bandwidth needs of running applications. Moreover, container orchestrators\u2019 network control over the virtualized interfaces is limited by the abilities of SR-IOV. We explore the design considerations for a system with controlled SR-IOV virtualization and present ConRDMA, a novel architecture that enables fine control of RDMA virtualization for containers. Our evaluation shows that ConRDMA enables containers to use RDMA allocated bandwidth more efficiently and to select best-suited nodes to meet their varying communication requirements.",
+    "arxiv_id": "2505.06041"
+  },
+  "core_content": {
+    "novelty_claim": "ConRDMA is a novel architecture that enables fine control of RDMA virtualization for containers, addressing the limitations of current SR-IOV-based solutions in Kubernetes.",
+    "key_methodology": "The authors extend the control plane of Kubernetes to support containers using virtualized RDMA with fine control. Key components include an RDMA Hardware Daemon Set, a Scheduler Extender, and a modified CNI plugin.",
+    "outcomes": [
+      "ConRDMA enables more efficient use of RDMA allocated bandwidth for containers.",
+      "It allows better selection of nodes to meet varying communication requirements."
+    ],
+    "full_text_markdown": "The paper discusses the challenges in using SR-IOV for container networking, particularly with Kubernetes. It presents ConRDMA as a solution that extends the control plane of Kubernetes to support fine-grained management and rate-limiting of RDMA interfaces within a heterogeneous cluster. The authors describe key components such as an RDMA Hardware Daemon Set, a Scheduler Extender, and a modified CNI plugin. Experiments show improved bandwidth utilization and better node selection for varying communication needs.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "conrdma",
+        "type": "Method",
+        "label": "ConRDMA"
+      },
+      {
+        "id": "scheduler_extender",
+        "type": "Concept",
+        "label": "Scheduler Extender"
+      },
+      {
+        "id": "cni_plugin",
+        "type": "Concept",
+        "label": "CNI Plugin"
+      }
+    ],
+    "edges": [
+      {
+        "source": "conrdma",
+        "target": "scheduler_extender",
+        "relation": "USES"
+      },
+      {
+        "source": "conrdma",
+        "target": "cni_plugin",
+        "relation": "MODIFIES"
+      }
+    ]
+  },
+  "source_file": "garegin_extending_the_control_plane_of_container_orchestrators_for_i.pdf"
+}

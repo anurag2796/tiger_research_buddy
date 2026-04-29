@@ -1,0 +1,73 @@
+{
+  "card_id": "finding-optimal-solutions-with-neighborly-help",
+  "bibliographic_data": {
+    "title": "Finding Optimal Solutions With Neighborly Help",
+    "primary_domain": "cs.CC",
+    "authors": [
+      {
+        "name": "Elisabet Burjons"
+      },
+      {
+        "name": "Fabian Frei"
+      },
+      {
+        "name": "Edith Hemaspaandra",
+        "faculty_id": "Edith Hemaspaandra",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Dennis Komm"
+      },
+      {
+        "name": "David Wehner"
+      }
+    ],
+    "year": 2019,
+    "abstract": "Can we efficiently compute optimal solutions to instances of a hard problem from optimal solutions to neighboring (i.e., locally modified) instances? For example, can we efficiently compute an optimal coloring for a graph from optimal colorings for all one-edge-deleted subgraphs? Studying such questions not only gives detailed insight into the structure of the problem itself, but also into the complexity of related problems; most notably graph theory\u2019s core notion of critical graphs (e.g., graphs whose chromatic number decreases under deletion of an arbitrary edge) and the complexity-theoretic notion of minimality problems (also called criticality problems, e.g., recognizing graphs that become 3-colorable when an arbitrary edge is deleted). We focus on two prototypical graph problems, Colorability and Vertex Cover. For example, we show that it is NP-hard to compute an optimal coloring for a graph from optimal colorings for all its one-vertex-deleted subgraphs, and that this remains true even when optimal solutions for all one-edge-deleted subgraphs are given. In contrast, computing an optimal coloring from all (or even just two) one-edge-added supergraphs is in P. We observe that Vertex Cover exhibits a remarkably different behavior, demonstrating the power of our model to delineate problems from each other more precisely on a structural level. Moreover, we provide a number of new complexity results for minimality and criticality problems.",
+    "arxiv_id": "1906.10078v2"
+  },
+  "core_content": {
+    "novelty_claim": "The paper investigates the problem of computing optimal solutions to hard graph problems from neighboring instances, providing new insights into complexity classes like DP and \u0398p^2.",
+    "key_methodology": "The authors use an oracle model where algorithms can query optimal solutions for neighboring instances. They focus on two prototypical graph problems: Colorability and Vertex Cover, examining the impact of edge deletions and vertex additions.",
+    "outcomes": [
+      "It is NP-hard to compute an optimal coloring from one-vertex-deleted subgraphs but not from one-edge-deleted subgraphs.",
+      "Computing an optimal coloring from all (or even just two) one-edge-added supergraphs is in P.",
+      "Vertex Cover exhibits different behavior compared to Colorability, highlighting the power of their model.",
+      "New complexity results for minimality and criticality problems are provided."
+    ],
+    "full_text_markdown": "The paper explores how efficiently we can compute optimal solutions to hard graph problems from neighboring instances. For example, it examines whether an optimal coloring for a graph can be computed from the optimal colorings of all one-edge-deleted subgraphs. The study provides insights into complexity classes like DP and \u0398p^2. Specifically, they show that computing an optimal coloring from one-vertex-deleted subgraphs is NP-hard but not from one-edge-deleted subgraphs. They also find that computing an optimal coloring from all (or even just two) one-edge-added supergraphs can be done in polynomial time. The behavior of Vertex Cover differs significantly from Colorability, demonstrating the model's ability to distinguish between problems more precisely on a structural level. Additionally, they provide new complexity results for minimality and criticality problems.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Oracle Model"
+      },
+      {
+        "id": "concept_2",
+        "type": "Problem",
+        "label": "Colorability"
+      },
+      {
+        "id": "concept_3",
+        "type": "Problem",
+        "label": "Vertex Cover"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "APPLIES_TO"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "APPLIES_TO"
+      }
+    ]
+  },
+  "source_file": "elisabet_finding_optimal_solutions_with_neighborly_help.pdf"
+}

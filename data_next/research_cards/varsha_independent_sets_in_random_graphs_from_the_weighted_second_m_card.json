@@ -1,0 +1,52 @@
+{
+  "card_id": "independent_sets_in_random_graphs",
+  "bibliographic_data": {
+    "title": "Independent sets in random graphs from the weighted second moment method",
+    "primary_domain": "cs.DS",
+    "authors": [
+      {
+        "name": "Varsha Dani",
+        "faculty_id": "Varsha Dani",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Cristopher Moore"
+      }
+    ],
+    "year": 2018,
+    "abstract": "We prove new lower bounds on the likely size of an independent set in a random graph with a given average degree. Our method is a weighted version of the second moment method, where we give each independent set a weight based on the total degree of its vertices.",
+    "arxiv_id": "1011.0180"
+  },
+  "core_content": {
+    "novelty_claim": "The paper introduces a new lower bound on the likely size of an independent set in random graphs using a weighted version of the second moment method.",
+    "key_methodology": "A weighted second moment method is used where each independent set is given a weight depending on the total degree of its vertices. The method works in a modified G(n, m) model called eG(n, m).",
+    "outcomes": [
+      "The paper provides new lower bounds on \u03b1crit(c), which is the critical average degree for an independent set of size \u03b1n.",
+      "These bounds are significant improvements over previous results."
+    ],
+    "full_text_markdown": "This paper focuses on proving new lower bounds on the likely size of an independent set in a random graph with a given average degree. The authors use a weighted version of the second moment method, where each independent set is assigned a weight based on the total degree of its vertices. They work within a modified G(n, m) model called eG(n, m), where edges are chosen independently and uniformly. This approach helps to counteract correlations between events that make traditional methods ineffective. The paper provides detailed mathematical derivations for these bounds and shows how they can be used to improve previous results on the critical average degree (ccrit(\u03b1)).",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Weighted Second Moment Method"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Independent Set in Random Graphs"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "varsha_independent_sets_in_random_graphs_from_the_weighted_second_m.pdf"
+}

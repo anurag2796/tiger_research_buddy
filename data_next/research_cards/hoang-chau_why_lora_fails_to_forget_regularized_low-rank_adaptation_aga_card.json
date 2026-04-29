@@ -1,0 +1,48 @@
+{
+  "card_id": "why_lora_fails_to_forget",
+  "bibliographic_data": {
+    "title": "Why LoRA Fails to Forget: Regularized Low-Rank Adaptation Against Backdoors in Language Models",
+    "primary_domain": "cs.CL",
+    "authors": [
+      {
+        "name": "Hoang-Chau Luong"
+      },
+      {
+        "name": "Lingwei Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2026,
+    "abstract": "Low-Rank Adaptation (LoRA) is widely used for parameter-efficient fine-tuning of large language models, but it is notably ineffective at removing backdoor behaviors from poisoned pretrained models when fine-tuning on clean dataset. Contrary to the common belief that this weakness is caused primarily by low rank, we show that LoRA\u2019s vulnerability is fundamentally spectral. Our analysis identifies two key factors: LoRA updates (i) possess insufficient spectral strength, with singular values far below those of pretrained weights, and (ii) exhibit unfavorable spectral alignment, weakly matching clean-task directions while retaining overlap with trigger-sensitive subspaces. We further establish a critical scaling threshold beyond which LoRA can theoretically suppress trigger-induced activations, and we show empirically that standard LoRA rarely reaches this regime. We introduce Regularized Low-Rank Adaptation (RoRA), which improves forgetting by increasing spectral strength and correcting alignment through clean-strengthened regularization, trigger-insensitive constraints, and post-training spectral rescaling. Experiments across multiple NLP benchmarks and attack settings show that RoRA substantially reduces attack success rates while maintaining clean accuracy.",
+    "arxiv_id": "2601.06305"
+  },
+  "core_content": {
+    "novelty_claim": "The paper challenges the common belief that LoRA's vulnerability arises primarily from low rank, instead identifying insufficient spectral strength and unfavorable alignment as key factors. It proposes RoRA to improve backdoor robustness through clean-strengthened regularization, trigger-insensitive constraints, and post-training spectral rescaling.",
+    "key_methodology": "The authors analyze the spectral properties of LoRA updates and propose RoRA, which includes clean-strengthened regularization, trigger-insensitive constraints, and post-training spectral rescaling to improve backdoor robustness.",
+    "outcomes": [
+      "Identifies insufficient spectral strength and unfavorable alignment as key factors for LoRA's vulnerability to backdoors.",
+      "Establishes a critical scaling threshold beyond which LoRA can theoretically suppress trigger-induced activations.",
+      "Proposes RoRA, achieving substantially lower attack success rates while maintaining clean accuracy."
+    ],
+    "full_text_markdown": "Large language models (LLMs) have achieved remarkable success across various NLP tasks. However, the rapid growth in model size has made full fine-tuning increasingly expensive, leading to the development of parameter-efficient fine-tuning methods like Low-Rank Adaptation (LoRA). Despite their practical advantages, LoRA is vulnerable to backdoor attacks and often retains trigger-induced behaviors even after adaptation to downstream tasks. This paper challenges the common belief that this vulnerability arises primarily from low rank by proposing a spectral perspective analysis. The authors identify two key factors: insufficient spectral strength of LoRA updates and unfavorable alignment with clean-task directions. They establish a critical scaling threshold beyond which LoRA can theoretically suppress trigger-induced activations, but empirical evidence shows standard LoRA rarely reaches this regime. To address these issues, the paper introduces Regularized Low-Rank Adaptation (RoRA), which improves backdoor robustness through clean-strengthened regularization, trigger-insensitive constraints, and post-training spectral rescaling. Experiments across multiple NLP benchmarks show that RoRA substantially reduces attack success rates while maintaining high clean accuracy.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Regularized Low-Rank Adaptation (RoRA)"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "hoang-chau_why_lora_fails_to_forget_regularized_low-rank_adaptation_aga.pdf"
+}

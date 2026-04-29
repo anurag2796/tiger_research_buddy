@@ -1,0 +1,85 @@
+{
+  "card_id": "a-simple-and-efficient-reconstruction-backbone-for-snapshot-compressive-imaging",
+  "bibliographic_data": {
+    "title": "A Simple and Efficient Reconstruction Backbone for Snapshot Compressive Imaging",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Jiamian Wang"
+      },
+      {
+        "name": "Yulun Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Xin Yuan",
+        "faculty_id": "Bo Yuan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yun Fu"
+      },
+      {
+        "name": "Zhiqiang Tao",
+        "faculty_id": "Zhiqiang Tao",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2022,
+    "abstract": "The emerging technology of snapshot compressive imaging (SCI) enables capturing high-dimensional (HD) data in an efficient way. It is generally implemented by two components: an optical encoder that compresses HD signals into a single 2D measurement and an algorithm decoder that retrieves the HD data upon the hardware-encoded measurement. Over a broad range of SCI applications, hyperspectral imaging (HSI) and video compressive sensing have received significant research attention in recent years. Among existing SCI reconstruction algorithms, deep learning-based methods stand out as their promising performance and efficient inference. However, the deep reconstruction network may suffer from overlarge model size and highly-specialized network design, which inevitably lead to costly training time, high memory usage, and limited flexibility, thus discouraging the deployments of SCI systems in practical scenarios. In this paper, we tackle the above challenges by proposing a simple yet highly efficient reconstruction method, namely stacked residual network (SRN), by revisiting the residual learning strategy with nested structures and spatial-invariant property. The proposed SRN empowers high-fidelity data retrieval with fewer computation operations and negligible model size compared with existing networks, and also serves as a versatile backbone applicable for both hyperspectral and video data.",
+    "arxiv_id": "arXiv:2108.07739v3"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a stacked residual network (SRN) to address the challenges of deep learning-based reconstruction methods in SCI, focusing on high-fidelity data retrieval with fewer computation operations and negligible model size.",
+    "key_methodology": "The SRN uses nested structures and spatial-invariant property to balance network depth and limited training data while providing a linearly enlarged receptive field for high-fidelity reconstructions. The CAE-SRN further enhances the SRN by incorporating channel attention for better computation/performance trade-off in HSI.",
+    "outcomes": [
+      "The proposed SRN achieves state-of-the-art performance with negligible amount of parameters compared to previous methods.",
+      "The computational operations of SRN can be reduced using downsampling/upsampling rescaling pairs."
+    ],
+    "full_text_markdown": "Snapshot compressive imaging (SCI) captures high-dimensional data in a hardware-encoding and software-decoding way. It consists of an optical encoder that compresses HD signals into 2D measurements, and an algorithm decoder to retrieve the original signals from these measurements. Hyperspectral imaging (HSI) and video compressive sensing have received significant research attention due to their potential for bandwidth/memory efficiency in various applications like temporal imaging and light field microscopy. Existing deep learning-based reconstruction methods offer high-fidelity results but suffer from large model sizes, specialized network designs, and limited flexibility. The paper proposes a stacked residual network (SRN) that balances these issues by using nested structures and spatial-invariant properties to achieve high-fidelity data retrieval with fewer computation operations and negligible model size. CAE-SRN further enhances SRN for HSI problems.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Stacked Residual Network (SRN)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Nested Structure"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Spatial-Invariant Property"
+      },
+      {
+        "id": "concept_4",
+        "type": "Method",
+        "label": "Channel Attention Enhanced SRN (CAE-SRN)"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_4",
+        "target": "concept_1",
+        "relation": "EXTENDS"
+      }
+    ]
+  },
+  "source_file": "jiamian_a_simple_and_efficient_reconstruction_backbone_for_snapshot_.pdf"
+}

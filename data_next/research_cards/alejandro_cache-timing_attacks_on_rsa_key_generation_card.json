@@ -1,0 +1,69 @@
+{
+  "card_id": "cache-timing-attacks-on-rsa-key-generation",
+  "bibliographic_data": {
+    "title": "Cache-Timing Attacks on RSA Key Generation",
+    "primary_domain": "cs.CR",
+    "authors": [
+      {
+        "name": "Alejandro Cabrera Aldaya"
+      },
+      {
+        "name": "Cesar Pereida Garc\u00eda"
+      },
+      {
+        "name": "Luis Manuel Alvarez Tapia"
+      },
+      {
+        "name": "B. Brumley",
+        "faculty_id": "Billy Brumley",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2019,
+    "abstract": "During the last decade, constant-time cryptographic software has quickly transitioned from an academic construct to a concrete security requirement for real-world libraries. Most of OpenSSL\u2019s constant-time code paths are driven by cryptosystem implementations enabling a dedicated flag at runtime. This process is perilous, with several examples emerging in the past few years of the flag either not being set or software defects directly mishandling the flag. In this work, we propose a methodology to analyze security-critical software for side-channel insecure code path traversal. Applying our methodology to OpenSSL, we identify three new code paths during RSA key generation that potentially leak critical algorithm state. Exploiting one of these leaks, we design, implement, and mount a single trace cache-timing attack on the GCD computation step. We overcome several hurdles in the process, including but not limited to: (1) granularity issues due to word-size operands to the GCD function; (2) bulk processing of desynchronized trace data; (3) non-trivial error rate during information extraction; and (4) limited high-confidence information on the modulus factors. Formulating lattice problem instances after obtaining and processing this limited information, our attack achieves roughly a 27% success rate for key recovery using the empirical data from 10K trials.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a methodology to identify side-channel insecure code paths in security-critical software and applies it to OpenSSL, identifying new vulnerabilities during RSA key generation that allow for cache-timing attacks.",
+    "key_methodology": "A methodology was developed to analyze security-critical software for side-channel insecure code path traversal. This methodology identified three new code paths during RSA key generation that potentially leak critical algorithm state. The paper then designed and implemented a single trace cache-timing attack on the GCD computation step using this methodology.",
+    "outcomes": [
+      "Identified three new code paths in OpenSSL's RSA key generation process that could lead to side-channel attacks.",
+      "Designed, implemented, and mounted a single trace cache-timing attack on the GCD computation step during RSA key generation.",
+      "Achieved roughly 27% success rate for key recovery using empirical data from 10K trials."
+    ],
+    "full_text_markdown": "During the last decade, constant-time cryptographic software has quickly transitioned from an academic construct to a concrete security requirement for real-world libraries. Most of OpenSSL\u2019s constant-time code paths are driven by cryptosystem implementations enabling a dedicated flag at runtime. This process is perilous, with several examples emerging in the past few years of the flag either not being set or software defects directly mishandling the flag. In this work, we propose a methodology to analyze security-critical software for side-channel insecure code path traversal. Applying our methodology to OpenSSL, we identify three new code paths during RSA key generation that potentially leak critical algorithm state. Exploiting one of these leaks, we design, implement, and mount a single trace cache-timing attack on the GCD computation step. We overcome several hurdles in the process, including but not limited to: (1) granularity issues due to word-size operands to the GCD function; (2) bulk processing of desynchronized trace data; (3) non-trivial error rate during information extraction; and (4) limited high-confidence information on the modulus factors. Formulating lattice problem instances after obtaining and processing this limited information, our attack achieves roughly a 27% success rate for key recovery using the empirical data from 10K trials.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "constant-time-cryptography",
+        "type": "Method",
+        "label": "Constant-Time Cryptography"
+      },
+      {
+        "id": "cache-timing-attack",
+        "type": "Attack",
+        "label": "Cache-Timing Attack"
+      },
+      {
+        "id:": "rsa-key-generation",
+        "type": "Process",
+        "label": "RSA Key Generation"
+      }
+    ],
+    "edges": [
+      {
+        "source": "constant-time-cryptography",
+        "target": "cache-timing-attack",
+        "relation": "VULNERABLE_TO"
+      },
+      {
+        "source": "cache-timing-attack",
+        "target": "rsa-key-generation",
+        "relation": "TARGET_OF"
+      }
+    ]
+  },
+  "source_file": "alejandro_cache-timing_attacks_on_rsa_key_generation.pdf"
+}

@@ -1,0 +1,85 @@
+{
+  "card_id": "precision_sugarcane_monitoring",
+  "bibliographic_data": {
+    "title": "Precision Sugarcane Monitoring Using SVM Classifier",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Sachin Kumar",
+        "faculty_id": "Mohan Kumar",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Sumita Mishra",
+        "faculty_id": "Sumita Mishra",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Pooja Khanna"
+      },
+      {
+        "name": " Pragya"
+      }
+    ],
+    "year": 2017,
+    "abstract": "India is agriculture based economy and sugarcane is one of the major crops produced in northern India. Productivity of sugarcane decreases due to inappropriate soil conditions and infections caused by various types of diseases; timely and accurate disease diagnosis, plays an important role towards optimizing crop yield. This paper presents a system model for monitoring of sugarcane crop, the proposed model continuously monitor parameters (temperature, humidity and moisture) responsible for healthy growth of the crop in addition KNN clustering along with SVM classifier is utilized for infection identification if any through images obtained at regular intervals. The data has been transmitted wirelessly from the site to the control unit. Model achieves an accuracy of 96% on a sample of 200 images; the model was tested at Lolai, near Malhaur, Gomti Nagar Extension.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper presents a system for monitoring sugarcane crop using SVM classifier and KNN clustering to identify infections through images obtained from regular intervals of sensor data.",
+    "key_methodology": "The proposed model utilizes sensors (temperature, humidity, moisture) to monitor the growth environment and an image processing algorithm with SVM classifier to detect infections in the sugarcane crop. The system transmits data wirelessly to a control unit for analysis.",
+    "outcomes": [
+      "Achieved 96% accuracy on a sample of 200 images",
+      "Model tested at Lolai, near Malhaur, Gomti Nagar Extension"
+    ],
+    "full_text_markdown": "The paper presents a system model for monitoring sugarcane crops using SVM classifier and KNN clustering. The proposed model continuously monitors parameters such as temperature, humidity, and moisture to ensure healthy growth of the crop. Additionally, images obtained at regular intervals are processed to identify any infections through an SVM classifier. The data is transmitted wirelessly from the site to a control unit for analysis. The system was tested with 96% accuracy on a sample of 200 images in Lolai, near Malhaur, Gomti Nagar Extension.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "SVM Classifier"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "KNN Clustering"
+      },
+      {
+        "id": "concept_3",
+        "type": "Sensor",
+        "label": "Temperature Sensor"
+      },
+      {
+        "id": "concept_4",
+        "type": "Sensor",
+        "label": "Humidity Sensor"
+      },
+      {
+        "id": "concept_5",
+        "type": "Sensor",
+        "label": "Moisture Sensor"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "COMBINES_WITH"
+      },
+      {
+        "source": "concept_3",
+        "target": "concept_5",
+        "relation": "MONITORS"
+      },
+      {
+        "source": "concept_4",
+        "target": "concept_5",
+        "relation": "MONITORS"
+      }
+    ]
+  },
+  "source_file": "sachin_precision_sugarcane_monitoring_using_svm_classifier.pdf"
+}

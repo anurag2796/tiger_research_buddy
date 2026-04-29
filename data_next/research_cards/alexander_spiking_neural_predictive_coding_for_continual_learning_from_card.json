@@ -1,0 +1,59 @@
+{
+  "card_id": "spiking_neural_coding",
+  "bibliographic_data": {
+    "title": "Spiking Neural Predictive Coding for Continual Learning from Data Streams",
+    "primary_domain": "cs.AI",
+    "authors": [
+      {
+        "name": "Alexander Ororbia",
+        "faculty_id": "Alexander Ororbia",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2024,
+    "abstract": "For energy-efficient computation in specialized neuromorphic hardware, we present spiking neural coding, an instantiation of a family of artificial neural models grounded in the theory of predictive coding. This model works by operating in a never-ending process of 'guess-and-check', where neurons predict the activity values of one another and then adjust their own activities to make better future predictions. The interactive, iterative nature of our system fits well into the continuous time formulation of sensory stream prediction and, as we show, the model's structure yields a local synaptic update rule, which can be used to complement or as an alternative to online spike-timing dependent plasticity. In this article, we experiment with an instantiation of our model consisting of leaky integrate-and-fire units. However, the framework within which our system is situated can naturally incorporate more complex neurons such as the Hodgkin-Huxley model. Our experimental results in pattern recognition demonstrate the potential of the model when binary spike trains are the primary paradigm for inter-neuron communication. Notably, spiking neural coding is competitive in terms of classification performance and experiences less forgetting when learning from task sequence, offering a more computationally economical, biologically-plausible alternative to popular artificial neural networks.",
+    "arxiv_id": "1908.08655v3"
+  },
+  "core_content": {
+    "novelty_claim": "The paper presents spiking neural coding as an energy-efficient model for neuromorphic hardware, grounded in predictive coding theory and using a 'guess-and-check' mechanism.",
+    "key_methodology": "The method involves neurons predicting each other's activity values and adjusting their own activities to improve future predictions. This is implemented through leaky integrate-and-fire units but can be extended to more complex neuron models like the Hodgkin-Huxley model.",
+    "outcomes": [
+      "Competitive classification performance",
+      "Less forgetting when learning from task sequences"
+    ],
+    "full_text_markdown": "Spiking neural coding, an instantiation of a family of artificial neural models grounded in predictive coding theory, is presented for energy-efficient computation in neuromorphic hardware. The model operates through a 'guess-and-check' mechanism where neurons predict each other's activity values and adjust their own activities to improve future predictions. This interactive, iterative nature fits well into the continuous time formulation of sensory stream prediction. The structure yields a local synaptic update rule that can complement or replace online spike-timing dependent plasticity (STDP). Experiments with leaky integrate-and-fire units show promising results in pattern recognition tasks, where binary spike trains are used for inter-neuron communication. Notably, the model is competitive in classification performance and experiences less forgetting when learning from task sequences, making it a more computationally economical and biologically plausible alternative to traditional artificial neural networks.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "spiking_neural_coding",
+        "type": "Method",
+        "label": "Spiking Neural Coding"
+      },
+      {
+        "id": "predictive_coding",
+        "type": "Concept",
+        "label": "Predictive Coding"
+      },
+      {
+        "id": "leaky_integrate_and_fire_units",
+        "type": "Method",
+        "label": "Leaky Integrate-and-Fire Units"
+      }
+    ],
+    "edges": [
+      {
+        "source": "spiking_neural_coding",
+        "target": "predictive_coding",
+        "relation": "BASED_ON"
+      },
+      {
+        "source": "spiking_neural_coding",
+        "target": "leaky_integrate_and_fire_units",
+        "relation": "IMPLIMENTED_WITH"
+      }
+    ]
+  },
+  "source_file": "alexander_spiking_neural_predictive_coding_for_continual_learning_from.pdf"
+}

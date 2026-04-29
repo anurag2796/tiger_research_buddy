@@ -1,0 +1,80 @@
+{
+  "card_id": "similarity_based_neighbor_selection",
+  "bibliographic_data": {
+    "title": "Similarity-based Neighbor Selection for Graph LLMs",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Rui Li",
+        "faculty_id": "Rui Li",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jiwei Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jiawei Han"
+      },
+      {
+        "name": "Guoyin Wang"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Text-attributed graphs (TAGs) present unique challenges for direct processing by Language Learning Models (LLMs), yet their extensive commonsense knowledge and robust reasoning capabilities offer great promise for node classification in TAGs. Prior research has grappled with issues such as over-squashing, heterophily, and ineffective graph information integration, further compounded by inconsistencies in dataset partitioning and underutilization of advanced LLMs. To address these challenges, we introduce Similarity-based Neighbor Selection (SNS). Using SimCSE and advanced neighbor selection techniques, SNS effectively improves the quality of selected neighbors, thereby improving graph representation and alleviating issues like over-squashing and heterophily. Besides, as an inductive and training-free approach, SNS demonstrates superior generalization and scalability over traditional GNN methods. Our comprehensive experiments, adhering to standard dataset partitioning practices, demonstrate that SNS, through simple prompt interactions with LLMs, consistently outperforms vanilla GNNs and achieves state-of-the-art results on datasets like PubMed in node classification, showcasing LLMs\u2019 potential in graph structure understanding.",
+    "arxiv_id": "2402.03720"
+  },
+  "core_content": {
+    "novelty_claim": "The paper introduces Similarity-based Neighbor Selection (SNS) to improve the performance of Language Learning Models (LLMs) on node classification tasks in Text-Attributed Graphs (TAGs).",
+    "key_methodology": "SNS uses SimCSE and advanced neighbor selection techniques to select high-quality neighbors for LLM prompts, thereby improving graph representation and addressing issues like over-squashing and heterophily.",
+    "outcomes": [
+      "SNS outperforms vanilla GNNs in node classification tasks on datasets like PubMed.",
+      "SNS demonstrates superior generalization and scalability compared to traditional GNN methods."
+    ],
+    "full_text_markdown": "The paper addresses the challenges of using Language Learning Models (LLMs) for node classification in Text-Attributed Graphs (TAGs). It introduces Similarity-based Neighbor Selection (SNS), which uses SimCSE and advanced neighbor selection techniques to improve the quality of selected neighbors, thereby enhancing graph representation. The method is tested across five widely-used datasets and consistently outperforms traditional GNN methods like GCN, GAT, and GraphSAGE. SNS also shows superior generalization and scalability.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Similarity-based Neighbor Selection (SNS)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Technique",
+        "label": "SimCSE"
+      },
+      {
+        "id": "concept_3",
+        "type": "Graph Learning Model",
+        "label": "GCN"
+      },
+      {
+        "id": "concept_4",
+        "type": "Graph Learning Model",
+        "label": "GAT"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "OUTPERFORMS"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_4",
+        "relation": "OUTPERFORMS"
+      }
+    ]
+  },
+  "source_file": "rui_similarity-based_neighbor_selection_for_graph_llms.pdf"
+}

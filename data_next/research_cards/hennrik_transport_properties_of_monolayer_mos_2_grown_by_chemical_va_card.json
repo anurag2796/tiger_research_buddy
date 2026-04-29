@@ -1,0 +1,82 @@
+{
+  "card_id": "transport_properties_mos2_cvd",
+  "bibliographic_data": {
+    "title": "Transport properties of monolayer MoS$_2$ grown by chemical vapour deposition",
+    "primary_domain": "cond-mat.mes-hall",
+    "authors": [
+      {
+        "name": "Hennrik Schmidt"
+      },
+      {
+        "name": "Shunfeng Wang"
+      },
+      {
+        "name": "Leiqiang Chu"
+      },
+      {
+        "name": "Minglin Toh"
+      },
+      {
+        "name": "Rajeev Kumar",
+        "faculty_id": "Mohan Kumar",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Weijie Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Antonio H. Castro Neto"
+      },
+      {
+        "name": "Jens Martin",
+        "faculty_id": "Liz Martin",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Shaffique Adam"
+      },
+      {
+        "name": "Barbaros Oezyilmaz"
+      },
+      {
+        "name": "Goki Eda"
+      }
+    ],
+    "year": 2014,
+    "abstract": "Recent success in the growth of monolayer MoS2 via chemical vapor deposition (CVD) has opened up prospects for the implementation of these materials into thin film electronic and optoelectronic devices. Here, we investigate the electronic transport properties of individual crystallites of high quality CVD-grown monolayer MoS2. The devices show low temperature mobilities up to 500 cm2V\u22121s\u22121 and a clear signature of metallic conduction at high doping densities. These characteristics are comparable to the electronic properties of the best mechanically exfoliated monolayers in literature, verifying the high electronic quality of the CVD-grown materials. We analyze the different scattering mechanisms and show that short-range scattering plays a dominant role in the highly conducting regime at low temperatures. Additionally, the influence of phonons as a limiting factor of these devices is discussed.",
+    "arxiv_id": "1401.1063"
+  },
+  "core_content": {
+    "novelty_claim": "The study investigates the electronic transport properties of CVD-grown monolayer MoS2 and demonstrates that their electronic quality is comparable to mechanically exfoliated materials.",
+    "key_methodology": "Devices were fabricated from individual crystallites of CVD-grown monolayer MoS2, and their transport properties were studied in back-gated device geometry without encapsulation. The devices showed low temperature mobilities up to 500 cm2V\u22121s\u22121 and a clear signature of metallic conduction at high doping densities.",
+    "outcomes": [
+      "CVD-grown MoS2 monolayers exhibit room and low temperature field effect mobilities comparable to mechanically exfoliated materials.",
+      "Short-range scattering plays a dominant role in the highly conducting regime at low temperatures."
+    ],
+    "full_text_markdown": "Recent success in the growth of monolayer MoS2 via chemical vapor deposition (CVD) has opened up prospects for the implementation of these materials into thin film electronic and optoelectronic devices. Here, we investigate the electronic transport properties of individual crystallites of high quality CVD-grown monolayer MoS2. The devices show low temperature mobilities up to 500 cm2V\u22121s\u22121 and a clear signature of metallic conduction at high doping densities. These characteristics are comparable to the electronic properties of the best mechanically exfoliated monolayers in literature, verifying the high electronic quality of the CVD-grown materials. We analyze the different scattering mechanisms and show that short-range scattering plays a dominant role in the highly conducting regime at low temperatures. Additionally, the influence of phonons as a limiting factor of these devices is discussed."
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "CVD-grown monolayer MoS2"
+      },
+      {
+        "id": "concept_2",
+        "type": "Property",
+        "label": "Electronic transport properties"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "HAS_PROPERTY"
+      }
+    ]
+  },
+  "source_file": "hennrik_transport_properties_of_monolayer_mos_2_grown_by_chemical_va.pdf"
+}

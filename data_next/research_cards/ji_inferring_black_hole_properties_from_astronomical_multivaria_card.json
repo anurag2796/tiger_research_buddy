@@ -1,0 +1,72 @@
+{
+  "card_id": "inferring-black-hole-properties",
+  "bibliographic_data": {
+    "title": "Inferring Black Hole Properties from Astronomical Multivariate Time Series with Bayesian Attentive Neural Processes",
+    "primary_domain": "astro-ph.IM",
+    "authors": [
+      {
+        "name": "Ji Won Park",
+        "faculty_id": "Ji Hwan Park",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Ashley Villar"
+      },
+      {
+        "name": "Yin Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yan-Fei Jiang"
+      },
+      {
+        "name": "Shirley Ho"
+      },
+      {
+        "name": "Joshua Yao-Yu Lin"
+      },
+      {
+        "name": "Philip J. Marshall"
+      },
+      {
+        "name": "Aaron Roodman"
+      }
+    ],
+    "year": 2021,
+    "abstract": "Among the most extreme objects in the Universe, active galactic nuclei (AGN) are luminous centers of galaxies where a black hole feeds on surrounding matter. The variability patterns of the light emitted by an AGN contain information about the physical properties of the underlying black hole. Upcoming telescopes will observe over 100 million AGN in multiple broadband wavelengths, yielding a large sample of multivariate time series with long gaps and irregular sampling. We present a method that reconstructs the AGN time series and simultaneously infers the posterior probability density distribution (PDF) over the physical quantities of the black hole, including its mass and luminosity. This work is the first to address probabilistic time series reconstruction and parameter inference for AGN in an end-to-end fashion.",
+    "arxiv_id": "2106.01450"
+  },
+  "core_content": {
+    "novelty_claim": "The method simultaneously reconstructs multivariate AGN time series from limited observations and infers the full posterior probability density distribution over key black hole properties, including mass and luminosity.",
+    "key_methodology": "A modified attentive neural process (ANP) is used to model the conditional distribution over regression functions mapping input times to output fluxes. The model attends to observed time/flux pairs to predict unobserved fluxes using self-attention and cross-attention mechanisms.",
+    "outcomes": [
+      "Precision of 0.4 dex in inferred black hole mass",
+      "Accuracy of 0.3 dex in inferred black hole mass"
+    ],
+    "full_text_markdown": "The paper presents a method for reconstructing multivariate AGN time series from limited observations and simultaneously inferring the posterior probability density distribution over key black hole properties, such as mass and luminosity. This is achieved using an attentive neural process (ANP) that models the conditional distribution of regression functions mapping input times to output fluxes in six broadband filters. The method addresses the challenge of irregular sampling and long gaps in telescope data, which are common for upcoming large-sky telescope surveys like the Vera Rubin Observatory Legacy Survey of Space and Time (LSST). The model uses self-attention and cross-attention mechanisms to predict unobserved fluxes based on observed time/flux pairs. The method is applied to a simulated dataset of 11,000 AGN, achieving precision and accuracy in inferring black hole mass. This work is the first to address probabilistic time series reconstruction and parameter inference for AGN in an end-to-end fashion.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Attentive Neural Process (ANP)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Model",
+        "label": "Bayesian ANP"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "ji_inferring_black_hole_properties_from_astronomical_multivaria.pdf"
+}

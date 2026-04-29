@@ -1,0 +1,419 @@
+{
+  "card_id": "benchmarking_cow_with_topcow_challenge",
+  "bibliographic_data": {
+    "title": "Benchmarking the CoW with the TopCoW Challenge: Topology-Aware Anatomical Segmentation of the Circle of Willis for CTA and MRA",
+    "primary_domain": "cs.CV (Computer Vision)",
+    "authors": [
+      {
+        "name": "Kaiyuan Yang",
+        "faculty_id": "Haibo Yang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Fabio Musio"
+      },
+      {
+        "name": "Yihui Ma",
+        "faculty_id": "Naveen Sharma",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Norman Juchler"
+      },
+      {
+        "name": "Johannes C. Paetzold"
+      },
+      {
+        "name": "Rami Al-Maskari"
+      },
+      {
+        "name": "Luciano H\u00f6her"
+      },
+      {
+        "name": "Hongwei Bran Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Ibrahim Ethem Hamamci"
+      },
+      {
+        "name": "Anjany Sekuboyina"
+      },
+      {
+        "name": "Suprosanna Shit"
+      },
+      {
+        "name": "Houjing Huang"
+      },
+      {
+        "name": "Chinmay Prabhakar"
+      },
+      {
+        "name": "Ezequiel de la Rosa"
+      },
+      {
+        "name": "Bastian Wittmann"
+      },
+      {
+        "name": "Diana Waldmannstetter"
+      },
+      {
+        "name": "Florian Kofler"
+      },
+      {
+        "name": "Fernando Navarro"
+      },
+      {
+        "name": "Martin Menten"
+      },
+      {
+        "name": "Ivan Ezhov"
+      },
+      {
+        "name": "Daniel Rueckert"
+      },
+      {
+        "name": "Iris N. Vos"
+      },
+      {
+        "name": "Ynte M. Ruigrok"
+      },
+      {
+        "name": "Birgitta K. Velthuis"
+      },
+      {
+        "name": "Hugo J. Kuijf"
+      },
+      {
+        "name": "Pengcheng Shi",
+        "faculty_id": "Pengcheng Shi",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Wei Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Ting Ma",
+        "faculty_id": "Naveen Sharma",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Maximilian R. Rokuss"
+      },
+      {
+        "name": "Yannick Kirchhoff"
+      },
+      {
+        "name": "Fabian Isensee"
+      },
+      {
+        "name": "Klaus Maier-Hein"
+      },
+      {
+        "name": "Chengcheng Zhu",
+        "faculty_id": "Derui Zhu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Huilin Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Philippe Bijlenga"
+      },
+      {
+        "name": "Julien H\u00e4mmerli"
+      },
+      {
+        "name": "Catherine Wurster"
+      },
+      {
+        "name": "Laura Westphal"
+      },
+      {
+        "name": "Jeroen Bisschop"
+      },
+      {
+        "name": "Elisa Colombo"
+      },
+      {
+        "name": "Hakim Baazaoui"
+      },
+      {
+        "name": "Hannah-Lea Handelsmann"
+      },
+      {
+        "name": "Andrew Makmur"
+      },
+      {
+        "name": "James Hallinan"
+      },
+      {
+        "name": "Amrish Soundararajan"
+      },
+      {
+        "name": "Bene Wiestler"
+      },
+      {
+        "name": "Jan S. Kirschke"
+      },
+      {
+        "name": "Roland Wiest"
+      },
+      {
+        "name": "Emmanuel Montagnon"
+      },
+      {
+        "name": "Laurent Letourneau-Guillon"
+      },
+      {
+        "name": "Kwanseok Oh",
+        "faculty_id": "Tae Oh",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Dahye Lee"
+      },
+      {
+        "name": "Adam Hilbert"
+      },
+      {
+        "name": "Orhun Utku Aydin"
+      },
+      {
+        "name": "Dimitrios Rallios"
+      },
+      {
+        "name": "Jana Rieger"
+      },
+      {
+        "name": "Satoru Tanioka"
+      },
+      {
+        "name": "Alexander Koch"
+      },
+      {
+        "name": "Dietmar Frey"
+      },
+      {
+        "name": "Abdul Qayyum"
+      },
+      {
+        "name": "Moona Mazher"
+      },
+      {
+        "name": "Steven Niederer"
+      },
+      {
+        "name": "Nico Disch"
+      },
+      {
+        "name": "Julius Holzschuh"
+      },
+      {
+        "name": "Dominic LaBella"
+      },
+      {
+        "name": "Francesco Galati"
+      },
+      {
+        "name": "Daniele Falcetta"
+      },
+      {
+        "name": "Maria A. Zuluaga"
+      },
+      {
+        "name": "Chaolong Lin"
+      },
+      {
+        "name": "Haoran Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Zehan Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Minghui Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Xin You"
+      },
+      {
+        "name": "Hanxiao Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Guang-Zhong Yang",
+        "faculty_id": "Haibo Yang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yun Gu"
+      },
+      {
+        "name": "Sinyoung Ra",
+        "faculty_id": "Edith Hemaspaandra",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jongyun Hwang"
+      },
+      {
+        "name": "Hyunjin Park",
+        "faculty_id": "Ji Hwan Park",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Junqiang Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Marek Wodzinski"
+      },
+      {
+        "name": "Henning M\u00fcller"
+      },
+      {
+        "name": "Nesrin Mansouri"
+      },
+      {
+        "name": "Florent Autrusseau"
+      },
+      {
+        "name": "Cansu Yal\u00e7in"
+      },
+      {
+        "name": "Rachika E. Hamadache"
+      },
+      {
+        "name": "Clara Lisazo"
+      },
+      {
+        "name": "Joaquim Salvi"
+      },
+      {
+        "name": "Adri\u00e0 Casamitjana"
+      },
+      {
+        "name": "Xavier Llad\u00f3"
+      },
+      {
+        "name": "Uma Maria Lal-Trehan Estrada"
+      },
+      {
+        "name": "Valeriia Abramova"
+      },
+      {
+        "name": "Luca Giancardo"
+      },
+      {
+        "name": "Arnau Oliver"
+      },
+      {
+        "name": "Paula Casademunt"
+      },
+      {
+        "name": "Adrian Galdran"
+      },
+      {
+        "name": "Matteo Delucchi"
+      },
+      {
+        "name": "Jialu Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Haibin Huang"
+      },
+      {
+        "name": "Yue Cui",
+        "faculty_id": "Feng Cui",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Zehang Lin"
+      },
+      {
+        "name": "Yusheng Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Shunzhi Zhu",
+        "faculty_id": "Derui Zhu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Tatsat R. Patel"
+      },
+      {
+        "name": "Adnan H. Siddiqui"
+      },
+      {
+        "name": "Vincent M. Tutino"
+      },
+      {
+        "name": "Maysam Orouskhani"
+      },
+      {
+        "name": "Huayu Wang"
+      },
+      {
+        "name": "Mahmud Mossa-Basha"
+      },
+      {
+        "name": "Yuki Sato"
+      },
+      {
+        "name": "Sven Hirsch"
+      },
+      {
+        "name": "Susanne Wegener"
+      },
+      {
+        "name": "Bjoern Menze"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Benchmarking the CoW with the TopCoW Challenge: Topology-Aware Anatomical Segmentation of the Circle of Willis for CTA and MRA. Kaiyuan Yang, Fabio Musio, Yihui Ma et al. arXiv preprint arXiv:2312.17670v4 (2025).",
+    "arxiv_id": "arXiv:2312.17670"
+  },
+  "core_content": {
+    "novelty_claim": "The paper benchmarks the CoW with the TopCoW Challenge for topology-aware anatomical segmentation of the Circle of Willis using CTA and MRA.",
+    "key_methodology": "The authors use a challenge setup to evaluate various methods for segmenting the Circle of Willis, focusing on topology awareness.",
+    "outcomes": [
+      "Evaluation of multiple methods",
+      "Improvement in segmentation accuracy"
+    ],
+    "full_text_markdown": "This paper presents the results of benchmarking the CoW with the TopCoW Challenge. The authors focus on topology-aware anatomical segmentation of the Circle of Willis using CTA and MRA. They evaluate various methods, contributing to advancements in medical imaging techniques."
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Topology-Aware Anatomical Segmentation"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "kaiyuan_benchmarking_the_cow_with_the_topcow_challenge_topology-awar.pdf"
+}

@@ -1,0 +1,56 @@
+{
+  "card_id": "actionable_cyber_threat_intelligence",
+  "bibliographic_data": {
+    "title": "Actionable Cyber Threat Intelligence using Knowledge Graphs and Large Language Models",
+    "primary_domain": "cs.CR",
+    "authors": [
+      {
+        "name": "Romy Fieblinger"
+      },
+      {
+        "name": "Md Tanvirul Alam"
+      },
+      {
+        "name": "Nidhi Rastogi",
+        "faculty_id": "Nidhi Rastogi",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Cyber threats are constantly evolving. Extracting actionable insights from unstructured Cyber Threat Intelligence (CTI) data is essential to guide cybersecurity decisions. This paper addresses the challenge of automating the extraction of actionable CTI using advancements in Large Language Models (LLMs) and Knowledge Graphs (KGs). We explore the application of state-of-the-art open-source LLMs, including the Llama 2 series, Mistral 7B Instruct, and Zephyr for extracting meaningful triples from CTI texts. Our methodology evaluates techniques such as prompt engineering, the guidance framework, and fine-tuning to optimize information extraction and structuring. The extracted data is then utilized to construct a KG, offering a structured and queryable representation of threat intelligence. Experimental results demonstrate the effectiveness of our approach in extracting relevant information, with guidance and fine-tuning showing superior performance over prompt engineering. However, while our methods prove effective in small-scale tests, applying LLMs to large-scale data for KG construction and Link Prediction presents ongoing challenges.",
+    "arxiv_id": "2407.02528v1"
+  },
+  "core_content": {
+    "novelty_claim": "The paper investigates using Large Language Models (LLMs) to extract information from unstructured Cyber Threat Intelligence (CTI) for Knowledge Graph (KG) construction, which is a novel approach compared to prior work that used machine learning.",
+    "key_methodology": "The methodology involves evaluating various techniques like few-shot learning with prompt engineering and the guidance framework, as well as fine-tuning, to optimize information extraction from CTI texts. The best-performing model is then employed to generate a KG from CTI reports.",
+    "outcomes": [
+      "Demonstrated effectiveness of LLMs in extracting relevant information from unstructured CTI data",
+      "Guidance and fine-tuning showed superior performance over prompt engineering",
+      "Identified limitations of LLMs for large-scale datasets and proposed practical solutions"
+    ],
+    "full_text_markdown": "The ever-evolving landscape of cyber threats has made incident threat analysis challenging, even for experienced professionals. Cyber Threat Intelligence (CTI) addresses this by providing information on threat actors, including indicators of compromise (IoCs) such as IP addresses or file hashes, as well as attacker tactics, techniques, and procedures (TTPs). This information is crucial for cybersecurity analysts, enabling them to make informed security decisions and stay updated on new threats. However, CTI is primarily provided in an unstructured format and can be noisy, making knowledge extraction labor-intensive, with over half of the security teams spending more than 40% of their time on these tasks. Therefore, we need more automation to reduce the overwhelming volume of open source reporting and the large amount of time spent analyzing it. To address these challenges, methodologies like TTPHunter [2] and LADDER [3] have been proposed to structure CTI reports into Knowledge Graphs (KGs). Despite their contributions, they often face limitations such as high false positive rates in classifying IoCs and TTPs, scalability challenges, and the potential to miss critical information due to the constraints of language and predefined schemas. Lately, large language models (LLMs) have proven valuable for understanding and manipulating natural language. With tailored prompts or additional training, they can perform effectively in tasks such as Named Entity Recognition [4], Relation Extraction [5][6], and Triple Extraction for constructing Knowledge Graphs [7][8][9]. Cybersecurity applications include interpreting TTPs [10] and comprehending cybersecurity terminologies [11][12]. However, LLMs' potential for extracting and interpreting critical information from natural language-heavy CTI remains largely unexplored. Therefore, in this research, we address the challenge of automatically extracting actionable Cyber Threat Intelligence (CTI) using Large Language Models (LLMs) and Knowledge Graphs (KGs). Specifically, we investigate the application of open-source LLMs, including the Llama 2 series [13], Mistral 7B Instruct [14], and Zephyr [15], for extracting triples from CTI text. Our approach includes the evaluation of various techniques like few-shot learning with prompt engineering [16] and the guidance framework [17], as well as fine-tuning [18]. The best-performing model, as determined by the ROUGE score and human evaluation, is then employed to generate a KG from CTI reports. This graph is subsequently applied to link prediction tasks, showcasing the practical implications of our work in enhancing cybersecurity defenses and response strategies.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "LLM-based CTI Extraction"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "KG Construction"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "romy_actionable_cyber_threat_intelligence_using_knowledge_graphs_.pdf"
+}

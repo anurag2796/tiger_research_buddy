@@ -1,0 +1,60 @@
+{
+  "card_id": "incorporating_baryon_driven_contraction",
+  "bibliographic_data": {
+    "title": "Incorporating baryon-driven contraction of dark matter halos in rotation curve fits",
+    "primary_domain": "astro-ph.GA",
+    "authors": [
+      {
+        "name": "Pengfei Li",
+        "faculty_id": "Pengfei Li",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Stacy S. McGaugh"
+      },
+      {
+        "name": "Federico Lelli"
+      },
+      {
+        "name": "James M. Schombert"
+      },
+      {
+        "name": "Marcel S. Pawlowski"
+      }
+    ],
+    "year": 2024,
+    "abstract": "The condensation of baryons within a dark matter (DM) halo during galaxy formation should result in some contraction of the halo as the combined system settles into equilibrium. We quantify this effect on the cuspy primordial halos predicted by DM-only simulations for the baryon distributions observed in the galaxies of the SPARC database. We find that the DM halos of high surface brightness galaxies (with \u03a3e\ufb00\u2273100 L\u2299pc\u22122 at 3.6 \u00b5m) experience strong contraction. Halos become more cuspy as a result of compression: the inner DM density slope increases with the baryonic surface mass density. We iteratively fit rotation curves to find the balance between initial halo parameters (constrained by abundance matching), compression, and stellar mass-to-light ratio. The resulting fits often require lower stellar masses than expected for stellar populations, particularly in galaxies with bulges: stellar mass must be reduced to make room for the DM it compresses. This trade-off between dark and luminous mass is reminiscent of the cusp-core problem in dwarf galaxies, but occurs in more massive systems: the present-epoch DM halos cannot follow from cuspy primordial halos unless (1) the stellar mass-to-light ratios are systematically smaller than expected from standard stellar population synthesis models, and/or (2) there is a net outward mass redistribution from the initial cusp, even in massive galaxies widely considered to be immune from such effects.",
+    "arxiv_id": "arXiv:2208.04326"
+  },
+  "core_content": {
+    "novelty_claim": "The paper quantifies the contraction of dark matter halos due to baryon condensation and iteratively fits rotation curves to find a balance between initial halo parameters, compression, and stellar mass-to-light ratio.",
+    "key_methodology": "The authors numerically compute the adiabatic contraction of DM halos for the observed distribution of baryons in galaxies from the SPARC database.",
+    "outcomes": [
+      "DM halos of high surface brightness galaxies experience strong contraction, making them more cuspy.",
+      "Rotation curve fits often require lower stellar masses than expected, particularly in galaxies with bulges."
+    ],
+    "full_text_markdown": "During galaxy formation, the condensation of baryons within a dark matter (DM) halo results in some contraction of the halo as the combined system settles into equilibrium. This paper quantifies this effect on cuspy primordial halos predicted by DM-only simulations for the baryon distributions observed in galaxies from the SPARC database. The authors find that high surface brightness galaxies experience strong contraction, making their DM halos more cuspy. Iteratively fitting rotation curves to balance initial halo parameters (constrained by abundance matching), compression, and stellar mass-to-light ratio reveals that stellar masses must be reduced to accommodate compressed dark matter. This trade-off between dark and luminous mass is reminiscent of the cusp-core problem in dwarf galaxies but occurs in more massive systems. The present-epoch DM halos cannot follow from cuspy primordial halos unless (1) stellar mass-to-light ratios are systematically smaller than expected, or (2) there is a net outward mass redistribution from the initial cusp."
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Adiabatic Contraction"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Cusp-Core Problem"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "pengfei_incorporating_baryon-driven_contraction_of_dark_matter_halos.pdf"
+}

@@ -1,0 +1,85 @@
+{
+  "card_id": "neural-episodic-control-with-state-abstraction",
+  "bibliographic_data": {
+    "title": "Neural Episodic Control with State Abstraction",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Zhuo Li",
+        "faculty_id": "Pengfei Li",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Derui Zhu",
+        "faculty_id": "Derui Zhu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yujing Hu",
+        "faculty_id": "Derui Zhu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Xiaofei Xie"
+      },
+      {
+        "name": "Lei Ma",
+        "faculty_id": "Naveen Sharma",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yan Zheng"
+      },
+      {
+        "name": "Yan Song",
+        "faculty_id": "Xinchao Song",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yingfeng Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jianjun Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2023,
+    "abstract": "Existing Deep Reinforcement Learning (DRL) algorithms suffer from sample inefficiency. Generally, episodic control-based approaches are solutions that leverage highly-rewarded past experiences to improve sample efficiency of DRL algorithms. However, previous episodic control-based approaches fail to utilize the latent information from the historical behaviors (e.g., state transitions, topological similarities, etc.) and lack scalability during DRL training. This work introduces Neural Episodic Control with State Abstraction (NECSA), a simple but effective state abstraction-based episodic control containing a more comprehensive episodic memory, a novel state evaluation, and a multi-step state analysis. We evaluate our approach to the MuJoCo and Atari tasks in OpenAI gym domains. The experimental results indicate that NECSA achieves higher sample efficiency than the state-of-the-art episodic control-based approaches.",
+    "arxiv_id": "arXiv:2301.11490"
+  },
+  "core_content": {
+    "novelty_claim": "NECSA introduces a multi-step analysis of state transitions and an intrinsic state measurement based on state abstraction to improve sample efficiency in Deep Reinforcement Learning.",
+    "key_methodology": "NECSA uses state abstraction to discretize the continuous state space into finite grids, enabling a more comprehensive episodic memory analysis. It also proposes an intrinsic state measurement based on abstract patterns rather than past state values.",
+    "outcomes": [
+      "Achieves higher sample efficiency compared to state-of-the-art episodic control-based approaches",
+      "Improves performance by analyzing multi-step state transitions and topological similarities"
+    ],
+    "full_text_markdown": "Deep reinforcement learning (DRL) has gained significant attention in research and industry, with applications ranging from games to robotics. However, DRL policies often require vast amounts of data, making them sample inefficient. To address this issue, many approaches have been proposed, including state abstraction and episodic control. This paper introduces Neural Episodic Control with State Abstraction (NECSA), which leverages a more comprehensive episodic memory and novel state evaluation methods to improve sample efficiency. NECSA discretizes the continuous state space into finite grids, allowing for multi-step analysis of state transitions. It also proposes an intrinsic state measurement based on abstract patterns rather than past state values. The approach is evaluated on MuJoCo and Atari tasks in OpenAI gym domains, demonstrating higher sample efficiency compared to existing methods.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "State Abstraction"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "Episodic Control"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "zhuo_neural_episodic_control_with_state_abstraction.pdf"
+}

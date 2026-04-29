@@ -1,0 +1,62 @@
+{
+  "card_id": "mapping-auroral-activity-with-twitter",
+  "bibliographic_data": {
+    "title": "Mapping auroral activity with Twitter",
+    "primary_domain": "cs.NE (Neural and Evolutionary Computing)",
+    "authors": [
+      {
+        "name": "N. Case"
+      },
+      {
+        "name": "E. MacDonald"
+      },
+      {
+        "name": "M. Heavner"
+      },
+      {
+        "name": "A. Tapia"
+      },
+      {
+        "name": "N. LaLone",
+        "faculty_id": "Nick LaLone",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2015,
+    "abstract": "Twitter is a popular, publicly accessible, social media service that has proven useful in mapping large-scale events in real time. In this study, for the first time, the use of Twitter as a measure of auroral activity is investigated. Peaks in the number of aurora-related tweets are found to frequently coincide with geomagnetic disturbances (detection rate of 91%). Additionally, the number of daily aurora-related tweets is found to strongly correlate with several auroral strength proxies (ravg \u22480.7). An examination is made of the bias for location and time of day within Twitter data, and a first-order correction of these effects is presented. Overall, the results suggest that Twitter can provide both specific details about an individual aurora and accurate real-time indication of when, and even from where, an aurora is visible.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "This study investigates using Twitter as a measure of auroral activity for the first time, showing strong correlation between tweet counts and auroral strength proxies.",
+    "key_methodology": "Tweets were collected from September 2012 to April 2013 by the Aurorasaurus citizen science project. The tweets were filtered using aurora-related keywords and compared with several geomagnetic indices as proxies for auroral activity.",
+    "outcomes": [
+      "Peaks in the number of aurora-related tweets coincide with geomagnetic disturbances (91% detection rate)",
+      "Daily tweet occurrences strongly correlate with auroral strength proxies (ravg \u22480.7)",
+      "Bias for location and time of day within Twitter data was examined and corrected"
+    ],
+    "full_text_markdown": "This study investigates the use of Twitter as a measure of auroral activity, finding that peaks in the number of aurora-related tweets frequently coincide with geomagnetic disturbances (91% detection rate). The number of daily aurora-related tweets also strongly correlates with several auroral strength proxies (ravg \u22480.7). The study examines biases for location and time of day within Twitter data and presents a first-order correction for these effects. Overall, the results suggest that Twitter can provide both specific details about an individual aurora and accurate real-time indication of when, and even from where, an aurora is visible.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Twitter-based Auroral Activity Mapping"
+      },
+      {
+        "id": "concept_2",
+        "type": "Proxy",
+        "label": "Auroral Strength Proxies"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "n._mapping_auroral_activity_with_twitter.pdf"
+}

@@ -1,0 +1,82 @@
+{
+  "card_id": "not_a_collaborator_or_supervisor_2026",
+  "bibliographic_data": {
+    "title": "Not a Collaborator or a Supervisor, but an Assistant: Striking the Balance Between Efficiency and Ownership in AI-incorporated Qualitative Data Analysis",
+    "primary_domain": "cs.HC",
+    "authors": [
+      {
+        "name": "Anoushka Puranik"
+      },
+      {
+        "name": "Ester Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Roshan L Peiris",
+        "faculty_id": "Roshan Peiris",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Hidy Kong",
+        "faculty_id": "Hidy Kong",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2026,
+    "abstract": "Qualitative research offers deep insights into human experiences, but its processes, such as coding and thematic analysis, are time-intensive and laborious. Recent advancements in qualitative data analysis (QDA) tools have introduced AI capabilities, allowing researchers to handle large datasets and automate labor-intensive tasks. However, qualitative researchers have expressed concerns about AI\u2019s lack of contextual understanding and its potential to overshadow the collaborative and interpretive nature of their work. This study investigates researchers\u2019 preferences among three degrees of delegation of AI in QDA (human-only, human-initiated, and AI-initiated coding) and explores factors influencing these preferences. Through interviews with 16 qualitative researchers, we identified efficiency, ownership, and trust as essential factors in determining the desired degree of delegation. Our findings highlight researchers\u2019 openness to AI as a supportive tool while emphasizing the importance of human oversight and transparency in automation.",
+    "arxiv_id": "arXiv:2509.18297"
+  },
+  "core_content": {
+    "novelty_claim": "The study investigates qualitative researchers' preferences for different degrees of AI delegation in QDA processes, highlighting the importance of human oversight and transparency.",
+    "key_methodology": "Interviews with 16 qualitative researchers to understand their preferences regarding three degrees of AI involvement: human-only, human-initiated, and AI-initiated coding.",
+    "outcomes": [
+      "Efficiency, ownership, and trust were identified as key factors influencing the desired degree of AI delegation in QDA processes.",
+      "Researchers showed openness to using AI as a supportive tool but emphasized the need for human oversight and transparency."
+    ],
+    "full_text_markdown": "This paper explores how qualitative researchers perceive the role of artificial intelligence (AI) in their collaborative analysis workflows. The study uses Lubars and Tan\u2019s framework on human perception of task delegation to AI, which divides the degree of delegation into four categories: no AI assistance, the human leads and the AI assists, the AI leads and the human assists, and full AI automation. The authors adjusted this framework to describe different types of AI involvement in QDA processes: human-only coding, human-initiated coding, and AI-initiated coding. Through interviews with 16 qualitative researchers, the study identified efficiency, ownership, and trust as essential factors in determining the desired degree of delegation. The findings highlight that while researchers are open to using AI as a supportive tool, they emphasize the importance of human oversight and transparency in automation.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Lubars and Tan\u2019s Framework"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "Human-only Coding"
+      },
+      {
+        "id": "concept_3",
+        "type": "Method",
+        "label": "Human-initiated Coding"
+      },
+      {
+        "id": "concept_4",
+        "type": "Method",
+        "label": "AI-initiated Coding"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "SOLVES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_4",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "anoushka_not_a_collaborator_or_a_supervisor_but_an_assistant_striking.pdf"
+}

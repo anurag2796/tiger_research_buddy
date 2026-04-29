@@ -1,0 +1,71 @@
+{
+  "card_id": "gliese_687_planet_discovery",
+  "bibliographic_data": {
+    "title": "The Lick-Carnegie Exoplanet Survey: Gliese 687b: A Neptune-Mass Planet Orbiting a Nearby Red Dwarf",
+    "primary_domain": "astro-ph.EP",
+    "authors": [
+      {
+        "name": "Jennifer Burt",
+        "faculty_id": "Jennifer Burt",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Steven S. Vogt"
+      },
+      {
+        "name": "R. Paul Butler",
+        "faculty_id": "Zachary Butler",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Russell Hanson"
+      },
+      {
+        "name": "Stefano Meschiari"
+      },
+      {
+        "name": "Eugenio J. Rivera"
+      },
+      {
+        "name": "Gregory W. Henry"
+      },
+      {
+        "name": "Gregory Laughlin"
+      }
+    ],
+    "year": 2014,
+    "abstract": "Precision radial velocities from the Automated Planet Finder and Keck/HIRES reveal an M sin(i) = 18 \u00b1 2 M\u2295 planet orbiting the nearby M3V star GJ 687. This planet has an orbital period, P = 38.14 days, and a low orbital eccentricity. Our Str\u00f6mgren b and y photometry of the host star suggests a stellar rotation signature with a period of P = 60 days. The star is somewhat chromospherically active, with a spot filling factor estimated to be several percent. The rotationally\u2013induced 60-day signal, however, is well-separated from the period of the radial velocity variations, instilling confidence in the interpretation of a Keplerian origin for the observed velocity variations. Although GJ 687 b produces relatively little specific interest in connection with its individual properties, a compelling case can be argued that it is worthy of remark as an eminently typical, yet at a distance of 4.52 pc, a very nearby representative of the galactic planetary census. The detection of GJ 687 b indicates that the APF telescope is well suited to the discovery of low-mass planets orbiting low-mass stars in the as-yet relatively un-surveyed region of the sky near the north celestial pole.",
+    "arxiv_id": "1405.2929"
+  },
+  "core_content": {
+    "novelty_claim": "The discovery of a Neptune-mass planet orbiting a nearby M3V star, GJ 687, using precision radial velocity measurements from the Automated Planet Finder and Keck/HIRES.",
+    "key_methodology": "Precision radial velocity measurements were conducted over 16.6 years with the Automated Planet Finder Telescope (APF) and Keck/HIRES to detect a Neptune-mass planet orbiting GJ 687, a nearby M3V star.",
+    "outcomes": [
+      "Detection of a Neptune-mass planet with an orbital period of 38.14 days around GJ 687",
+      "Confirmation that the APF telescope is well suited for discovering low-mass planets orbiting low-mass stars in un-surveyed regions of the sky"
+    ],
+    "full_text_markdown": "The paper describes the discovery of a Neptune-mass planet, GJ 687 b, around a nearby M3V star using precision radial velocity measurements. The authors used data from the Automated Planet Finder and Keck/HIRES over 16.6 years to detect this planet with an orbital period of 38.14 days. They also provide detailed stellar parameters and discuss the implications for the frequency, physical properties, and detectability of low-mass planets orbiting M-type stars. The detection indicates that the APF telescope is well suited for discovering such planets in un-surveyed regions of the sky."
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Precision Radial Velocity Measurements"
+      },
+      {
+        "id": "concept_2",
+        "type": "Planet",
+        "label": "GJ 687 b"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "DISCOVERED_BY"
+      }
+    ]
+  },
+  "source_file": "jennifer_the_lick-carnegie_exoplanet_survey_gliese_687b_a_neptune-mas.pdf"
+}

@@ -1,0 +1,73 @@
+{
+  "card_id": "pix2repair",
+  "bibliographic_data": {
+    "title": "Pix2Repair: Implicit Shape Restoration from Images",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Xinchao Song",
+        "faculty_id": "Xinchao Song",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Nikolas Lamb"
+      },
+      {
+        "name": "Sean Banerjee"
+      },
+      {
+        "name": "Natasha Kholgade Banerjee"
+      }
+    ],
+    "year": 2023,
+    "abstract": "We present Pix2Repair, an automated shape repair approach that generates restoration shapes from images to repair fractured objects. Prior repair approaches require a high-resolution watertight 3D mesh of the fractured object as input. Input 3D meshes must be obtained using expensive 3D scanners, and scanned meshes require manual cleanup, limiting accessibility and scalability. Pix2Repair takes an image of the fractured object as input and automatically generates a 3D printable restoration shape. We contribute a novel shape function that deconstructs a latent code representing the fractured object into a complete shape and a break surface. We also introduce Fantastic Breaks Imaged, the first large-scale dataset of 11,653 real-world images of fractured objects for training and evaluating image-based shape repair approaches. Our approach outperforms shape completion approaches adapted for shape repair in terms of chamfer distance, normal consistency, and percent restorations generated.",
+    "arxiv_id": "2305.18273"
+  },
+  "core_content": {
+    "novelty_claim": "Pix2Repair generates restoration shapes from images by deconstructing a latent code representing the fractured object into a complete shape and a break surface, outperforming existing approaches in terms of chamfer distance, normal consistency, and percent restorations generated.",
+    "key_methodology": "The approach uses an implicit representation to generate a 3D printable restoration shape from an image of a fractured object. It computes the repair shape as the Boolean intersection of a predicted complete shape and break shape, where the break shape is given by a break surface.",
+    "outcomes": [
+      "Generates restoration shapes directly from color images of fractured objects",
+      "Outperforms existing approaches in terms of chamfer distance, normal consistency, and percent restorations generated"
+    ],
+    "full_text_markdown": "Pix2Repair is an automated shape repair approach that generates 3D printable restoration shapes from images. It addresses the limitations of prior approaches which require expensive 3D scans or manual cleanup. By using a novel shape function to deconstruct latent codes, it predicts complete shapes and break surfaces directly from color images. The approach also introduces Fantastic Breaks Imaged, a large-scale dataset for training and evaluating image-based repair algorithms. Experiments show that Pix2Repair outperforms existing methods in terms of accuracy metrics.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "shape_completion",
+        "type": "Method",
+        "label": "Shape Completion"
+      },
+      {
+        "id": "break_surface",
+        "type": "Concept",
+        "label": "Break Surface"
+      },
+      {
+        "id": "latent_code_deconstruction",
+        "type": "Method",
+        "label": "Latent Code Deconstruction"
+      }
+    ],
+    "edges": [
+      {
+        "source": "shape_completion",
+        "target": "break_surface",
+        "relation": "INVOLVES"
+      },
+      {
+        "source": "latent_code_deconstruction",
+        "target": "complete_shape",
+        "relation": "GENERATES"
+      },
+      {
+        "source": "latent_code_deconstruction",
+        "target": "break_surface",
+        "relation": "GENERATES"
+      }
+    ]
+  },
+  "source_file": "xinchao_pix2repair_implicit_shape_restoration_from_images.pdf"
+}

@@ -1,0 +1,58 @@
+{
+  "card_id": "practical_realisation_and_elimination_of_ecc_related_software_bug_attack",
+  "bibliographic_data": {
+    "title": "Practical Realisation and Elimination of an ECC-Related Software Bug Attack",
+    "primary_domain": "cs.CR",
+    "authors": [
+      {
+        "name": "B. Brumley",
+        "faculty_id": "Billy Brumley",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "M. Barbosa"
+      },
+      {
+        "name": "D. Page"
+      },
+      {
+        "name": "F. Vercauteren"
+      }
+    ],
+    "year": 2012,
+    "abstract": "We analyse and exploit implementation features in OpenSSL version 0.9.8g which permit an attack against ECDH-based functionality. The attack, although more general, can recover the entire (static) private key from an associated SSL server via 633 adaptive queries when the NIST curve P-256 is used. One can view it as a software-oriented analogue of the bug attack concept due to Biham et al. and, consequently, as the first bug attack to be successfully applied against a real-world system. In addition to the attack and a posteriori countermeasures, we show that formal verification, while rarely used at present, is a viable means of detecting the features which the attack hinges on. Based on the security implications of the attack and the extra justification posed by the possibility of intentionally incorrect implementations in collaborative software development, we conclude that applying and extending the coverage of formal verification to augment existing test strategies for OpenSSL-like software should be deemed a worthwhile, long-term challenge.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper presents an attack on OpenSSL version 0.9.8g that can recover the entire static private key via ECDH functionality using adaptive queries.",
+    "key_methodology": "Exploiting a bug in modular arithmetic implementation of specific NIST elliptic curves, leading to incorrect output from modular multiplications.",
+    "outcomes": [
+      "Recovery of the entire (static) private key",
+      "First practical realisation of a software-oriented bug attack concept"
+    ],
+    "full_text_markdown": "The paper discusses an attack on OpenSSL version 0.9.8g that exploits implementation features to recover the static private key in ECDH-based functionality. The attack uses adaptive queries and can be applied in scenarios where the public key is reused across several key agreement protocol executions. The authors also explore formal verification as a means of preventing such bugs, highlighting its importance in collaborative software development environments.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Modular Arithmetic Bug"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Bug Attack"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "b._practical_realisation_and_elimination_of_an_ecc-related_soft.pdf"
+}

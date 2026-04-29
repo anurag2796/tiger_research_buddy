@@ -1,0 +1,68 @@
+{
+  "card_id": "1112.2205v2",
+  "bibliographic_data": {
+    "title": "ANDaNA: Anonymous Named Data Networking Application",
+    "primary_domain": "cs.CR",
+    "authors": [
+      {
+        "name": "Steven DiBenedetto"
+      },
+      {
+        "name": "Paolo Gasti"
+      },
+      {
+        "name": "Gene Tsudik"
+      },
+      {
+        "name": "Ersin Uzun",
+        "faculty_id": "Ersin Uzun",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2012,
+    "abstract": "Content-centric networking\u2014also known as information-centric networking (ICN)\u2014shifts emphasis from hosts and interfaces to data. Named Data Networking (NDN) has some innate privacy-friendly features, such as lack of source and destination addresses on packets. However, NDN architecture prompts some privacy concerns mainly stemming from the semantic richness of names. We examine privacy-relevant characteristics of NDN and present an initial attempt to achieve communication privacy. Specifically, we design an NDN add-on tool, called ANDaNA, that borrows a number of features from Tor. As we demonstrate via experiments, it provides comparable anonymity with lower relative overhead.",
+    "arxiv_id": "1112.2205v2"
+  },
+  "core_content": {
+    "novelty_claim": "ANDaNA is an initial approach to achieve communication privacy in Named Data Networking (NDN) by adapting onion routing techniques, providing comparable anonymity with lower relative overhead.",
+    "key_methodology": "ANDaNA borrows features from Tor and is designed as an NDN add-on tool. It provides comparable anonymity with lower relative overhead compared to existing solutions like Tor.",
+    "outcomes": [
+      "ANDaNA provides comparable anonymity in Named Data Networking (NDN) with lower relative overhead.",
+      "The approach addresses privacy challenges in NDN, including name privacy, content privacy, cache privacy, and signature privacy."
+    ],
+    "full_text_markdown": "Content-centric networking\u2014also known as information-centric networking (ICN)\u2014shifts emphasis from hosts and interfaces to data. Named Data Networking (NDN) has some innate privacy-friendly features, such as lack of source and destination addresses on packets. However, NDN architecture prompts some privacy concerns mainly stemming from the semantic richness of names. This paper examines privacy-relevant characteristics of NDN and presents an initial attempt to achieve communication privacy. Specifically, we design an NDN add-on tool, called ANDaNA, that borrows a number of features from Tor. As demonstrated via experiments, it provides comparable anonymity with lower relative overhead.\n\nThe introduction discusses the challenges in today's Internet architecture, particularly focusing on security and privacy issues. The authors argue that anonymity is critical for any new network architecture as it helps people overcome communication restrictions and evade censorship. ANDaNA addresses several privacy concerns: name privacy, content privacy, cache privacy, and signature privacy. The approach is designed to be inline with NDN principles while optimizing for small- to medium-size interactive communication such as web browsing and instant messaging.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "ANDaNA"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Named Data Networking (NDN)"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Onion Routing"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "APPLIES_TO"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "BORROWS_FROM"
+      }
+    ]
+  },
+  "source_file": "steven_andana_anonymous_named_data_networking_application.pdf"
+}

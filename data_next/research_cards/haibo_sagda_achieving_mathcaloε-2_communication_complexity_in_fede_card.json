@@ -1,0 +1,64 @@
+{
+  "card_id": "sagda_federated_min_max",
+  "bibliographic_data": {
+    "title": "SAGDA: Achieving $\\mathcal{O}(\u03b5^{-2})$ Communication Complexity in Federated Min-Max Learning",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Haibo Yang",
+        "faculty_id": "Haibo Yang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Zhuqing Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Xin Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jia Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2022,
+    "abstract": "Federated min-max learning has received increasing attention in recent years due to its wide range of applications. To lower the communication complexity, a new algorithmic framework called stochastic sampling averaging gradient descent ascent (SAGDA) is proposed. SAGDA assembles stochastic gradient estimators from randomly sampled clients and leverages two learning rates on both server and client sides. This method achieves linear speedup in terms of both the number of clients and local update steps, yielding an O(\u03f5\u22122) communication complexity that is orders of magnitude lower than the state-of-the-art.",
+    "arxiv_id": "arXiv:2210.00611"
+  },
+  "core_content": {
+    "novelty_claim": "SAGDA achieves linear speedup and O(\u03f5\u22122) communication complexity in federated min-max learning by leveraging stochastic gradient estimators as control variates and using two learning rates.",
+    "key_methodology": "SAGDA assembles stochastic gradient estimators from randomly sampled clients to reduce the communication complexity, while using two learning rates on both server and client sides.",
+    "outcomes": [
+      "Achieves linear speedup in terms of both the number of clients and local update steps",
+      "Yields an O(\u03f5\u22122) communication complexity that is orders of magnitude lower than state-of-the-art methods"
+    ],
+    "full_text_markdown": "Federated min-max learning has gained significant attention due to its applications in various learning paradigms. To address the high communication costs, a new algorithm called SAGDA (stochastic sampling averaging gradient descent ascent) is proposed. SAGDA uses stochastic gradient estimators from randomly sampled clients and employs two learning rates on both server and client sides. This approach achieves linear speedup and significantly reduces the communication complexity to O(\u03f5\u22122), which is much lower than existing methods.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "SAGDA",
+        "type": "Method",
+        "label": "Stochastic Sampling Averaging Gradient Descent Ascent"
+      },
+      {
+        "id": "FSGDA",
+        "type": "Method",
+        "label": "Federated Stochastic Gradient Descent Ascent"
+      }
+    ],
+    "edges": [
+      {
+        "source": "SAGDA",
+        "target": "FSGDA",
+        "relation": "IS_A_SPECIAL_VERSION_OF"
+      }
+    ]
+  },
+  "source_file": "haibo_sagda_achieving_mathcalo\u03b5-2_communication_complexity_in_fede.pdf"
+}

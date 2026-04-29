@@ -1,0 +1,50 @@
+{
+  "card_id": "cs-cr-associative-one-way-functions",
+  "bibliographic_data": {
+    "title": "Low Ambiguity in Strong, Total, Associative, One-Way Functions",
+    "primary_domain": "cs.CR",
+    "authors": [
+      {
+        "name": "Christopher M. Homan",
+        "faculty_id": "Christopher Homan",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2018,
+    "abstract": "Rabi and Sherman [RS97] present a cryptographic paradigm based on associative, one-way functions that are strong (i.e., hard to invert even if one of their arguments is given) and total. Hemaspaandra and Rothe [HR99] proved that such powerful one-way functions exist exactly if (standard) one-way functions exist, thus showing that the associative one-way function approach is as plausible as previous approaches. In the present paper, we study the degree of ambiguity of one-way functions. Rabi and Sherman showed that no associative one-way function (over a universe having at least two elements) can be unambiguous (i.e., one-to-one). Nonetheless, we prove that if standard, unambiguous, one-way functions exist, then there exist strong, total, associative, one-way functions that are O(n)-to-one. This puts a reasonable upper bound on the ambiguity. Our other main results are: 1. P \u2260 FewP if and only if there exists an (nO(1))-to-one, strong, total AOWF. 2. No O(1)-to-one total, associative functions exist in \u03a3\u2217\u00d7\u03a3\u2217\u2192\u03a3\u2217. 3. For every nondecreasing, unbounded, total, recursive function g : N \u2192N, there is a g(n)-to-one, total, commutative, associative, recursive function in \u03a3\u2217\u00d7\u03a3\u2217\u2192\u03a3\u2217.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper proves that if standard unambiguous one-way functions exist, then there exist strong, total, associative, one-way functions that are O(n)-to-one, thereby putting a reasonable upper bound on the ambiguity.",
+    "key_methodology": "The authors study the degree of ambiguity in one-way functions and prove several results related to their existence under different conditions.",
+    "outcomes": [
+      "Proved that no total, associative function in \u03a3\u2217\u00d7\u03a3\u2217\u2192\u03a3\u2217 is O(1)-to-one.",
+      "Showed that if standard unambiguous one-way functions exist, then there exist strong, total, associative, one-way functions that are O(n)-to-one.",
+      "Established a lower bound on the ambiguity of certain classes of total, associative functions."
+    ],
+    "full_text_markdown": "The paper explores the concept of ambiguity in one-way functions. Rabi and Sherman showed that no associative one-way function over a universe with at least two elements can be unambiguous (one-to-one). However, this paper proves that if standard unambiguous one-way functions exist, then there are strong, total, associative, one-way functions that are O(n)-to-one, thus providing an upper bound on the ambiguity. The authors also prove that P \u2260 FewP if and only if nO(1)-to-one, strong, total, associative one-way functions exist. Additionally, they establish a lower bound on the ambiguity of certain classes of total, associative functions.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "One-Way Function"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Ambiguity"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "christophe_low_ambiguity_in_strong_total_associative_one-way_functions.pdf"
+}

@@ -1,0 +1,53 @@
+{
+  "card_id": "insight_into_voting_problem_complexity",
+  "bibliographic_data": {
+    "title": "Insight into Voting Problem Complexity Using Randomized Classes",
+    "primary_domain": "cs.SE",
+    "authors": [
+      {
+        "name": "Zack Fitzsimmons"
+      },
+      {
+        "name": "Edith Hemaspaandra",
+        "faculty_id": "Edith Hemaspaandra",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2022,
+    "abstract": "The first step in classifying the complexity of an NP problem is typically showing the problem in P or NP-complete. This has been a successful first step for many problems, including voting problems. However, in this paper we show that this may not always be the best first step. We consider the problem of constructive control by replacing voters (CCRV) introduced by Loreggia et al. (2015) for the scoring rule First-Last, which is defined by \u27e81, 0, ..., 0, -1\u27e9. We show that this problem is equivalent to Exact Perfect Bipartite Matching, and so CCRV for First-Last can be determined in random polynomial time. So on the one hand, if CCRV for First-Last is NP-complete then RP = NP, which is extremely unlikely. On the other hand, showing that CCRV for First-Last is in P would also show that Exact Perfect Bipartite Matching is in P, which would solve a well-studied 40-year-old open problem.",
+    "arxiv_id": "2204.12856v2"
+  },
+  "core_content": {
+    "novelty_claim": "The paper shows that the constructive control by replacing voters (CCRV) for the First-Last scoring rule is equivalent to Exact Perfect Bipartite Matching, which can be determined in random polynomial time.",
+    "key_methodology": "The authors link the complexity of CCRV for First-Last to Exact Perfect Bipartite Matching and show that if CCRV for First-Last is NP-complete then RP = NP, while if it is in P then Exact Perfect Bipartite Matching is also in P.",
+    "outcomes": [
+      "CCRV for First-Last can be determined in random polynomial time",
+      "If CCRV for First-Last is NP-complete, then RP = NP (extremely unlikely)",
+      "If CCRV for First-Last is in P, then Exact Perfect Bipartite Matching is also in P"
+    ],
+    "full_text_markdown": "The first step in classifying the complexity of an NP problem is typically showing the problem in P or NP-complete. This has been a successful first step for many problems, including voting problems. However, in this paper we show that this may not always be the best first step. We consider the problem of constructive control by replacing voters (CCRV) introduced by Loreggia et al. (2015) for the scoring rule First-Last, which is defined by \u27e81, 0, ..., 0, -1\u27e9. We show that this problem is equivalent to Exact Perfect Bipartite Matching, and so CCRV for First-Last can be determined in random polynomial time. So on the one hand, if CCRV for First-Last is NP-complete then RP = NP, which is extremely unlikely. On the other hand, showing that CCRV for First-Last is in P would also show that Exact Perfect Bipartite Matching is in P, which would solve a well-studied 40-year-old open problem.\n\nElections are an important tool used to aggregate the preferences of several agents (voters) over a set of choices (candidates) with applications in areas such as political domains and multiagent systems in artificial intelligence settings. We consider computational problems relating to elections, specifically the computational complexity of electoral control. Electoral control models the actions of an agent with control over an election, referred to as the chair, who modifies this structure to ensure a preferred outcome, e.g., by adding voters to the election to ensure a preferred candidate wins. Types of electoral control model many different types of real-world manipulative actions on elections such as get-out-the-vote drives. The study of electoral control was introduced by Bartholdi, Tovey, and Trick (1992) who studied the computational complexity of different types of control, including control by adding voters, for several voting rules. This important initial work led to lots of subsequent work on control (see, e.g., Faliszewski and Rothe (2016)).",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Constructive Control by Replacing Voters (CCRV)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Exact Perfect Bipartite Matching"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "EQUIVALENT_TO"
+      }
+    ]
+  },
+  "source_file": "zack_insight_into_voting_problem_complexity_using_randomized_clas.pdf"
+}

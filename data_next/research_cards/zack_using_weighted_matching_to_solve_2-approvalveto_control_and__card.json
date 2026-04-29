@@ -1,0 +1,53 @@
+{
+  "card_id": "using_weighted_matching_to_solve_2_approval_veto_control_and_bribery",
+  "bibliographic_data": {
+    "title": "Using Weighted Matching to Solve 2-Approval/Veto Control and Bribery",
+    "primary_domain": "cs.GT",
+    "authors": [
+      {
+        "name": "Zack Fitzsimmons"
+      },
+      {
+        "name": "Edith Hemaspaandra",
+        "faculty_id": "Edith Hemaspaandra",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2023,
+    "abstract": "Determining the complexity of election attack problems is a major research direction in the computational study of voting problems. The paper shows that constructive control by replacing voters for 2-Approval is in P, strengthening the recent RP upper bound due to Fitzsimmons and Hemaspaandra (IJCAI 2022). This result, along with the accompanying result that priced bribery for 3-Veto elections is NP-complete, settles the complexity for k-Approval and k-Veto standard control and bribery cases.",
+    "arxiv_id": "arXiv:2305.16889v1"
+  },
+  "core_content": {
+    "novelty_claim": "The paper shows that constructive control by replacing voters for 2-Approval is in P, strengthening the recent RP upper bound due to Fitzsimmons and Hemaspaandra (IJCAI 2022).",
+    "key_methodology": "Transforming 2-Approval CCRV to weighted matching.",
+    "outcomes": [
+      "Constructive control by replacing voters for 2-Approval is in P.",
+      "Priced bribery for 2-Veto elections is in P.",
+      "Priced bribery for 3-Veto elections is NP-complete."
+    ],
+    "full_text_markdown": "# Using Weighted Matching to Solve 2-Approval/Veto Control and Bribery\n\n## Abstract\nDetermining the complexity of election attack problems is a major research direction in the computational study of voting problems. The paper shows that constructive control by replacing voters for 2-Approval is in P, strengthening the recent RP upper bound due to Fitzsimmons and Hemaspaandra (IJCAI 2022). This result, along with the accompanying result that priced bribery for 3-Veto elections is NP-complete, settles the complexity for k-Approval and k-Veto standard control and bribery cases.\n\n## Introduction\nElections are the most widely-used way to aggregate the preferences of a group of agents over a common set of alternatives. Applications include political elections as well as multiagent systems in artificial intelligence applications. Thus it is important to study computational aspects of elections including problems such as winner determination and different ways of strategically affecting the outcome, which are referred to as election-attack problems (see, e.g., Brandt et al. [BCE+16]).\n\nElectoral control and bribery are two important examples of election-attack problems. Control models the actions of an election chair who has control over the structure of the election (e.g., the set of voters) and modifies this structure to ensure a preferred outcome (e.g., by deleting voters). Di\ufb00erent control actions model real-world settings such as get-out-the-vote drives or adding \u201cspoiler\u201d candidates to an election to a preferred candidate wins. The standard control cases of adding or deleting voters or candidates can be naturally extended to replacing voters or candidates, which for example models settings where the size of the collection of voters is fixed to its initial amount (e.g., in a parliament) and so the control action must work within this restriction [LNR+15]. Bribery considers how a strategic agent can set the votes of a subcollection of the voters to ensure a preferred outcome [FHH09]. The computational study of control and bribery is a major research direction in computational social choice (see Faliszewski and Rothe [FR16]).\n\n## Aspects of Voting Rules\nAsking voters to state their most preferred candidate where candidates with the highest number of approvals win is one of the most natural ways to elicit preferences to reach a group decision. This is referred to as the Plurality rule. We consider k-Approval, which generalizes this for fixed k. We additionally consider k-Veto where each voter vetoes their k least preferred candidates, and candidates with the fewest vetoes win.\n\n## Main Contributions\nThe main contributions of our paper are summarized below:\n1. We show that (constructive) control by replacing voters for 2-Approval, the sole remaining open case from Erd\u00b4elyi et al. [ENR+21], that was very recently shown to be in RP (randomized polynomial time) by Fitzsimmons and Hemaspaandra [FH22a], is in fact in P.\n2. We also settle the complexity of the last remaining cases from the study of k-Approval and k-Veto by Lin [Lin11, Lin12] by showing that priced bribery for 2-Veto is in P (Theorem 4), while priced bribery for 3-Veto is NP-complete (Theorem 5).\n3. To prove our polynomial-time results we use transformations from voting problems to weighted matching. Weighted matching has been seldom used in the computational study of voting problems and our nontrivial polynomial-time results illustrate its usefulness.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Constructive Control by Replacing Voters for 2-Approval"
+      },
+      {
+        "id": "concept_2",
+        "type": "Complexity Class",
+        "label": "P"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "zack_using_weighted_matching_to_solve_2-approvalveto_control_and_.pdf"
+}

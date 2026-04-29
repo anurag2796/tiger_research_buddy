@@ -1,0 +1,61 @@
+{
+  "card_id": "gaia_prime_halo",
+  "bibliographic_data": {
+    "title": "The odd primordial halo of the Milky Way implied by Gaia. A shallow core, but a steep decline",
+    "primary_domain": "astro-ph.GA",
+    "authors": [
+      {
+        "name": "Pengfei Li",
+        "faculty_id": "Pengfei Li",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Stacy S. McGaugh"
+      },
+      {
+        "name": "Marcel S. Pawlowski"
+      },
+      {
+        "name": "Francois Hammer"
+      },
+      {
+        "name": "J. A. Sellwood"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Primordial dark matter halos are well understood from cold dark matter-only simulations. Since they can contract significantly as baryons settle into their centers, direct comparisons with observed galaxies are complicated. We present an approach to reversing the halo contraction by numerically calculating the halo response to baryonic infall and iterating the initial condition. This allowed us to derive spherically averaged primordial dark matter halos for observed galaxies. We applied this approach to the Milky Way and found that the latest Gaia measurements for the rotation velocities imply an odd primordial Galactic halo: Its concentration and total mass differ by more than 3\u03c3 from the predictions, and the density profile presents an inner core that is too shallow and an outer decline that is too steep to be compatible with the cold dark matter paradigm.",
+    "arxiv_id": "arXiv:2511.17705"
+  },
+  "core_content": {
+    "novelty_claim": "The authors present a method to derive primordial dark matter halos for observed galaxies by reversing halo contraction due to baryonic infall.",
+    "key_methodology": "They use the adiabatic contraction of dark matter halos and implement baryonic compression in the Markov chain Monte Carlo (MCMC) approach. The method involves modeling the adiabatic contraction, gradually adding the baryonic potential to the total potential, and iteratively sampling primordial halos based on observed rotation curves.",
+    "outcomes": [
+      "The derived primordial halo for the Milky Way differs significantly from predictions: its concentration and total mass differ by more than 3\u03c3 from cold dark matter paradigm predictions.",
+      "The density profile of the primordial halo shows an inner core that is too shallow and an outer decline that is too steep."
+    ],
+    "full_text_markdown": "Primordial dark matter halos are well understood from cold dark matter-only simulations. However, direct comparisons with observed galaxies are complicated due to significant contraction as baryons settle into the centers of these halos. The authors present a method to derive primordial dark matter halos for observed galaxies by reversing this halo contraction through numerical modeling and implementing baryonic compression in the Markov chain Monte Carlo (MCMC) approach. They apply their method to the Milky Way, using data from Gaia DR3, and find that the latest measurements of rotation velocities imply an odd primordial Galactic halo: its concentration and total mass differ by more than 3\u03c3 from predictions, with a density profile showing an inner core that is too shallow and an outer decline that is too steep. This result challenges the cold dark matter paradigm.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Adiabatic Contraction of Dark Matter Halos"
+      },
+      {
+        "id": "concept_2",
+        "type": "Model",
+        "label": "Primordial Dark Matter Halo"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "pengfei_the_odd_primordial_halo_of_the_milky_way_implied_by_gaia_a_s.pdf"
+}

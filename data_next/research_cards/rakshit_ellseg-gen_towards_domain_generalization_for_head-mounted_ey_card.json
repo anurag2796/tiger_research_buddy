@@ -1,0 +1,63 @@
+{
+  "card_id": "ellseg-gen",
+  "bibliographic_data": {
+    "title": "EllSeg-Gen, towards Domain Generalization for head-mounted eyetracking",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Rakshit S. Kothari"
+      },
+      {
+        "name": "Reynold J. Bailey",
+        "faculty_id": "Reynold Bailey",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Christopher Kanan"
+      },
+      {
+        "name": "Jeff B. Pelz"
+      },
+      {
+        "name": "Gabriel J. Diaz",
+        "faculty_id": "Gabriela Diaz",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2022,
+    "abstract": "Eye tracking solutions frequently employ computer vision or machine learning (ML) algorithms to extract features of interest from images captured using eye cameras. These features facilitate the estimation of a subject\u2019s gaze position. While numerous efforts have explored both approaches, recent works report that ML systems demonstrate state-of-the-art performance in identifying gaze-relevant features for head-mounted eyetracking. However, these systems often fail to generalize to out-of-distribution samples that are dissimilar to ones seen during training but plausible under the overarching goals of the problem. In this work, we explore the relationship between model generalizability and performance within the context of eye tracking. We test the hypothesis that a single model trained on data drawn from multiple heterogeneous domains can generalize better than a specialized, dataset-specific model when evaluated on domains unseen during training.",
+    "arxiv_id": "2205.01947"
+  },
+  "core_content": {
+    "novelty_claim": "The study proposes that jointly training a single model with multiple datasets can improve generalization in head-mounted eyetracking, compared to specialized models trained on individual datasets.",
+    "key_methodology": "A single model is trained using data from multiple heterogeneous domains and its performance is compared against models trained on individual datasets. The hypothesis is tested by evaluating the models on unseen domains.",
+    "outcomes": [
+      "Models trained with multiset training benefit from higher appearance variability in eye images, generalizing better.",
+      "Dataset-specific models generalize better onto eye images with lower appearance variability."
+    ],
+    "full_text_markdown": "The study of human gaze behavior in natural contexts requires robust algorithms for gaze estimation. However, existing ML systems often fail to identify features such as the iris and pupil centroid due to reflective artifacts and occlusions. The authors propose that jointly training a convolutional network with multiple datasets can learn a generalized representation of eye parts, improving generalization across different imaging conditions. They compare the performance of a single model trained on multiple datasets against models trained on individual datasets. Results indicate that models tested on datasets with higher appearance variability benefit from multiset training, while dataset-specific models generalize better onto images with lower appearance variability.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "multiset_training",
+        "type": "Method",
+        "label": "Multiset Training"
+      },
+      {
+        "id": "domain_generalization",
+        "type": "Concept",
+        "label": "Domain Generalization"
+      }
+    ],
+    "edges": [
+      {
+        "source": "multiset_training",
+        "target": "domain_generalization",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "rakshit_ellseg-gen_towards_domain_generalization_for_head-mounted_ey.pdf"
+}

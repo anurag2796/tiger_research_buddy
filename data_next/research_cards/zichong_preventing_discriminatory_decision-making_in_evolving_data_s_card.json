@@ -1,0 +1,83 @@
+{
+  "card_id": "preventing_discriminatory_decision-making_in_evolving_data_streams",
+  "bibliographic_data": {
+    "title": "Preventing Discriminatory Decision-making in Evolving Data Streams",
+    "primary_domain": "cs.AI",
+    "authors": [
+      {
+        "name": "Zichong Wang"
+      },
+      {
+        "name": "Nripsuta Saxena"
+      },
+      {
+        "name": "Tongjia Yu",
+        "faculty_id": "Zhe Yu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Sneha Karki"
+      },
+      {
+        "name": "Tyler Zetty"
+      },
+      {
+        "name": "Israat Haque"
+      },
+      {
+        "name": "Shan Zhou"
+      },
+      {
+        "name": "Dukka Kc",
+        "faculty_id": "Dukka KC",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Ian Stockwell"
+      },
+      {
+        "name": "Albert Bifet"
+      },
+      {
+        "name": "Wenbin Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2023,
+    "abstract": "Machine learning-based decision-making systems are increasingly important, but their fairness and accountability have been scrutinized. This paper addresses the lack of work on fair machine learning in online settings by presenting Fair Sampling over Stream (\ud835\udc39\ud835\udc462), a novel fair rebalancing approach for streaming data, and Fair Bonded Utility (FBU), a unified performance-fairness metric.",
+    "arxiv_id": "arXiv:2302.08017"
+  },
+  "core_content": {
+    "novelty_claim": "The paper introduces Fair Sampling over Stream (\ud835\udc39\ud835\udc462) and Fair Bonded Utility (FBU), addressing the challenges of fairness in online data streams.",
+    "key_methodology": "Fair Sampling over Stream (\ud835\udc39\ud835\udc462) is a novel fair rebalancing approach that can be integrated with SML classification algorithms. FBU is a unified performance-fairness metric designed to evaluate and compare different bias mitigation methods efficiently.",
+    "outcomes": [
+      "Developed Fair Sampling over Stream (\ud835\udc39\ud835\udc462), a method for handling biased data streams in real-time",
+      "Proposed Fair Bonded Utility (FBU) as a unified fairness-performance trade-off measurement"
+    ],
+    "full_text_markdown": "The paper addresses the challenges of ensuring fairness in machine learning-based decision-making systems, particularly in online settings where data is constantly evolving. It introduces Fair Sampling over Stream (\ud835\udc39\ud835\udc462), which rebalances biased data streams before applying SML algorithms, and Fair Bonded Utility (FBU) as a unified metric for evaluating trade-offs between performance and fairness.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Fair Sampling over Stream (\ud835\udc39\ud835\udc462)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Metric",
+        "label": "Fair Bonded Utility (FBU)"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "zichong_preventing_discriminatory_decision-making_in_evolving_data_s.pdf"
+}

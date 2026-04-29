@@ -1,0 +1,75 @@
+{
+  "card_id": "pollmgraph",
+  "bibliographic_data": {
+    "title": "PoLLMgraph: Unraveling Hallucinations in Large Language Models via State Transition Dynamics",
+    "primary_domain": "cs.CL",
+    "authors": [
+      {
+        "name": "Derui Zhu",
+        "faculty_id": "Derui Zhu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Dingfan Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Qing Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Zongxiong Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Lei Ma",
+        "faculty_id": "Naveen Sharma",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jens Grossklags"
+      },
+      {
+        "name": "Mario Fritz"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Despite tremendous advancements in large language models (LLMs) over recent years, a notably urgent challenge for their practical deployment is the phenomenon of \u201challucination\u201d, where the model fabricates facts and produces non-factual statements. In response, we propose PoLLMgraph\u2014a Polygraph for LLMs\u2014as an effective model-based white-box detection and forecasting approach. PoLLMgraph distinctly differs from the large body of existing research that concentrates on addressing such challenges through black-box evaluations. In particular, we demonstrate that hallucination can be effectively detected by analyzing the LLM\u2019s internal state transition dynamics during generation via tractable probabilistic models. Experimental results on various open-source LLMs confirm the efficacy of PoLLMgraph, outperforming state-of-the-art methods by a considerable margin, evidenced by over 20% improvement in AUC-ROC on common benchmarking datasets like TruthfulQA.",
+    "arxiv_id": "arXiv:2404.04722"
+  },
+  "core_content": {
+    "novelty_claim": "PoLLMgraph proposes a white-box detection approach for hallucinations in LLMs by analyzing state transition dynamics during generation via probabilistic models.",
+    "key_methodology": "The method involves extracting and utilizing temporal information from the internal state transitions of LLMs to detect hallucinations, which is distinct from black-box approaches that rely on output text or confidence scores.",
+    "outcomes": [
+      "PoLLMgraph outperforms state-of-the-art methods by over 20% in AUC-ROC on benchmarking datasets like TruthfulQA.",
+      "The approach provides a new perspective on understanding LLM behaviors through internal state transition dynamics."
+    ],
+    "full_text_markdown": "The advent of large autoregressive language models (LLMs) has driven the field of Natural Language Processing into a new era, enabling coherent and contextually relevant text generation. However, these models are prone to 'factual hallucinations,' where they generate plausible but factually incorrect statements. Addressing this issue is crucial for ensuring LLMs' trustworthiness in practical deployment. PoLLMgraph proposes a white-box detection approach that analyzes the internal state transition dynamics of LLMs during generation using probabilistic models, outperforming existing methods by over 20% on benchmark datasets like TruthfulQA. This work highlights the importance of understanding and addressing hallucinations through model-based analysis.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "PoLLMgraph"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "State Transition Dynamics"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "derui_pollmgraph_unraveling_hallucinations_in_large_language_model.pdf"
+}

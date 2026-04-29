@@ -1,0 +1,57 @@
+{
+  "card_id": "ml-semreg",
+  "bibliographic_data": {
+    "title": "ML-SemReg: Boosting Point Cloud Registration with Multi-level Semantic Consistency",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Shaocheng Yan"
+      },
+      {
+        "name": "Pengcheng Shi",
+        "faculty_id": "Pengcheng Shi",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jiayuan Li",
+        "faculty_id": "Pengfei Li",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Recent advances in point cloud registration mostly leverage geometric information. Although these methods have yielded promising results, they still struggle with problems of low overlap, thus limiting their practical usage. In this paper, we propose ML-SemReg, a plug-and-play point cloud registration framework that fully exploits semantic information. Our key insight is that mismatches can be categorized into two types, i.e., inter- and intra-class, after rendering semantic clues, and can be well addressed by utilizing multi-level semantic consistency. We first propose a Group Matching module to address inter-class mismatching, outputting multiple matching groups that inherently satisfy Local Semantic Consistency. For each group, a Mask Matching module based on Scene Semantic Consistency is then introduced to suppress intra-class mismatching. Benefit from those two modules, ML-SemReg generates correspondences with a high inlier ratio. Extensive experiments demonstrate excellent performance and robustness of ML-SemReg, e.g., in hard-cases of the KITTI dataset, the Registration Recall of MAC increases by almost 34 percentage points when our ML-SemReg is equipped.",
+    "arxiv_id": "2407.09862"
+  },
+  "core_content": {
+    "novelty_claim": "ML-SemReg proposes a framework that fully exploits semantic information to address inter- and intra-class mismatches in point cloud registration, leading to high-quality correspondences with improved robustness.",
+    "key_methodology": "The method involves two main modules: Group Matching (GM) for addressing inter-class mismatching by categorizing keypoints into matching groups that inherently satisfy Local Semantic Consistency, and Mask Matching (MM) based on Scene Semantic Consistency for suppressing intra-class mismatching within each group. These modules ensure multi-level semantic consistency.",
+    "outcomes": [
+      "Generates correspondences with a high inlier ratio",
+      "Exhibits excellent performance and robustness in hard-cases of the KITTI dataset"
+    ],
+    "full_text_markdown": "Point cloud registration (PCR) is crucial for applications such as 3D reconstruction, SLAM, and augmented reality. Recent methods mostly leverage geometric information but struggle with low overlap issues, limiting their practical usage. ML-SemReg proposes a framework that fully exploits semantic information to address inter- and intra-class mismatches in point cloud registration. The key insight is that mismatches can be categorized into two types: inter-class (different semantic categories) and intra-class (same semantic category but different scene contexts). To tackle these, the authors introduce Group Matching (GM) for inter-class mismatching, which categorizes keypoints into matching groups satisfying Local Semantic Consistency. For intra-class mismatching, a Mask Matching (MM) module based on Scene Semantic Consistency is introduced to maintain consistency within each group. The framework ensures multi-level semantic consistency and generates correspondences with high inlier ratios. Extensive experiments demonstrate excellent performance and robustness of ML-SemReg, particularly in hard-cases of the KITTI dataset where Registration Recall of MAC increases by almost 34 percentage points.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Group Matching"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "Mask Matching"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "shaocheng_ml-semreg_boosting_point_cloud_registration_with_multi-level.pdf"
+}

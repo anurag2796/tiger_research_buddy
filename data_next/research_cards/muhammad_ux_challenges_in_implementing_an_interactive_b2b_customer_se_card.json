@@ -1,0 +1,54 @@
+{
+  "card_id": "ux_challenges_in_implementing_an_interactive_b2b_customer_segmentation_tool",
+  "bibliographic_data": {
+    "title": "UX Challenges in Implementing an Interactive B2B Customer Segmentation Tool",
+    "primary_domain": "cs.HC",
+    "authors": [
+      {
+        "name": "Muhammad Raees"
+      },
+      {
+        "name": "Vassilis-Javed Khan"
+      },
+      {
+        "name": "Konstantinos Papangelis",
+        "faculty_id": "Konstantinos Papangelis",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Customer segmentation is an established business method to improve data-driven decision-making based on grouping customers into segments to personalize treatment [4, 10]. Segmentation methods help analyze large, high-dimensional datasets, such as sales transactions, to extract insights and decision indicators [9, 14]. Among segmentation methods, unsupervised learning, particularly clustering, is often used to extract patterns and group (or differentiate) data into related segments without predefined outputs [2, 4, 23]. Unsupervised learning involves training a model on unlabeled data, which lacks predefined labels or categories for output [23]. These methods are useful to extract meaningful insights, allowing businesses to make sense of unlabeled data [11, 13]. However, making sense of these unsupervised results can be challenging [12, 16]. For instance, clustering methods often generate semantically agnostic segments, requiring expert evaluation for meaningful interpretation [2]. Interpreting clustering results is also an intrinsically subjective task correlated with domain knowledge, requiring users to examine model outputs and provide input/feedback to make meaningful understanding [2, 3, 12]. This creates a two-fold problem; 1) semantic agnosticism makes it effortful and time-consuming for users to discern meaningful labels for clustering outcomes 2) meaningful interpretations often depend upon how well users interact with clustering models. In addition, understanding complex ML output is mentally demanding, making it difficult for domain users (such as salespeople) to adopt and integrate such sense-making into their workflows [2, 16]. Making sense of data through interaction is beneficial, however, how effectively end users interact with such process is equally important to consider [12, 16]. Therefore, exploring interaction challenges for sense-making with agnostic clustering outputs is an important application area, specifically for non-technical domain expert users [11, 15, 16]. The applications of customer segmentation are explored in several Business-to-consumer-based (B2C) market research and sales domains [1, 10, 13]. We anticipate that similar methods are adapted to B2B segmentation contexts to address challenges and explore strategies to integrate segmentation effectively within organizational frameworks [4]. The segmentation approaches explore extracting complex data patterns to inform decisions, however, effectively integrating B2B segmentation with domain (sales) users is tedious [11, 15]. For instance, B2B system integration for domain users in the context of the human-ML paradigm remains to be explored further to alleviate domain users\u2019 interaction with ML models [11, 16]. Such interaction relates to designing ML tools that are interpretable and useful for non-technical users in business contexts, using iterative design and evaluation processes to meet their needs effectively. Hence, this case study explores integrating unsupervised learning into the B2B customer segmentation context, enabling sales experts to interactively label and adapt ML outputs. We leverage realistic datasets, often inaccessible to academics, to combine semantically-agnostic clustering algorithms with subjective domain expertise for ML-assisted decision support. We conducted the case study evaluation in two phases. In the first phase, we assess domain users\u2019 needs and organizational factors that influence transitioning to ML-based segmentation. We designed an interactive prototype to elicit user requirements while they experiment with customer segmentation using unsupervised ML algorithms. We experimented with feature engineering, clustering methods, and interaction interfaces with sales (domain) users. Afterward, we enhanced the prototype to allow salespeople to create their customer segmentation by choosing features and then visually inspecting the created clusters. In that development process, we identified the need for end users to label clusters with semantic understanding. Overall, this case study presents both technical prototypes, developed to identify domain users\u2019 needs and then to cater to those needs. Our research advocates for user-centered HCI approaches in business while designing ML applications to match end-users context in B2B manufacturing workflows. Throughout this process, we report learned lessons and insights while deploying this IML prototype in the sales customer segmentation context.",
+    "arxiv_id": "arXiv:2502.03635"
+  },
+  "core_content": {
+    "novelty_claim": "The study addresses UX challenges for integrating unsupervised learning, particularly clustering, into B2B customer segmentation tools to enable sales experts to interpret and adapt ML outputs.",
+    "key_methodology": "The researchers designed an interactive prototype that allowed sales experts to experiment with feature engineering, clustering methods, and interaction interfaces. They then enhanced the prototype to enable users to create their own customer segmentations by choosing features and visually inspecting clusters.",
+    "outcomes": [
+      "Identified UX challenges for non-technical domain expert users in interpreting unsupervised learning outputs.",
+      "Developed an interactive ML tool that supports sales experts in creating meaningful customer segments."
+    ],
+    "full_text_markdown": "In this study, the researchers explored integrating unsupervised learning into B2B customer segmentation tools to address user experience (UX) challenges faced by non-technical domain experts such as salespeople. The main challenge is interpreting semantically agnostic clustering results generated by ML algorithms. To tackle this, they designed an interactive prototype that allowed users to experiment with feature engineering and clustering methods while creating their own customer segmentations. This involved a two-phase process: first, assessing user needs and organizational factors influencing the transition to ML-based segmentation, then enhancing the prototype to enable more intuitive interaction. The study highlights the importance of designing ML tools that are interpretable for non-technical users in business contexts."
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Interactive Machine Learning Prototype"
+      },
+      {
+        "id": "concept_2",
+        "type": "Tool",
+        "label": "Customer Segmentation Tool"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "muhammad_ux_challenges_in_implementing_an_interactive_b2b_customer_se.pdf"
+}

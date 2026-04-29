@@ -1,0 +1,81 @@
+{
+  "card_id": "role_of_pyroptosis_in_breast_cancer",
+  "bibliographic_data": {
+    "title": "The role of pyroptosis and its crosstalk with immune therapy in breast cancer",
+    "primary_domain": "cs.CY (Computer Science: Computational Biology)",
+    "authors": [
+      {
+        "name": "Ling Wu"
+      },
+      {
+        "name": "Hongsheng Lu"
+      },
+      {
+        "name": "Yin Pan",
+        "faculty_id": "Yin Pan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Chen Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jinyan Wang"
+      },
+      {
+        "name": "Baofu Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yichao Wang"
+      }
+    ],
+    "year": 2022,
+    "abstract": "Pyroptosis is a brand-new category of programmed cell death (PCD) that is brought on by multitudinous in\ufb02ammasomes, which can recognize several stimuli to pilot the cleavage of and activate in\ufb02ammatory cytokines like IL-18 and IL-1b. It has dual effects on the development of multiple cancers including breast cancer. However, pyroptosis has different effects on cancers depending on the type of tissues and their distinct heredity. Recently, the association between pyroptosis and breast cancer has received more and more attention, and it is thought that inducing pyroptosis could be used as a cancer treatment option. In addition, a great deal of evidence accumulating over the past decades has evinced the crosstalk between pyroptosis and tumor immunological therapy. Thus, a comprehensive summary combining the function of pyroptosis in breast cancer and antitumor immunity is imperative.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper provides a comprehensive summary of the role of pyroptosis in breast cancer and its interaction with immune therapy, aiming to provide guidelines for future research directions.",
+    "key_methodology": "Review and synthesis of existing literature on pyroptosis and its effects on breast cancer, including its impact on tumor microenvironment (TME) and potential as a therapeutic target.",
+    "outcomes": [
+      "Summarized the multidimensional roles of pyroptosis in cancer",
+      "Elucidated the influence of inflammasomes and pyroptosis-produced cytokines on the TME of breast cancer"
+    ],
+    "full_text_markdown": "The paper discusses the role of pyroptosis, a new category of programmed cell death (PCD), in breast cancer. Pyroptosis is triggered by multiple in\ufb02ammasomes that recognize various stimuli and activate inflammatory cytokines such as IL-18 and IL-1b. The dual nature of pyroptosis makes it significant for the development of multiple cancers, including breast cancer. However, its effects vary depending on the type of tissue and genetic makeup. Recent attention has been drawn to the potential use of inducing pyroptosis as a treatment option. Additionally, extensive evidence supports the crosstalk between pyroptosis and tumor immunological therapy, highlighting the importance of understanding this interaction for effective breast cancer intervention.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "pyroptosis",
+        "type": "Method",
+        "label": "Pyroptosis"
+      },
+      {
+        "id": "inflammasomes",
+        "type": "Concept",
+        "label": "Inflammasomes"
+      },
+      {
+        "id": "tumor_microenvironment",
+        "type": "Environment",
+        "label": "Tumor Microenvironment"
+      }
+    ],
+    "edges": [
+      {
+        "source": "pyroptosis",
+        "target": "inflammasomes",
+        "relation": "TRIGGERED_BY"
+      },
+      {
+        "source": "pyroptosis",
+        "target": "tumor_microenvironment",
+        "relation": "AFFECTS"
+      }
+    ]
+  },
+  "source_file": "ling_the_role_of_pyroptosis_and_its_crosstalk_with_immune_therapy.pdf"
+}

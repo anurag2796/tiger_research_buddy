@@ -1,0 +1,77 @@
+{
+  "card_id": "predictive_coding_ai",
+  "bibliographic_data": {
+    "title": "Brain-inspired Computational Intelligence via Predictive Coding",
+    "primary_domain": "cs.AI",
+    "authors": [
+      {
+        "name": "Tommaso Salvatori"
+      },
+      {
+        "name": "Ankur Mali"
+      },
+      {
+        "name": "Christopher L. Buckley"
+      },
+      {
+        "name": "Thomas Lukasiewicz"
+      },
+      {
+        "name": "Rajesh P. N. Rao"
+      },
+      {
+        "name": "Karl Friston"
+      },
+      {
+        "name": "Alexander Ororbia",
+        "faculty_id": "Alexander Ororbia",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Artificial intelligence (AI) is rapidly becoming one of the key technologies of this century. The majority of results in AI thus far have been achieved using deep neural networks trained with a learning algorithm called error backpropagation, always considered biologically implausible. To this end, recent works have studied learning algorithms for deep neural networks inspired by the neurosciences. One such theory, called predictive coding (PC), has shown promising properties that make it potentially valuable for the machine learning community: it can model information processing in different areas of the brain, can be used in control and robotics, has a solid mathematical foundation in variational inference, and performs its computations asynchronously. Inspired by such properties, works that propose novel PC-like algorithms are starting to be present in multiple sub-fields of machine learning and AI at large. Here, we survey such efforts by first providing a broad overview of the history of PC to provide common ground for the understanding of the recent developments, then by describing current efforts and results, and concluding with a large discussion of possible implications and ways forward.",
+    "arxiv_id": "arXiv:2308.07870v3"
+  },
+  "core_content": {
+    "novelty_claim": "The paper surveys recent works on predictive coding (PC) algorithms, which are inspired by the neurosciences and have shown promising properties for machine learning.",
+    "key_methodology": "The authors provide a broad overview of the history of PC to understand its recent developments, describe current efforts and results, and discuss possible implications and ways forward.",
+    "outcomes": [
+      "Surveyed recent works on predictive coding algorithms",
+      "Provided an understanding of the properties of PC for machine learning"
+    ],
+    "full_text_markdown": "Artificial intelligence (AI) is rapidly becoming one of the key technologies of this century. The majority of results in AI thus far have been achieved using deep neural networks trained with a learning algorithm called error backpropagation, always considered biologically implausible. To this end, recent works have studied learning algorithms for deep neural networks inspired by the neurosciences. One such theory, called predictive coding (PC), has shown promising properties that make it potentially valuable for the machine learning community: it can model information processing in different areas of the brain, can be used in control and robotics, has a solid mathematical foundation in variational inference, and performs its computations asynchronously. Inspired by such properties, works that propose novel PC-like algorithms are starting to be present in multiple sub-fields of machine learning and AI at large. Here, we survey such efforts by first providing a broad overview of the history of PC to provide common ground for the understanding of the recent developments, then by describing current efforts and results, and concluding with a large discussion of possible implications and ways forward.\n\nThe paper provides an in-depth review of predictive coding (PC) algorithms, which are inspired by the neurosciences. These algorithms have shown promising properties such as locality, asynchronous computation, and robustness. The authors aim to survey recent works on PC algorithms and provide insights into their potential applications in machine learning.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "predictive_coding",
+        "type": "Method",
+        "label": "Predictive Coding"
+      },
+      {
+        "id": "error_backpropagation",
+        "type": "Algorithm",
+        "label": "Error Backpropagation"
+      },
+      {
+        "id": "generative_models",
+        "type": "Concept",
+        "label": "Generative Models"
+      }
+    ],
+    "edges": [
+      {
+        "source": "predictive_coding",
+        "target": "generative_models",
+        "relation": "MODELS"
+      },
+      {
+        "source": "predictive_coding",
+        "target": "error_backpropagation",
+        "relation": "ALTERNATIVE_TO"
+      }
+    ]
+  },
+  "source_file": "tommaso_brain-inspired_computational_intelligence_via_predictive_cod.pdf"
+}

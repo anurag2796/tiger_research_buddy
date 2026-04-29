@@ -1,0 +1,53 @@
+{
+  "card_id": "harris_1998",
+  "bibliographic_data": {
+    "title": "The Hubble Constant from Observations of the Brightest Red Giant Stars in a Virgo-Cluster Galaxy",
+    "primary_domain": "astro-ph",
+    "authors": [
+      {
+        "name": "W. E. Harris",
+        "faculty_id": "W Michelle Harris",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "P. R. Durrell"
+      },
+      {
+        "name": "M. J. Pierce"
+      },
+      {
+        "name": "J. Secker"
+      }
+    ],
+    "year": 1998,
+    "abstract": "The nearest large groups of elliptical galaxies, in the Virgo and Fornax clusters, play central roles in determining the Hubble constant H0 and thus the cosmological rate of expansion. Since the relative distances between these two clusters and more remote clusters are well known, robust distance determinations to Virgo and Fornax will establish the Hubble constant for the local universe. In addition, elliptical galaxies reside predominantly in the cores of clusters, so that distance calibrations for ellipticals will minimize the uncertainties due to the possible large extent of clusters along the line of sight. A powerful and direct way of establishing such distances is to use the brightest red-giant stars, which have nearly uniform luminosities1,2. Here we report the direct observation of the old red giant stars in a dwarf elliptical galaxy in the Virgo cluster. We determine a distance to this galaxy, and thus to the core of the Virgo cluster, of \u223c15.7 \u00b1 1.5 Megaparsecs, from which we estimate a Hubble constant of H0 = 77 \u00b1 8 km s\u22121 Mpc\u22121. Under the assumption of a low-density Universe with the simplest cosmology, the age of the Universe is no more than 12-13 billion years.",
+    "arxiv_id": "astro-ph/9806153"
+  },
+  "core_content": {
+    "novelty_claim": "The paper reports the first TRGB distance calibration to a Virgo galaxy using Hubble Space Telescope (HST) imaging, determining a distance of \u223c15.7 \u00b1 1.5 Megaparsecs and estimating a Hubble constant of H0 = 77 \u00b1 8 km s\u22121 Mpc\u22121.",
+    "key_methodology": "The authors used the TRGB method to calibrate distances by observing the brightest red giant stars in a dwarf elliptical galaxy within the Virgo cluster. They employed deep I-band (F814W) exposures from HST and ground-based photometry to determine the distance and Hubble constant.",
+    "outcomes": [
+      "Determined a distance of \u223c15.7 \u00b1 1.5 Megaparsecs to VCC 1104 in the Virgo cluster.",
+      "Estimated a Hubble constant of H0 = 77 \u00b1 8 km s\u22121 Mpc\u22121."
+    ],
+    "full_text_markdown": "The paper discusses the use of the brightest red giant stars, which have nearly uniform luminosities, to determine distances and estimate the Hubble constant. The authors used the Hubble Space Telescope (HST) for deep I-band imaging of a dwarf elliptical galaxy in the Virgo cluster, VCC 1104 = IC 3388. They determined a distance of \u223c15.7 \u00b1 1.5 Megaparsecs and estimated a Hubble constant of H0 = 77 \u00b1 8 km s\u22121 Mpc\u22121. The TRGB method was used to calibrate distances, which is considered direct and independent of other methods involving Local Group calibrators. This study provides a robust distance determination for the Virgo cluster core, contributing to our understanding of the Hubble constant and the age of the Universe.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "TRGB Method"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "w._the_hubble_constant_from_observations_of_the_brightest_red_g.pdf"
+}

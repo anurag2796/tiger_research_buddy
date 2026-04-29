@@ -1,0 +1,68 @@
+{
+  "card_id": "anti_phase_boundaries_sro6",
+  "bibliographic_data": {
+    "title": "Robust Long Range Magnetic Correlation across Anti-phase Domain Boundaries in Sr$_2$CrReO$_6$",
+    "primary_domain": "cond-mat.mes-hall",
+    "authors": [
+      {
+        "name": "Bo Yuan",
+        "faculty_id": "Bo Yuan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Subin Kim"
+      },
+      {
+        "name": "Sae Hwan Chun"
+      },
+      {
+        "name": "Wentao Jin"
+      },
+      {
+        "name": "C. S. Nelson"
+      },
+      {
+        "name": "Adam J. Hauser"
+      },
+      {
+        "name": "F. Y. Yang",
+        "faculty_id": "Haibo Yang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Young-June Kim"
+      }
+    ],
+    "year": 2020,
+    "abstract": "Anti-site disorder is one of the most important issues that arises in synthesis of double perovskite for spintronic applications. Although it is known that anti-site disorder leads to a proliferation of structural defects, known as the anti-phase boundaries that separate ordered anti-phase domains in the sample, little is known about the magnetic correlation across these anti-phase boundaries on a microscopic level. Motivated by this, we report resonant elastic X-ray scattering study of room temperature magnetic and structural correlation in a thin-film sample of Sr2CrReO6, which has one of the highest TC among double perovskites. Structurally, we discovered existence of anti-phase nanodomains of \u223c15 nm in the sample. Magnetically, the ordered moments are shown to lie perpendicular to the c direction. Most remarkably, we found that the magnetic correlation length far exceeds the size of individual anti-phase nanodomains. Our results therefore provide conclusive proof for existence of robust magnetic correlation across the anti-phase boundaries in Sr2CrReO6.",
+    "arxiv_id": "arXiv:2010.06646v1"
+  },
+  "core_content": {
+    "novelty_claim": "The study provides evidence for robust long-range magnetic correlation across anti-phase boundaries in Sr2CrReO6, which far exceeds the size of individual anti-phase nanodomains.",
+    "key_methodology": "Resonant elastic X-ray scattering (REXS) was used to investigate the room temperature magnetic and structural correlations in a thin-film sample of Sr2CrReO6. The technique allowed for the determination of the magnetic correlation length, which was found to be much longer than the average size of anti-phase nanodomains.",
+    "outcomes": [
+      "Discovery of anti-phase nanodomains of \u223c15 nm in the sample",
+      "Magnetic moments are perpendicular to the c direction",
+      "Magnetic correlation length far exceeds the size of individual anti-phase nanodomains"
+    ],
+    "full_text_markdown": "In this study, we investigated the magnetic and structural correlations in a thin-film sample of Sr2CrReO6 using resonant elastic X-ray scattering (REXS). The sample consists of small anti-phase nanodomains with an average size of \u223c15 nm. The ordered moments are found to lie perpendicular to the c direction. Most remarkably, the magnetic correlation length is much longer than the size of individual anti-phase nanodomains, providing evidence for robust long-range magnetic correlation across the anti-phase boundaries in Sr2CrReO6.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Resonant Elastic X-ray Scattering (REXS)"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "bo_robust_long_range_magnetic_correlation_across_anti-phase_dom.pdf"
+}

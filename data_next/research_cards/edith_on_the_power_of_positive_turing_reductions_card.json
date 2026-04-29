@@ -1,0 +1,49 @@
+{
+  "card_id": "on-the-power-of-positive-turing-reductions",
+  "bibliographic_data": {
+    "title": "On the Power of Positive Turing Reductions",
+    "primary_domain": "cs.CC",
+    "authors": [
+      {
+        "name": "Edith Hemaspaandra",
+        "faculty_id": "Edith Hemaspaandra",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 1999,
+    "abstract": "In the early 1980s, Selman\u2019s seminal work on positive Turing reductions showed that positive Turing reduction to NP yields no greater computational power than NP itself. Thus, positive Turing and Turing reducibility to NP differ sharply unless the polynomial hierarchy collapses. We show that the situation is quite different for DP, the next level of the boolean hierarchy. In particular, positive Turing reduction to DP already yields all (and only) sets Turing reducible to NP. Thus, positive Turing and Turing reducibility to DP yield the same class. Additionally, we show that an even weaker class, PNP[1], can be substituted for DP in this context.",
+    "arxiv_id": "cs/9906028v1"
+  },
+  "core_content": {
+    "novelty_claim": "The paper shows that positive Turing reductions to DP yield all sets Turing reducible to NP, implying that the power of positive Turing and Turing reductions to DP is equivalent.",
+    "key_methodology": "The authors construct a polynomial-time positive Turing machine M such that L(MSat\u2295Sat) = OddMaxSat, demonstrating the equivalence through a specific problem in PNP.",
+    "outcomes": [
+      "Positive Turing reductions to DP yield all sets Turing reducible to NP.",
+      "PNP[1] can be substituted for DP in this context."
+    ],
+    "full_text_markdown": "In the early 1980s, Selman\u2019s seminal work on positive Turing reductions showed that positive Turing reduction to NP yields no greater computational power than NP itself. Thus, positive Turing and Turing reducibility to NP differ sharply unless the polynomial hierarchy collapses. We show that the situation is quite different for DP, the next level of the boolean hierarchy. In particular, positive Turing reduction to DP already yields all (and only) sets Turing reducible to NP. Thus, positive Turing and Turing reducibility to DP yield the same class. Additionally, we show that an even weaker class, PNP[1], can be substituted for DP in this context.\n\nThe paper proves its main result through a detailed construction of a polynomial-time positive Turing machine M such that L(MSat\u2295Sat) = OddMaxSat. This demonstrates the equivalence between positive and Turing reductions to DP by showing that any set in PNP can be reduced positively to DP, and vice versa.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Positive Turing Reductions"
+      },
+      {
+        "id": "concept_2",
+        "type": "Class",
+        "label": "DP"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "edith_on_the_power_of_positive_turing_reductions.pdf"
+}

@@ -1,0 +1,62 @@
+{
+  "card_id": "predictive-forward-forward",
+  "bibliographic_data": {
+    "title": "The Predictive Forward-Forward Algorithm",
+    "primary_domain": "cs.AI",
+    "authors": [
+      {
+        "name": "Alexander Ororbia",
+        "faculty_id": "Alexander Ororbia",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "A. Mali"
+      }
+    ],
+    "year": 2023,
+    "abstract": "We propose the predictive forward-forward (PFF) algorithm for conducting credit assignment in neural systems. Specifically, we design a novel, dynamic recurrent neural system that learns a directed generative circuit jointly and simultaneously with a representation circuit. Notably, the system integrates learnable lateral competition, noise injection, and elements of predictive coding, an emerging and viable neurobiological process theory of cortical function, with the forward-forward (FF) adaptation scheme. Furthermore, PFF efficiently learns to propagate learning signals and updates synapses with forward passes only, eliminating key structural and computational constraints imposed by backpropagation-based schemes. Besides computational advantages, the PFF process could prove useful for understanding the learning mechanisms behind biological neurons that use local signals despite missing feedback connections. We run experiments on image data and demonstrate that the PFF procedure works as well as backpropagation, offering a promising brain-inspired algorithm for classifying, reconstructing, and synthesizing data patterns.",
+    "arxiv_id": "2301.01452"
+  },
+  "core_content": {
+    "novelty_claim": "The PFF algorithm generalizes and combines the forward-forward (FF) algorithm with predictive coding to create a robust stochastic neural system that learns both representation and generative models in a biologically-plausible manner.",
+    "key_methodology": "PFF uses a directed generative circuit and a representation circuit, integrating learnable lateral competition, noise injection, and elements of predictive coding. It updates synapses with forward passes only, avoiding the computational constraints of backpropagation-based schemes.",
+    "outcomes": [
+      "The PFF algorithm works as well as backpropagation in experiments on image data.",
+      "It offers a promising brain-inspired alternative for classifying, reconstructing, and synthesizing data patterns."
+    ],
+    "full_text_markdown": "In this paper, the authors propose the predictive forward-forward (PFF) algorithm to address the neurobiological plausibility issues of backpropagation. The PFF algorithm combines elements of the forward-forward (FF) adaptation scheme with predictive coding to create a robust neural system that learns both representation and generative models in a biologically-plausible manner. It uses two circuits: a representation circuit for acquiring distributed representations of data samples, and a top-down generative circuit for learning how to synthesize data given the activity values of the representation circuit. The PFF algorithm updates synaptic efficacies by measuring the 'goodness' of neural activities, which is defined as the probability that their activity indicates an incoming signal comes from the target training data distribution. Experiments on image data demonstrate that PFF performs comparably to backpropagation while offering computational advantages and potential applications in brain-inspired computing.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Predictive Forward-Forward (PFF)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Forward-Forward Algorithm"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Predictive Coding"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "EXTENDS"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "INTEGRATES"
+      }
+    ]
+  },
+  "source_file": "alexander_the_predictive_forward-forward_algorithm.pdf"
+}

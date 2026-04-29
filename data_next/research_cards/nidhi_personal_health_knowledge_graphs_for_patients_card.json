@@ -1,0 +1,73 @@
+{
+  "card_id": "personal_health_knowledge_graphs",
+  "bibliographic_data": {
+    "title": "Personal Health Knowledge Graphs for Patients",
+    "primary_domain": "cs.AI",
+    "authors": [
+      {
+        "name": "Nidhi Rastogi",
+        "faculty_id": "Nidhi Rastogi",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Mohammed J. Zaki"
+      }
+    ],
+    "year": 2020,
+    "abstract": "Existing patient data analytics platforms fail to incorporate information that has context, is personal, and topical to patients. For a recommendation system to give a suitable response to a query or to derive meaningful insights from patient data, it should consider personal information about the patient\u2019s health history, including but not limited to their preferences, locations, and life choices that are currently applicable to them. In this review paper, we critique existing literature in this space and also discuss the various research challenges that come with designing, building, and operationalizing a personal health knowledge graph (PHKG) for patients.",
+    "arxiv_id": "arXiv:2004.00071v2"
+  },
+  "core_content": {
+    "novelty_claim": "The paper introduces the concept of Personal Health Knowledge Graphs (PHKG), which integrates patient-specific, contextual, and integrated data to provide more personalized health recommendations.",
+    "key_methodology": "The authors review existing literature on knowledge graphs and discuss the challenges in designing PHKGs that can incorporate personal information such as lifestyle, preferences, and current health conditions.",
+    "outcomes": [
+      "Critiqued existing literature on patient data analytics platforms",
+      "Discussed research challenges in designing PHKGs",
+      "Defined key characteristics of PHKGs: contextual, personal, integrated with existing knowledge bases"
+    ],
+    "full_text_markdown": "The paper discusses the limitations of current patient data analytics platforms and introduces Personal Health Knowledge Graphs (PHKG) as a solution. It reviews existing literature on knowledge graphs and highlights the need for more personalized health recommendations that consider individual patient contexts. The authors define PHKGs as structured graphs representing aggregated multi-modal data relevant to a specific patient, including their preferences, lifestyle, and current health conditions.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Personal Health Knowledge Graphs (PHKG)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Contextual"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Personal"
+      },
+      {
+        "id": "concept_4",
+        "type": "Concept",
+        "label": "Integrated with existing Knowledge Bases"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "HAS_CHARACTERISTIC"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "HAS_CHARACTERISTIC"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_4",
+        "relation": "INTEGRATES_WITH"
+      }
+    ]
+  },
+  "source_file": "nidhi_personal_health_knowledge_graphs_for_patients.pdf"
+}

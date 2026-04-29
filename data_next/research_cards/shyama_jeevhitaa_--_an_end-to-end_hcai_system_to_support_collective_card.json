@@ -1,0 +1,69 @@
+{
+  "card_id": "jeevhitaa-end-to-end-hcai-ecosystem",
+  "bibliographic_data": {
+    "title": "JEEVHITAA -- An End-to-End HCAI System to Support Collective Care",
+    "primary_domain": "cs.HC",
+    "authors": [
+      {
+        "name": "Shyama Sastha Krishnamoorthy Srinivasan"
+      },
+      {
+        "name": "Harsh Pala"
+      },
+      {
+        "name": "Mohan Kumar",
+        "faculty_id": "Mohan Kumar",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Pushpendra Singh"
+      }
+    ],
+    "year": 2026,
+    "abstract": "Current mobile health platforms are predominantly individual-centric and lack the support for coordinated, auditable multi-actor workflows. However, in many settings worldwide, health decisions are enacted by multi-actor care networks rather than single users. We present JEEVHITAA, a cross-platform mobile system enabling role-aware sharing and verifiable information flows within permissioned care circles. JEEVHITAA ingests platform and device data (Health-Connect, BLE), builds layered profiles from sensors and tiered onboarding, and enforces fine-grained, time-bounded access control across care graphs. Data are end-to-end encrypted both locally and during peer synchronization; documents can be captured or uploaded as PDFs. An integrated retrieval-augmented LLM produces structured, role-targeted summaries and action plans, offers evidence-grounded verification with provenance and confidence scores, and supports advanced insights on reports. We describe the architecture, connector abstractions, security primitives, and report robustness evaluations using synthetic ontology-driven data, as well as a feasibility study with a real-life care circle. We outline plans for longitudinal in-the-wild evaluation of access control correctness and credibility support.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "JEEVHITAA introduces an end-to-end ecosystem that supports collective care by enabling role-aware sharing and verifiable information flows within permissioned care circles, addressing the limitations of current individual-centric health platforms.",
+    "key_methodology": "JEEVHITAA uses platform and device data (Health-Connect, BLE) to build layered profiles from sensors and tiered onboarding. It enforces fine-grained, time-bounded access control across care graphs with end-to-end encryption for both local and peer synchronization of data.",
+    "outcomes": [
+      "Enables role-aware sharing and verifiable information flows within permissioned care circles",
+      "Provides structured summaries and action plans using an integrated retrieval-augmented LLM",
+      "Offers evidence-grounded verification with provenance and confidence scores"
+    ],
+    "full_text_markdown": "JEEVHITAA is a cross-platform mobile system designed to support collective care by enabling role-aware sharing and verifiable information flows within permissioned care circles. It addresses the limitations of current individual-centric health platforms, which lack support for coordinated, auditable multi-actor workflows. JEEVHITAA ingests platform and device data (Health-Connect, BLE), builds layered profiles from sensors and tiered onboarding, and enforces fine-grained, time-bounded access control across care graphs. Data are end-to-end encrypted both locally and during peer synchronization; documents can be captured or uploaded as PDFs. An integrated retrieval-augmented LLM produces structured, role-targeted summaries and action plans, offers evidence-grounded verification with provenance and confidence scores, and supports advanced insights on reports. The system is evaluated using synthetic ontology-driven data and a feasibility study with a real-life care circle.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "role-aware-sharing",
+        "type": "Method",
+        "label": "Role-Aware Sharing"
+      },
+      {
+        "id": "verifiable-information-flows",
+        "type": "Method",
+        "label": "Verifiable Information Flows"
+      },
+      {
+        "id": "fine-grained-access-control",
+        "type": "Method",
+        "label": "Fine-Grained Access Control"
+      }
+    ],
+    "edges": [
+      {
+        "source": "role-aware-sharing",
+        "target": "fine-grained-access-control",
+        "relation": "USES"
+      },
+      {
+        "source": "verifiable-information-flows",
+        "target": "fine-grained-access-control",
+        "relation": "REQUIRES"
+      }
+    ]
+  },
+  "source_file": "shyama_jeevhitaa_--_an_end-to-end_hcai_system_to_support_collective.pdf"
+}

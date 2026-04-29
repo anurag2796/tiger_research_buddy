@@ -1,0 +1,62 @@
+{
+  "card_id": "towards_a_predictive_processing_implementation_of_the_common_model_of_cognition",
+  "bibliographic_data": {
+    "title": "Towards a Predictive Processing Implementation of the Common Model of Cognition",
+    "primary_domain": "cs.AI",
+    "authors": [
+      {
+        "name": "Alexander Ororbia",
+        "faculty_id": "Alexander Ororbia",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "M. A. Kelly"
+      }
+    ],
+    "year": 2021,
+    "abstract": "In this article, we present a cognitive architecture that is built from powerful yet simple neural models. Specifically, we describe an implementation of the common model of cognition grounded in neural generative coding and holographic associative memory. The proposed system creates the groundwork for developing agents that learn continually from diverse tasks as well as model human performance at larger scales than what is possible with existant cognitive architectures.",
+    "arxiv_id": "arXiv:2105.07308v2"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a cognitive architecture based on Neural Generative Coding (NGC) and holographic memory, aiming to bridge the gap between symbolic and neural models of cognition.",
+    "key_methodology": "The authors use NGC for sensory cortices, ANGC for motor cortex, and model the basal ganglia's functionality in action selection and task switching. These components are integrated into a cognitive architecture that supports continual learning from diverse tasks.",
+    "outcomes": [
+      "Developed a cognitive architecture using NGC and holographic memory to support continual learning.",
+      "Integrated key modules of the Common Model of Cognition, including perceptual and motor modules."
+    ],
+    "full_text_markdown": "In this article, we present a cognitive architecture that is built from powerful yet simple neural models. Specifically, we describe an implementation of the common model of cognition grounded in neural generative coding (NGC) and holographic associative memory. The proposed system creates the groundwork for developing agents that learn continually from diverse tasks as well as model human performance at larger scales than what is possible with existing cognitive architectures. This work aims to bridge the gap between symbolic and neural models of cognition by combining NGC, which provides efficient and robust predict-then-correct learning, with holographic memory, enabling long-term memory retention and single-trial learning.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Neural Generative Coding (NGC)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Common Model of Cognition"
+      },
+      {
+        "id": "concept_3",
+        "type": "Module",
+        "label": "Perceptual and Motor Modules"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "COMPONENT_OF"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "SUPPORTS"
+      }
+    ]
+  },
+  "source_file": "alexander_towards_a_predictive_processing_implementation_of_the_common.pdf"
+}

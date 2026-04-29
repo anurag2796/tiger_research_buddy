@@ -1,0 +1,53 @@
+{
+  "card_id": "two_cardinal_ideal_operators",
+  "bibliographic_data": {
+    "title": "Two-cardinal ideal operators and indescribability",
+    "primary_domain": "math.LO",
+    "authors": [
+      {
+        "name": "Brent Cody"
+      },
+      {
+        "name": "Philip White",
+        "faculty_id": "Philip White",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2025,
+    "abstract": "A well-known version of Rowbottom\u2019s theorem for supercompactness ultra\ufb01lters leads naturally to notions of two-cardinal Ramseyness and corresponding normal ideals introduced herein. Generalizing results of Baumgartner, Feng and the \ufb01rst author, from the cardinal setting to the two-cardinal setting, we study hierarchies associated with a particular version of two-cardinal Ramseyness and a strong version of two-cardinal ine\ufb00ability, as well as the relationships between these hierarchies and a natural notion of trans\ufb01nite two-cardinal indescribability.",
+    "arxiv_id": "2206.06170v5"
+  },
+  "core_content": {
+    "novelty_claim": "The paper introduces well-behaved two-cardinal versions of the Ramsey and ine\ufb00ability operators, generalizing results from cardinal settings to two-cardinal settings.",
+    "key_methodology": "The authors define new ideals based on existing notions of Ramseyness and ine\ufb00ability in a two-cardinal setting. They study hierarchies associated with these ideals and their relationships with indescribability.",
+    "outcomes": [
+      "Defined new ideals for two-cardinal Ramseyness and ine\ufb00ability",
+      "Generalized results from cardinal settings to two-cardinal settings",
+      "Studied the relationship between these hierarchies and trans\ufb01nite two-cardinal indescribability"
+    ],
+    "full_text_markdown": "This paper introduces well-behaved two-cardinal versions of the Ramsey and ine\ufb00ability operators, generalizing results from cardinal settings to two-cardinal settings. The authors define new ideals based on existing notions of Ramseyness and ine\ufb00ability in a two-cardinal setting. They study hierarchies associated with these ideals and their relationships with indescribability. Specifically, the paper defines new ideals I(I) and R(I), where I is an ideal on \u03ba. These ideals are used to define \u03b1-ine\ufb00able and \u03b1-Ramsey cardinals in a two-cardinal setting. The authors also explore the relationship between these hierarchies and trans\ufb01nite two-cardinal indescribability.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Two-Cardinal Ramseyness"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "Two-Cardinal Ine\ufb00ability"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "brent_two-cardinal_ideal_operators_and_indescribability.pdf"
+}

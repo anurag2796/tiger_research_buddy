@@ -1,0 +1,58 @@
+{
+  "card_id": "effects-of-context-complexity-and-clustering-on-evaluation-for-math-formula-retrieval",
+  "bibliographic_data": {
+    "title": "Effects of context, complexity, and clustering on evaluation for math formula retrieval",
+    "primary_domain": "cs.IR",
+    "authors": [
+      {
+        "name": "Behrooz Mansouri"
+      },
+      {
+        "name": "Douglas W. Oard"
+      },
+      {
+        "name": "Anurag Agarwal"
+      },
+      {
+        "name": "Richard Zanibbi",
+        "faculty_id": "Richard Zanibbi",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2021,
+    "abstract": "There are now several test collections for the formula retrieval task, in which a system\u2019s goal is to identify useful mathematical formulae to show in response to a query posed as a formula. These test collections differ in query format, query complexity, number of queries, content source, and relevance definition. Comparisons among six formula retrieval test collections illustrate that defining relevance based on query and/or document context can be consequential, that system results vary markedly with formula complexity, and that judging relevance after clustering formulas with identical symbol layouts (i.e., Symbol Layout Trees) can affect system preference ordering.",
+    "arxiv_id": "2111.10504v1"
+  },
+  "core_content": {
+    "novelty_claim": "The paper highlights the differences in formula retrieval test collections and their impact on evaluation, particularly focusing on context, complexity, and clustering of formulas.",
+    "key_methodology": "The authors compare six different test collections for formula retrieval tasks, analyzing how variations in query format, complexity, relevance definitions, and evaluation protocols affect system rankings.",
+    "outcomes": [
+      "Differences between NTCIR and ARQMath test collections are identified, including the number of queries, diversity, relevance definition, and evaluation protocols.",
+      "The impact of context, complexity, and clustering on formula retrieval is demonstrated through analysis of different test collections."
+    ],
+    "full_text_markdown": "This paper discusses several test collections for math formula retrieval tasks. It highlights that these tests differ in query format, complexity, number of queries, content source, and relevance definition. The authors compare six such collections to illustrate how defining relevance based on context can be consequential, system results vary with formula complexity, and clustering formulas can affect preference ordering. This analysis is important for understanding the nuances involved in evaluating math formula retrieval systems.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Formula Retrieval Test Collections"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Relevance Definition"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "behrooz_effects_of_context_complexity_and_clustering_on_evaluation_f.pdf"
+}

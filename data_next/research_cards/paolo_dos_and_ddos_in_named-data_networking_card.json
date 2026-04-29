@@ -1,0 +1,61 @@
+{
+  "card_id": "dos_ddos_in_ndn",
+  "bibliographic_data": {
+    "title": "DoS and DDoS in Named-Data Networking",
+    "primary_domain": "cs.NI",
+    "authors": [
+      {
+        "name": "Paolo Gasti"
+      },
+      {
+        "name": "Gene Tsudik"
+      },
+      {
+        "name": "Ersin Uzun",
+        "faculty_id": "Ersin Uzun",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Lixia Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2012,
+    "abstract": "With the growing realization that current Internet protocols are reaching the limits of their senescence, a number of on-going research efforts aim to design potential next-generation Internet architectures. Although they vary in maturity and scope, these efforts seek to treat security and privacy as fundamental requirements. Resilience to Denial-of-Service (DoS) attacks that plague today\u2019s Internet is a major issue for any new architecture and deserves full attention. In this paper, we focus on DoS in a specific candidate next-generation Internet architecture called Named-Data Networking (NDN) \u2013 an instantiation of Information-Centric Networking approach. By stressing content dissemination, NDN appears to be attractive and viable approach to many types of current and emerging communication models. It also incorporates some basic security features that mitigate certain attacks. However, NDN\u2019s resilience to DoS attacks has not been analyzed to-date. This paper represents the first step towards assessment and possible mitigation of DoS in NDN. After identifying and analyzing several new types of attacks, it investigates their variations, effects and counter-measures. This paper also sheds some light on the long-standing debate about relative virtues of self-certifying, as opposed to human-readable, names.",
+    "arxiv_id": "1208.0952v2"
+  },
+  "core_content": {
+    "novelty_claim": "This paper is the first step towards assessing and mitigating DoS attacks in Named-Data Networking (NDN), a candidate next-generation Internet architecture.",
+    "key_methodology": "The authors identify and analyze several new types of DoS attacks specific to NDN, investigate their variations, effects, and propose counter-measures.",
+    "outcomes": [
+      "Showed that current DoS attacks effective in the current IP-based Internet are largely ineffective against NDN.",
+      "Identified two new major types of NDN-specific DoS attacks: interest flooding and content/cache poisoning.",
+      "Analyzed the impact of several flavors of both attack types and proposed potential counter-measures."
+    ],
+    "full_text_markdown": "The paper focuses on Denial-of-Service (DoS) attacks in Named-Data Networking (NDN), a candidate next-generation Internet architecture. It identifies new DoS attack types specific to NDN, such as interest flooding and content/cache poisoning, and proposes counter-measures. The authors argue that any new Internet architecture should be resilient to existing DoS attacks or at least limit their effectiveness, anticipate new attacks, and incorporate basic defenses in its design.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "DoS Attack Analysis"
+      },
+      {
+        "id": "concept_2",
+        "type": "Method",
+        "label": "NDN Architecture"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "ANALYZES"
+      }
+    ]
+  },
+  "source_file": "paolo_dos_and_ddos_in_named-data_networking.pdf"
+}

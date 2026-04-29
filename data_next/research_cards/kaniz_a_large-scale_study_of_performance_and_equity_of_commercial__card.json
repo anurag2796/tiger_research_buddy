@@ -1,0 +1,84 @@
+{
+  "card_id": "remote_identity_verification",
+  "bibliographic_data": {
+    "title": "A large-scale study of performance and equity of commercial remote identity verification technologies across demographics",
+    "primary_domain": "cs.SE",
+    "authors": [
+      {
+        "name": "Kaniz Fatima"
+      },
+      {
+        "name": "Michael Schuckers"
+      },
+      {
+        "name": "Gerardo Cruz-Ortiz"
+      },
+      {
+        "name": "Daqing Hou",
+        "faculty_id": "Daqing Hou",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Sandip Purnapatra"
+      },
+      {
+        "name": "Tiffany Andrews"
+      },
+      {
+        "name": "Ambuj Neupane"
+      },
+      {
+        "name": "Brandeis Marshall"
+      },
+      {
+        "name": "Stephanie Schuckers"
+      }
+    ],
+    "year": 2024,
+    "abstract": "As more types of transactions move online, there is an increasing need to verify someone\u2019s identity remotely. Recent research has been focused on ensuring that biometric systems work fairly across demographic groups. This study assesses five commercial RIdV solutions for equity across age, gender, race/ethnicity, and skin tone across 3,991 test subjects. This paper employs statistical methods to discern whether the RIdV result across demographic groups is statistically distinguishable. Two of the RIdV solutions were equitable across all demographics, while two RIdV solutions had at least one demographic that was inequitable.",
+    "arxiv_id": "2409.12318v1"
+  },
+  "core_content": {
+    "novelty_claim": "The study evaluates the equity of five commercial remote identity verification (RIdV) technologies across various demographics, identifying which solutions are equitable and which have inequitable performance.",
+    "key_methodology": "Statistical methods were employed to assess the RIdV results across demographic groups for 3,991 test subjects. The study focused on age, gender, race/ethnicity, and skin tone.",
+    "outcomes": [
+      "Two of the five RIdV solutions were equitable across all demographics.",
+      "Two RIdV solutions had at least one demographic that was inequitable.",
+      "One technology demonstrated more favorable but inequitable performance for the Asian American and Pacific Islander (AAPI) demographic."
+    ],
+    "full_text_markdown": "This study assesses five commercial remote identity verification (RIdV) technologies across age, gender, race/ethnicity, and skin tone. The research employs statistical methods to determine if RIdV results are statistically distinguishable across different demographics. Two solutions were equitable, while two had inequitable performance in at least one demographic group. One technology showed favorable but inequitable performance for the AAPI demographic.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Statistical Methods"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Remote Identity Verification (RIdV)"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Equity Across Demographics"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "APPLIES_TO"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "EVALUATES"
+      }
+    ]
+  },
+  "source_file": "kaniz_a_large-scale_study_of_performance_and_equity_of_commercial_.pdf"
+}

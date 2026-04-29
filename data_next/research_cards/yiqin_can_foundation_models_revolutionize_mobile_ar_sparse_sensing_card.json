@@ -1,0 +1,62 @@
+{
+  "card_id": "can-foundation-models-revolutionize-mobile-ar-sparse-sensing",
+  "bibliographic_data": {
+    "title": "Can Foundation Models Revolutionize Mobile AR Sparse Sensing?",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Yiqin Zhao",
+        "faculty_id": "Yiqin Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Tian Guo"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Mobile sensing systems have long faced a fundamental trade-off between sensing quality and efficiency due to constraints in computation, power, and other limitations. Sparse sensing, which aims to acquire and process only a subset of sensor data, has been a key strategy for maintaining performance under such constraints. However, existing sparse sensing methods often suffer from reduced accuracy, as missing information across space and time introduces uncertainty into many sensing systems. In this work, we investigate whether foundation models can change the landscape of mobile sparse sensing. Using real-world mobile AR data, our evaluations demonstrate that foundation models offer significant improvements in geometry-aware image warping, a central technique for enabling accurate reuse of cross-frame information. Furthermore, our study demonstrates the scalability of foundation model-based sparse sensing and shows its leading performance in 3D scene reconstruction.",
+    "arxiv_id": "2511.02215"
+  },
+  "core_content": {
+    "novelty_claim": "Foundation models can significantly enhance the accuracy of cross-frame information reuse and improve 3D scene reconstruction quality in mobile AR applications, compared to traditional sparse sensing methods.",
+    "key_methodology": "The authors used real-world mobile AR data to evaluate the performance of foundation models in geometry-aware image warping and 3D reconstruction. They compared the results with LiDAR-based methods under different sparsity levels and temporal downsampling scenarios.",
+    "outcomes": [
+      "Foundation model-based geometry-aware image warping significantly outperforms LiDAR-based one, with an average improvement of at least 25.5% in SSIM metrics.",
+      "Foundation model-based 3D reconstruction quality, even with aggressive temporal downsampling, significantly outperforms LiDAR-based reconstruction with 60 FPS sensing, achieving a 48% better performance using Hausdorff Distance as the metric."
+    ],
+    "full_text_markdown": "Mobile systems today use sensing to understand their surroundings and enable rich user experiences. Sparse sensing is a technique that reduces system overhead by selectively activating subsets of sensors or processing pipelines but often struggles with maintaining real-world robustness. Foundation models, due to their large-scale pretraining and strong generalization capabilities, can potentially revolutionize sparse sensing in mobile AR applications. The authors tested the performance of foundation models in geometry-aware image warping and 3D reconstruction using real-world mobile AR data. They found that foundation model-based methods significantly outperform traditional LiDAR-based approaches, demonstrating both improved accuracy and scalability.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Foundation Model"
+      },
+      {
+        "id": "concept_2",
+        "type": "Technique",
+        "label": "Geometry-Aware Image Warping"
+      },
+      {
+        "id": "concept_3",
+        "type": "Task",
+        "label": "3D Scene Reconstruction"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "yiqin_can_foundation_models_revolutionize_mobile_ar_sparse_sensing.pdf"
+}

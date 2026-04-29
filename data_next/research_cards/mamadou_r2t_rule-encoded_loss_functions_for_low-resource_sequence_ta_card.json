@@ -1,0 +1,55 @@
+{
+  "card_id": "r2t_rule_encoded_loss_functions",
+  "bibliographic_data": {
+    "title": "R2T: Rule-Encoded Loss Functions for Low-Resource Sequence Tagging",
+    "primary_domain": "cs.CL",
+    "authors": [
+      {
+        "name": "Mamadou K. Keita"
+      },
+      {
+        "name": "Christopher Homan",
+        "faculty_id": "Christopher Homan",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Sebastien Diarra"
+      }
+    ],
+    "year": 2025,
+    "abstract": "We introduce the Rule-to-Tag (R2T) framework, a hybrid approach that integrates a multi-tiered system of linguistic rules directly into a neural network\u2019s training objective. R2T\u2019s novelty lies in its adaptive loss function, which includes a regularization term that teaches the model to handle out-of-vocabulary (OOV) words with principled uncertainty. We frame this work as a case study in a paradigm we call principled learning (PrL), where models are trained with explicit task constraints rather than on labeled examples alone. Our experiments on Zarma part-of-speech (POS) tagging show that the R2T-BiLSTM model, trained only on unlabeled text, achieves 98.2% accuracy, outperforming baselines like AfriBERTa fine-tuned on 300 labeled sentences. We further show that for more complex tasks like named entity recognition (NER), R2T serves as a powerful pre-training step; a model pre-trained with R2T and fine-tuned on just 50 labeled sentences outperforms a baseline trained on 300.",
+    "arxiv_id": "arXiv:2510.13854v1"
+  },
+  "core_content": {
+    "novelty_claim": "The R2T framework integrates linguistic rules directly into the neural network\u2019s training objective, providing an adaptive out-of-vocabulary (OOV) loss term that teaches principled uncertainty.",
+    "key_methodology": "R2T uses a multi-tiered rule system and an adaptive loss function to guide model learning. It combines pre-trained word embeddings with character-level representations for handling OOV words.",
+    "outcomes": [
+      "The R2T-BiLSTM model achieves 98.2% accuracy on Zarma POS tagging without labeled data, outperforming a baseline fine-tuned on 300 sentences.",
+      "For NER tasks, pre-training with R2T and fine-tuning on just 50 labeled sentences outperforms a baseline trained on 300."
+    ],
+    "full_text_markdown": "The Rule-to-Tag (R2T) framework is introduced as a hybrid approach that integrates linguistic rules directly into the neural network\u2019s training objective. This method, combined with an adaptive loss function, teaches models to handle out-of-vocabulary words with principled uncertainty. The R2T model, trained on unlabeled text, achieves 98.2% accuracy in Zarma POS tagging, surpassing a baseline fine-tuned on 300 labeled sentences. For more complex tasks like named entity recognition (NER), pre-training with R2T and fine-tuning on just 50 labeled sentences outperforms a baseline trained on 300.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "R2T Framework"
+      },
+      {
+        "id": "concept_2",
+        "type": "Loss Function",
+        "label": "Adaptive OOV Regularization"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "mamadou_r2t_rule-encoded_loss_functions_for_low-resource_sequence_ta.pdf"
+}

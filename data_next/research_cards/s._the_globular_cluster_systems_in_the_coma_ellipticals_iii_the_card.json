@@ -1,0 +1,55 @@
+{
+  "card_id": "ic_4051_gcs",
+  "bibliographic_data": {
+    "title": "The Globular Cluster Systems in the Coma Ellipticals. III: The Unique Case of IC 4051",
+    "primary_domain": "astro-ph.GA (Astrophysics - Galactic Astrophysics)",
+    "authors": [
+      {
+        "name": "S. C. Woodworth"
+      },
+      {
+        "name": "W. E. Harris",
+        "faculty_id": "W Michelle Harris",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2000,
+    "abstract": "IC 4051 is a giant E galaxy on the outskirts of the Coma cluster core. Using archival HST WFPC2 data, we derive the metallicity distribution, luminosity function, and spatial structure of its globular cluster system (GCS). The metallicity distribution derived from the (V \u2212I) colors has a mean \u27e8Fe/H\u27e9\u2243\u22120.3, a near-complete lack of metal-poor clusters, and only a small metallicity gradient with radius. We tentatively suggest that the GCS has two roughly equal metallicity subcomponents, one centered at [Fe/H] \u223c0.0 and the second at [Fe/H] \u223c\u22121.0, although their identification is blurred by the photometric uncertainties. The luminosity distribution (GCLF) has the standard Gaussian-like form observed in all other giant E galaxies, with a peak (turnover) at V 0 = 27.8, consistent with a Coma distance of 100 Mpc. The radial profiles of both the GCS and the halo light show an unusually steep fall-off which may indicate that the halo of this galaxy has been tidally truncated. Lastly, the specific frequency of the GCS is remarkably large: we find SN = 11 \u00b1 2, at a level which rivals M87 and most others in the central cD-type category, even though IC 4051 is not a cD or brightest cluster elliptical.",
+    "arxiv_id": "astro-ph/0002292"
+  },
+  "core_content": {
+    "novelty_claim": "The study provides unique insights into the GCS of IC 4051, an E galaxy on the outskirts of the Coma cluster, revealing a combination of characteristics not found in other galaxies.",
+    "key_methodology": "Archival HST WFPC2 data were used to derive the metallicity distribution, luminosity function, and spatial structure of the GCS. Photometric analysis was conducted using DAOPHOT II and ALLSTAR codes with transformation equations for standard V and I magnitudes.",
+    "outcomes": [
+      "The mean metallicity \u27e8Fe/H\u27e9\u2243\u22120.3 with a near-complete lack of metal-poor clusters",
+      "A tentative suggestion that the GCS has two roughly equal metallicity subcomponents, one centered at [Fe/H] \u223c0.0 and the second at [Fe/H] \u223c\u22121.0",
+      "A standard Gaussian-like luminosity distribution (GCLF) with a peak at V 0 = 27.8",
+      "Unusually steep radial profiles of both the GCS and the halo light, suggesting tidal truncation",
+      "A remarkably high specific frequency SN = 11 \u00b1 2"
+    ],
+    "full_text_markdown": "IC 4051 is a giant E galaxy on the outskirts of the Coma cluster core. Using archival HST WFPC2 data, we derive the metallicity distribution, luminosity function, and spatial structure of its globular cluster system (GCS). The study reveals that the GCS has a mean metallicity \u27e8Fe/H\u27e9\u2243\u22120.3 with a near-complete lack of metal-poor clusters. A tentative suggestion is made that the GCS has two roughly equal metallicity subcomponents, one centered at [Fe/H] \u223c0.0 and the second at [Fe/H] \u223c\u22121.0. The luminosity distribution (GCLF) follows a standard Gaussian-like form with a peak at V 0 = 27.8, consistent with a Coma distance of 100 Mpc. Unusually steep radial profiles of both the GCS and the halo light suggest tidal truncation. Lastly, the specific frequency of the GCS is remarkably high: we find SN = 11 \u00b1 2, at a level which rivals M87 and most others in the central cD-type category, even though IC 4051 is not a cD or brightest cluster elliptical.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "HST WFPC2 Photometry"
+      },
+      {
+        "id": "concept_2",
+        "type": "Observation",
+        "label": "GCS Characteristics"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "s._the_globular_cluster_systems_in_the_coma_ellipticals_iii_the.pdf"
+}

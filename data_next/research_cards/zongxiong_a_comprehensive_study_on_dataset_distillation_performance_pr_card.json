@@ -1,0 +1,75 @@
+{
+  "card_id": "dataset_distillation_2023",
+  "bibliographic_data": {
+    "title": "A Comprehensive Study on Dataset Distillation: Performance, Privacy, Robustness and Fairness",
+    "primary_domain": "cs.LG",
+    "authors": [
+      {
+        "name": "Zongxiong Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jiahui Geng"
+      },
+      {
+        "name": "Derui Zhu",
+        "faculty_id": "Derui Zhu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Herbert Woisetschlaeger"
+      },
+      {
+        "name": "Qing Li",
+        "faculty_id": "Pengfei Li",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Sonja Schimmler"
+      },
+      {
+        "name": "Ruben Mayer"
+      },
+      {
+        "name": "Chunming Rong"
+      }
+    ],
+    "year": 2023,
+    "abstract": "The aim of dataset distillation is to encode the rich features of an original dataset into a tiny dataset. It is a promising approach to accelerate neural network training and related studies. Different approaches have been proposed to improve the informativeness and generalization performance of distilled images. However, no work has comprehensively analyzed this technique from a security perspective and there is a lack of systematic understanding of potential risks. In this work, we conduct extensive experiments to evaluate current state-of-the-art dataset distillation methods. We successfully use membership inference attacks to show that privacy risks still remain. Our work also demonstrates that dataset distillation can cause varying degrees of impact on model robustness and amplify model unfairness across classes when making predictions. This work offers a large-scale benchmarking framework for dataset distillation evaluation.",
+    "arxiv_id": "2305.03355"
+  },
+  "core_content": {
+    "novelty_claim": "The study comprehensively evaluates the security risks of dataset distillation techniques, including privacy, robustness, and fairness issues.",
+    "key_methodology": "Four representative distillation techniques (Differentiable Siamese Augmentation, Distribution Matching, Training Trajectory Matching, Information-Intensive Dataset Condensation) were used to synthesize datasets and train neural networks. Extensive experiments were conducted to evaluate the impact of data distillation on privacy, fairness, and robustness.",
+    "outcomes": [
+      "Dataset distillation amplifies model unfairness between different classes with increasing distillation rate.",
+      "Dataset distillation does not have natural privacy-preserving capabilities; membership inference attacks are affected by distillation rate, initialization, and number of classes.",
+      "The robustness of the model is impacted to varying degrees, but the distillation rate plays a minor role."
+    ],
+    "full_text_markdown": "This study aims to evaluate the security risks of dataset distillation techniques. It uses four representative methods: Differentiable Siamese Augmentation (DSA), Distribution Matching (DM), Training Trajectory Matching (MTT), and Information-Intensive Dataset Condensation (IDC). The experiments reveal that dataset distillation can amplify model unfairness, does not naturally protect privacy, and impacts robustness. These findings provide a benchmark for evaluating the security of dataset distillation.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Dataset Distillation"
+      },
+      {
+        "id": "concept_2",
+        "type": "Attack",
+        "label": "Membership Inference Attack"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "zongxiong_a_comprehensive_study_on_dataset_distillation_performance_pr.pdf"
+}

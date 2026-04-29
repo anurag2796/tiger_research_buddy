@@ -1,0 +1,69 @@
+{
+  "card_id": "cs-se_laplace_mechanism",
+  "bibliographic_data": {
+    "title": "Practical Implications of Implementing Local Differential Privacy for Smart grids",
+    "primary_domain": "cs.SE",
+    "authors": [
+      {
+        "name": "Khadija Hafeez"
+      },
+      {
+        "name": "Mubashir Husain Rehmani"
+      },
+      {
+        "name": "Sumita Mishra",
+        "faculty_id": "Sumita Mishra",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Donna OShea"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Recent smart grid advancements enable near-real-time reporting of electricity consumption, raising concerns about consumer privacy. Differential privacy (DP) has emerged as a viable privacy solution, where a calculated amount of noise is added to the data by a trusted third party, or individual users perturb their information locally, and only send the randomized data to an aggregator for analysis safeguarding user\u2019s and aggregator\u2019s privacy. However, the practical implementation of a Local DP-based (LDP) privacy model for smart grids has its own challenges. In this paper, we discuss the challenges of implementing an LDP-based model for smart grids. We compare existing LDP mechanisms in smart grids for privacy preservation of numerical data and discuss different methods for selecting privacy parameters in the existing literature, their limitations and the non-existence of an optimal method for selecting the privacy parameters. We also discuss the challenges of translating theoretical models of LDP into a practical setting for smart grids for different utility functions, the impact of the size of data set on privacy and accuracy, and vulnerability of LDP-based smart grids to manipulation attacks. Finally, we discuss future directions in research for better practical applications in LDP-based models for smart grids.",
+    "arxiv_id": "arXiv:2503.11920"
+  },
+  "core_content": {
+    "novelty_claim": "The paper discusses the challenges and practical implications of implementing Local Differential Privacy (LDP) mechanisms in smart grids, focusing on the selection of privacy parameters and the impact on accuracy and privacy.",
+    "key_methodology": "The authors compare existing LDP mechanisms for smart grids, discuss their limitations, and explore future directions for practical applications.",
+    "outcomes": [
+      "Identified challenges in selecting privacy parameters (sensitivity and epsilon) for LDP-based models",
+      "Discussed the impact of data set size on privacy and accuracy",
+      "Explored vulnerabilities of LDP-based smart grids to manipulation attacks"
+    ],
+    "full_text_markdown": "Recent advancements in smart grid technology have enabled near-real-time reporting of electricity consumption, raising significant privacy concerns. Differential Privacy (DP) has emerged as a promising solution for protecting consumer data by adding noise to the data before it is aggregated and analyzed. However, implementing Local Differential Privacy (LDP) models in smart grids presents several practical challenges. This paper discusses these challenges, focusing on the selection of privacy parameters such as sensitivity and epsilon, their impact on accuracy and privacy, and the vulnerability of LDP-based systems to manipulation attacks. The authors compare existing LDP mechanisms for smart grids, highlighting their limitations and the need for future research to develop more robust practical applications.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Laplace Mechanism"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Privacy Parameters (Sensitivity, Epsilon)"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Smart Grids"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "APPLIED_TO"
+      }
+    ]
+  },
+  "source_file": "khadija_practical_implications_of_implementing_local_differential_pr.pdf"
+}

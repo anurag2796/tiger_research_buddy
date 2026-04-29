@@ -1,0 +1,65 @@
+{
+  "card_id": "programmable_data_planes_for_network_security",
+  "bibliographic_data": {
+    "title": "Programmable Data Planes for Network Security",
+    "primary_domain": "cs.CR",
+    "authors": [
+      {
+        "name": "Gursimran Singh"
+      },
+      {
+        "name": "H. B. Acharya"
+      },
+      {
+        "name": "Minseok Kwon",
+        "faculty_id": "Minseok Kwon",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2025,
+    "abstract": "The emergence of programmable data planes, and particularly switches supporting the P4 language, has transformed network security by enabling customized, line-rate packet processing. These switches, originally intended for flexible forwarding, now play a broader role: detecting and mitigating attacks such as DDoS and spoofing, enforcing next-generation firewall policies, and even supporting in-network cryptography and machine learning. These capabilities are made possible by techniques such as recirculate-and-truncate and lookup-table precomputation, which work around architectural constraints like limited memory and restricted instruction sets.",
+    "arxiv_id": "2507.22165v1"
+  },
+  "core_content": {
+    "novelty_claim": "The paper systematizes recent advances in security applications built on programmable switches, highlighting non-obvious design techniques that make complex in-network security functions feasible despite hardware constraints.",
+    "key_methodology": "The authors explore the capabilities and challenges of programmable data planes using P4 language, focusing on security applications such as DDoS mitigation, firewalls, and in-network computations. They discuss recirculate-and-truncate and lookup-table precomputation techniques to overcome architectural limitations.",
+    "outcomes": [
+      "Systematized three major categories of programmable data plane security research: for in-network attack mitigation, as middleboxes and firewalls, and for in-network computations and ML-based security.",
+      "Highlighted non-obvious design techniques that enable complex security functions despite hardware constraints."
+    ],
+    "full_text_markdown": "The paper discusses the evolution of programmable data planes, particularly those supporting the P4 language. These switches have transformed network security by enabling customized packet processing at line rate. The authors explore how these switches can be used for DDoS mitigation, firewall enforcement, and in-network cryptography and machine learning. They highlight design techniques such as recirculate-and-truncate and lookup-table precomputation to overcome hardware limitations like limited memory and restricted instruction sets.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Recirculate-and-Truncate"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "P4 Language"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Lookup-Table Precomputation"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_2",
+        "target": "concept_3",
+        "relation": "ENHANCES"
+      }
+    ]
+  },
+  "source_file": "gursimran_programmable_data_planes_for_network_security.pdf"
+}

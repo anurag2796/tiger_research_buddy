@@ -1,0 +1,67 @@
+{
+  "card_id": "rsn_1tt_np",
+  "bibliographic_data": {
+    "title": "R_{1-tt}^{SN}(NP) Distinguishes Robust Many-One and Turing Completeness",
+    "primary_domain": "cs.CC",
+    "authors": [
+      {
+        "name": "Edith Hemaspaandra",
+        "faculty_id": "Edith Hemaspaandra",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Lane A. Hemaspaandra",
+        "faculty_id": "Edith Hemaspaandra",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Harald Hempel"
+      }
+    ],
+    "year": 1996,
+    "abstract": "Do complexity classes have many-one complete sets if and only if they have Turing-complete sets? We prove that there is a relativized world in which a relatively natural complexity class\u2014namely a downward closure of NP, RSN 1-tt(NP)\u2014has Turing-complete sets but has no many-one complete sets. In fact, we show that in the same relativized world this class has 2-truth-table complete sets but lacks 1-truth-table complete sets. As part of the groundwork for our result, we prove that RSN 1-tt(NP) has many equivalent forms having to do with ordered and parallel access to NP and NP \u2229 coNP.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper proves the existence of a relativized world where RSN 1-tt(NP) has Turing-complete sets but lacks many-one complete sets, distinguishing robust 1-tt-completeness from robust 2-tt-completeness.",
+    "key_methodology": "The authors use complexity class theory and prove that RSN 1-tt(NP) has certain equivalent forms related to ordered and parallel access to NP and NP \u2229 coNP.",
+    "outcomes": [
+      "RSN 1-tt(NP) has Turing-complete sets but lacks many-one complete sets in some relativized world.",
+      "RSN 1-tt(NP) robustly has 2-truth-table complete sets."
+    ],
+    "full_text_markdown": "In this paper, the authors explore whether there are natural complexity classes for which the existence of many-one and Turing-complete sets can be distinguished. They introduce a downward closure of NP, RSN 1-tt(NP), and prove that in some relativized worlds, it has Turing-complete sets but lacks many-one complete sets. This class also robustly has 2-truth-table complete sets. The authors provide equivalent forms for RSN 1-tt(NP) related to ordered and parallel access to NP and NP \u2229 coNP.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "RSN 1-tt(NP)"
+      },
+      {
+        "id": "concept_2",
+        "type": "ComplexityClass",
+        "label": "Turing-complete"
+      },
+      {
+        "id": "concept_3",
+        "type": "ComplexityClass",
+        "label": "Many-one complete"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "HAS"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "LACKS"
+      }
+    ]
+  },
+  "source_file": "edith_r_1-ttsnnp_distinguishes_robust_many-one_and_turing_complete.pdf"
+}

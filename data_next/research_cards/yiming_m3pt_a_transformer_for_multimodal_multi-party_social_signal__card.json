@@ -1,0 +1,85 @@
+{
+  "card_id": "m3pt_transformer",
+  "bibliographic_data": {
+    "title": "M3PT: A Transformer for Multimodal, Multi-Party Social Signal Prediction with Person-aware Blockwise Attention",
+    "primary_domain": "cs.HC",
+    "authors": [
+      {
+        "name": "Yiming Tang",
+        "faculty_id": "Yiming Tang",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Abrar Anwar"
+      },
+      {
+        "name": "Jesse Thomason"
+      }
+    ],
+    "year": 2025,
+    "abstract": "Understanding social signals in multi-party conversations is important for human-robot interaction and artificial social intelligence. Social signals include body pose, head pose, speech, and context-specific activities like acquiring and taking bites of food when dining. Past work in multi-party interaction tends to build task-specific models for predicting social signals. In this work, we address the challenge of predicting multimodal social signals in multi-party settings in a single model. We introduce M3PT, a causal transformer architecture with modality and temporal blockwise attention masking to simultaneously process multiple social cues across multiple participants and their temporal interactions.",
+    "arxiv_id": "arXiv:2501.13416"
+  },
+  "core_content": {
+    "novelty_claim": "M3PT introduces a causal transformer architecture with modality and temporal blockwise attention masking to predict multimodal social signals in multi-party settings.",
+    "key_methodology": "M3PT uses a VQ-VAE for tokenizing continuous inputs like gaze, head pose, or pose into quantized keypoint representations. It applies person-aware and modality-aware blockwise attention masking to attend over these tokens across modality, time, and interlocutor.",
+    "outcomes": [
+      "M3PT improves bite timing and speaking status prediction.",
+      "Using multiple modalities enhances the model's performance."
+    ],
+    "full_text_markdown": "Understanding social signals in multi-party conversations is crucial for human-robot interaction and artificial social intelligence. Social signals include body pose, head pose, speech, and context-specific activities like acquiring and taking bites of food when dining. Past work often focuses on building task-specific models to predict these signals. This paper introduces M3PT, a causal transformer architecture that can simultaneously process multiple social cues across participants in multi-party settings. The model leverages modality and temporal blockwise attention masking to learn the relationships between different social signals over time. It is trained on the Human-Human Commensality Dataset (HHCD) and demonstrates improved bite timing and speaking status prediction when using multiple modalities.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "M3PT"
+      },
+      {
+        "id": "concept_2",
+        "type": "Technique",
+        "label": "Causal Transformer Architecture"
+      },
+      {
+        "id": "concept_3",
+        "type": "Technique",
+        "label": "Modality-aware Blockwise Attention Masking"
+      },
+      {
+        "id": "concept_4",
+        "type": "Technique",
+        "label": "Person-aware Blockwise Attention Masking"
+      },
+      {
+        "id": "concept_5",
+        "type": "Method",
+        "label": "VQ-VAE"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_3",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_4",
+        "relation": "USES"
+      },
+      {
+        "source": "concept_1",
+        "target": "concept_5",
+        "relation": "TOKENIZES"
+      }
+    ]
+  },
+  "source_file": "yiming_m3pt_a_transformer_for_multimodal_multi-party_social_signal_.pdf"
+}

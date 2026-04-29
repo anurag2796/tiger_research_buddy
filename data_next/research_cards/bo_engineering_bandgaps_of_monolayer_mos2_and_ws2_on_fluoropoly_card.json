@@ -1,0 +1,79 @@
+{
+  "card_id": "engineering_bandgaps_monolayer_mos2_ws2",
+  "bibliographic_data": {
+    "title": "Engineering bandgaps of monolayer MoS2 and WS2 on fluoropolymer substrates by electrostatically tuned many-body effects",
+    "primary_domain": "cs.CV (Computer Vision)",
+    "authors": [
+      {
+        "name": "Bo Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Weijie Zhao",
+        "faculty_id": "Weijie Zhao",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Zijing Ding"
+      },
+      {
+        "name": "Ivan Verzhbitskiy"
+      },
+      {
+        "name": "Linjun Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Junpeng Lu"
+      },
+      {
+        "name": "Jianyi Chen",
+        "faculty_id": "Lingwei Chen",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Goki Eda"
+      },
+      {
+        "name": "Kian Ping Loh"
+      }
+    ],
+    "year": 2024,
+    "abstract": "Monolayer group VI transition metal dichalcogenides (MX2) have emerged as a new class of two-dimensional semiconductors and attracted extensive research interest due to their sizeable band-gap and remarkable optical and electronic properties. The significantly suppressed dielectric screening at the limit of monolayer thickness gives rise to tightly bound excitons with exceptionally large binding energy, making MX2 an ideal platform for investigating fundamental many-body physics. This study systematically investigates the carrier doping effect in monolayer MoS2 and WS2 using back-gated field-effect transistor (FET) devices by taking advantage of the fluoropolymer CYTOP as a high-quality substrate. Differential reflectance and micro photoluminescence spectroscopy were used to monitor the evolution of optical bandgaps and exciton/trion dynamics as a function of carrier doping concentration. The study reveals that giant bandgap renormalization dominates the reduction of exciton binding energy, leading to red-shift in exciton energies with increasing carrier doping. Additionally, high density defect states can effectively reduce the carrier doping effect by trapping free carriers and facilitating the formation of much heavier negative trions.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The study systematically investigates the carrier doping effect in monolayer MoS2 and WS2 using back-gated FET devices on CYTOP substrates, revealing the impact of phase-space filling effects and defect states.",
+    "key_methodology": "Back-gated field-effect transistor (FET) devices were used to monitor the evolution of optical bandgaps and exciton/trion dynamics in monolayer MoS2 and WS2 as a function of carrier doping concentration using differential reflectance and micro photoluminescence spectroscopy.",
+    "outcomes": [
+      "Giant bandgap renormalization dominates the reduction of exciton binding energy, leading to red-shift in exciton energies with increasing carrier doping.",
+      "High density defect states can effectively reduce the carrier doping effect by trapping free carriers and facilitating the formation of much heavier negative trions."
+    ],
+    "full_text_markdown": "This study investigates the carrier doping effects on monolayer MoS2 and WS2 using back-gated FET devices on CYTOP substrates. The research reveals that giant bandgap renormalization dominates the reduction of exciton binding energy, leading to a red-shift in exciton energies with increasing carrier doping. Additionally, high density defect states can effectively reduce the carrier doping effect by trapping free carriers and facilitating the formation of much heavier negative trions.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Back-gated FET devices"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Phase-space filling effect"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "INVOLVES"
+      }
+    ]
+  },
+  "source_file": "bo_engineering_bandgaps_of_monolayer_mos2_and_ws2_on_fluoropoly.pdf"
+}

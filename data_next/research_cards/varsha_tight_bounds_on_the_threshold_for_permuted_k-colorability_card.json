@@ -1,0 +1,75 @@
+{
+  "card_id": "tight_bounds_on_permuted_k_colorability",
+  "bibliographic_data": {
+    "title": "Tight bounds on the threshold for permuted k-colorability",
+    "primary_domain": "math.CO",
+    "authors": [
+      {
+        "name": "Varsha Dani",
+        "faculty_id": "Varsha Dani",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Cristopher Moore"
+      },
+      {
+        "name": "Anna Olson"
+      }
+    ],
+    "year": 2018,
+    "abstract": "If each edge (u, v) of a graph G = (V, E) is decorated with a permutation \u03c0u,v of k objects, we say that it has a permuted k-coloring if there is a coloring \u03c3 : V \u2192{1, . . . , k} such that \u03c3(v) \u0338= \u03c0u,v(\u03c3(u)) for all (u, v) \u2208E. Based on arguments from statistical physics, we conjecture that the threshold dk for permuted k-colorability in random graphs G(n, m = dn/2), where the permutations on the edges are uniformly random, is equal to the threshold for standard graph k-colorability. The additional symmetry provided by random permutations makes it easier to prove bounds on dk. By applying the second moment method with these additional symmetries, and applying the first moment method to a random variable that depends on the number of available colors at each vertex, we bound the threshold within an additive constant. Speci\ufb01cally, we show that for any constant \u03b5 > 0, for su\ufb03ciently large k we have\n2k ln k \u2212ln k \u22122 \u2212\u03b5 \u2264dk \u22642k ln k \u2212ln k \u22121 + \u03b5.",
+    "arxiv_id": "1111.2947"
+  },
+  "core_content": {
+    "novelty_claim": "The paper provides tight bounds on the threshold for permuted k-colorability in random graphs, conjecturing that it is equal to the threshold for standard graph k-colorability.",
+    "key_methodology": "The authors apply the second moment method with additional symmetries provided by random permutations and use a first moment method based on the number of available colors at each vertex.",
+    "outcomes": [
+      "Proved bounds on the threshold dk within an additive constant for permuted k-colorability",
+      "Showed that the threshold for permuted k-colorability is conjectured to be equal to the standard graph k-colorability threshold"
+    ],
+    "full_text_markdown": "The paper investigates the problem of permuted k-coloring in random graphs. If each edge (u, v) of a graph G = (V, E) is decorated with a permutation \u03c0u,v of k objects, we say that it has a permuted k-coloring if there is a coloring \u03c3 : V \u2192{1, . . . , k} such that \u03c3(v) \u0338= \u03c0u,v(\u03c3(u)) for all (u, v) \u2208E. The authors conjecture that the threshold dk for permuted k-colorability in random graphs G(n, m = dn/2), where the permutations on the edges are uniformly random, is equal to the threshold for standard graph k-colorability. They use the second moment method with additional symmetries provided by random permutations and a first moment method based on the number of available colors at each vertex to prove tight bounds on dk. Specifically, they show that for any constant \u03b5 > 0, for sufficiently large k we have\n2k ln k \u2212ln k \u22122 \u2212\u03b5 \u2264dk \u22642k ln k \u2212ln k \u22121 + \u03b5.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "permuted_k_coloring",
+        "type": "Method",
+        "label": "Permuted k-coloring"
+      },
+      {
+        "id": "standard_k_colorability",
+        "type": "Concept",
+        "label": "Standard k-colorability"
+      },
+      {
+        "id": "second_moment_method",
+        "type": "Method",
+        "label": "Second Moment Method"
+      },
+      {
+        "id": "first_moment_method",
+        "type": "Method",
+        "label": "First Moment Method"
+      }
+    ],
+    "edges": [
+      {
+        "source": "permuted_k_coloring",
+        "target": "standard_k_colorability",
+        "relation": "SOLVES"
+      },
+      {
+        "source": "second_moment_method",
+        "target": "permuted_k_coloring",
+        "relation": "APPLIED_TO"
+      },
+      {
+        "source": "first_moment_method",
+        "target": "permuted_k_coloring",
+        "relation": "APPLIED_TO"
+      }
+    ]
+  },
+  "source_file": "varsha_tight_bounds_on_the_threshold_for_permuted_k-colorability.pdf"
+}

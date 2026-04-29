@@ -1,0 +1,68 @@
+{
+  "card_id": "living_in_a_pit_less_world",
+  "bibliographic_data": {
+    "title": "Living in a PIT-less World: A Case Against Stateful Forwarding in Content-Centric Networking",
+    "primary_domain": "cs.CR",
+    "authors": [
+      {
+        "name": "Cesar Ghali"
+      },
+      {
+        "name": "Gene Tsudik"
+      },
+      {
+        "name": "Ersin Uzun",
+        "faculty_id": "Ersin Uzun",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Christopher A. Wood"
+      }
+    ],
+    "year": 2015,
+    "abstract": "Information-Centric Networking (ICN) is a recent paradigm that claims to mitigate some limitations of the current IP-based Internet architecture. The centerpiece of ICN is named and addressable content, rather than hosts or interfaces. Content-Centric Networking (CCN) is a prominent ICN instance that shares the fundamental architectural design with its equally popular academic sibling Named-Data Networking (NDN). CCN eschews source addresses and creates one-time virtual circuits for every content request (called an interest). As an interest is forwarded, it creates state in intervening routers and the requested content back is delivered over the reverse path using that state. Although a stateful forwarding plane might be beneficial in terms of efficiency and resilience to certain types of attacks, this has not been decisively proven via realistic experiments. Since keeping per-interest state complicates router operations and makes the infrastructure susceptible to router state exhaustion attacks (e.g., there is currently no effective defense against interest flooding attacks), the value of the stateful forwarding plane in CCN should be re-examined.",
+    "arxiv_id": "1512.07755v1"
+  },
+  "core_content": {
+    "novelty_claim": "The paper argues that the benefits of stateful forwarding planes in Content-Centric Networking (CCN) are uncertain and proposes a new stateless architecture for CCN.",
+    "key_methodology": "The authors explore supposed benefits and various problems of the stateful forwarding plane, analyze performance and resource requirements via experiments, and propose a new stateless architecture based on Routable Backward Names (RBNs).",
+    "outcomes": [
+      "The paper shows that many claimed benefits of stateful forwarding are unrealistic or infeasible in practice.",
+      "A new stateless architecture for CCN is proposed, which can co-exist with the current CCN architecture or replace it entirely."
+    ],
+    "full_text_markdown": "This paper discusses the stateful forwarding plane in Content-Centric Networking (CCN) and argues that its benefits are uncertain. The authors explore various problems associated with stateful forwarding, such as interest flooding attacks, and propose a new stateless architecture based on Routable Backward Names (RBNs). They analyze performance and resource requirements via experiments and conclude that the proposed design retains the essence and performance characteristics of CCN while avoiding pitfalls of stateful forwarding.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Stateful Forwarding"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "PIT (Pending Interest Table)"
+      },
+      {
+        "id": "concept_3",
+        "type": "Concept",
+        "label": "Interest Flooding Attack"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "REQUIRES"
+      },
+      {
+        "source": "concept_2",
+        "target": "concept_3",
+        "relation": "CAUSES"
+      }
+    ]
+  },
+  "source_file": "cesar_living_in_a_pit-less_world_a_case_against_stateful_forwardin.pdf"
+}

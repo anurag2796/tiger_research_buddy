@@ -1,0 +1,50 @@
+{
+  "card_id": "hierarchical-semantic-learning-aorta-segmentation",
+  "bibliographic_data": {
+    "title": "Hierarchical Semantic Learning for Multi-Class Aorta Segmentation",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Pengcheng Shi",
+        "faculty_id": "Pengcheng Shi",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2025,
+    "abstract": "The aorta, the body\u2019s largest artery, is prone to pathologies such as dissection, aneurysm, and atherosclerosis, which often require timely intervention. Minimally invasive repairs involving branch vessels necessitate detailed 3D anatomical analysis. Existing methods often overlook hierarchical anatomical relationships while struggling with severe class imbalance inherent in vascular structures. We address these challenges with a curriculum learning strategy that leverages a novel fractal softmax for hierarchical semantic learning. Inspired by human cognition, our approach progressively learns anatomical constraints by decomposing complex structures from simple to complex components. The curriculum learning framework naturally addresses class imbalance by first establishing robust feature representations for dominant classes before tackling rare but anatomically critical structures, significantly accelerating model convergence in multi-class scenarios. Our two-stage inference strategy achieves up to fivefold acceleration, enhancing clinical practicality. On the validation set at epoch 50, our hierarchical semantic loss improves the Dice score of nnU-Net ResEnc M by 11.65%. The proposed model demonstrates a 5.6% higher Dice score than baselines on the test set. Experimental results show significant improvements in segmentation accuracy and efficiency, making the framework suitable for real-time clinical applications.",
+    "arxiv_id": "arXiv:2511.14187"
+  },
+  "core_content": {
+    "novelty_claim": "The paper introduces a novel fractal softmax module that leverages curriculum learning to drive hierarchical semantic learning for multi-class aorta segmentation, addressing class imbalance and improving model convergence.",
+    "key_methodology": "A curriculum learning strategy is employed with a novel fractal softmax module. The approach progressively learns anatomical constraints by decomposing complex structures from simple to complex components, focusing on dominant classes before tackling rare but critical branch structures.",
+    "outcomes": [
+      "Up to fivefold acceleration in inference time through a two-stage inference method",
+      "Improvement of 11.65% Dice score for nnU-Net ResEnc M on the validation set at epoch 50",
+      "A 5.6% higher Dice score than baselines on the test set"
+    ],
+    "full_text_markdown": "The paper addresses challenges in multi-class aorta segmentation, particularly class imbalance and hierarchical anatomical relationships. It introduces a novel fractal softmax module that leverages curriculum learning to progressively learn from simple to complex components of the aorta. The method significantly improves model convergence and inference speed while maintaining high accuracy. Experimental results show substantial improvements over baseline models.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "hierarchical-semantic-learning",
+        "type": "Method",
+        "label": "Hierarchical Semantic Learning"
+      },
+      {
+        "id": "fractal-softmax",
+        "type": "Module",
+        "label": "Fractal Softmax"
+      }
+    ],
+    "edges": [
+      {
+        "source": "hierarchical-semantic-learning",
+        "target": "fractal-softmax",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "pengcheng_hierarchical_semantic_learning_for_multi-class_aorta_segment.pdf"
+}

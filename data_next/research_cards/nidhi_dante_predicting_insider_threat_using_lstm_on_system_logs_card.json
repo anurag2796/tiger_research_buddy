@@ -1,0 +1,64 @@
+{
+  "card_id": "dante_insider_threat",
+  "bibliographic_data": {
+    "title": "DANTE: Predicting Insider Threat using LSTM on system logs",
+    "primary_domain": "cs.AI",
+    "authors": [
+      {
+        "name": "Nidhi Rastogi",
+        "faculty_id": "Nidhi Rastogi",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Qicheng Ma",
+        "faculty_id": "Naveen Sharma",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2021,
+    "abstract": "Insider threat is one of the most pernicious threat vectors to information and communication technologies (ICT) across the world due to the elevated level of trust and access that an insider is afforded. This type of threat can stem from both malicious users with a motive as well as negligent users who inadvertently reveal details about trade secrets, company information, or even access information to malignant players. In this paper, we propose a novel approach that uses system logs to detect insider behavior using a special recurrent neural network (RNN) model. Ground truth is established using DANTE and used as baseline for identifying anomalous behavior. For this, system logs are modeled as a natural language sequence and patterns are extracted from these sequences. We create workflows of sequences of actions that follow a natural language logic and control flow. These flows are assigned various categories of behaviors - malignant or benign. Any deviation from these sequences indicates the presence of a threat. We further classify threats into one of the five categories provided in the CERT insider threat dataset. Through experimental evaluation, we show that the proposed model can achieve 93% prediction accuracy.",
+    "arxiv_id": "arXiv:2102.05600"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes a novel approach using Long Short-Term Memory (LSTM) to detect insider behavior from system logs, achieving 93% prediction accuracy.",
+    "key_methodology": "System logs are modeled as natural language sequences and patterns are extracted. Workflows of actions are created with categories assigned for benign or malignant behaviors. Deviations indicate threats which are classified into five CERT insider threat categories using LSTM models.",
+    "outcomes": [
+      "Achieved 93% prediction accuracy in detecting insider behavior",
+      "Created workflows from system logs to identify anomalous patterns"
+    ],
+    "full_text_markdown": "Insider threat continues to be a significant security concern. This paper proposes DANTE, an approach that uses system logs and LSTM models to detect malicious insider behavior. System logs are treated as natural language sequences, allowing the extraction of patterns indicative of normal or abnormal activities. The model can classify these activities into five categories based on the CERT insider threat dataset. Experiments show a 93% accuracy in detecting insider threats.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "dante",
+        "type": "Method",
+        "label": "DANTE"
+      },
+      {
+        "id": "lstm",
+        "type": "Method",
+        "label": "Long Short-Term Memory (LSTM)"
+      },
+      {
+        "id": "system_logs",
+        "type": "Data",
+        "label": "System Logs"
+      }
+    ],
+    "edges": [
+      {
+        "source": "dante",
+        "target": "lstm",
+        "relation": "USES"
+      },
+      {
+        "source": "dante",
+        "target": "system_logs",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "nidhi_dante_predicting_insider_threat_using_lstm_on_system_logs.pdf"
+}

@@ -1,0 +1,69 @@
+{
+  "card_id": "half_infinite_sampling",
+  "bibliographic_data": {
+    "title": "Half-infinite sampling and its FT",
+    "primary_domain": "math.OC",
+    "authors": [
+      {
+        "name": "Rui Li",
+        "faculty_id": "Rui Li",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2024,
+    "abstract": "In the digital world, signals are discrete and finite. The Fourier representation of discrete and finite signals is derived from half-infinite sampling, which is a kind of sampling between finite and infinite sampling. The FTs of several half-infinite samplings are studied, showing that they are more concise than those of infinite sampling. A numerical experiment with step sampling verified the theoretical derivations.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The paper introduces a new kind of sampling called half-infinite sampling and derives its Fourier Transform, which is more concise than that of infinite sampling.",
+    "key_methodology": "The authors derive the Fourier Transforms (FTs) of several half-infinite samplings and compare them with those of infinite sampling.",
+    "outcomes": [
+      "The FT of half-infinite sampling is shown to be more concise than that of infinite sampling.",
+      "Numerical experiments, including step sampling, verified the theoretical derivations."
+    ],
+    "full_text_markdown": "In this paper, the authors introduce a new kind of sampling called half-infinite sampling. They derive the Fourier Transforms (FTs) of several half-infinite samplings and show that they are more concise than those of infinite sampling. A numerical experiment with step sampling verified these theoretical derivations. The study provides a new way to deal with finite samples, potentially solving problems such as spectrum leakage effect, Gibbs phenomenon, and end effect.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "half_infinite_sampling",
+        "type": "Method",
+        "label": "Half-Infinite Sampling"
+      },
+      {
+        "id": "infinite_sampling",
+        "type": "Concept",
+        "label": "Infinite Sampling"
+      },
+      {
+        "id": "finite_sampling",
+        "type": "Concept",
+        "label": "Finite Sampling"
+      },
+      {
+        "id": "fourier_transform",
+        "type": "Method",
+        "label": "Fourier Transform"
+      }
+    ],
+    "edges": [
+      {
+        "source": "half_infinite_sampling",
+        "target": "infinite_sampling",
+        "relation": "SOLVES"
+      },
+      {
+        "source": "half_infinite_sampling",
+        "target": "finite_sampling",
+        "relation": "SOLVES"
+      },
+      {
+        "source": "fourier_transform",
+        "target": "half_infinite_sampling",
+        "relation": "APPLIES_TO"
+      }
+    ]
+  },
+  "source_file": "rui_half-infinite_sampling_and_its_ft.pdf"
+}

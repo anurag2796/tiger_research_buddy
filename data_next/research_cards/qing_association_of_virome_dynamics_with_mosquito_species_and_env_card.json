@@ -1,0 +1,95 @@
+{
+  "card_id": "microbiome_virome_dynamics",
+  "bibliographic_data": {
+    "title": "Association of virome dynamics with mosquito species and environmental factors",
+    "primary_domain": "q-bio.QM",
+    "authors": [
+      {
+        "name": "Qing Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "F. Cui",
+        "faculty_id": "Feng Cui",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Xiang Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Yumei Fu"
+      },
+      {
+        "name": "Wen-Jian Fang"
+      },
+      {
+        "name": "Xun Kang"
+      },
+      {
+        "name": "Hong Lu"
+      },
+      {
+        "name": "Siping Li",
+        "faculty_id": "Olivia Nuccitelli",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Biao Liu",
+        "faculty_id": "Xumin Liu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Wei Guo"
+      },
+      {
+        "name": "Qianfeng Xia"
+      },
+      {
+        "name": "Le Kang"
+      },
+      {
+        "name": "Feng Jiang"
+      }
+    ],
+    "year": 2023,
+    "abstract": "Background: The pathogenic viruses transmitted by mosquitoes cause a variety of animal and human diseases and public health concerns. Virome surveillance is important for the discovery, and control of mosquito-borne pathogenic viruses, as well as early warning systems. Virome composition in mosquitoes is affected by mosquito species, food source, and geographic region. However, the complex associations of virome composition remain largely unknown.\n\nResults: Here, we profiled the high-depth RNA viromes of 15 species of field-caught adult mosquitoes, especially from Culex, Aedes, Anopheles, and Armigeres in Hainan Island from 2018 to 2020. We detected 57 known and 39 novel viruses belonging to 15 families. We established the associations of the RNA viruses with mosquito species and their foods, indicating the importance of feeding acquisition of RNA viruses in determining virome composition. A large fraction of RNA viruses were persistent in the same mosquito species across the 3 years and different locations, showing the species-specific stability of viromes in Hainan Island. In contrast, the virome compositions of single mosquito species in different geographic regions worldwide are visibly distinct. This is consistent with the differences in food sources of mosquitoes distributed broadly across continents.\n\nConclusions: Thus, species-specific viromes in a relatively small area are limited by viral interspecific competition and food sources, whereas the viromes of mosquito species in large geographic regions may be governed by ecological interactions between mosquitoes and local environmental factors.",
+    "arxiv_id": null
+  },
+  "core_content": {
+    "novelty_claim": "The study profiles high-depth RNA viromes of 15 species of field-caught adult mosquitoes to establish the associations of RNA viruses with mosquito species, their foods, and geographic regions.",
+    "key_methodology": "High-depth RNA viromes were profiled from 15 species of field-caught adult mosquitoes in Hainan Island over a period of three years. The study detected both known and novel viruses belonging to 15 families and established the associations between RNA viruses, mosquito species, and their food sources.",
+    "outcomes": [
+      "Detected 57 known and 39 novel viruses belonging to 15 families in mosquitoes.",
+      "Established that feeding acquisition of RNA viruses is important for determining virome composition.",
+      "Found that a large fraction of RNA viruses were persistent across the same mosquito species over three years and different locations, indicating species-specific stability of viromes.",
+      "Observed distinct virome compositions among single mosquito species in different geographic regions worldwide."
+    ],
+    "full_text_markdown": "The study investigates the virome dynamics associated with mosquito species and environmental factors. It profiles high-depth RNA viromes from 15 species of field-caught adult mosquitoes, particularly focusing on Culex, Aedes, Anopheles, and Armigeres in Hainan Island over a period of three years (2018-2020). The study detected both known and novel viruses belonging to 15 families. Key findings include the importance of feeding acquisition for RNA virus composition, persistence of RNA viruses across species over time and locations, and distinct virome compositions among mosquito species in different geographic regions.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "High-depth RNA viromes profiling"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Mosquito species"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "PROFILED"
+      }
+    ]
+  },
+  "source_file": "qing_association_of_virome_dynamics_with_mosquito_species_and_env.pdf"
+}

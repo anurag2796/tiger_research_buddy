@@ -1,0 +1,74 @@
+{
+  "card_id": "learning_depth_via_semantics",
+  "bibliographic_data": {
+    "title": "Learning Depth via Leveraging Semantics: Self-supervised Monocular Depth Estimation with Both Implicit and Explicit Semantic Guidance",
+    "primary_domain": "cs.CV",
+    "authors": [
+      {
+        "name": "Rui Li",
+        "faculty_id": "Rui Li",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Xiantuo He"
+      },
+      {
+        "name": "Danna Xue"
+      },
+      {
+        "name": "Shaolin Su"
+      },
+      {
+        "name": "Qing Mao"
+      },
+      {
+        "name": "Yu Zhu",
+        "faculty_id": "Derui Zhu",
+        "affiliation": "RIT"
+      },
+      {
+        "name": "Jinqiu Sun"
+      },
+      {
+        "name": "Yanning Zhang",
+        "faculty_id": "Xueling Zhang",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2021,
+    "abstract": "Self-supervised depth estimation has made great success in learning depth from unlabeled image sequences. However, the correlation between image, depth and scene semantics is less considered, hindering the network to better understand the real geometry of the scene. This paper proposes a Semantic-aware Spatial Feature Alignment (SSFA) scheme for implicit semantic guidance and a semantic-guided ranking loss for explicit semantic guidance in self-supervised monocular depth estimation.",
+    "arxiv_id": "arXiv:2102.06685"
+  },
+  "core_content": {
+    "novelty_claim": "The paper proposes both implicit and explicit semantic guidance methods to improve self-supervised monocular depth estimation.",
+    "key_methodology": "A Semantic-aware Spatial Feature Alignment (SSFA) scheme is proposed for implicit semantic guidance, while a semantic-guided ranking loss is introduced for explicit semantic guidance. Both methods consider semantic label noise and prediction uncertainty.",
+    "outcomes": [
+      "Produces high quality depth maps which are consistently superior on complex scenes or diverse semantic categories",
+      "Outperforms state-of-the-art methods by a significant margin"
+    ],
+    "full_text_markdown": "Self-supervised depth estimation has made great success in learning depth from unlabeled image sequences. However, the correlation between image, depth and scene semantics is less considered, hindering the network to better understand the real geometry of the scene. This paper proposes a Semantic-aware Spatial Feature Alignment (SSFA) scheme for implicit semantic guidance and a semantic-guided ranking loss for explicit semantic guidance in self-supervised monocular depth estimation. The SSFA module spatially aligns depth and semantic features, while the semantic-guided ranking loss explicitly constrains the estimated depth maps to be consistent with real scene contextual properties. Both methods consider semantic label noise and prediction uncertainty.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Semantic-aware Spatial Feature Alignment (SSFA)"
+      },
+      {
+        "id": "concept_2",
+        "type": "Loss",
+        "label": "Semantic-guided Ranking Loss"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "SOLVES"
+      }
+    ]
+  },
+  "source_file": "rui_learning_depth_via_leveraging_semantics_self-supervised_mono.pdf"
+}

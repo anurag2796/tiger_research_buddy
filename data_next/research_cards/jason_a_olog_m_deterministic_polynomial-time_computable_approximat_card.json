@@ -1,0 +1,52 @@
+{
+  "card_id": "efficient_dodgson_young_scores",
+  "bibliographic_data": {
+    "title": "A $O(\\log m)$, deterministic, polynomial-time computable approximation of Lewis Carroll's scoring rule",
+    "primary_domain": "cs.GT",
+    "authors": [
+      {
+        "name": "Jason Covey"
+      },
+      {
+        "name": "Christopher Homan",
+        "faculty_id": "Christopher Homan",
+        "affiliation": "RIT"
+      }
+    ],
+    "year": 2021,
+    "abstract": "We provide deterministic, polynomial-time computable voting rules that approximate Dodgson\u2019s and (the \u201cminimization version\u201d of) Young\u2019s scoring rules to within a logarithmic factor. Our approximation of Dodgson\u2019s rule is tight up to a constant factor, as Dodgson\u2019s rule is NP-hard to approximate to within some logarithmic factor. The \u2018maximization version\u2019 of Young\u2019s rule is known to be NP-hard to approximate by any constant factor. Both approximations are simple, and natural as rules in their own right: Given a candidate we wish to score, we can regard either its Dodgson or Young score as the edit distance between a given set of voter preferences and one in which the candidate to be scored is the Condorcet winner. (The difference between the two scoring rules is the type of edits allowed.) We regard the marginal cost of a sequence of edits to be the number of edits divided by the number of reductions (in the candidate\u2019s de\ufb01cit against any of its opponents in the pairwise race against that opponent) that the edits yield. Over a series of rounds, our scoring rules greedily choose a sequence of edits that modify exactly one voter\u2019s preferences and whose marginal cost is no greater than any other such single-vote-modifying sequence.",
+    "arxiv_id": "0804.1421"
+  },
+  "core_content": {
+    "novelty_claim": "The paper provides efficient, deterministic voting rules that approximate Dodgson\u2019s and Young\u2019s scoring rules to within a logarithmic factor.",
+    "key_methodology": "The method involves defining the marginal cost of a sequence of edits as the number of edits divided by the number of reductions in the candidate's de\ufb01cit against its opponents. The scoring rules greedily choose sequences of edits that modify one voter's preferences and have a marginal cost no greater than any other such single-vote-modifying sequence.",
+    "outcomes": [
+      "O(log m) approximations for Dodgson\u2019s and Young\u2019s scoring rules",
+      "Tight up to constant factor approximation for Dodgson\u2019s rule"
+    ],
+    "full_text_markdown": "The paper addresses the problem of efficiently computing voting rules that approximate Dodgson's and Young's scoring rules. These rules are designed to determine a candidate's score as the edit distance between voter preferences, where edits can be either swapping adjacent candidates in one voter's ranking (for Dodgson) or removing voters from the preference profile (for Young). The authors propose a framework that uses greedy algorithms to minimize the marginal cost of edits, ensuring efficient computation. For Dodgson\u2019s rule, this approximation is tight up to a constant factor, making it particularly useful for practical applications.",
+    "visual_elements": []
+  },
+  "knowledge_graph": {
+    "nodes": [
+      {
+        "id": "concept_1",
+        "type": "Method",
+        "label": "Greedy Algorithm"
+      },
+      {
+        "id": "concept_2",
+        "type": "Concept",
+        "label": "Edit Distance"
+      }
+    ],
+    "edges": [
+      {
+        "source": "concept_1",
+        "target": "concept_2",
+        "relation": "USES"
+      }
+    ]
+  },
+  "source_file": "jason_a_olog_m_deterministic_polynomial-time_computable_approximat.pdf"
+}
