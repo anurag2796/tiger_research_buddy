@@ -14,7 +14,11 @@ from .hardware import HW_PROFILE  # noqa: E402
 
 # Project paths
 PROJECT_ROOT = Path(__file__).parent.parent.parent
-DATA_DIR = PROJECT_ROOT / "data"
+# DATA_DIR can be overridden via env var to run the pipeline into a staging directory
+# while leaving the current demo data untouched (e.g. DATA_DIR_PATH=data_next python main.py scrape-all)
+DATA_DIR = Path(os.getenv("DATA_DIR_PATH", str(PROJECT_ROOT / "data")))
+if not DATA_DIR.is_absolute():
+    DATA_DIR = PROJECT_ROOT / DATA_DIR
 CHROMA_DIR = DATA_DIR / "chroma"
 
 # Ensure directories exist
@@ -119,8 +123,10 @@ def get_config(mode: str = "restricted") -> CrawlConfig:
         return FULL_CONFIG
     return RESTRICTED_CONFIG
 
-# Embedding Configuration
-EMBEDDING_MODEL = "nomic-ai/nomic-embed-text-v1.5"
+# Embedding Configuration — BAAI/bge-large-en-v1.5 outperforms nomic on MTEB English retrieval
+# If you change this, clear ChromaDB (rm -rf data_next/chroma) and re-index with: python main.py load
+EMBEDDING_MODEL = "BAAI/bge-large-en-v1.5"
+EMBEDDING_DIM = 1024  # bge-large: 1024-dim; nomic: 768-dim
 
 # ChromaDB Configuration
 COLLECTION_NAME = "rit_research"
@@ -128,10 +134,12 @@ COLLECTION_NAME = "rit_research"
 
 class LLMConfig:
     """Centralized configuration for LLM interactions."""
-    # Dual Model Strategy
-    CHAT_MODEL = "qwen2.5:7b"          # Better instruction/citation compliance than llama3.1:8b, same speed
-    PIPELINE_MODEL = "qwen2.5:7b"      # Fast structured JSON extraction for offline distillation
-    
+    # Dynamic model routing: simple queries → FAST_MODEL, complex → COMPLEX_MODEL
+    FAST_MODEL = "qwen3:14b"            # Fast responses for simple lookups
+    COMPLEX_MODEL = "gemma4:26b"        # Deep synthesis, comparisons, multi-hop reasoning
+    CHAT_MODEL = FAST_MODEL             # Default (used by OllamaClient singleton init)
+    PIPELINE_MODEL = "qwen3:14b"         # Structured JSON extraction for offline distillation
+
     MODEL_NAME = CHAT_MODEL    # Default to chat model for general usage
     # Context window is hardware-aware: 16384 on M4 Max, 8192 on Jetson Orin.
     # Override with LLM_CONTEXT_WINDOW env var.
@@ -143,7 +151,9 @@ class LLMConfig:
     DEFAULT_OPTIONS = {
         "num_ctx": HW_PROFILE.context_window,  # X1 fix
         "temperature": TEMPERATURE,
-        "num_predict": -1      # infinite generation
+        "num_predict": 8192,     # cap to prevent infinite repetition loops (increased from 2048 to prevent truncation)
+        "repeat_penalty": 1.3,   # stronger than Ollama default (1.1) to break loops
+        "repeat_last_n": 64,     # look back 64 tokens when applying repeat penalty
     }
 
 

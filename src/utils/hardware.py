@@ -14,6 +14,14 @@ from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Literal
 
+# Load .env early so env-var overrides (DISTILLER_CONCURRENCY, LLM_CONTEXT_WINDOW, etc.)
+# are visible before HW_PROFILE is built at import time.
+try:
+    from dotenv import load_dotenv as _load_dotenv
+    _load_dotenv(Path(__file__).parent.parent.parent / ".env", override=False)
+except ImportError:
+    pass
+
 # ---------------------------------------------------------------------------
 # Platform type alias
 # ---------------------------------------------------------------------------
@@ -211,7 +219,7 @@ def build_hardware_profile() -> HardwareProfile:
     _mac = is_macos  # shorthand
     chat_con_limit = int(os.getenv("OLLAMA_CHAT_CONCURRENCY", "2" if _mac else "1"))
     dist_con_limit = int(os.getenv("DISTILLER_CONCURRENCY", "3" if _mac else "1"))
-    ctx_window = int(os.getenv("LLM_CONTEXT_WINDOW", "16384" if _mac else "8192"))
+    ctx_window = int(os.getenv("LLM_CONTEXT_WINDOW", "32768"))
     mem_window = int(os.getenv("MEMORY_WINDOW", "20" if _mac else "6"))
 
     return HardwareProfile(

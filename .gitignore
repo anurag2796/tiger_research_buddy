@@ -202,7 +202,7 @@ data*/full_pipeline.log
 tests/output/
 
 # --- Temporary Dumps ---
-notebookllm_source.txt
+notebooklm_source.txt
 frontend_dump_for_figma.txt
 
 # Jetson Binary Drivers
