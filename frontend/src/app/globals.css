@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 @theme inline {
   --color-background: var(--background);
@@ -8,15 +9,12 @@
 }
 
 :root {
-  --background: #050505;
-  --foreground: #ededed;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #050505;
-    --foreground: #ededed;
-  }
+  --background: #212121;
+  --foreground: #ececec;
+  --rit-orange: #F76902;
+  --rit-orange-dim: rgba(247, 105, 2, 0.15);
+  --sidebar-bg: #171717;
+  --surface: #2f2f2f;
 }
 
 body {
@@ -28,30 +26,73 @@ body {
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(247, 105, 2, 0.4);
 }
 
-/* Base typography for prose inside chat */
-.prose-invert strong {
-    color: #ffe81f;
+/* Prose overrides for chat messages */
+.prose.prose-invert {
+    color: #ececec;
+    max-width: none;
+}
+.prose.prose-invert h1,
+.prose.prose-invert h2,
+.prose.prose-invert h3,
+.prose.prose-invert h4 {
+    color: #F76902;
+    font-weight: 600;
+    margin-top: 1rem;
+    margin-bottom: 0.4rem;
+}
+.prose.prose-invert strong {
+    color: #F76902;
     font-weight: 600;
 }
-.prose-invert ul {
-    list-style-type: disc;
+.prose.prose-invert a {
+    color: #F76902;
+}
+.prose.prose-invert ul,
+.prose.prose-invert ol {
     padding-left: 1.5rem;
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
 }
-.prose-invert li {
-    margin-bottom: 0.25rem;
+.prose.prose-invert li {
+    margin-bottom: 0.2rem;
+}
+.prose.prose-invert ul > li::marker {
+    color: #F76902;
+}
+.prose.prose-invert ol > li::marker {
+    color: #F76902;
+}
+.prose.prose-invert code {
+    background: #1a1a1a;
+    color: #F76902;
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+    font-size: 0.85em;
+}
+.prose.prose-invert pre {
+    background: #1a1a1a;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+}
+.prose.prose-invert pre code {
+    background: transparent;
+    color: #ececec;
+    padding: 0;
+}
+.prose.prose-invert p {
+    margin-top: 0.4rem;
+    margin-bottom: 0.4rem;
 }
