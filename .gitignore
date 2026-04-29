@@ -120,63 +120,66 @@ Thumbs.db
 # TigerResearchBuddy — Project-specific
 # ──────────────────────────────────────────────────────────────────────────────
 
+# Global PDF ignore
+*.pdf
+
 # Secrets — keep example for onboarding
 .env
 !.env.example
 
 # --- Downloaded & Generated Data (large, machine-generated) ------------------
-data/pdfs/
-data/papers/
-data/publications/
-data/research_cards/
-data/faculty_profiles/
-data/research_areas/
-data/viz/
-data/debug_failures/
-data/debug_*/
+data*/pdfs/
+data*/papers/
+data*/publications/
+data*/research_cards/
+data*/faculty_profiles/
+data*/research_areas/
+data*/viz/
+data*/debug_failures/
+data*/debug_*/
 
 # Restricted-mode equivalents
-data/restricted/pdfs/
-data/restricted/papers/
-data/restricted/publications/
-data/restricted/research_cards/
+data*/restricted/pdfs/
+data*/restricted/papers/
+data*/restricted/publications/
+data*/restricted/research_cards/
 
 # Crawler output JSON
-data/rit_data.json
-data/rit_data_v2.json
-data/rit_data_test.json
-data/extended_data.json
-data/comprehensive_data.json
-data/entity_mappings.json
-data/target_urls.json
-data/restricted/rit_data_restricted.json
+data*/rit_data.json
+data*/rit_data_v2.json
+data*/rit_data_test.json
+data*/extended_data.json
+data*/comprehensive_data.json
+data*/entity_mappings.json
+data*/target_urls.json
+data*/restricted/rit_data_restricted.json
 
 # Crawl checkpoints
-data/crawler_checkpoint_*.json
-data/restricted/crawler_checkpoint_*.json
+data*/crawler_checkpoint_*.json
+data*/restricted/crawler_checkpoint_*.json
 
 # Knowledge graph exports (can be 5–20 MB each)
-data/site_graph.gml
-data/tiger_brain.gml
-data/tiger_brain.json
-data/tiger_brain_refined.gml
-data/tiger_brain_viz.html
-data/knowledge_graph.pkl
-data/restricted/site_graph.gml
-data/restricted/tiger_brain.gml
+data*/site_graph.gml
+data*/tiger_brain.gml
+data*/tiger_brain.json
+data*/tiger_brain_refined.gml
+data*/tiger_brain_viz.html
+data*/knowledge_graph.pkl
+data*/restricted/site_graph.gml
+data*/restricted/tiger_brain.gml
 
 # --- Databases ---------------------------------------------------------------
-data/tiger_research.db
-data/chroma/
-data/chroma_test/
-data/lancedb/
-data/kuzu_db*
-data/kuzu_db/
-data/restricted/chroma/
-data/restricted/lancedb/
+data*/tiger_research.db
+data*/chroma/
+data*/chroma_test/
+data*/lancedb/
+data*/kuzu_db*
+data*/kuzu_db/
+data*/restricted/chroma/
+data*/restricted/lancedb/
 
 # --- Caches ------------------------------------------------------------------
-data/cache/
+data*/cache/
 .cache/
 
 # --- Runtime artifacts -------------------------------------------------------
@@ -188,8 +191,8 @@ data_backup_*/
 
 # Logs
 logs/
-data/*.log
-data/full_pipeline.log
+data*/*.log
+data*/full_pipeline.log
 
 # --- Keep empty directory structure for fresh clones -------------------------
 !data/.gitkeep
