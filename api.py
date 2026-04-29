@@ -16,6 +16,7 @@ sys.path.append(os.getcwd())
 from src.database import get_vector_store
 from src.database.vector_store import process_data_into_documents
 from src.database.models import Idea
+from src.database.database import ResearchDatabase
 from src.chatbot.ollama_client import get_ollama_client
 from src.utils.config import FULL_CONFIG, RESTRICTED_CONFIG, DATA_DIR, ALLOWED_ORIGINS
 
@@ -39,6 +40,7 @@ client: Optional[Any] = None
 idea_matcher: Optional[IdeaMatcher] = None
 impact_analyzer: Optional[ImpactAnalyzer] = None
 memory: Optional[MemoryModule] = None
+db: Optional[ResearchDatabase] = None
 
 
 # ---------------------------------------------------------------------------
@@ -49,7 +51,7 @@ memory: Optional[MemoryModule] = None
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Initialize and teardown all heavyweight resources."""
-    global retriever, synthesizer, client, idea_matcher, impact_analyzer, memory
+    global retriever, synthesizer, client, idea_matcher, impact_analyzer, memory, db
 
     print(f"[TigerResearchBuddy] Initializing services... (platform: {HW_PROFILE.platform})")
 
@@ -127,19 +129,40 @@ async def lifespan(app: FastAPI):
                 _outcomes = _core.get("outcomes", [])
                 if not isinstance(_outcomes, list):
                     _outcomes = [str(_outcomes)]
+
+                # Extract RIT faculty and all authors from bibliographic data
+                _raw_authors = _bib.get("authors", [])
+                _rit_faculty = [
+                    a["name"] for a in _raw_authors
+                    if isinstance(a, dict) and a.get("affiliation") == "RIT" and a.get("name")
+                ]
+                _all_authors = [
+                    (a["name"] if isinstance(a, dict) else str(a))
+                    for a in _raw_authors[:8]
+                ]
+
                 _card_content = (
                     f"Title: {_bib.get('title', '')}\n"
+                    f"RIT Faculty: {', '.join(_rit_faculty) if _rit_faculty else 'see authors'}\n"
+                    f"Authors: {', '.join(_all_authors)}\n"
+                    f"Year: {_bib.get('year', '')}\n"
                     f"Domain: {_bib.get('primary_domain', '')}\n"
                     f"Novelty: {_core.get('novelty_claim', '')}\n"
                     f"Methodology: {_core.get('key_methodology', '')}\n"
                     f"Outcomes: {', '.join(_outcomes)}\n"
                     f"Concepts: {', '.join(_concepts)}\n"
-                    f"Abstract: {str(_core.get('full_text_markdown', ''))[:1000]}"
+                    f"Abstract: {str(_core.get('full_text_markdown', ''))[:800]}"
                 )
+                _faculty_name = _rit_faculty[0] if _rit_faculty else ""
                 bm25_docs.append({
                     "id": _card_id,
                     "content": _card_content,
-                    "metadata": {"doc_type": "research_card", "title": _bib.get("title", "")},
+                    "metadata": {
+                        "doc_type": "research_card",
+                        "title": _bib.get("title", ""),
+                        "faculty": _faculty_name,
+                        "rit_faculty": ", ".join(_rit_faculty),
+                    },
                 })
                 _card_count += 1
             except Exception:
@@ -156,6 +179,9 @@ async def lifespan(app: FastAPI):
 
     # Session memory module (dual-tier: sliding window + optional LanceDB)
     memory = MemoryModule(HW_PROFILE)
+
+    # Persistent chat history DB
+    db = ResearchDatabase()
 
     print(
         f"[TigerResearchBuddy] Ready. "
@@ -234,7 +260,7 @@ async def handle_chat(request: ChatRequest):
         lock_path = DATA_DIR / ".pipeline.lock"
         try:
             with filelock.FileLock(lock_path, timeout=0):
-                results = retriever.hybrid_search(request.query, k=7, rerank=True)
+                results = retriever.hybrid_search(request.query, k=7, rerank=False)
         except filelock.Timeout:
             raise HTTPException(
                 status_code=503,
@@ -302,6 +328,7 @@ async def handle_chat_stream(request: Request):
     query = body.get("query", "")
     persona = body.get("persona", "tiger")
     session_id = body.get("session_id")
+    model_override = body.get("model", "auto")  # "auto" | specific model name
 
     if not query:
         raise HTTPException(status_code=400, detail="Query is required.")
@@ -314,15 +341,19 @@ async def handle_chat_stream(request: Request):
 
     # Retrieve context (with file lock guard)
     import filelock
+    from src.generation.synthesizer import _pick_model
     lock_path = DATA_DIR / ".pipeline.lock"
     try:
         with filelock.FileLock(lock_path, timeout=0):
-            results = retriever.hybrid_search(query, k=7, rerank=True)
+            results = retriever.hybrid_search(query, k=7, rerank=False)
     except filelock.Timeout:
         raise HTTPException(
             status_code=503,
             detail="The research database is currently being updated. Please try again in a few moments.",
         )
+
+    # Determine actual model
+    actual_model = _pick_model(query, len(results)) if model_override == "auto" else model_override
 
     # Clean sources for the [SOURCES] SSE event
     clean_sources = [
@@ -336,13 +367,26 @@ async def handle_chat_stream(request: Request):
     ]
 
     async def event_generator():
-        # Emit sources first so the citation panel populates immediately
+        # Emit pipeline step events so the frontend can show a "thinking" trace
+        n_faculty = sum(1 for r in results if r.get("metadata", {}).get("doc_type") in ("professor", "faculty_profile"))
+        n_papers = sum(1 for r in results if r.get("metadata", {}).get("doc_type") in ("publication", "paper", "research_paper", "research_card"))
+        n_other = len(results) - n_faculty - n_papers
+        source_summary = " · ".join(filter(None, [
+            f"{n_faculty} faculty" if n_faculty else "",
+            f"{n_papers} papers" if n_papers else "",
+            f"{n_other} other" if n_other else "",
+        ])) or "no matches"
+
+        yield f"data: [STEP]{json.dumps({'step': 'retrieval', 'label': f'Retrieved {len(results)} sources', 'details': source_summary})}\n\n"
+        yield f"data: [STEP]{json.dumps({'step': 'generate', 'label': f'Generating with {actual_model}', 'details': f'Persona: {persona} · history: {len(history)} turns'})}\n\n"
+
+        # Emit sources so the citation panel populates
         yield f"data: [SOURCES]{json.dumps({'sources': clean_sources, 'session_id': session_id})}\n\n"
 
         # Stream tokens from the synthesizer
         full_response = []
         async for token in synthesizer.synthesize_stream_async(
-            query, results, history=history, request=request,
+            query, results, history=history, request=request, model=actual_model,
         ):
             full_response.append(token)
             # SSE format: data: {payload}\n\n
@@ -350,11 +394,18 @@ async def handle_chat_stream(request: Request):
 
         yield "data: [DONE]\n\n"
 
-        # Persist to session memory after stream completes
+        # Persist to session memory + DB after stream completes
+        import time as _time
+        full_text = "".join(full_response)
+        now_ms = int(_time.time() * 1000)
         if memory:
-            full_text = "".join(full_response)
             await memory.add_turn(session_id, "user", query)
             await memory.add_turn(session_id, "assistant", full_text)
+        if db:
+            title = query[:80].strip()
+            db.save_chat_session(session_id, title, type="chat", persona=persona)
+            db.save_chat_message(session_id, "user", query, now_ms)
+            db.save_chat_message(session_id, "assistant", full_text, now_ms + 1)
 
     return StreamingResponse(
         event_generator(),
@@ -382,7 +433,19 @@ def get_graph_data():
     try:
         with open(graph_path, "r", encoding="utf-8") as f:
             data = json.load(f)
-            return data
+
+        # Drop unknown-type edges — they're crawler artifacts and dominate the
+        # payload (~127K of 140K links), making the response ~23 MB.
+        known_types = {
+            "AUTHORED", "COAUTHORED_WITH", "MENTIONS", "HAS_TOPIC",
+            "RELATED_TO", "COMBINES_WITH", "USES", "SOLVES", "ANALYZES",
+            "APPLIES_TO", "ENHANCES", "MEASURES", "INFLUENCES", "SUPPORTS",
+        }
+        data["links"] = [
+            l for l in data.get("links", [])
+            if (l.get("type") or "").upper() in known_types
+        ]
+        return data
     except Exception as e:
         print(f"Graph load error: {e}")
         raise HTTPException(status_code=500, detail="Could not load Graph Data")
@@ -427,6 +490,17 @@ async def handle_idea(request: IdeaRequest):
         for c in matches.get("collaborators", [])
     ]
 
+    if db:
+        db.save_collaboration(
+            title=request.title,
+            description=request.description,
+            college=request.college,
+            tags=request.tags,
+            impact_score=impact.get("score", 0),
+            impact_summary=impact.get("summary", ""),
+            collaborators_json=json.dumps(collabs),
+        )
+
     return {"impact": impact, "collaborators": collabs}
 
 
@@ -434,9 +508,31 @@ async def handle_idea(request: IdeaRequest):
 # Session management endpoints
 # ---------------------------------------------------------------------------
 
+@app.get("/api/sessions")
+def list_sessions(type: str = "chat", limit: int = 40):
+    if not db:
+        return []
+    return db.get_sessions(type=type, limit=limit)
+
+
+@app.get("/api/sessions/{session_id}/messages")
+def get_session_messages(session_id: str):
+    if not db:
+        raise HTTPException(status_code=503, detail="DB not ready")
+    return db.get_session_messages(session_id)
+
+
+@app.get("/api/collaborations")
+def list_collaborations(limit: int = 30):
+    if not db:
+        return []
+    return db.get_collaborations(limit=limit)
+
+
 @app.delete("/api/chat/{session_id}")
 async def clear_session(session_id: str):
-    """Clear the chat history for a given session ID."""
     if memory:
         memory.clear_session(session_id)
+    if db:
+        db.delete_session(session_id)
     return {"status": "cleared", "session_id": session_id}
