@@ -63,7 +63,7 @@ def _get_embedding_function():
                         device = "cpu"
 
                 console.print(f"[dim]Loading {EMBEDDING_MODEL} on device={device!r}[/]")
-                _model = SentenceTransformer(EMBEDDING_MODEL, trust_remote_code=True, device=device)
+                _model = SentenceTransformer(EMBEDDING_MODEL, device=device)
                 
                 from chromadb import EmbeddingFunction, Documents, Embeddings
                 class SafeTigerEmbeddingFunction(EmbeddingFunction):

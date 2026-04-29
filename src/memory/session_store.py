@@ -167,7 +167,7 @@ class MemoryModule:
                 pa.field("role", pa.string()),
                 pa.field("content", pa.string()),
                 pa.field("timestamp", pa.float64()),
-                pa.field("vector", pa.list_(pa.float32(), 768)),  # nomic-embed-text-v1.5 dim
+                pa.field("vector", pa.list_(pa.float32(), 1024)),  # bge-large-en-v1.5 dim
             ])
 
             if "chat_history" in db.table_names():
@@ -181,9 +181,7 @@ class MemoryModule:
             from src.utils.config import EMBEDDING_MODEL
 
             device = get_embedding_device()
-            self._embed_fn = SentenceTransformer(
-                EMBEDDING_MODEL, trust_remote_code=True, device=device
-            )
+            self._embed_fn = SentenceTransformer(EMBEDDING_MODEL, device=device)
             logger.info("LanceDB memory initialized at %s (device=%s).", db_path, device)
 
         except ImportError as exc:

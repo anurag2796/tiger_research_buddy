@@ -1,4 +1,5 @@
 import json
+import re
 import networkx as nx
 from pathlib import Path
 from typing import Optional
@@ -72,108 +73,157 @@ class GraphBuilder:
             console.print("[red]No Research Cards found![/]")
             return
 
-        # Cache faculty names for fuzzy matching
-        faculty_nodes = [
-            str(n) for n, d in self.graph.nodes(data=True) 
-            if d.get("type") == "faculty" and n
-        ]
-        console.print(f"[cyan]Integrating {len(json_files)} Research Cards with {len(faculty_nodes)} Faculty nodes...[/]")
+        # Cache faculty node names (lowercase → canonical) for fast lookup
+        faculty_name_index: dict[str, str] = {}
+        for n, d in self.graph.nodes(data=True):
+            if d.get("type") == "faculty" and n:
+                faculty_name_index[str(n).lower()] = str(n)
+
+        console.print(f"[cyan]Integrating {len(json_files)} Research Cards with {len(faculty_name_index)} Faculty nodes...[/]")
+
+        authored_edges = 0
 
         for json_file in track(json_files, description="Merging Knowledge..."):
             try:
                 with open(json_file, "r") as f:
                     card = json.load(f)
-                
-                paper_title = card.get("title", "Unknown Paper")
-                paper_id = f"paper_{paper_title.lower().replace(' ', '_')}"[:50] # Truncate ID
-                
+
+                bib = card.get("bibliographic_data") or {}
+                core = card.get("core_content") or {}
+
+                paper_title = bib.get("title") or card.get("title") or "Unknown Paper"
+                paper_year = bib.get("year") or card.get("year", "")
+                raw_authors = bib.get("authors") or card.get("authors", [])
+
+                paper_id = f"paper_{paper_title.lower().replace(' ', '_')}"[:50]
+
                 # 1. Add Paper Node
-                self.graph.add_node(paper_id, type="paper", label=paper_title, year=card.get("year", ""))
+                self.graph.add_node(paper_id, type="paper", label=paper_title, year=str(paper_year))
 
-                # 2. Link Authors (Faculty)
-                authors = card.get("authors", [])
-                normalized_authors = []
-                for a in authors:
-                    if isinstance(a, str):
-                        normalized_authors.append(a)
-                    elif isinstance(a, dict) and "name" in a:
-                        normalized_authors.append(a["name"])
+                # 2. Link RIT Faculty Authors
+                # Priority: use faculty_id field if present (authoritative); fall back to
+                # entity resolver for names that were extracted without explicit faculty_id.
+                rit_authors_on_paper: list[str] = []
 
-                # Resolve authors to canonical IDs using resolve_faculty
-                # (resolve_author does not exist on EntityResolver — resolve_faculty
-                # is the correct method for mapping author names to canonical IDs)
-                for author_name in normalized_authors:
-                    # Resolve using faculty resolver (handles fuzzy/phonetic matching)
-                    canonical_id = self.entity_resolver.resolve_faculty(
-                        author_name, department=card.get("institution", "")
-                    )
+                for a in raw_authors:
+                    if not isinstance(a, dict) or "name" not in a:
+                        continue
 
-                    # Look up display name from canonical_entities; fall back to raw name
-                    canonical_name = (
-                        self.entity_resolver.canonical_entities
-                        .get(canonical_id, {})
-                        .get("canonical_name", author_name)
-                    )
+                    author_name: str = a["name"]
+                    affiliation: str = a.get("affiliation", "")
+                    faculty_id_hint: str = a.get("faculty_id", "")
 
-                    # Ensure Canonical Node Exists in Graph
-                    if not self.graph.has_node(canonical_id):
-                        self.graph.add_node(
-                            canonical_id,
-                            type="faculty",
-                            label=canonical_name,
+                    canonical_name: Optional[str] = None
+
+                    # Fast path: faculty_id is the canonical graph node name
+                    if faculty_id_hint and faculty_id_hint.lower() in faculty_name_index:
+                        canonical_name = faculty_name_index[faculty_id_hint.lower()]
+                    elif faculty_id_hint and self.graph.has_node(faculty_id_hint):
+                        canonical_name = faculty_id_hint
+                    elif affiliation.upper() == "RIT" or affiliation == "":
+                        # Slow path: use entity resolver for fuzzy name matching
+                        cid = self.entity_resolver.resolve_faculty(author_name, department=affiliation)
+                        cname = (
+                            self.entity_resolver.canonical_entities
+                            .get(cid, {})
+                            .get("canonical_name", author_name)
                         )
+                        if self.graph.has_node(cname):
+                            canonical_name = cname
+                        else:
+                            # Last resort: case-insensitive direct lookup
+                            canonical_name = faculty_name_index.get(author_name.lower())
 
-                    # Link Paper -> Canonical Author
-                    self.graph.add_edge(canonical_id, paper_id, type="AUTHORED", weight=1.0)
+                    if canonical_name and self.graph.has_node(canonical_name):
+                        self.graph.add_edge(canonical_name, paper_id, type="AUTHORED", weight=1.0)
+                        rit_authors_on_paper.append(canonical_name)
+                        authored_edges += 1
 
-                # 3. Add Concepts & Relations
-                kg = card.get("knowledge_graph", {})
-                
-                # TigerCard 2.0 has 'nodes' and 'edges'. Old schema had 'entities' and 'relations'.
+                # 3. Connect RIT co-authors to each other through shared papers
+                for i, fa in enumerate(rit_authors_on_paper):
+                    for fb in rit_authors_on_paper[i + 1:]:
+                        if self.graph.has_edge(fa, fb):
+                            self.graph.edges[fa, fb]["weight"] = (
+                                self.graph.edges[fa, fb].get("weight", 1.0) + 1.0
+                            )
+                        else:
+                            self.graph.add_edge(fa, fb, type="COAUTHORED_WITH", weight=1.0)
+
+                # 4. Add Concepts & Relations
+                kg = card.get("knowledge_graph") or {}
                 nodes = kg.get("nodes", kg.get("entities", []))
                 edges = kg.get("edges", kg.get("relations", []))
-                
-                # Add Concept Nodes from structured KG
-                for node in nodes:
-                    concept_id = node.get("id")
-                    concept_label = node.get("label", node.get("name")) # Handle both
-                    concept_type = node.get("type", "concept")
-                    
-                    if concept_id:
-                        if not self.graph.has_node(concept_id):
-                            self.graph.add_node(concept_id, type="concept", label=concept_label, concept_type=concept_type)
-                        
-                        # Link Paper -> Concept
-                        self.graph.add_edge(paper_id, concept_id, type="MENTIONS", weight=1.0)
-                
-                # Fallback: Use keywords as concepts if KG is sparse
-                # This ensures coverage for cards where DeepDistiller didn't extract entities
-                keywords = card.get("keywords", [])
-                for keyword in keywords:
-                    if not keyword or len(keyword) < 3:  # Skip empty/short keywords
-                        continue
-                    
-                    # Use normalized keyword as ID, original as display name
-                    concept_id = keyword.lower().replace(" ", "_")
-                    
-                    if not self.graph.has_node(concept_id):
-                        # Use 'name' instead of 'label' to avoid GML conflicts
-                        self.graph.add_node(concept_id, type="concept", name=keyword, concept_type="keyword")
-                    
-                    # Link Paper -> Keyword Concept
-                    self.graph.add_edge(paper_id, concept_id, type="HAS_TOPIC", weight=0.8)
 
-                # Add Concept-Concept Relations (from the card)
+                local_id_map = {}
+
+                for node in nodes:
+                    if not isinstance(node, dict):
+                        continue
+                    local_id = node.get("id")
+                    concept_label = node.get("label", node.get("name", ""))
+                    concept_type = node.get("type", "concept")
+
+                    if not local_id or not concept_label:
+                        continue
+
+                    normalized = re.sub(r"[^a-z0-9\s]", "", concept_label.lower())
+                    normalized = re.sub(r"\s+", "_", normalized.strip())
+                    global_id = f"concept__{normalized.rstrip('s') if len(normalized) > 4 else normalized}"
+                    local_id_map[local_id] = global_id
+
+                    if not self.graph.has_node(global_id):
+                        self.graph.add_node(global_id, type="concept", label=concept_label, concept_type=concept_type)
+
+                    self.graph.add_edge(paper_id, global_id, type="MENTIONS", weight=1.0)
+
                 for edge in edges:
-                    src = edge.get("source")
-                    tgt = edge.get("target")
-                    rel_type = edge.get("relation", edge.get("type", "RELATED_TO")) # Handle both
-                    
+                    if not isinstance(edge, dict):
+                        continue
+                    src = local_id_map.get(edge.get("source"))
+                    tgt = local_id_map.get(edge.get("target"))
+                    rel_type = edge.get("relation", edge.get("type", "RELATED_TO"))
+
                     if src and tgt and self.graph.has_node(src) and self.graph.has_node(tgt):
                         self.graph.add_edge(src, tgt, type=rel_type, weight=0.5)
 
+                # 5. Fallback keywords as concepts
+                keywords = card.get("keywords", [])
+                if not keywords and core:
+                    keywords = core.get("keywords", [])
+
+                for keyword in keywords:
+                    if not keyword or len(keyword) < 3:
+                        continue
+                    concept_id = f"kw_{keyword.lower().replace(' ', '_')}"
+                    if not self.graph.has_node(concept_id):
+                        self.graph.add_node(concept_id, type="concept", name=keyword, concept_type="keyword")
+                    self.graph.add_edge(paper_id, concept_id, type="HAS_TOPIC", weight=0.8)
+
             except Exception as e:
                 console.print(f"[yellow]Skipping {json_file.name}: {e}[/]")
+
+        console.print(f"[green]Created {authored_edges} faculty→paper AUTHORED edges.[/]")
+
+    def prune_sparse_concepts(self, min_papers: int = 2):
+        """Remove concept nodes connected to fewer than min_papers papers.
+
+        Singleton concepts are per-paper noise that balloon node count and
+        fragment the layout without adding cross-faculty connectivity.
+        """
+        to_remove = []
+        for n, d in self.graph.nodes(data=True):
+            if d.get("type") != "concept":
+                continue
+            # In a DiGraph, neighbors() only returns successors. 
+            # We must check predecessors (incoming edges) as papers point to concepts.
+            paper_neighbors = sum(
+                1 for nb in (list(self.graph.predecessors(n)) + list(self.graph.successors(n)))
+                if self.graph.nodes[nb].get("type") == "paper"
+            )
+            if paper_neighbors < min_papers:
+                to_remove.append(n)
+        self.graph.remove_nodes_from(to_remove)
+        console.print(f"[cyan]Pruned {len(to_remove)} singleton concept nodes (kept concepts appearing in {min_papers}+ papers).[/]")
 
     def sanitize_graph(self):
         """Ensure all attributes are GML-compatible (no None values)."""
@@ -227,4 +277,5 @@ if __name__ == "__main__":
     builder.load_site_graph()
     builder.load_faculty_data()
     builder.merge_research_cards()
+    builder.prune_sparse_concepts(min_papers=2)
     builder.export()

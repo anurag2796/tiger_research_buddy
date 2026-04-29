@@ -10,7 +10,7 @@ from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn
 
 from ..chatbot.ollama_client import OllamaClient
 from ..chatbot.gemini_client import get_gemini_client
-from ..utils.config import DATA_DIR, GEMINI_API_KEY, LLMConfig
+from ..utils.config import DATA_DIR, PROJECT_ROOT, GEMINI_API_KEY, LLMConfig
 from ..utils.db_logger import setup_db_logging, log_timing, PerformanceTimer as Timer
 from ..utils.hardware import HW_PROFILE  # X2: for hardware-aware distiller concurrency
 from ..crawlers.vision_crawler import VisionCrawler
@@ -299,7 +299,7 @@ Response:"""
     def _load_taxonomy(self) -> Dict:
         """Load the arXiv taxonomy seed."""
         try:
-            with open(DATA_DIR / "taxonomies/arxiv_cs_taxonomy.json") as f:
+            with open(PROJECT_ROOT / "data/taxonomies/arxiv_cs_taxonomy.json") as f:
                 return json.load(f)
         except Exception as e:
             console.print(f"[yellow]Could not load taxonomy: {e}[/]")
