@@ -1,11 +1,111 @@
 import json
+import re
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 from rich.console import Console
 from ..chatbot.ollama_client import get_ollama_client
 from ..utils.json_utils import extract_json  # B4: replaces all string surgery
+from ..utils.config import LLMConfig
 
 console = Console()
+
+# Signals that a query needs deep synthesis — route to the large model
+_COMPLEX_PATTERNS = re.compile(
+    r"\b(compare|contrast|synthesize|summarize all|explain why|how does|what is the difference"
+    r"|across|trend|overview|landscape|relate|connection between|impact of|implications"
+    r"|in depth|deep dive|comprehensive|multiple|several|various)\b",
+    re.IGNORECASE,
+)
+
+def _pick_model(query: str, n_results: int) -> str:
+    """Route to fast or capable model based on query complexity."""
+    is_complex = (
+        len(query.split()) > 15
+        or n_results > 5
+        or _COMPLEX_PATTERNS.search(query) is not None
+    )
+    return LLMConfig.COMPLEX_MODEL if is_complex else LLMConfig.FAST_MODEL
+
+# Pure greetings/chitchat — short-circuit before RAG
+_GREETING_PATTERNS = re.compile(
+    r"^\s*(hi+|hey+|hello|howdy|sup|what'?s up|good (morning|afternoon|evening)|greetings"
+    r"|how are you|how('?re| are) (you|things)"
+    r"|thanks|thank you|thx|bye|goodbye|cool|ok|okay|got it|nice"
+    r"|test|testing|ping|hello there|yo)\s*[!?.]*\s*$",
+    re.IGNORECASE,
+)
+
+# Meta/identity queries — let through to LLM so role.md handles them
+_CONVERSATIONAL_PATTERNS = re.compile(
+    r"^\s*(hi+|hey+|hello|howdy|sup|what'?s up|good (morning|afternoon|evening)|greetings"
+    r"|how are you|how('?re| are) (you|things)|what (are|can) (you|u) do"
+    r"|what are (your?|you) (capabilities?|features?|functions?|skills?|abilities?)"
+    r"|what('?s| is) (your|this|tigerbrain|tigerresearch|tiger research)"
+    r"|who are you|tell me about (yourself|you)|your? capabilities|what can (you|i)"
+    r"|help me|can you help|what do you (know|do)|are you (an |a )?ai"
+    r"|thanks|thank you|thx|bye|goodbye|cool|ok|okay|got it|nice"
+    r"|test|testing|ping|hello there|yo)\s*[!?.]*\s*$",
+    re.IGNORECASE,
+)
+
+_CAPABILITIES_RESPONSE = """Hi! I'm **TigerResearchBuddy** — an AI research advisor built for RIT students.
+
+Here's what I can do:
+
+**🔍 Find Research Opportunities**
+Ask me about any topic and I'll surface relevant RIT faculty, their papers, and active research areas. Example: *"Who works on machine learning at RIT?"*
+
+**👥 Discover Faculty**
+I can match you with professors based on your interests and explain why they're relevant to you. Example: *"Find me someone working on computer vision for medical imaging."*
+
+**🤝 Collaboration Hub**
+Post a research idea and I'll find faculty whose work aligns with it, plus score your idea's potential impact.
+
+**🧠 Knowledge Graph**
+Explore a visual map of how RIT faculty, papers, and research concepts are connected.
+
+**💬 Conversational Memory**
+I remember our conversation — you can ask follow-up questions and I'll keep context.
+
+What research area are you interested in exploring?"""
+
+def _build_user_prompt(query: str, context_str: str, history_prefix: str = "") -> str:
+    """Shared prompt used by all synthesis paths."""
+    return f"""
+TASK INSTRUCTIONS:
+Your goal is to help students navigate research opportunities at RIT by connecting them with the right faculty and labs.
+You MUST cite every factual claim with square-bracket source IDs like [1], [2].
+
+IMPORTANT — how to use the context:
+- Context entries may be FACULTY PROFILES, RESEARCH PAPERS, or RESEARCH CARDS.
+- RESEARCH CARDS contain a "RIT Faculty:" field that names the professor(s) who authored or supervised that work.
+  Use this field to answer questions about which professors work on a topic.
+- If no direct faculty profile is available but research cards list RIT Faculty names, use those names to answer.
+- Only say you cannot find information if the context genuinely contains nothing relevant to the query.
+- NEVER invent names, titles, or research details not present in the context.
+
+{history_prefix}Query: "{query}"
+
+Context from RIT Database:
+{context_str}
+
+Task: Write a helpful, structured response for the student.
+Format:
+
+1. **Direct Answer**: One-paragraph summary answering the query directly.
+2. **Key Faculty & Researchers**: For each relevant professor found in context:
+   - **Name** [Source ID] — their role/title if known
+   - **Focus**: What they work on (from their papers or bio).
+   - **Representative work**: Specific paper titles or findings from context.
+   - **Why relevant**: How their work connects to the query.
+3. **Active Research Themes**: Group the retrieved papers into 2–3 thematic clusters.
+4. **Recommended Next Step**: Concrete advice (e.g., "Email Prof X", "Read paper Y").
+
+If the context truly has no relevant information, say so briefly — do not fabricate.
+
+Response:
+"""
+
 
 class ResponseSynthesizer:
     """
@@ -25,23 +125,14 @@ class ResponseSynthesizer:
             results: List of retrieved documents (RRF ranked)
             use_cod: If True, use Chain of Density prompting for deeper answers
         """
+        if _GREETING_PATTERNS.match(query):
+            return "Hey! How can I help you explore RIT research today?"
+
         context_str, sources = self._format_context(results)
-        
-        if not context_str:
-            # Smart fallback for empty context
-            prompt = (
-                f"User Query: '{query}'\n\n"
-                "Task: Determine if the user is asking a conversational question (e.g., 'how are you', 'who are you', 'hello', 'what are you doing') "
-                "or if they are asking a specific question requiring factual research or data.\n"
-                "- If conversational: Respond naturally, politely, and concisely as TigerResearchBuddy, an AI academic advisor.\n"
-                "- If it is a request for research, data, or faculty: Reply EXACTLY with this phrase: "
-                "'I couldn't find any relevant research or faculty in the database to answer that.'"
-            )
-            try:
-                fallback_response = self.client.generate(prompt, system_prompt="You are TigerResearchBuddy, a helpful academic AI assistant.")
-                return fallback_response
-            except Exception:
-                return "I couldn't find any relevant research or faculty in the database to answer that."
+        is_low_relevance = not results or all(r.get("rrf_score", 0) < 0.02 for r in results)
+
+        if not context_str and not is_low_relevance:
+            return "I couldn't find any relevant research or faculty in the database to answer that."
 
         if use_cod:
             return self._synthesize_cod(query, context_str, sources)
@@ -55,38 +146,8 @@ class ResponseSynthesizer:
             else "You are a helpful academic advisor."
         )
 
-        user_prompt = f"""
-TASK INSTRUCTIONS:
-Your goal is to help students navigate research opportunities by connecting them with the right faculty and labs.
-You MUST cite your sources using square brackets like [1], [2].
-CRITICAL EXCEPTION: If the context provided does not contain RELEVANT information to answer the query,
-you MUST state 'I could not find relevant information in the database to answer your query.' DO NOT hallucinate names or research areas.
+        user_prompt = _build_user_prompt(query, context_str)
 
-Query: "{query}"
-
-Context from RIT Database:
-{context_str}
-
-Task: Write a structured response for the student.
-Follow this format EXACTLY:
-
-1. **Direct Answer**: Brief summary of who/what addresses the query.
-2. **Key Faculty & Researchers**: 
-   - Name and Title [Source ID]
-   - **Focus**: What they work on (inferred from papers/bio).
-   - **Research**: Specific details from the context.
-   - **Why relevant**: Connect their work to the user's query.
-3. **Active Research Areas**: Group the retrieved papers into 2-3 themes.
-4. **Recommended Next Step**: Actionable advice (e.g., "Read paper X", "Contact Prof Y").
-
-Rules:
-- Cite every claim with [x].
-- If a faculty member is listed in context, use their full bio details.
-- CRITICAL: Do not hallucinate. Do not output placeholder names like '[Name]'. If no relevant faculty or papers exist in the Context, ABORT the standard format and just say 'No relevant data found.'
-
-Response:
-"""
-        
         try:
             # Use generate for strict instruction following
             response = self.client.generate(
@@ -160,22 +221,14 @@ Response:
                      the last N turns are prepended to the user prompt so the
                      LLM has conversational context.
         """
+        if _GREETING_PATTERNS.match(query):
+            return "Hey! How can I help you explore RIT research today?"
+
         context_str, sources = self._format_context(results)
-        
-        if not context_str:
-            prompt = (
-                f"User Query: '{query}'\n\n"
-                "Task: Determine if the user is asking a conversational question (e.g., 'how are you', 'who are you', 'hello', 'what are you doing') "
-                "or if they are asking a specific question requiring factual research or data.\n"
-                "- If conversational: Respond naturally, politely, and concisely as TigerResearchBuddy, an AI academic advisor.\n"
-                "- If it is a request for research, data, or faculty: Reply EXACTLY with this phrase: "
-                "'I couldn't find any relevant research or faculty in the database to answer that.'"
-            )
-            try:
-                fallback_response = await self.client.generate_async(prompt, system_prompt="You are TigerResearchBuddy, a helpful academic AI assistant.")
-                return fallback_response
-            except Exception:
-                return "I couldn't find any relevant research or faculty in the database to answer that."
+        is_low_relevance = not results or all(r.get("rrf_score", 0) < 0.02 for r in results)
+
+        if not context_str and not is_low_relevance:
+            return "I couldn't find any relevant research or faculty in the database to answer that."
 
         if use_cod:
             return await self._synthesize_cod_async(query, context_str, sources)
@@ -197,44 +250,15 @@ Response:
             )
             history_prefix = f"\n--- Conversation History ---\n{history_prefix}\n--- End History ---\n\n"
 
-        user_prompt = f"""
-TASK INSTRUCTIONS:
-Your goal is to help students navigate research opportunities by connecting them with the right faculty and labs.
-You MUST cite your sources using square brackets like [1], [2].
-CRITICAL EXCEPTION: If the context provided does not contain RELEVANT information to answer the query,
-you MUST state 'I could not find relevant information in the database to answer your query.' DO NOT hallucinate names or research areas.
+        user_prompt = _build_user_prompt(query, context_str, history_prefix)
 
-{history_prefix}Query: "{query}"
-
-Context from RIT Database:
-{context_str}
-
-Task: Write a structured response for the student.
-Follow this format EXACTLY:
-
-1. **Direct Answer**: Brief summary of who/what addresses the query.
-2. **Key Faculty & Researchers**: 
-   - Name and Title [Source ID]
-   - **Focus**: What they work on (inferred from papers/bio).
-   - **Research**: Specific details from the context.
-   - **Why relevant**: Connect their work to the user's query.
-3. **Active Research Areas**: Group the retrieved papers into 2-3 themes.
-4. **Recommended Next Step**: Actionable advice (e.g., "Read paper X", "Contact Prof Y").
-
-Rules:
-- Cite every claim with [x].
-- If a faculty member is listed in context, use their full bio details.
-- CRITICAL: Do not hallucinate. Do not output placeholder names like '[Name]'. If no relevant faculty or papers exist in the Context, ABORT the standard format and just say 'No relevant data found.'
-
-Response:
-"""
-        
         try:
             response = await self.client.generate_async(
                 prompt=user_prompt,
-                system_prompt=persona_system_prompt
+                system_prompt=persona_system_prompt,
+                model=_pick_model(query, len(results)),
             )
-            
+
             return self._format_output(response, sources)
             
         except Exception as e:
@@ -247,6 +271,7 @@ Response:
         results: List[Dict],
         history: Optional[List[Dict]] = None,
         request=None,
+        model: Optional[str] = None,
     ):
         """Streaming synthesis — yields token chunks for SSE.
 
@@ -260,11 +285,15 @@ Response:
         request : starlette.requests.Request, optional
             Passed through to the streaming generator for disconnect detection.
         """
+        if _GREETING_PATTERNS.match(query):
+            yield "Hey! How can I help you explore RIT research today?"
+            return
+
         sources = self._format_sources(results)
         context_str = self._build_context_string(results, sources)
+        is_low_relevance = not results or all(r.get("rrf_score", 0) < 0.02 for r in results)
 
-        # No context → short-circuit with a fallback message
-        if not results or context_str.strip() == "":
+        if not context_str and not is_low_relevance:
             yield "I couldn't find any relevant research or faculty in the database to answer that."
             return
 
@@ -283,43 +312,14 @@ Response:
             )
             history_prefix = f"\n--- Conversation History ---\n{history_prefix}\n--- End History ---\n\n"
 
-        user_prompt = f"""
-TASK INSTRUCTIONS:
-Your goal is to help students navigate research opportunities by connecting them with the right faculty and labs.
-You MUST cite your sources using square brackets like [1], [2].
-CRITICAL EXCEPTION: If the context provided does not contain RELEVANT information to answer the query,
-you MUST state 'I could not find relevant information in the database to answer your query.' DO NOT hallucinate names or research areas.
-
-{history_prefix}Query: "{query}"
-
-Context from RIT Database:
-{context_str}
-
-Task: Write a structured response for the student.
-Follow this format EXACTLY:
-
-1. **Direct Answer**: Brief summary of who/what addresses the query.
-2. **Key Faculty & Researchers**: 
-   - Name and Title [Source ID]
-   - **Focus**: What they work on (inferred from papers/bio).
-   - **Research**: Specific details from the context.
-   - **Why relevant**: Connect their work to the user's query.
-3. **Active Research Areas**: Group the retrieved papers into 2-3 themes.
-4. **Recommended Next Step**: Actionable advice (e.g., "Read paper X", "Contact Prof Y").
-
-Rules:
-- Cite every claim with [x].
-- If a faculty member is listed in context, use their full bio details.
-- CRITICAL: Do not hallucinate. Do not output placeholder names like '[Name]'. If no relevant faculty or papers exist in the Context, ABORT the standard format and just say 'No relevant data found.'
-
-Response:
-"""
+        user_prompt = _build_user_prompt(query, context_str, history_prefix)
 
         try:
             async for token in self.client.generate_stream_async(
                 prompt=user_prompt,
                 system_prompt=persona_system_prompt,
                 request=request,
+                model=model if model else _pick_model(query, len(results)),
             ):
                 yield token
         except Exception as e:

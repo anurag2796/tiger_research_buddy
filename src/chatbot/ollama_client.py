@@ -131,10 +131,11 @@ class OllamaClient:
 
     
     async def generate_async(
-        self, 
-        prompt: str, 
+        self,
+        prompt: str,
         context: Optional[str] = None,
         system_prompt: Optional[str] = None,
+        model: Optional[str] = None,
         **kwargs
     ) -> str:
         """Generate a response asynchronously (non-blocking) with proper cancellation support."""
@@ -164,12 +165,11 @@ class OllamaClient:
         try:
             # Set default options if not provided
             options = kwargs.get("options", {})
-            if "num_ctx" not in options:
-                options["num_ctx"] = LLMConfig.CONTEXT_WINDOW
-            if "temperature" not in options:
-                options["temperature"] = LLMConfig.TEMPERATURE
+            for key, val in LLMConfig.DEFAULT_OPTIONS.items():
+                if key not in options:
+                    options[key] = val
             kwargs["options"] = options
-            
+
             # B3 fix: Semaphore limit is driven by HW_PROFILE.chat_concurrency
             # (env var OLLAMA_CHAT_CONCURRENCY, default 2 on macOS / 1 on Linux).
             # This prevents Orin VRAM panics while letting the M4 Max run 2 concurrent LLM calls.
@@ -181,7 +181,7 @@ class OllamaClient:
             async with self._async_lock:
                 client = AsyncClient()
                 response = await client.chat(
-                    model=self.model,
+                    model=model or self.model,
                     messages=messages,
                     **kwargs
                 )
@@ -199,6 +199,7 @@ class OllamaClient:
         context: Optional[str] = None,
         system_prompt: Optional[str] = None,
         request=None,
+        model: Optional[str] = None,
         **kwargs,
     ):
         """Async streaming generator with disconnect-aware VRAM release.
@@ -233,12 +234,11 @@ class OllamaClient:
         user_content += prompt
         messages.append({"role": "user", "content": user_content})
 
-        # Inject config defaults
+        # Inject config defaults — apply every key from DEFAULT_OPTIONS unless caller overrides
         options = kwargs.pop("options", {})
-        if "num_ctx" not in options:
-            options["num_ctx"] = LLMConfig.CONTEXT_WINDOW
-        if "temperature" not in options:
-            options["temperature"] = LLMConfig.TEMPERATURE
+        for key, val in LLMConfig.DEFAULT_OPTIONS.items():
+            if key not in options:
+                options[key] = val
         kwargs["options"] = options
 
         # Acquire VRAM semaphore
@@ -251,11 +251,13 @@ class OllamaClient:
             async with self._async_lock:
                 client = AsyncClient()
                 stream = await client.chat(
-                    model=self.model,
+                    model=model or self.model,
                     messages=messages,
                     stream=True,
                     **kwargs,
                 )
+                in_think = False
+                think_buf = ""
                 async for chunk in stream:
                     # Disconnect-aware: if the HTTP client aborted, stop
                     # inference immediately so Ollama frees the VRAM.
@@ -264,8 +266,41 @@ class OllamaClient:
                         break
 
                     token = chunk.get("message", {}).get("content", "")
-                    if token:
-                        yield token
+                    if not token:
+                        continue
+
+                    # Strip <think>...</think> blocks emitted by reasoning models
+                    # (e.g. qwen3). Tokens may straddle tag boundaries so we use
+                    # a small buffer to detect the closing tag.
+                    if in_think:
+                        think_buf += token
+                        close = think_buf.find("</think>")
+                        if close != -1:
+                            in_think = False
+                            remainder = think_buf[close + len("</think>"):]
+                            think_buf = ""
+                            if remainder.strip():
+                                yield remainder
+                    else:
+                        combined = think_buf + token
+                        think_buf = ""
+                        open_tag = combined.find("<think>")
+                        if open_tag != -1:
+                            before = combined[:open_tag]
+                            if before:
+                                yield before
+                            in_think = True
+                            think_buf = combined[open_tag + len("<think>"):]
+                            # Check if </think> already present in same token
+                            close = think_buf.find("</think>")
+                            if close != -1:
+                                in_think = False
+                                remainder = think_buf[close + len("</think>"):]
+                                think_buf = ""
+                                if remainder.strip():
+                                    yield remainder
+                        else:
+                            yield combined
         except asyncio.CancelledError:
             console.print("[yellow]Stream cancelled by client disconnect.[/]")
             return
