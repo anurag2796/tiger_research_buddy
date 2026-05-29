@@ -1002,9 +1002,10 @@ from contracts.interfaces import (
     IModelProvider,
     IModelRouter,
     IPolicyEnforcement,
-    IRerankerLike := IReranker,  # noqa: F821  (see below)
+    IReranker,
+    IRetrievalStrategy,
+    IRevocationAuthority,
 )
-from contracts.interfaces import IReranker, IRetrievalStrategy, IRevocationAuthority
 from contracts.interfaces import (
     INTERFACE_LOCUS,
     KERNEL_API_VERSION,
@@ -1052,32 +1053,6 @@ __all__ = [
 ]
 ```
 
-Note: drop the `IRerankerLike :=` walrus line above — it was an editing artifact. The correct `__init__.py` import block for the rerank symbol is simply:
-
-```python
-from contracts.interfaces import (
-    Grant,
-    IAuditSink,
-    IClassifier,
-    ICollaborationGraph,
-    IDataAccessBroker,
-    IExchangeFeed,
-    IExpertiseFingerprint,
-    IGrantStore,
-    IModelProvider,
-    IModelRouter,
-    IPolicyEnforcement,
-    IReranker,
-    IRetrievalStrategy,
-    IRevocationAuthority,
-)
-from contracts.interfaces import (
-    INTERFACE_LOCUS,
-    KERNEL_API_VERSION,
-    InterfaceLocus,
-)
-```
-
 ---
 
 ## Summary of decisions encoded (for sub-plan authors)
@@ -1091,5 +1066,3 @@ from contracts.interfaces import (
 - **Kernel-interface versioning (R8, `interfaces.py`):** `KERNEL_API_VERSION: int = 1`, the `InterfaceLocus` StrEnum (`intra_cell | cross_node`), and the frozen `INTERFACE_LOCUS` name→locus mapping pin the kernel API surface itself. Deferred federation seams (`IExchangeFeed`, `IRevocationAuthority`) are `cross_node`; all Phase-0-active interfaces are `intra_cell`. These are canonical kernel symbols (0a re-exports them legitimately).
 - **D6 enforced in code:** `PublishableProjection` rejects `confidential` tier at validation; confidential content can never enter the shared index.
 - **Fitness function (§5.5):** `pyproject.toml` import-linter contract forbids the kernel from importing any persistence/feature engine, keeping it zero-dep and stateless.
-
-One caveat flagged: the first `__init__.py` block contains an editing artifact (the `IRerankerLike :=` walrus import) — use the corrected import block shown immediately after it. All other code is consistent and import-clean.

@@ -1340,7 +1340,7 @@ Expected: `test_kernel_compat` errors (`AttributeError: module 'contracts' has n
 
 - [ ] **Step 3: Write minimal implementation**
 
-Replace `tigerexchange/packages/contracts/src/contracts/__init__.py` with the canonical single-import-surface block (the CORRECTED version — do **not** include the `IRerankerLike :=` walrus artifact), and add `KERNEL_API_VERSION`:
+Replace `tigerexchange/packages/contracts/src/contracts/__init__.py` with the canonical single-import-surface block, and add `KERNEL_API_VERSION`:
 
 ```python
 """TigerExchange canonical kernel — single import surface (plan §5.1).

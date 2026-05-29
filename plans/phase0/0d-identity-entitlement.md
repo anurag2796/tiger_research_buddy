@@ -27,7 +27,7 @@ No existing sub-plan markdown files for 0a/0c to import conventions from, and no
 | `tigerexchange/packages/mod-identity/src/mod_identity/keycloak_broker.py` | Create | Direct OIDC/CILogon discovery + token verification via Keycloak broker config (Phase-0: Direct OIDC only). |
 | `tigerexchange/packages/mod-identity/src/mod_identity/entitlement_evaluator.py` | Create | `EntitlementEvaluator`: the entitlement step the `PolicyEnforcementPoint` (0c) calls — denies any capability/tier the edition lacks. Composed INTO the PEP, NOT a second PEP class. |
 | `tigerexchange/packages/mod-identity/src/mod_identity/pooled_authz.py` | Create | Pooled-plane object-authz `Check` (SpiceDB `tenant#member`) — deny-by-default boundary feeding the PEP ReBAC step. |
-| `tigerexchange/packages/contracts/src/contracts/` (PEP lives in 0c) | Reference | 0c owns `PolicyEnforcementPoint.authorize(request: PepRequest) -> PepResponse`; 0d injects `EntitlementEvaluator` + pooled `Check` into it. This plan does NOT define or modify a PEP class. |
+| `tigerexchange/packages/mod-pep/src/mod_pep/policy_enforcement_point.py` (PEP lives in 0c) | Reference | 0c owns the single `PolicyEnforcementPoint` and its kernel `authorize(request: PepRequest) -> PepResponse` + the canonical keyword-only constructor `(*, entitlement_evaluator, classifier, rebac, abac, tombstone, lease, broker, pooled_authz)`. 0d injects `EntitlementEvaluator` + pooled `Check` into it. This plan does NOT define or modify a PEP class or constructor. |
 | `tigerexchange/packages/mod-pooled-plane/src/mod_pooled_plane/__init__.py` | Create | Pooled-plane package marker. |
 | `tigerexchange/packages/mod-pooled-plane/src/mod_pooled_plane/tenant_session.py` | Create | `SET LOCAL app.tenant_id` transaction-scoped session (PgBouncer-safe), never `SET`. |
 | `tigerexchange/packages/mod-pooled-plane/src/mod_pooled_plane/own_materials_repo.py` | Create | Pooled own-materials repo: authz `Check` first, then RLS-protected query. |
@@ -983,6 +983,8 @@ from mod_identity.pooled_authz import PooledObjectAuthz
 
 
 class FakeRebac:
+    """Pooled-plane object-authz Check client (relation tenant#member)."""
+
     def __init__(self, grants: set[tuple[str, str]]) -> None:
         self._grants = grants
 
@@ -996,16 +998,44 @@ class FakeClassifier:
     The PEP resolves each object's tier here — it does NOT hardcode confidential.
     Public/private objects MUST resolve to their real (non-confidential) tier so
     they take the correct ABAC branch (0i retrieval / 0k funding stay off the
-    confidential path).
+    confidential path). Matches 0c's `_ClassificationLookup.classify_resource`
+    surface: returns (tier, compliance_flags); unknown -> confidential fail-closed.
     """
 
     def __init__(self, tiers: dict[str, Tier]) -> None:
         self._tiers = tiers
 
-    def tier_of(self, object_id: str | None) -> Tier:
-        if object_id is None:
-            return Tier.public
-        return self._tiers[object_id]
+    def classify_resource(
+        self, resource_id: str | None, _tenant
+    ) -> tuple[Tier, frozenset]:  # noqa: ANN001
+        if resource_id is None:
+            return Tier.public, frozenset()
+        return self._tiers.get(resource_id, Tier.confidential), frozenset()
+
+
+class _AllowSpice:
+    """SpiceDB Check stub that always permits (ReBAC narrowed elsewhere)."""
+
+    def check(self, *_a, **_k) -> bool:  # noqa: ANN002, ANN003
+        return True
+
+
+class _AllowOpa:
+    def evaluate(self, _doc: dict) -> dict:
+        return {"result": {"allow": True}}
+
+
+class _EmptyLog:
+    def is_tombstoned(self, _grant_id: str) -> tuple[bool, str | None]:
+        return False, None
+
+
+class _FakeStore:
+    """Stand-in for the broker's confidential-artifact reads (returns one row)."""
+
+    def fetch_rows(self, tenant_id: str, resource_id: str | None) -> list[dict]:
+        return [{"artifact_id": resource_id or "obj", "tenant_id": tenant_id,
+                 "tier": "public", "title": "T"}]
 
 
 def _ctx(edition: Edition, caps: set[Capability], max_tier: Tier) -> TenantContext:
@@ -1019,13 +1049,26 @@ def _ctx(edition: Edition, caps: set[Capability], max_tier: Tier) -> TenantConte
 
 
 def _pep(grants: set[tuple[str, str]], tiers: dict[str, Tier]) -> PolicyEnforcementPoint:
-    # 0d injects its entitlement step + pooled Check into the ONE 0c PEP; the
-    # classifier supplies the resolved object tier (R2). 0c owns any further
-    # constructor params (audit sink, OPA/SpiceDB clients) — pass via DI factory.
+    # 0d injects its entitlement step + pooled Check into the ONE 0c PEP via the
+    # canonical keyword-only constructor (0c-owned). The identity tests don't
+    # exercise the SpiceDB ReBAC / OPA ABAC / tombstone / lease / broker steps,
+    # so we supply permissive fakes for those collaborators; the classifier
+    # supplies the resolved object tier (R2). In the app these come from 0a's
+    # get_pep DI factory.
+    from mod_pep.abac import OpaAbac
+    from mod_pep.broker import DataAccessBroker
+    from mod_pep.rebac import SpiceDBReBAC
+    from mod_pep.revocation import DurableTombstoneReader, LeaseCache
+
     return PolicyEnforcementPoint(
         entitlement_evaluator=EntitlementEvaluator(),
-        pooled_authz=PooledObjectAuthz(FakeRebac(grants)),
         classifier=FakeClassifier(tiers),
+        rebac=SpiceDBReBAC(client=_AllowSpice()),
+        abac=OpaAbac(opa=_AllowOpa()),
+        tombstone=DurableTombstoneReader(log=_EmptyLog()),
+        lease=LeaseCache(),
+        broker=DataAccessBroker(store=_FakeStore()),
+        pooled_authz=PooledObjectAuthz(FakeRebac(grants)),
     )
 
 
@@ -1090,82 +1133,15 @@ Expected: failure — 0c's `PolicyEnforcementPoint` does not yet accept the `ent
 
 - [ ] **Step 3: Write minimal implementation**
 
-> 0c OWNS `PolicyEnforcementPoint` and its kernel-conformant `authorize(request: PepRequest) -> PepResponse`. 0d's contribution is the injected `EntitlementEvaluator` (the entitlement step) + the pooled-plane object-authz `Check`. Wire them into 0c's existing `authorize` decision order as steps (1) and (3). Do NOT add a `requested_tier` parameter to `authorize` — the PEP resolves the object's tier from the classifier/broker (R2) and hands it to the evaluator internally. The injected dependencies are provided by 0a's DI factory `get_pep` (`api.dependencies`).
-
-```python
-# tigerexchange/packages/mod-pep/src/mod_pep/policy_enforcement_point.py  (0c-owned; 0d injects steps)
-from __future__ import annotations
-
-from contracts import Decision, PepRequest, PepResponse, Tier
-
-from mod_identity.entitlement_evaluator import EntitlementEvaluator
-from mod_identity.pooled_authz import AuthzDenied, PooledObjectAuthz
-
-
-class PolicyEnforcementPoint:
-    """The SINGLE Policy Enforcement Point (D4, §4.2) — kernel IPolicyEnforcement.
-
-    Canonical decision order inside authorize() (fail-closed, deny short-circuits):
-      1. entitlement/edition gate (this plan's EntitlementEvaluator) — edition
-         capability + tier ceiling, evaluated against the classifier-resolved
-         object tier.
-      2. capability gate.
-      3. ReBAC check (SpiceDB) — pooled-plane object-authz Check feeds here.
-      4. ABAC tier check (OPA).
-      5. owner-local durable tombstone check (AUTHORITATIVE deny dimension).
-      6. lease cache (narrow cache only).
-    Steps 2,4,5,6 are 0c's; 0d injects steps 1 and the pooled Check (step 3).
-    """
-
-    def __init__(
-        self,
-        *,
-        entitlement_evaluator: EntitlementEvaluator,
-        pooled_authz: PooledObjectAuthz | None = None,
-        classifier: object,  # 0b classifier/broker; .tier_of(object_id) -> Tier (R2)
-        # ... 0c's own deps (audit sink, OPA client, SpiceDB client, tombstone
-        # log, lease cache) continue here, unchanged.
-    ) -> None:
-        self._entitlement = entitlement_evaluator
-        self._pooled_authz = pooled_authz
-        self._classifier = classifier
-
-    def authorize(self, request: PepRequest) -> PepResponse:
-        # R2: resolve the object's REAL tier from the classifier/broker lookup —
-        # never hardcode (Tier.confidential, frozenset()); public/private objects
-        # must take their correct (non-confidential) branch.
-        resolved_tier: Tier = self._classifier.tier_of(request.resource_id)
-
-        # (1) Entitlement/edition gate.
-        gate = self._entitlement.evaluate(request, requested_tier=resolved_tier)
-        if gate.decision is not Decision.ALLOW:
-            return gate
-
-        # (3) ReBAC: pooled-plane object-authz Check (deny-by-default, before any
-        # data access). 0c's capability gate (2) precedes this; ABAC (4),
-        # durable tombstone (5), lease cache (6) follow on ALLOW — unchanged.
-        if self._pooled_authz is not None and request.resource_id is not None:
-            try:
-                self._pooled_authz.require_object_access(
-                    tenant_id=request.tenant.tenant_id,
-                    object_id=request.resource_id,
-                )
-            except AuthzDenied as denied:
-                return PepResponse(
-                    request_id=request.request_id,
-                    decision=Decision.DENY,
-                    effective_tier=resolved_tier,
-                    payload=None,
-                    reason=str(denied),
-                )
-
-        return PepResponse(
-            request_id=request.request_id,
-            decision=Decision.ALLOW,
-            effective_tier=resolved_tier,
-            reason="entitlement + object-authz passed",
-        )
-```
+> 0c OWNS the single `PolicyEnforcementPoint` class at `tigerexchange/packages/mod-pep/src/mod_pep/policy_enforcement_point.py` and its kernel-conformant `authorize(request: PepRequest) -> PepResponse`. **0d defines NO PEP class and NO divergent constructor.** 0c's canonical keyword-only constructor already accepts every collaborator the unified 6-step decision order needs:
+>
+> ```python
+> def __init__(self, *, entitlement_evaluator, classifier, rebac, abac, tombstone, lease, broker, pooled_authz): ...
+> ```
+>
+> 0d's contribution is purely the two injected collaborators — the `EntitlementEvaluator` (entitlement step 1) and the pooled-plane object-authz `PooledObjectAuthz`/`AuthzDenied` (the pooled-plane Check feeding the ReBAC step 3). 0c's `authorize` already wires them: step (1) calls `entitlement_evaluator` against the classifier-resolved object tier (R2 — never hardcoded `confidential`), and the ReBAC step (3) invokes `pooled_authz.require_object_access(...)` for PLG/pooled tenants (deny-by-default), catching `AuthzDenied`. Do NOT add a `requested_tier` parameter to the kernel `authorize`. No code is written in 0d here — this step only verifies that 0c's `PolicyEnforcementPoint` accepts the injected `entitlement_evaluator` and `pooled_authz` collaborators and runs steps (1)/(3). The injected dependencies are assembled by 0a's DI factory `get_pep` (`api.dependencies`).
+>
+> If 0c is not yet on the path, this test is the integration seam that drives 0c to expose the canonical constructor + decision order; the implementation lives in 0c (Task 9), not here.
 
 - [ ] **Step 4: Run test to verify it passes**
 
@@ -1946,7 +1922,11 @@ from contracts import Capability, Decision, Edition, PepAction, PepRequest, Tier
 from api.dependencies import authenticate_request, AuthError
 from mod_identity.entitlement_evaluator import EntitlementEvaluator
 from mod_identity.pooled_authz import PooledObjectAuthz
+from mod_pep.abac import OpaAbac
+from mod_pep.broker import DataAccessBroker
 from mod_pep.policy_enforcement_point import PolicyEnforcementPoint
+from mod_pep.rebac import SpiceDBReBAC
+from mod_pep.revocation import DurableTombstoneReader, LeaseCache
 
 
 class FakeBroker:
@@ -1968,11 +1948,38 @@ class FakeRebac:
 
 
 class FakeClassifier:
+    """Matches 0c's `_ClassificationLookup.classify_resource` surface (R2)."""
+
     def __init__(self, tiers: dict[str, Tier]) -> None:
         self._tiers = tiers
 
-    def tier_of(self, object_id: str | None) -> Tier:
-        return Tier.public if object_id is None else self._tiers[object_id]
+    def classify_resource(
+        self, resource_id: str | None, _tenant
+    ) -> tuple[Tier, frozenset]:  # noqa: ANN001
+        if resource_id is None:
+            return Tier.public, frozenset()
+        return self._tiers.get(resource_id, Tier.confidential), frozenset()
+
+
+class _AllowSpice:
+    def check(self, *_a, **_k) -> bool:  # noqa: ANN002, ANN003
+        return True
+
+
+class _AllowOpa:
+    def evaluate(self, _doc: dict) -> dict:
+        return {"result": {"allow": True}}
+
+
+class _EmptyLog:
+    def is_tombstoned(self, _grant_id: str) -> tuple[bool, str | None]:
+        return False, None
+
+
+class _FakeStore:
+    def fetch_rows(self, tenant_id: str, resource_id: str | None) -> list[dict]:
+        return [{"artifact_id": resource_id or "obj", "tenant_id": tenant_id,
+                 "tier": "public", "title": "T"}]
 
 
 def test_authenticate_builds_plg_context() -> None:
@@ -2002,12 +2009,19 @@ def test_plg_confidential_request_denied_at_pep() -> None:
         broker=broker, raw_token="good-token", tenant_id="indiv",
         edition=Edition.PLG, consortium_ids=frozenset(), subject_active=True,
     )
-    # The ONE PEP (0c), wired with 0d's entitlement step + classifier (R2).
-    # In the app this is built by 0a's get_pep factory; here we build it directly.
+    # The ONE PEP (0c), wired via its canonical keyword-only constructor with
+    # 0d's entitlement step + pooled object-authz Check + classifier (R2). In the
+    # app this is built by 0a's get_pep factory; here we build it directly with
+    # permissive fakes for the collaborators this identity test does not exercise.
     pep = PolicyEnforcementPoint(
         entitlement_evaluator=EntitlementEvaluator(),
-        pooled_authz=PooledObjectAuthz(FakeRebac({("indiv", "x")})),
         classifier=FakeClassifier({"x": Tier.confidential}),
+        rebac=SpiceDBReBAC(client=_AllowSpice()),
+        abac=OpaAbac(opa=_AllowOpa()),
+        tombstone=DurableTombstoneReader(log=_EmptyLog()),
+        lease=LeaseCache(),
+        broker=DataAccessBroker(store=_FakeStore()),
+        pooled_authz=PooledObjectAuthz(FakeRebac({("indiv", "x")})),
     )
     req = PepRequest(
         request_id="r1", tenant=ctx, action=PepAction.RETRIEVE,
@@ -2191,7 +2205,7 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 ## Notes for the implementing agent
 
 - **Kernel is imported, never redefined.** `TenantContext`, `Edition`, `Entitlement`, `Capability`, `IsolationPosture`, `Tier`, `Decision`, `PepRequest`, `PepResponse`, `PepAction` all come from `contracts` verbatim (0b kernel). Do not re-declare them.
-- **ONE PEP class (R1).** There is exactly one Policy Enforcement Point: `PolicyEnforcementPoint` (owned by 0c), implementing the kernel `IPolicyEnforcement.authorize(request: PepRequest) -> PepResponse`. This plan defines NO `PepService` and adds NO `requested_tier` kwarg to the kernel `authorize`. 0d's entitlement/pooled-authz logic is composed INTO that single PEP via an injected `EntitlementEvaluator` (entitlement step) + pooled object-authz `Check` (ReBAC step). The PEP resolves each object's tier from the classifier/broker lookup (R2) — never hardcoding `(Tier.confidential, frozenset())`; public/private objects take their correct non-confidential ABAC branch.
+- **ONE PEP class + ONE constructor (R1).** There is exactly one Policy Enforcement Point: `PolicyEnforcementPoint` (owned by 0c) at `tigerexchange/packages/mod-pep/src/mod_pep/policy_enforcement_point.py` (package `mod-pep`, import `mod_pep.policy_enforcement_point`), implementing the kernel `IPolicyEnforcement.authorize(request: PepRequest) -> PepResponse`. This plan defines NO `PepService`, NO second PEP class, and NO divergent constructor, and adds NO `requested_tier` kwarg to the kernel `authorize`. 0c's canonical keyword-only constructor is `(*, entitlement_evaluator, classifier, rebac, abac, tombstone, lease, broker, pooled_authz)`; 0d's tests build it with that full signature, supplying permissive fakes for the collaborators (rebac/abac/tombstone/lease/broker) the identity tests do not exercise. 0d's entitlement/pooled-authz logic is composed INTO that single PEP via the injected `EntitlementEvaluator` (entitlement step 1) + pooled object-authz `Check` (the `pooled_authz` collaborator feeding the ReBAC step 3). The PEP resolves each object's tier from the classifier/broker lookup (R2) — never hardcoding `(Tier.confidential, frozenset())`; public/private objects take their correct non-confidential ABAC branch.
 - **Phase-0 scope = SINGLE-TENANT own-data only.** The cross-institution sharing/exchange and the cross-institution revocation AUTHORITY are Phase-1+ (kernel interfaces stubbed, not active here). 0d's pooled plane holds each PLG tenant's OWN materials only; PLG `EXCHANGE_PARTICIPATION` / `CROSS_INSTITUTION_GRANTS` are hard-OFF and the PEP denies them structurally.
 - **PgBouncer mode (§13.1):** the pooled plane assumes PgBouncer in transaction-pooling mode. The `SET LOCAL` approach in `tenant_session.py` is exactly what makes that mode safe (no `RESET ALL` needed, context dies at COMMIT). Do not switch to plain `SET`.
 - **RLS is defense-in-depth, never sole boundary (§7.7).** The object-authz `Check` (Task 6) is the primary boundary; every read path must call it before touching SQL (Task 10 enforces the order).

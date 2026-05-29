@@ -54,13 +54,15 @@ graph TD
 
 All 11 high-severity refinement items from `../convergence-report.md` are assigned to owning sub-plans (see `highs_addressed` in `_decomposition.json`).
 
-## Cross-plan consistency — status after fix-up (wf `w0j0cd0j8`)
-A reconciliation pass (12 in-place fix agents + re-check) resolved **8 of 10** issues: object-classification (0c), `IAuditSink.append` one-arg (0e), `satisfies_locality(tier: Tier)` (0f), single central-index PEP = **0j** (0c dup dropped), `packages/`+`services/` layout & `api.dependencies` DI factories (0a defines, 0k consumes), `classification.classifier` naming everywhere, the kernel interface-versioning amendment (`KERNEL_API_VERSION`/`InterfaceLocus`/`INTERFACE_LOCUS`), and single-tenant scope notes (0g/0c/0e). Full verdict + per-file changelogs: **`_recheck-after-fixup.md`**.
+## Cross-plan consistency — RESOLVED
+Two reconciliation passes + a targeted follow-up brought the plan set to a consistent, execution-ready state. Verdicts/changelogs: `_recheck-after-fixup.md` (pass 1) and `_recheck-residuals.md` (pass 2). Closed:
+- object-classification not hardcoded (0c); `IAuditSink.append` one-arg + `store.persist(event, tenant)` (0e); `satisfies_locality(tier: Tier)` on concrete providers (0f); single central-index PEP = **0j** (0c dup dropped); `packages/`+`services/` layout & `api.dependencies` DI factories (0a defines, 0k consumes); `classification.classifier` naming everywhere; kernel interface-versioning amendment (`KERNEL_API_VERSION`/`InterfaceLocus`/`INTERFACE_LOCUS`); single-tenant scope notes (0g/0c/0e).
+- **PEP unified across 0c/0d**: one class `PolicyEnforcementPoint` at `packages/mod-pep/src/mod_pep/policy_enforcement_point.py`, one keyword-only ctor `(*, entitlement_evaluator, classifier, rebac, abac, tombstone, lease, broker, pooled_authz)`, kernel `authorize(request) -> PepResponse`.
+- **COGS** (0f/0g Task 8): single reconciled band-based block, numbers matching spec §16.1 Table B (shared-GPU K=2 ≈ $42k/yr; dedicated ≈ $66k/yr).
+- **Kernel walrus artifact** (`IRerankerLike := IReranker`) scrubbed from `00-kernel-contracts.md` + `0a`.
+- **Entitlement collaborator** reconciled: 0c's PEP now calls `entitlement_evaluator.evaluate(request, requested_tier=tier) -> PepResponse` matching 0d's `EntitlementEvaluator`.
 
-**3 residual items — fix before executing the affected plans:**
-1. **🔴 PEP module-path + constructor mismatch (0c ↔ 0d).** The class name (`PolicyEnforcementPoint`), `authorize` signature, and decision order are now unified, but 0c builds it at `services/pep/src/pep/pep.py` with ctor `(entitlement, classifier, rebac, abac, tombstone, lease, broker)` while 0d imports `mod_pep.policy_enforcement_point` with a thinner ctor. **Pick one module path + one constructor parameter set across 0c and 0d.** (Blocking only when executing 0c/0d.)
-2. **0f Task 8 / 0g Task 8 COGS** — confirm each ships only the reconciled band-based computation (no superseded-then-rewritten block within one step).
-3. **Kernel-doc walrus artifact** — scrub the `IRerankerLike := IReranker` line in `00-kernel-contracts.md`'s `__init__.py` block (0a is already instructed to skip it, so it cannot ship, but the authoritative doc still carries the wrong line).
+No known blocking inconsistencies remain. (Historical `services/pep`/walrus mentions persist only in the review docs `_consistency-check.md` / `_recheck-after-fixup.md`, which narrate the pre-fix state.)
 
 ## Scope — resolved
 0g (confidential-at-rest KEK/crypto-shred), 0c (owner-local revocation), and 0e (signed checkpoints) are **kept in Phase-0, scoped single-tenant own-data only** — the MVP stores the center's own confidential proposal drafts, so HYOK-at-rest + GDPR crypto-shred are genuinely required. Each now carries an explicit note that the **cross-institution** sharing/exchange + revocation-*authority* are Phase-1+ (kernel interfaces stubbed, not active). `0k`'s confidential draft persistence stays single-tenant via `0g`.
