@@ -42,6 +42,8 @@ I have everything I need. Writing the complete plan now.
 | `tigerexchange/services/api/src/api/db.py` | Async engine + transaction-scoped `tenant_session` that issues `SET LOCAL`. |
 | `tigerexchange/services/api/src/api/tenant_context.py` | Request->TenantContext derivation (header/JWT-stub) for Phase-0. |
 | `tigerexchange/services/api/src/api/app.py` | FastAPI app factory, `/health`, tenant-context dependency, demo own-materials route. |
+| `tigerexchange/services/api/src/api/dependencies.py` | **0a-OWNED** DI factory module: every `get_*` factory the feature modules (0i/0k/etc.) import from `api.dependencies` (get_pep, get_model_router, get_lit_retrieval, get_draft_store, get_discovery, get_funding, get_audit_sink, get_classifier, ...). Phase-0 ships fail-closed not-wired stubs; feature plans override via FastAPI `dependency_overrides`. |
+| `tigerexchange/services/api/tests/test_dependencies.py` | Asserts every required `get_*` DI factory exists + is importable from `api.dependencies`. |
 | `tigerexchange/services/api/migrations/001_tenant_rls.sql` | `own_materials` table + FORCE RLS + RESTRICTIVE/WITH CHECK policies + tenant_id-leading index. |
 | `tigerexchange/services/api/migrations/002_forbidden_bypass_check.sql` | (test fixture) SECURITY DEFINER / matview the lint must flag. |
 | `tigerexchange/services/api/tests/test_health.py` | App boots + `/health` returns 200. |
@@ -1067,15 +1069,13 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 
 **Files:** Create `tigerexchange/packages/contracts/src/contracts/interfaces.py`, `tigerexchange/packages/contracts/tests/test_interfaces.py`
 
-This task lands the ~15 K3 Protocols AND the **kernel-interface versioning/evolution** structure: a static `INTERFACE_LOCUS` table declaring each interface as `intra-cell` (single-deploy, evolves with the cell) or `cross-node` (needs negotiated min-common-version evolution), per the convergence-report HIGH. The locus table is what the compat check in Task 9 keys off.
+This task lands the ~15 K3 Protocols AND the **kernel-interface versioning/evolution** structure: the canonical `InterfaceLocus` `StrEnum` plus the static `INTERFACE_LOCUS` table declaring each interface as `intra_cell` (single-deploy, evolves with the cell) or `cross_node` (needs negotiated min-common-version evolution). These are **canonical kernel symbols** (defined in `00-kernel-contracts.md` under the R8 kernel-interface-versioning amendment); 0a builds them verbatim and re-exports them in Task 9 — they are NOT non-canonical additions. The locus table is what the compat check in Task 9 keys off.
 
 - [ ] **Step 1: Write the failing test**
 
 ```python
 # tigerexchange/packages/contracts/tests/test_interfaces.py
-"""K3 interfaces (§5.1) + intra-cell/cross-node evolution-locus declaration (convergence HIGH)."""
-from typing import get_args
-
+"""K3 interfaces (§5.1) + intra_cell/cross_node evolution-locus declaration (R8)."""
 import pytest
 
 from contracts import interfaces as ifc
@@ -1108,20 +1108,20 @@ def test_every_interface_has_a_declared_locus() -> None:
 
 
 def test_locus_values_are_valid() -> None:
-    valid = set(get_args(InterfaceLocus))
-    assert valid == {"intra-cell", "cross-node"}
-    assert all(v in valid for v in INTERFACE_LOCUS.values())
+    valid = {m.value for m in InterfaceLocus}
+    assert valid == {"intra_cell", "cross_node"}
+    assert all(v in InterfaceLocus for v in INTERFACE_LOCUS.values())
 
 
 def test_federation_seam_interfaces_are_cross_node() -> None:
-    # Per convergence HIGH: BYO-registration / index-profile / exchange-feed cross node
+    # The deferred federation seams (exchange-feed, revocation authority) cross node
     # boundaries and need negotiated evolution.
-    assert INTERFACE_LOCUS["IExchangeFeed"] == "cross-node"
-    assert INTERFACE_LOCUS["IModelProvider"] == "cross-node"
+    assert INTERFACE_LOCUS["IExchangeFeed"] is InterfaceLocus.cross_node
+    assert INTERFACE_LOCUS["IRevocationAuthority"] is InterfaceLocus.cross_node
 
 
 def test_cell_local_pep_is_intra_cell() -> None:
-    assert INTERFACE_LOCUS["IPolicyEnforcement"] == "intra-cell"
+    assert INTERFACE_LOCUS["IPolicyEnforcement"] is InterfaceLocus.intra_cell
 
 
 def test_protocols_are_runtime_checkable() -> None:
@@ -1146,45 +1146,65 @@ Expected: `ModuleNotFoundError: No module named 'contracts.interfaces'`.
 
 - [ ] **Step 3: Write minimal implementation**
 
-Create `tigerexchange/packages/contracts/src/contracts/interfaces.py` using the canonical `interfaces.py` verbatim (all `@runtime_checkable Protocol`s: `IClassifier, IPolicyEnforcement, IDataAccessBroker, IModelProvider, IModelRouter, IRetrievalStrategy, IReranker, IExpertiseFingerprint, ICollaborationGraph, IAuditSink, IGrantStore, Grant`, plus the Phase-1+ deferred stubs `IExchangeFeed, IRevocationAuthority`), then **append** the locus declaration below (this is the only addition beyond the canonical file — it operationalizes the convergence-report kernel-interface-evolution HIGH):
+Create `tigerexchange/packages/contracts/src/contracts/interfaces.py` using the canonical `interfaces.py` verbatim (all `@runtime_checkable Protocol`s: `IClassifier, IPolicyEnforcement, IDataAccessBroker, IModelProvider, IModelRouter, IRetrievalStrategy, IReranker, IExpertiseFingerprint, ICollaborationGraph, IAuditSink, IGrantStore, Grant`, plus the Phase-1+ deferred stubs `IExchangeFeed, IRevocationAuthority`), then **append** the canonical kernel-interface-versioning block below verbatim from `00-kernel-contracts.md` (R8). These are **canonical kernel symbols**, not a 0a-local addition; `StrEnum` is already imported at the top of `interfaces.py` via `from enum import StrEnum`:
 
 ```python
 # --------------------------------------------------------------------------- #
-# Kernel-interface EVOLUTION LOCUS (resolves the convergence-report HIGH:
-# extend §5.6/§5.6b schema-discipline to the ~15 kernel interfaces).
+# Kernel-interface versioning / evolution contract (R8, §5.1/§5.8).
+# These pin the kernel API surface itself: a single integer API version, the
+# locus each interface is deployed at (intra_cell vs cross_node), and a frozen
+# name->locus mapping. They are part of the canonical kernel; 0a re-exports them
+# in Task 9 (they are NOT non-canonical symbols).
 #
-# intra-cell : single-deploy interface; evolves WITH the cell, no cross-node
+# intra_cell : single-deploy interface; evolves WITH the cell, no cross-node
 #              negotiation needed (the impl and all callers ship together).
-# cross-node : crosses the federation seam OR is consumed by independently-
-#              upgrading nodes (BYO provider registration, exchange feed),
-#              so a breaking change needs additive-by-default + a negotiated
-#              min-common-version, exactly like PublishableProjection (§5.6b).
+# cross_node : crosses the federation seam between nodes (the deferred Phase-1+
+#              seams), so a breaking change needs additive-by-default + a
+#              negotiated min-common-version, exactly like PublishableProjection
+#              (§5.6b).
 #
 # The Task-9 CI compat check keys off this table: a removed/renamed symbol or a
-# changed signature on a `cross-node` interface is a HARD CI failure (must be
-# additive + version-negotiated); the same change on an `intra-cell` interface
+# changed signature on a `cross_node` interface is a HARD CI failure (must be
+# additive + version-negotiated); the same change on an `intra_cell` interface
 # is a soft warning (cell ships atomically).
 # --------------------------------------------------------------------------- #
-from typing import Literal
 
-InterfaceLocus = Literal["intra-cell", "cross-node"]
+# Monotonic version of the kernel interface surface (K3). Bumped on any breaking
+# change to an interface signature; lets 0a assert compatibility.
+KERNEL_API_VERSION: int = 1
 
+
+class InterfaceLocus(StrEnum):
+    """Deployment locus of a kernel interface (§4.2, §5.8).
+
+    intra_cell: invoked inside a single tenant cell / owner-local trust boundary.
+    cross_node: invoked across the federation seam between nodes (Phase-1+ for
+    the deferred seams, but the locus is fixed now so it cannot drift).
+    """
+
+    intra_cell = "intra_cell"
+    cross_node = "cross_node"
+
+
+# Frozen mapping of every kernel interface NAME to its locus. The deferred
+# federation seams (IExchangeFeed, IRevocationAuthority) are cross_node; all
+# Phase-0-active interfaces are intra_cell. The central-index read PEP runs the
+# SAME IPolicyEnforcement code at the seam, but the interface itself is pinned
+# intra_cell here because Phase-0 exercises only the owner-local locus.
 INTERFACE_LOCUS: dict[str, InterfaceLocus] = {
-    "IClassifier": "intra-cell",
-    "IPolicyEnforcement": "intra-cell",
-    "IDataAccessBroker": "intra-cell",
-    "IModelRouter": "intra-cell",
-    "IRetrievalStrategy": "intra-cell",
-    "IReranker": "intra-cell",
-    "IExpertiseFingerprint": "intra-cell",
-    "ICollaborationGraph": "intra-cell",
-    "IAuditSink": "intra-cell",
-    "IGrantStore": "intra-cell",
-    # cross-node: consumed by independently-upgrading nodes / BYO registrations /
-    # the federation seam -> negotiated evolution required.
-    "IModelProvider": "cross-node",
-    "IExchangeFeed": "cross-node",
-    "IRevocationAuthority": "cross-node",
+    "IClassifier": InterfaceLocus.intra_cell,
+    "IPolicyEnforcement": InterfaceLocus.intra_cell,
+    "IDataAccessBroker": InterfaceLocus.intra_cell,
+    "IModelProvider": InterfaceLocus.intra_cell,
+    "IModelRouter": InterfaceLocus.intra_cell,
+    "IRetrievalStrategy": InterfaceLocus.intra_cell,
+    "IReranker": InterfaceLocus.intra_cell,
+    "IExpertiseFingerprint": InterfaceLocus.intra_cell,
+    "ICollaborationGraph": InterfaceLocus.intra_cell,
+    "IAuditSink": InterfaceLocus.intra_cell,
+    "IGrantStore": InterfaceLocus.intra_cell,
+    "IExchangeFeed": InterfaceLocus.cross_node,        # Phase-1+ seam
+    "IRevocationAuthority": InterfaceLocus.cross_node,  # Phase-1+ seam
 }
 ```
 
@@ -1339,6 +1359,7 @@ from contracts.classification import (
 )
 from contracts.interfaces import (
     INTERFACE_LOCUS,
+    KERNEL_API_VERSION,
     Grant,
     IAuditSink,
     IClassifier,
@@ -1373,10 +1394,11 @@ from contracts.tenancy import (
     TenantContext,
 )
 
-# Whole-package kernel API version. Bumped on any ADDITIVE public-surface change;
-# a breaking change to a `cross-node` interface (INTERFACE_LOCUS) requires a
-# negotiated min-common-version per §5.6b, never a silent removal.
-KERNEL_API_VERSION: int = 1
+# KERNEL_API_VERSION, InterfaceLocus, and INTERFACE_LOCUS are CANONICAL kernel
+# symbols defined in contracts.interfaces (R8 kernel-interface-versioning
+# amendment); the kernel re-exports them here. A breaking change to a
+# `cross_node` interface (INTERFACE_LOCUS) requires a negotiated
+# min-common-version per §5.6b, never a silent removal.
 
 __all__ = [
     "KERNEL_API_VERSION",
@@ -1982,6 +2004,154 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 
 ---
 
+### Task 13b: DI factory module (`api.dependencies`) — every `get_*` factory the feature modules import
+
+**Files:** Create `tigerexchange/services/api/src/api/dependencies.py`, `tigerexchange/services/api/tests/test_dependencies.py`
+
+This module is **OWNED by 0a** (R6). The later feature sub-plans (0i retrieval, 0k feature modules, etc.) import their wiring from `api.dependencies` — so 0a must define every `get_*` DI factory they reference: `get_pep`, `get_model_router`, `get_lit_retrieval`, `get_draft_store`, `get_discovery`, `get_funding`, `get_audit_sink`, `get_classifier`. In Phase-0 these return **fail-closed not-wired stubs** (a feature module that has not yet provided a concrete impl gets a clear `NotWiredError`, never a silent `None`); each feature plan supplies its real implementation by overriding the factory via FastAPI `app.dependency_overrides[...]`. The factory signatures + names are the frozen seam; the bodies are Phase-0 stubs.
+
+- [ ] **Step 1: Write the failing test**
+
+```python
+# tigerexchange/services/api/tests/test_dependencies.py
+"""api.dependencies (R6): 0a owns every get_* DI factory the feature modules import."""
+import pytest
+
+from api import dependencies as deps
+
+pytestmark = pytest.mark.unit
+
+REQUIRED_FACTORIES = [
+    "get_pep",
+    "get_model_router",
+    "get_lit_retrieval",
+    "get_draft_store",
+    "get_discovery",
+    "get_funding",
+    "get_audit_sink",
+    "get_classifier",
+]
+
+
+def test_every_required_factory_is_defined() -> None:
+    for name in REQUIRED_FACTORIES:
+        assert hasattr(deps, name), f"api.dependencies missing DI factory {name}"
+        assert callable(getattr(deps, name))
+
+
+def test_unwired_factory_fails_closed_not_none() -> None:
+    # Phase-0: a not-yet-wired feature dependency must FAIL CLOSED, never return None.
+    with pytest.raises(deps.NotWiredError):
+        deps.get_pep()
+    with pytest.raises(deps.NotWiredError):
+        deps.get_classifier()
+```
+
+- [ ] **Step 2: Run test to verify it fails**
+
+```bash
+cd tigerexchange && python -m pytest services/api/tests/test_dependencies.py -q
+```
+Expected: `ModuleNotFoundError: No module named 'api.dependencies'`.
+
+- [ ] **Step 3: Write minimal implementation**
+
+`tigerexchange/services/api/src/api/dependencies.py`:
+```python
+"""DI factory seam for the API service (R6 — OWNED by 0a).
+
+Feature sub-plans (0i retrieval, 0k feature modules, ...) import their wiring
+from `api.dependencies`. 0a defines every get_* factory NAME + signature here so
+those imports resolve from day one. Phase-0 bodies are FAIL-CLOSED stubs: an
+un-overridden factory raises NotWiredError (never returns None). A feature plan
+supplies its concrete impl by setting `app.dependency_overrides[get_x] = ...`
+(or by re-binding the factory) when it lands — the kernel Protocols
+(IPolicyEnforcement, IModelRouter, IRetrievalStrategy, IAuditSink, IClassifier)
+are the typed contract each factory returns.
+"""
+from __future__ import annotations
+
+from contracts.interfaces import (
+    IAuditSink,
+    IClassifier,
+    IModelRouter,
+    IPolicyEnforcement,
+    IRetrievalStrategy,
+)
+
+
+class NotWiredError(RuntimeError):
+    """Raised when a feature dependency is requested before its plan wired it.
+
+    Fail-closed: Phase-0 ships the seam, not the implementation. A feature plan
+    overrides the factory (FastAPI dependency_overrides) when it lands.
+    """
+
+
+def _not_wired(factory: str, owning_plan: str) -> NotWiredError:
+    return NotWiredError(
+        f"{factory}() is not wired in Phase-0; {owning_plan} provides the concrete "
+        f"implementation via app.dependency_overrides[{factory}]."
+    )
+
+
+def get_pep() -> IPolicyEnforcement:
+    """PolicyEnforcementPoint (0c owns the concrete impl)."""
+    raise _not_wired("get_pep", "0c")
+
+
+def get_model_router() -> IModelRouter:
+    """Classification-routed model router (0f owns the concrete impl)."""
+    raise _not_wired("get_model_router", "0f")
+
+
+def get_lit_retrieval() -> IRetrievalStrategy:
+    """Hybrid literature retrieval strategy (0i owns the concrete impl)."""
+    raise _not_wired("get_lit_retrieval", "0i")
+
+
+def get_draft_store() -> object:
+    """Confidential draft persistence (0k, single-tenant own-data; depends on 0g)."""
+    raise _not_wired("get_draft_store", "0k")
+
+
+def get_discovery() -> object:
+    """Discovery / expertise-fingerprint service (0i/0j own the concrete impl)."""
+    raise _not_wired("get_discovery", "0i")
+
+
+def get_funding() -> object:
+    """Funding-lite feature service (0k owns the concrete impl)."""
+    raise _not_wired("get_funding", "0k")
+
+
+def get_audit_sink() -> IAuditSink:
+    """Per-stream hash-chained audit sink (0e owns the concrete impl)."""
+    raise _not_wired("get_audit_sink", "0e")
+
+
+def get_classifier() -> IClassifier:
+    """Single fail-closed classifier — classification.classifier (0b owns it)."""
+    raise _not_wired("get_classifier", "0b")
+```
+
+- [ ] **Step 4: Run test to verify it passes**
+
+```bash
+cd tigerexchange && python -m pytest services/api/tests/test_dependencies.py -q
+```
+Expected: `2 passed`.
+
+- [ ] **Step 5: Commit**
+
+```bash
+cd tigerexchange && git add tigerexchange/services/api && git commit -m "feat(api): add 0a-owned api.dependencies DI factory seam (fail-closed get_* stubs)
+
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
+```
+
+---
+
 ### Task 14: CI pipeline (ruff, mypy, import-linter, pytest, kernel fitness/compat, RLS lint)
 
 **Files:** Create `tigerexchange/.github/workflows/ci.yml`, `tigerexchange/tests/test_ci_config.py`
@@ -2469,6 +2639,7 @@ cd tigerexchange && uv run ruff check . && uv run ruff format --check . && uv ru
   - [ ] FORCE-RLS cross-tenant-read-denied: RESTRICTIVE + WITH CHECK + tenant_id-leading index, BOLA-by-id denied, no SECURITY DEFINER/matview bypass (`test_rls_isolation.py`, `test_rls_lint.py`).
   - [ ] `contracts` importable + versioned (`KERNEL_API_VERSION`), per-interface intra-cell/cross-node locus declared, backward+forward compat check green (`test_kernel_compat.py`, `test_interfaces.py`).
   - [ ] import-linter + kernel fan-in/size fitness green (`lint-imports`, `test_kernel_fitness.py`).
+  - [ ] 0a-owned `api.dependencies` DI seam defines every `get_*` factory the feature modules import, fail-closed when un-wired (`test_dependencies.py`).
   - [ ] Gate A/B/Q17 sign-off doc + line-(a) ACV/burn stress test + PLG positioning committed (`test_gate_doc_present.py`, `test_line_a_runway.py`, `test_plg_positioning.py`).
 
 - [ ] **Step 3: Fix any gap** — if any checklist item is not backed by green output, return to the owning task and resolve before claiming completion. Do not assert completion without the command output as evidence.

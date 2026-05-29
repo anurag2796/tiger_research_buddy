@@ -4,9 +4,9 @@ I now have complete context. I'll write the implementation plan for sub-plan `0c
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (- [ ]) syntax for tracking.
 
-**Goal:** Build the one Policy Enforcement Point + data-access broker that is the sole chokepoint for retrieval/egress/derivation (D4): ReBAC Check (SpiceDB) → ABAC (OPA) → revocation/lease read in one pinned decision order, returning already-projected, already-tier-checked result objects, where the durable tombstone high-water-mark is authoritative for deny and lease/SpiceDB are narrow-only caches.
+**Goal:** Build the one Policy Enforcement Point (`PolicyEnforcementPoint`, implementing kernel `IPolicyEnforcement.authorize`) + data-access broker that is the sole chokepoint for retrieval/egress/derivation (D4), composing the single canonical decision order: entitlement/edition gate → capability gate → ReBAC Check (SpiceDB) → ABAC (OPA) → owner-local durable tombstone read → lease read, returning already-projected, already-tier-checked result objects, where the durable tombstone high-water-mark is authoritative for deny and lease/SpiceDB are narrow-only caches.
 
-**Architecture:** One logical PEP (`IPolicyEnforcement`) wraps OPA (ABAC: tier × subject-attrs × edition) and SpiceDB (ReBAC: grants/entitlements). Behind it sits one data-access broker (`IDataAccessBroker`) whose Postgres role can read ONLY the shared confidential-artifact/classification tables — never any feature-module-owned schema. The hot-path decision order is fixed: SpiceDB Check (narrow-only cache) → OPA ABAC (narrows-only) → durable-tombstone-high-water-mark read (authoritative deny) → lease read (narrow-only positive-grant cache). Security-reason revocations get TTL=0 because the deny is read from the durable log on every confidential request, not the lease.
+**Architecture:** One logical PEP — the single class `PolicyEnforcementPoint` (0c owns it) implementing the kernel `IPolicyEnforcement.authorize(request: PepRequest) -> PepResponse`. There is NO separate `PepService` and NO extra `requested_tier` kwarg on the kernel `authorize`. It wraps OPA (ABAC: tier × subject-attrs × edition) and SpiceDB (ReBAC: grants/entitlements). Behind it sits one data-access broker (`IDataAccessBroker`) whose Postgres role can read ONLY the shared confidential-artifact/classification tables — never any feature-module-owned schema. The single canonical decision order inside `authorize` is fixed: (1) entitlement/edition gate (injected `EntitlementEvaluator` — 0d's pooled-authz logic composed INTO this PEP, NOT a second PEP class) → (2) capability gate → (3) ReBAC check (SpiceDB, narrow-only cache) → (4) ABAC tier check (OPA, narrows-only) → (5) owner-local durable tombstone read (AUTHORITATIVE deny) → (6) lease read (narrow-only positive-grant cache). Security-reason revocations get a zero allow-window because the deny is read from the durable tombstone synchronously on every confidential request regardless of the lease.
 
 **Tech Stack:** Python 3.11+, FastAPI, Pydantic v2, Postgres (FORCE RLS, `SET LOCAL`), SpiceDB (Authzed Apache-2 OSS) via `authzed` gRPC client, OPA (Rego) via HTTP sidecar, pytest/ruff/mypy, import-linter.
 
@@ -26,7 +26,7 @@ I now have complete context. I'll write the implementation plan for sub-plan `0c
 | `tigerexchange/services/pep/src/pep/revocation.py` | Create | `DurableTombstoneReader` (authoritative deny via high-water-mark) + `LeaseCache` (narrow-only positive-grant cache, TTL=0 for security-reason) |
 | `tigerexchange/services/pep/src/pep/policy/abac.rego` | Create | OPA Rego policy: tier-vs-attribute-vs-edition ABAC rules |
 | `tigerexchange/services/pep/src/pep/broker.py` | Create | `DataAccessBroker` — sole raw-store credential holder, scoped to confidential-artifact/classification tables only; projects rows |
-| `tigerexchange/services/pep/src/pep/pep.py` | Create | `PolicyEnforcementPoint` — composes decision-order; implements `IPolicyEnforcement`; central-index discoverability-scope read path |
+| `tigerexchange/services/pep/src/pep/pep.py` | Create | `PolicyEnforcementPoint` — composes the canonical decision-order; implements kernel `IPolicyEnforcement`; central-index scope filtering is delegated to 0j (`CentralIndexReadPEP`), not duplicated here |
 | `tigerexchange/services/pep/src/pep/broker_db.py` | Create | Broker DB connection factory bound to `broker_ro` role; SET LOCAL tenant context |
 | `tigerexchange/services/pep/migrations/0001_broker_role.sql` | Create | Creates `broker_ro` DB role GRANTed only on confidential-artifact/classification tables; per-module schema GRANTs explicitly absent |
 | `tigerexchange/services/pep/tests/test_decision_order.py` | Create | Decision-order pinned + authoritative-deny-store assertions |
@@ -34,7 +34,7 @@ I now have complete context. I'll write the implementation plan for sub-plan `0c
 | `tigerexchange/services/pep/tests/test_abac.py` | Create | ABAC-narrows-only, missing-attr→deny, PIP-unavailable-on-confidential→deny |
 | `tigerexchange/services/pep/tests/test_revocation.py` | Create | Authoritative-deny via durable log; security-reason zero-allow-window vs 15ms lease; lease narrow-only |
 | `tigerexchange/services/pep/tests/test_pep_compose.py` | Create | End-to-end PEP authorize() decision-order composition + fail-closed payload |
-| `tigerexchange/services/pep/tests/test_central_index_pep.py` | Create | Discoverability-scope filtering at central-index read PEP |
+| `tigerexchange/services/pep/tests/test_central_index_pep.py` | Create | Asserts 0c has NO duplicate scope filter; central-index scope filtering is owned solely by 0j's `CentralIndexReadPEP` (R5) |
 | `tigerexchange/services/pep/tests/test_broker_role_contract.py` | Create | Broker DB-role can read ONLY confidential-artifact/classification tables, not any feature schema |
 | `tigerexchange/services/pep/tests/test_import_linter_contract.py` | Create | Feature modules cannot import raw store/classifier/construct PublishableProjection |
 
@@ -89,7 +89,7 @@ def test_only_broker_may_hold_raw_store_credentials() -> None:
     assert target["type"] == "forbidden"
     forbidden = set(target["forbidden_modules"])
     assert "pep.broker_db" in forbidden
-    assert any("classifier" in m for m in forbidden)
+    assert "classification.classifier" in forbidden
 ```
 
 - [ ] **Step 2: Run test to verify it fails**
@@ -126,7 +126,7 @@ build-backend = "hatchling.build"
 packages = ["src/pep"]
 
 # D4 chokepoint (§4.2): feature modules may NOT import the raw store, the
-# classifier, or construct a PublishableProjection. Only pep.broker holds
+# classification.classifier, or construct a PublishableProjection. Only pep.broker holds
 # raw-store credentials. import-linter is the executable mirror of MODULE_MAP.
 [tool.importlinter]
 root_package = "pep"
@@ -135,7 +135,7 @@ root_package = "pep"
 name = "feature-modules-cannot-import-raw-store-or-classifier"
 type = "forbidden"
 source_modules = ["pep.rebac", "pep.abac", "pep.revocation", "pep.decision_order"]
-forbidden_modules = ["pep.broker_db", "classifier.engine"]
+forbidden_modules = ["pep.broker_db", "classification.classifier"]
 ```
 
 ```python
@@ -705,6 +705,8 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 **Files:** Create `tigerexchange/services/pep/src/pep/revocation.py`, Test `tigerexchange/services/pep/tests/test_revocation.py`
 
 This folds in highs_addressed item #1's reconciliation: durable-log high-water-mark authoritative for deny; security-reason zero-allow-window vs the 15ms lease read; lease narrow-only.
+
+> **Phase-0 scope = SINGLE-TENANT own-data only (R9).** The owner-local revocation tombstone/lease in this task protects the center's OWN confidential proposal data only. The cross-institution sharing/exchange and the cross-institution revocation AUTHORITY are Phase-1+ (kernel interfaces `IRevocationAuthority`/`IExchangeFeed` are stubbed, NOT active here). The `DurableTombstoneReader` is a local read over the cell-local `revocation_log`, never the deferred cross-institution authority.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -1359,8 +1361,43 @@ class _FakeLog:
         return False, None
 
 
-def _build(*, permit: bool, tombstoned: dict[str, str] | None = None) -> PolicyEnforcementPoint:
+class _FakeEntitlement:
+    """Injected 0d entitlement/edition gate. Permits by default in these tests."""
+
+    def __init__(self, *, permit: bool = True, reason: str = "edition-denied") -> None:
+        self._permit = permit
+        self._reason = reason
+
+    def permits(self, _request) -> tuple[bool, str]:  # noqa: ANN001
+        return (True, "") if self._permit else (False, self._reason)
+
+
+class _FakeClassifier:
+    """Injected per-object tier lookup (0b). Resolves a REAL tier per resource.
+
+    Maps known resource ids to their true tier; unknown -> confidential
+    (fail-closed). The PEP never hardcodes the tier — it consults this lookup.
+    """
+
+    def __init__(self, table: dict[str, Tier] | None = None) -> None:
+        self._table = table or {"a1": Tier.confidential}
+
+    def classify_resource(
+        self, resource_id: str | None, _tenant
+    ) -> tuple[Tier, frozenset]:  # noqa: ANN001
+        return self._table.get(resource_id, Tier.confidential), frozenset()
+
+
+def _build(
+    *,
+    permit: bool,
+    tombstoned: dict[str, str] | None = None,
+    entitled: bool = True,
+    tier_table: dict[str, Tier] | None = None,
+) -> PolicyEnforcementPoint:
     return PolicyEnforcementPoint(
+        entitlement=_FakeEntitlement(permit=entitled),
+        classifier=_FakeClassifier(tier_table),
         rebac=SpiceDBReBAC(client=_FakeSpice(permit)),
         abac=OpaAbac(opa=_FakeOpaAllow()),
         tombstone=DurableTombstoneReader(log=_FakeLog(tombstoned)),
@@ -1428,6 +1465,34 @@ def test_capability_not_entitled_denies() -> None:
     resp = pep.authorize(req)
     assert resp.decision is Decision.DENY
     assert resp.reason == "capability-not-entitled"
+
+
+def test_entitlement_gate_short_circuits_before_capability_and_rebac() -> None:
+    # Injected 0d entitlement/edition gate denies FIRST, before capability/ReBAC.
+    pep = _build(permit=True, entitled=False)
+    req = PepRequest(
+        request_id="r14", tenant=_ctx(), action=PepAction.RETRIEVE,
+        required_capability=Capability.CONFIDENTIAL_WORKSPACE, resource_id="a1",
+        grant_id="g14",
+    )
+    resp = pep.authorize(req)
+    assert resp.decision is Decision.DENY
+    assert resp.payload is None
+    assert resp.reason == "edition-denied"
+
+
+def test_public_object_resolves_non_confidential_tier_not_hardcoded() -> None:
+    # R2: a public resource resolves to its REAL tier (public), NOT hardcoded
+    # confidential — so 0i retrieval / 0k funding take the correct ABAC branch.
+    pep = _build(permit=True, tier_table={"pubdoc": Tier.public})
+    req = PepRequest(
+        request_id="r15", tenant=_ctx(), action=PepAction.RETRIEVE,
+        required_capability=Capability.CONFIDENTIAL_WORKSPACE, resource_id="pubdoc",
+        grant_id="g15",
+    )
+    resp = pep.authorize(req)
+    assert resp.effective_tier is Tier.public
+    assert resp.decision is Decision.ALLOW
 ```
 
 - [ ] **Step 2: Run test to verify it fails**
@@ -1444,14 +1509,23 @@ Expected: fails — `ModuleNotFoundError: No module named 'pep.pep'`.
 # tigerexchange/services/pep/src/pep/pep.py
 """The single Policy Enforcement Point (plan §4.2/§7.6, D4).
 
-Implements IPolicyEnforcement. Composes the ONE pinned decision order
-(decision_order.py) in this exact sequence per request:
+Implements the kernel IPolicyEnforcement.authorize(request) -> PepResponse. This
+is the ONE and ONLY PEP class (there is no separate PepService); 0d contributes
+its entitlement/pooled-authz logic AS the entitlement step composed INTO this
+class (via the injected EntitlementEvaluator the PEP calls), NOT as a second PEP.
 
-  0. Capability gate   — tenant entitlement must grant required_capability.
-  1. REBAC_CHECK       — SpiceDB Check (narrow-only); deny short-circuits.
-  2. ABAC              — OPA (narrows-only); deny short-circuits.
-  3. DURABLE_TOMBSTONE — authoritative deny store; tombstoned -> deny (zero window).
-  4. LEASE             — narrow-only positive-grant cache (refreshed on allow).
+Composes the ONE canonical decision order per request, in this exact sequence:
+
+  1. ENTITLEMENT/EDITION gate — injected EntitlementEvaluator (0d logic); deny short-circuits.
+  2. CAPABILITY gate          — tenant entitlement must grant required_capability.
+  3. REBAC_CHECK              — SpiceDB Check (narrow-only); deny short-circuits.
+  4. ABAC                     — OPA (narrows-only); deny short-circuits.
+  5. DURABLE_TOMBSTONE        — owner-local authoritative deny store; tombstoned -> deny (zero window).
+  6. LEASE                    — narrow-only positive-grant cache (refreshed on allow).
+
+The durable tombstone log is AUTHORITATIVE for the deny dimension; lease/SpiceDB
+are narrow caches only. The security-reason ("zero allow-window") revocation
+path consults the durable tombstone synchronously regardless of the lease.
 
 On ALLOW the broker fetches + projects. Non-ALLOW carries no payload (the
 PepResponse model enforces this; we also never call the broker on deny).
@@ -1459,11 +1533,16 @@ PepResponse model enforces this; we also never call the broker on deny).
 
 from __future__ import annotations
 
+from typing import Protocol
+
 from contracts import (
+    ComplianceFlag,
     Decision,
     PepAction,
     PepRequest,
     PepResponse,
+    TenantContext,
+    Tier,
 )
 
 from pep.abac import OpaAbac
@@ -1471,6 +1550,32 @@ from pep.broker import DataAccessBroker
 from pep.decision_order import DECISION_ORDER, DecisionStep
 from pep.rebac import SpiceDBReBAC
 from pep.revocation import DurableTombstoneReader, LeaseCache
+
+
+class _EntitlementEvaluator(Protocol):
+    """Structural surface of the 0d entitlement/edition gate composed into the PEP.
+
+    0d owns the pooled-authz/entitlement logic; the PEP calls it as the FIRST
+    decision step. Returns (permitted, reason): a False short-circuits to DENY
+    before any capability/ReBAC/ABAC work. This is the single injected
+    entitlement step — NOT a second PEP class.
+    """
+
+    def permits(self, request: PepRequest) -> tuple[bool, str]: ...
+
+
+class _ClassificationLookup(Protocol):
+    """Resolves the REAL per-object (tier, compliance_flags) for a request (§8/0b).
+
+    Backed by the classifier/broker classification table (0b authoritative). A
+    public/private object MUST resolve to its true non-confidential tier so the
+    correct ABAC branch is taken; an UNKNOWN/missing object resolves fail-closed
+    to confidential (never fail-open). The PEP does NOT hardcode the tier.
+    """
+
+    def classify_resource(
+        self, resource_id: str | None, tenant: TenantContext
+    ) -> tuple["Tier", frozenset["ComplianceFlag"]]: ...
 
 # Map PepAction -> the SpiceDB permission name to Check (§7.3).
 _ACTION_PERMISSION = {
@@ -1490,12 +1595,16 @@ class PolicyEnforcementPoint:
     def __init__(
         self,
         *,
+        entitlement: _EntitlementEvaluator,
+        classifier: _ClassificationLookup,
         rebac: SpiceDBReBAC,
         abac: OpaAbac,
         tombstone: DurableTombstoneReader,
         lease: LeaseCache,
         broker: DataAccessBroker,
     ) -> None:
+        self._entitlement = entitlement
+        self._classifier = classifier
         self._rebac = rebac
         self._abac = abac
         self._tombstone = tombstone
@@ -1505,7 +1614,13 @@ class PolicyEnforcementPoint:
     def authorize(self, request: PepRequest) -> PepResponse:
         tier, flags = self._object_classification(request)
 
-        # Step 0: capability gate (edition/entitlement, evaluated at the PEP, §2.3).
+        # Step 1: entitlement/edition gate — injected 0d EntitlementEvaluator,
+        # composed into THIS PEP as the first decision step (§2.3, 0d).
+        permitted, ent_reason = self._entitlement.permits(request)
+        if not permitted:
+            return self._deny(request, tier, ent_reason or "entitlement-denied")
+
+        # Step 2: capability gate (edition/entitlement, evaluated at the PEP, §2.3).
         if not request.tenant.entitlement.has(request.required_capability):
             return self._deny(request, tier, "capability-not-entitled")
 
@@ -1555,18 +1670,22 @@ class PolicyEnforcementPoint:
             reason=reason,
         )
 
-    @staticmethod
-    def _object_classification(request: PepRequest):  # noqa: ANN205
-        """Resolve (tier, compliance_flags) for the request's object.
+    def _object_classification(
+        self, request: PepRequest
+    ) -> tuple[Tier, frozenset[ComplianceFlag]]:
+        """Resolve the REAL per-object (tier, compliance_flags) via the classifier.
 
-        In Phase-0 the broker's store holds the classification; for the
-        authorize() decision the object tier defaults to the tenant ceiling so
-        confidential requests exercise the confidential ABAC path. The fetched
-        rows carry their own row-level tier (broker projection).
+        The PEP does NOT hardcode the tier. The injected classifier/broker lookup
+        (0b authoritative classification table) resolves the true tier so a
+        public/private object takes the correct non-confidential ABAC branch
+        (0i retrieval / 0k funding are NOT forced onto the confidential path).
+        An UNKNOWN/missing object resolves fail-closed to confidential, never
+        fail-open (§5.6 unknown -> most-restrictive).
         """
-        from contracts import Tier  # local import to keep module top clean
-
-        return Tier.confidential, frozenset()
+        tier, flags = self._classifier.classify_resource(
+            request.resource_id, request.tenant
+        )
+        return tier, flags
 ```
 
 - [ ] **Step 4: Run test to verify it passes**
@@ -1575,7 +1694,7 @@ class PolicyEnforcementPoint:
 cd /home/anurag/codebase/tigerexchange/services/pep && python -m pytest tests/test_pep_compose.py -q
 ```
 
-Expected: 9 passed (4 broker + 5 PEP composition tests).
+Expected: 11 passed (4 broker + 7 PEP composition tests).
 
 - [ ] **Step 5: Commit**
 
@@ -1587,87 +1706,53 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 
 ---
 
-### Task 10: Central-index read PEP — discoverability-scope filtering
+### Task 10: Central-index read scope — delegate to 0j's CentralIndexReadPEP (no duplicate)
 
-**Files:** Modify `tigerexchange/services/pep/src/pep/pep.py`, Create Test `tigerexchange/services/pep/tests/test_central_index_pep.py`
+**Files:** Create Test `tigerexchange/services/pep/tests/test_central_index_pep.py`
 
-This implements the central-index read PEP with `discoverability_scope` (deliverable: "central-index read PEP with discoverability_scope").
+> **R5 — single scope-filter implementation.** 0j is the SOLE authoritative
+> central-index read PEP: the class `CentralIndexReadPEP` (owner-committed,
+> strongly-consistent scope-epoch) owns the ONE discoverability-scope filter.
+> 0c does NOT re-implement scope filtering. Earlier drafts of this plan defined
+> a duplicate `filter_by_discoverability` free function in `pep.pep`; that
+> duplicate is DROPPED. This task only asserts that 0c delegates to 0j and that
+> there is exactly one scope-filter implementation in the codebase.
 
 - [ ] **Step 1: Write the failing test**
 
 ```python
 # tigerexchange/services/pep/tests/test_central_index_pep.py
-"""Central-index read PEP (plan §4.7/§7.6). discoverability_scope at query time.
+"""Central-index read scope is owned by 0j (plan §4.7/§7.6; R5).
 
-Same PEP code, central-index locus (PepAction.DISCOVER). It scope-filters
-PUBLISHED projections by the requester's identity + consortium membership:
-  - public-web        -> visible to anyone
-  - federation-wide   -> any authenticated member
-  - named-consortium  -> only members of the publisher's consortium
-  - named-tenants     -> only an explicit tenant allowlist
-  - none              -> never centrally indexed
-Deny-by-default: a named-consortium record is invisible to a non-member.
+There is exactly ONE central-index read PEP — 0j's CentralIndexReadPEP — which
+owns the single discoverability_scope filter. 0c must NOT define a duplicate
+scope-filter (the old `filter_by_discoverability` free function is removed). We
+assert (a) 0c no longer exposes a duplicate, and (b) the canonical filter lives
+in 0j's class.
 """
-from contracts import (
-    Capability,
-    DiscoverabilityScope,
-    Edition,
-    Entitlement,
-    IsolationPosture,
-    PublishableProjection,
-    Tier,
-    TenantContext,
-)
+import importlib
 
-from pep.pep import filter_by_discoverability
+import pytest
+
+import pep.pep as pep_module
 
 
-def _ctx(consortia: frozenset[str]) -> TenantContext:
-    ent = Entitlement(
-        edition=Edition.INSTITUTIONAL,
-        capabilities=frozenset({Capability.PUBLIC_RETRIEVAL}),
-        isolation=IsolationPosture.DEDICATED_CELL, max_tier=Tier.private,
+def test_pep_does_not_define_duplicate_scope_filter() -> None:
+    # R5: the duplicate free function must be GONE from 0c.
+    assert not hasattr(pep_module, "filter_by_discoverability"), (
+        "0c must not duplicate the central-index scope filter; 0j owns it."
     )
-    return TenantContext(tenant_id="req-tenant", subject_id="user:dan", entitlement=ent,
-                         consortium_ids=consortia, affiliations=frozenset({"a@x.edu"}))
+    assert not hasattr(pep_module, "_scope_permits")
 
 
-def _proj(scope: DiscoverabilityScope, *, owner: str = "owner-t",
-          fields: dict | None = None) -> PublishableProjection:
-    return PublishableProjection(
-        projection_id=f"p-{scope.value}", artifact_id="a", owner_tenant_id=owner,
-        tier=Tier.public, discoverability_scope=scope, fields=fields or {},
+def test_canonical_scope_filter_lives_in_0j_central_index_read_pep() -> None:
+    # The SOLE scope-filter implementation is 0j's CentralIndexReadPEP. This
+    # import is the integration seam; skip cleanly until 0j is on the path.
+    central = pytest.importorskip(
+        "mod_discovery.central_index_read_pep",
+        reason="0j (CentralIndexReadPEP) not yet on the path",
     )
-
-
-def test_public_web_visible_to_anyone() -> None:
-    out = filter_by_discoverability([_proj(DiscoverabilityScope.PUBLIC_WEB)], _ctx(frozenset()))
-    assert len(out) == 1
-
-
-def test_named_consortium_hidden_from_non_member() -> None:
-    p = _proj(DiscoverabilityScope.NAMED_CONSORTIUM, fields={"consortium_ids": ["c1"]})
-    out = filter_by_discoverability([p], _ctx(frozenset({"c2"})))
-    assert out == []
-
-
-def test_named_consortium_visible_to_member() -> None:
-    p = _proj(DiscoverabilityScope.NAMED_CONSORTIUM, fields={"consortium_ids": ["c1"]})
-    out = filter_by_discoverability([p], _ctx(frozenset({"c1"})))
-    assert len(out) == 1
-
-
-def test_named_tenants_enforced_against_allowlist() -> None:
-    p = _proj(DiscoverabilityScope.NAMED_TENANTS, fields={"allowed_tenant_ids": ["req-tenant"]})
-    out = filter_by_discoverability([p], _ctx(frozenset()))
-    assert len(out) == 1
-    p2 = _proj(DiscoverabilityScope.NAMED_TENANTS, fields={"allowed_tenant_ids": ["other"]})
-    assert filter_by_discoverability([p2], _ctx(frozenset())) == []
-
-
-def test_scope_none_never_indexed() -> None:
-    out = filter_by_discoverability([_proj(DiscoverabilityScope.NONE)], _ctx(frozenset()))
-    assert out == []
+    assert hasattr(central, "CentralIndexReadPEP")
 ```
 
 - [ ] **Step 2: Run test to verify it fails**
@@ -1676,47 +1761,15 @@ def test_scope_none_never_indexed() -> None:
 cd /home/anurag/codebase/tigerexchange/services/pep && python -m pytest tests/test_central_index_pep.py -q
 ```
 
-Expected: fails — `ImportError: cannot import name 'filter_by_discoverability' from 'pep.pep'`.
+Expected first run (if the duplicate still exists in `pep.pep`): `test_pep_does_not_define_duplicate_scope_filter` fails because `filter_by_discoverability` is still present.
 
-- [ ] **Step 3: Write minimal implementation (append to pep.py)**
+- [ ] **Step 3: Remove the duplicate (no new scope-filter code in 0c)**
 
-```python
-# tigerexchange/services/pep/src/pep/pep.py  (append at module level)
-
-from contracts import DiscoverabilityScope, PublishableProjection, TenantContext
-
-
-def filter_by_discoverability(
-    projections: list[PublishableProjection], requester: TenantContext
-) -> list[PublishableProjection]:
-    """Central-index read PEP scope filter (§4.7). Deny-by-default.
-
-    Enforces each projection's discoverability_scope against the requester's
-    identity + consortium membership. A named-consortium/named-tenants record is
-    invisible to anyone outside its scope; scope=none is never indexed.
-    """
-    visible: list[PublishableProjection] = []
-    for p in projections:
-        if _scope_permits(p, requester):
-            visible.append(p)
-    return visible
-
-
-def _scope_permits(p: PublishableProjection, requester: TenantContext) -> bool:
-    scope = p.discoverability_scope
-    if scope is DiscoverabilityScope.PUBLIC_WEB:
-        return True
-    if scope is DiscoverabilityScope.FEDERATION_WIDE:
-        return bool(requester.affiliations)  # any authenticated member
-    if scope is DiscoverabilityScope.NAMED_CONSORTIUM:
-        allowed = set(p.fields.get("consortium_ids", []))
-        return bool(allowed & requester.consortium_ids)
-    if scope is DiscoverabilityScope.NAMED_TENANTS:
-        allowed = set(p.fields.get("allowed_tenant_ids", []))
-        return requester.tenant_id in allowed
-    # DiscoverabilityScope.NONE (or any unknown) -> never indexed (deny-by-default).
-    return False
-```
+There is NO scope-filter implementation in `pep.pep`. If an earlier draft added a
+`filter_by_discoverability` / `_scope_permits` to `pep.pep`, delete both — 0c
+delegates all central-index scope filtering to 0j's `CentralIndexReadPEP`
+(owner-committed, strongly-consistent scope-epoch). No replacement function is
+added here; the one scope-filter implementation lives in 0j.
 
 - [ ] **Step 4: Run test to verify it passes**
 
@@ -1724,12 +1777,12 @@ def _scope_permits(p: PublishableProjection, requester: TenantContext) -> bool:
 cd /home/anurag/codebase/tigerexchange/services/pep && python -m pytest tests/test_central_index_pep.py -q
 ```
 
-Expected: 5 passed.
+Expected: 1 passed, 1 skipped (the 0j integration assertion skips until 0j is on the path; the no-duplicate assertion passes).
 
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /home/anurag/codebase && git add tigerexchange/services/pep/src/pep/pep.py tigerexchange/services/pep/tests/test_central_index_pep.py && git commit -m "feat(pep): central-index read PEP enforces discoverability_scope (deny-by-default)
+cd /home/anurag/codebase && git add tigerexchange/services/pep/tests/test_central_index_pep.py && git commit -m "refactor(pep): drop duplicate scope filter — delegate central-index reads to 0j CentralIndexReadPEP
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 ```
@@ -1758,7 +1811,7 @@ Expected: the contract `feature-modules-cannot-import-raw-store-or-classifier` m
 
 - [ ] **Step 3: Confirm/adjust the import-linter config so the broker is the sole importer**
 
-Verify `pep.broker` is NOT in `source_modules` of the forbidden contract (it must legitimately import `pep.broker_db`). If `lint-imports` reports a broken edge, the offending source module imported `pep.broker_db` or `classifier.engine` — remove that import. No code change is expected if Tasks 1-10 were followed; this step is the verification gate.
+Verify `pep.broker` is NOT in `source_modules` of the forbidden contract (it must legitimately import `pep.broker_db`). If `lint-imports` reports a broken edge, the offending source module imported `pep.broker_db` or `classification.classifier` — remove that import. No code change is expected if Tasks 1-10 were followed; this step is the verification gate.
 
 - [ ] **Step 4: Run full gate to verify it passes**
 
@@ -1780,9 +1833,12 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 
 ## Notes on decisions encoded (for reviewers)
 
-- **Decision order (highs_addressed #1):** `decision_order.py` pins exactly `REBAC_CHECK → ABAC → DURABLE_TOMBSTONE → LEASE`. The durable tombstone log is the single `AUTHORITATIVE_DENY_STORE`; SpiceDB Check, ABAC, and the lease are `is_narrow_only`. Option (a) from the convergence fix is implemented: every confidential request reads the durable high-water-mark locally, so a security-reason revocation produces a zero allow-window even while a 15ms positive-grant lease is still nominally valid (`test_security_reason_zero_allow_window_even_with_valid_lease`). The §7.3 "ABAC narrows-only" invariant is generalized to "caches narrow-only" across all three caches.
+- **Single PEP + canonical decision order (R1, highs_addressed #1):** There is ONE PEP class, `PolicyEnforcementPoint` (0c owns it), implementing the kernel `IPolicyEnforcement.authorize(request) -> PepResponse` — no separate `PepService`, no `requested_tier` kwarg. The canonical order inside `authorize` is: (1) entitlement/edition gate (injected `EntitlementEvaluator` — 0d's logic composed INTO this PEP) → (2) capability gate → (3) ReBAC → (4) ABAC → (5) durable tombstone → (6) lease. `decision_order.py` pins the cache portion exactly `REBAC_CHECK → ABAC → DURABLE_TOMBSTONE → LEASE`; the durable tombstone log is the single `AUTHORITATIVE_DENY_STORE` and SpiceDB Check, ABAC, and the lease are `is_narrow_only`. Option (a) from the convergence fix is implemented: every confidential request reads the durable high-water-mark locally, so a security-reason revocation produces a zero allow-window even while a 15ms positive-grant lease is still nominally valid (`test_security_reason_zero_allow_window_even_with_valid_lease`). The §7.3 "ABAC narrows-only" invariant is generalized to "caches narrow-only" across all three caches.
 - **Broker topology (highs_addressed #2):** migration `0001_broker_role.sql` creates `broker_ro` GRANTed SELECT on `confidential_artifact.artifact` and `confidential_artifact.classification` ONLY, with explicit REVOKE on the feature-module schema `mod_lit_intelligence`. `test_broker_role_contract.py` asserts the broker can read the two shared tables, cannot read any feature schema, and cannot write. "Single PEP" = one logical policy decision point (`PolicyEnforcementPoint`) over one broker that holds credentials only for the shared confidential-artifact store — not a god-object reaching into module schemas.
 - **Canonical kernel:** All public types are imported verbatim from `contracts` (`TenantContext`, `Entitlement`, `Capability`, `Edition`, `IsolationPosture`, `Tier`, `ComplianceFlag`, `Decision`, `DiscoverabilityScope`, `PepRequest`, `PepResponse`, `PepAction`, `PublishableProjection`, `IPolicyEnforcement`, `IDataAccessBroker`). `Tier.parse`, `Tier.wire`, `Entitlement.has`, `Entitlement.permits_tier`, and `PepResponse.model_post_init` fail-closed behavior are used as defined.
 - **Deferred seams:** `IRevocationAuthority`/`IExchangeFeed` are not implemented (Phase-1+). The Phase-0 durable read is a local `DurableTombstoneReader` over the cell-local `revocation_log`, not the deferred cross-institution revocation authority.
 
-One implementation note flagged: `PolicyEnforcementPoint._object_classification` returns `(Tier.confidential, frozenset())` as the Phase-0 authorize-time default so confidential ABAC paths are exercised; the row-level tier is carried by the broker's projection. A later task (in `0b`/`0d` integration) should wire the classifier-backed per-object tier lookup into the broker's store read so authorize-time tier matches the fetched row's classification — left as a clean seam, not stubbed with placeholder logic.
+- **Real per-object classification (R2):** `PolicyEnforcementPoint._object_classification` resolves the REAL per-object `(tier, compliance_flags)` via the injected `_ClassificationLookup` (0b's classifier/broker classification table). It does NOT hardcode `(Tier.confidential, frozenset())`. A public/private object resolves to its true non-confidential tier and takes the correct ABAC branch, so 0i retrieval and 0k funding are not forced onto the confidential path (`test_public_object_resolves_non_confidential_tier_not_hardcoded`); an unknown/missing object resolves fail-closed to confidential (§5.6).
+- **Single scope-filter (R5):** 0c does NOT define `filter_by_discoverability`; the one central-index scope filter is owned by 0j's `CentralIndexReadPEP` (owner-committed, strongly-consistent scope-epoch). `test_central_index_pep.py` asserts the duplicate is absent from `pep.pep` and the canonical filter lives in 0j.
+- **Single-tenant scope (R9):** the owner-local tombstone/lease (Task 5) is Phase-0 SINGLE-TENANT own-data only; cross-institution sharing and the cross-institution revocation authority are Phase-1+ (kernel `IRevocationAuthority`/`IExchangeFeed` stubbed, not active here).
+- **Classifier module name (R7):** the import-linter `forbidden_modules` use `classification.classifier` verbatim (0b authoritative) — no `classifier.engine`/`classification.engine` variants.

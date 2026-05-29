@@ -54,22 +54,16 @@ graph TD
 
 All 11 high-severity refinement items from `../convergence-report.md` are assigned to owning sub-plans (see `highs_addressed` in `_decomposition.json`).
 
-## ⚠️ Known issues — resolve before execution (`_consistency-check.md`)
-The cross-plan review found real integration mismatches (plans were authored in parallel). Highest-leverage fixes:
-1. **`IAuditSink.append` arity** (0e) — kernel is one-arg; remove the two-arg confusion + fabricated `TenantContext`.
-2. **One PEP class + one `authorize` signature + one decision order** (0c vs 0d diverge: two class names, an extra `requested_tier` kwarg, different step ordering).
-3. **`IModelProvider.satisfies_locality(tier: Tier)`** (0f providers use `LocalityClass` and fail the kernel Protocol `0i` relies on).
-4. **Central-index read-PEP duplicated** (0c Task 10 vs 0j) — designate **0j** authoritative; drop 0c's `filter_by_discoverability`.
-5. **`app/dependencies.py` + `app.main` + `modules/` ownership undefined** (0k references factories/paths 0a never creates) — assign ownership + align to `packages/`/`services/` layout.
-6. **Classifier module name** — standardize to `classification.classifier` across all import-linter contracts (0b/0c/0e/0k currently disagree).
+## Cross-plan consistency — status after fix-up (wf `w0j0cd0j8`)
+A reconciliation pass (12 in-place fix agents + re-check) resolved **8 of 10** issues: object-classification (0c), `IAuditSink.append` one-arg (0e), `satisfies_locality(tier: Tier)` (0f), single central-index PEP = **0j** (0c dup dropped), `packages/`+`services/` layout & `api.dependencies` DI factories (0a defines, 0k consumes), `classification.classifier` naming everywhere, the kernel interface-versioning amendment (`KERNEL_API_VERSION`/`InterfaceLocus`/`INTERFACE_LOCUS`), and single-tenant scope notes (0g/0c/0e). Full verdict + per-file changelogs: **`_recheck-after-fixup.md`**.
 
-## 🟠 SCOPE QUESTION (needs a decision)
-Three sub-plans may stray into **Phase-1+ deferred** confidentiality/revocation machinery:
-- **0g** (per-tenant KEK/DEK + crypto-shred) — Phase-0 SCOPE listed only the Table-B COGS *reconciliation*, not the live crypto-shred build; the kernel stubs `IRevocationAuthority` as Phase-1+.
-- **0c** durable tombstone reader + lease cache (owner-local revocation) — adjacent to the deferred revocation line.
-- **0e** signed Ed25519 checkpoints / transparency-log sink — beyond the bare hash-chain sink.
+**3 residual items — fix before executing the affected plans:**
+1. **🔴 PEP module-path + constructor mismatch (0c ↔ 0d).** The class name (`PolicyEnforcementPoint`), `authorize` signature, and decision order are now unified, but 0c builds it at `services/pep/src/pep/pep.py` with ctor `(entitlement, classifier, rebac, abac, tombstone, lease, broker)` while 0d imports `mod_pep.policy_enforcement_point` with a thinner ctor. **Pick one module path + one constructor parameter set across 0c and 0d.** (Blocking only when executing 0c/0d.)
+2. **0f Task 8 / 0g Task 8 COGS** — confirm each ships only the reconciled band-based computation (no superseded-then-rewritten block within one step).
+3. **Kernel-doc walrus artifact** — scrub the `IRerankerLike := IReranker` line in `00-kernel-contracts.md`'s `__init__.py` block (0a is already instructed to skip it, so it cannot ship, but the authoritative doc still carries the wrong line).
 
-Either confirm these belong in Phase-0 (and amend the spec's Phase-0 SCOPE) or descope them to seams. `0k`'s confidential draft persistence depends on `0g`, so this also affects the feature modules.
+## Scope — resolved
+0g (confidential-at-rest KEK/crypto-shred), 0c (owner-local revocation), and 0e (signed checkpoints) are **kept in Phase-0, scoped single-tenant own-data only** — the MVP stores the center's own confidential proposal drafts, so HYOK-at-rest + GDPR crypto-shred are genuinely required. Each now carries an explicit note that the **cross-institution** sharing/exchange + revocation-*authority* are Phase-1+ (kernel interfaces stubbed, not active). `0k`'s confidential draft persistence stays single-tenant via `0g`.
 
 ## Execution
 Each sub-plan is executed task-by-task via `superpowers:subagent-driven-development` (fresh agent per task, review between) in the dependency order above. `0d`/`0e`/`0f` can run in parallel after `0c`; `0j` can run alongside the `0g`→`0h`→`0i` track. **Apply the known-issue fixes + resolve the scope question first.**

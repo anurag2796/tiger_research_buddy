@@ -6,7 +6,7 @@ No existing sub-plan markdown files for 0a/0c to import conventions from, and no
 
 **Goal:** Wire Direct OIDC/CILogon federated identity (carrying `eduPersonScopedAffiliation` + stable `eduPersonUniqueId`) into a request-scoped `TenantContext`, resolve `Edition`→`Entitlement` capability sets evaluated centrally at the PEP (PLG = public + own-materials ONLY, confidential/exchange hard-OFF), and enforce the pooled-plane per-tenant isolation boundary: object-authz `Check` as the deny-by-default primary boundary plus FORCE-RLS / SET-LOCAL / WITH CHECK / RESTRICTIVE / tenant_id-leading defense-in-depth, with SECURITY DEFINER and materialized-view bypasses CI-forbidden.
 
-**Architecture:** A `mod_identity` package translates a verified OIDC token (Keycloak control-plane broker → buyer IdP) into a frozen `TenantContext` whose `Entitlement` is the PEP's authoritative capability set. The existing single PEP (from 0c) gains an `EntitlementEvaluator` that physically denies any `Capability`/`Tier` the edition lacks. The pooled-plane data path layers object-authz `Check` (SpiceDB `tenant#member`) as the primary boundary in front of Postgres tables hardened with FORCE RLS, RESTRICTIVE policies, WITH CHECK, `SET LOCAL app.tenant_id` per transaction, and `tenant_id`-leading indexes — with a CI lint forbidding SECURITY DEFINER / matview bypass.
+**Architecture:** A `mod_identity` package translates a verified OIDC token (Keycloak control-plane broker → buyer IdP) into a frozen `TenantContext` whose `Entitlement` is the PEP's authoritative capability set. The single `PolicyEnforcementPoint` (owned by 0c, implementing the kernel `IPolicyEnforcement.authorize(request: PepRequest) -> PepResponse`) gains an injected `EntitlementEvaluator` that runs as the **entitlement step** inside `authorize()` — physically denying any `Capability`/`Tier` the edition lacks. This plan adds NO second PEP class and NO extra `requested_tier` kwarg on the kernel `authorize`. The canonical decision order inside `PolicyEnforcementPoint.authorize` is: (1) entitlement/edition gate → (2) capability gate → (3) ReBAC check (SpiceDB) → (4) ABAC tier check (OPA) → (5) owner-local durable tombstone check → (6) lease cache; this plan contributes step (1) and the pooled-plane object-authz that feeds the ReBAC step. The pooled-plane data path layers object-authz `Check` (SpiceDB `tenant#member`) as the primary boundary in front of Postgres tables hardened with FORCE RLS, RESTRICTIVE policies, WITH CHECK, `SET LOCAL app.tenant_id` per transaction, and `tenant_id`-leading indexes — with a CI lint forbidding SECURITY DEFINER / matview bypass.
 
 **Tech Stack:** Python 3.11+, FastAPI, Pydantic v2, Authlib (OIDC), Keycloak (broker), CILogon (OIDC), Postgres 16 (FORCE RLS), PgBouncer (transaction mode, SET LOCAL-compatible), SpiceDB/OpenFGA ReBAC `Check`, OPA (ABAC tier), psycopg 3, pytest, ruff, mypy, import-linter.
 
@@ -19,28 +19,28 @@ No existing sub-plan markdown files for 0a/0c to import conventions from, and no
 | File | Create/Modify | Single responsibility |
 |---|---|---|
 | `tigerexchange/packages/contracts/src/contracts/tenancy.py` | Modify | Use canonical kernel `TenantContext`/`Edition`/`Entitlement`/`Capability`/`IsolationPosture` verbatim (already pinned by 0b kernel; this plan only imports). |
-| `tigerexchange/services/mod_identity/pyproject.toml` | Create | Package metadata + import-linter contract (mod_identity may import `contracts` + PEP client, never raw stores). |
-| `tigerexchange/services/mod_identity/src/mod_identity/__init__.py` | Create | Package marker + public export surface. |
-| `tigerexchange/services/mod_identity/src/mod_identity/oidc_claims.py` | Create | Parse/validate `eduPersonScopedAffiliation` + `eduPersonUniqueId` from verified OIDC claims; fail-closed on missing subject id. |
-| `tigerexchange/services/mod_identity/src/mod_identity/entitlement_catalog.py` | Create | Frozen `Edition`→`Entitlement` capability mapping (PLG hard-OFF rules); single source of truth. |
-| `tigerexchange/services/mod_identity/src/mod_identity/context_builder.py` | Create | Build a frozen `TenantContext` from verified claims + resolved `Entitlement`. |
-| `tigerexchange/services/mod_identity/src/mod_identity/keycloak_broker.py` | Create | Direct OIDC/CILogon discovery + token verification via Keycloak broker config (Phase-0: Direct OIDC only). |
-| `tigerexchange/services/pep/src/pep/entitlement_evaluator.py` | Create | PEP-side entitlement gate: deny any capability/tier the edition lacks (the central evaluation point). |
-| `tigerexchange/services/pep/src/pep/pooled_authz.py` | Create | Pooled-plane object-authz `Check` (SpiceDB `tenant#member`) — deny-by-default primary boundary. |
-| `tigerexchange/services/pep/src/pep/pep_service.py` | Modify | Wire `EntitlementEvaluator` + pooled-plane `Check` into the single PEP `authorize()` flow. |
-| `tigerexchange/services/pooled_plane/src/pooled_plane/__init__.py` | Create | Pooled-plane package marker. |
-| `tigerexchange/services/pooled_plane/src/pooled_plane/tenant_session.py` | Create | `SET LOCAL app.tenant_id` transaction-scoped session (PgBouncer-safe), never `SET`. |
-| `tigerexchange/services/pooled_plane/src/pooled_plane/own_materials_repo.py` | Create | Pooled own-materials repo: authz `Check` first, then RLS-protected query. |
+| `tigerexchange/packages/mod-identity/pyproject.toml` | Create | Package metadata + import-linter contract (`classification.classifier` aware; mod-identity may import `contracts` + the PEP via DI, never raw stores). |
+| `tigerexchange/packages/mod-identity/src/mod_identity/__init__.py` | Create | Package marker + public export surface. |
+| `tigerexchange/packages/mod-identity/src/mod_identity/oidc_claims.py` | Create | Parse/validate `eduPersonScopedAffiliation` + `eduPersonUniqueId` from verified OIDC claims; fail-closed on missing subject id. |
+| `tigerexchange/packages/mod-identity/src/mod_identity/entitlement_catalog.py` | Create | Frozen `Edition`→`Entitlement` capability mapping (PLG hard-OFF rules); single source of truth. |
+| `tigerexchange/packages/mod-identity/src/mod_identity/context_builder.py` | Create | Build a frozen `TenantContext` from verified claims + resolved `Entitlement`. |
+| `tigerexchange/packages/mod-identity/src/mod_identity/keycloak_broker.py` | Create | Direct OIDC/CILogon discovery + token verification via Keycloak broker config (Phase-0: Direct OIDC only). |
+| `tigerexchange/packages/mod-identity/src/mod_identity/entitlement_evaluator.py` | Create | `EntitlementEvaluator`: the entitlement step the `PolicyEnforcementPoint` (0c) calls — denies any capability/tier the edition lacks. Composed INTO the PEP, NOT a second PEP class. |
+| `tigerexchange/packages/mod-identity/src/mod_identity/pooled_authz.py` | Create | Pooled-plane object-authz `Check` (SpiceDB `tenant#member`) — deny-by-default boundary feeding the PEP ReBAC step. |
+| `tigerexchange/packages/contracts/src/contracts/` (PEP lives in 0c) | Reference | 0c owns `PolicyEnforcementPoint.authorize(request: PepRequest) -> PepResponse`; 0d injects `EntitlementEvaluator` + pooled `Check` into it. This plan does NOT define or modify a PEP class. |
+| `tigerexchange/packages/mod-pooled-plane/src/mod_pooled_plane/__init__.py` | Create | Pooled-plane package marker. |
+| `tigerexchange/packages/mod-pooled-plane/src/mod_pooled_plane/tenant_session.py` | Create | `SET LOCAL app.tenant_id` transaction-scoped session (PgBouncer-safe), never `SET`. |
+| `tigerexchange/packages/mod-pooled-plane/src/mod_pooled_plane/own_materials_repo.py` | Create | Pooled own-materials repo: authz `Check` first, then RLS-protected query. |
 | `tigerexchange/db/migrations/0d_pooled_own_materials.sql` | Create | `own_materials` table: FORCE RLS, RESTRICTIVE policies, WITH CHECK, tenant_id-leading index. |
 | `tigerexchange/db/migrations/0d_app_role.sql` | Create | Non-superuser `app_pooled` role (subject to RLS) + the `app.tenant_id` GUC convention. |
 | `tigerexchange/tools/ci/forbid_security_definer.py` | Create | CI lint: fail on `SECURITY DEFINER` / `MATERIALIZED VIEW` over tenant-scoped tables. |
-| `tigerexchange/services/mod_identity/tests/test_oidc_claims.py` | Create | Test claim parsing + fail-closed on missing `eduPersonUniqueId`. |
-| `tigerexchange/services/mod_identity/tests/test_entitlement_catalog.py` | Create | Test PLG hard-OFF + edition capability sets. |
-| `tigerexchange/services/mod_identity/tests/test_context_builder.py` | Create | Test end-to-end claims→`TenantContext`. |
-| `tigerexchange/services/pep/tests/test_entitlement_evaluator.py` | Create | Test PLG cannot construct confidential/exchange request (contract test §2.3). |
-| `tigerexchange/services/pep/tests/test_pooled_authz.py` | Create | Test object-authz Check deny-by-default. |
-| `tigerexchange/services/pooled_plane/tests/test_tenant_session.py` | Create | Test SET LOCAL transaction-scope + no cross-borrow leak. |
-| `tigerexchange/services/pooled_plane/tests/test_cross_tenant_read_denied.py` | Create | The §7.7 contract test: BOLA / direct / SECURITY DEFINER / borrowed PgBouncer connection — all denied. |
+| `tigerexchange/packages/mod-identity/tests/test_oidc_claims.py` | Create | Test claim parsing + fail-closed on missing `eduPersonUniqueId`. |
+| `tigerexchange/packages/mod-identity/tests/test_entitlement_catalog.py` | Create | Test PLG hard-OFF + edition capability sets. |
+| `tigerexchange/packages/mod-identity/tests/test_context_builder.py` | Create | Test end-to-end claims→`TenantContext`. |
+| `tigerexchange/packages/mod-identity/tests/test_entitlement_evaluator.py` | Create | Test PLG cannot construct confidential/exchange request (contract test §2.3). |
+| `tigerexchange/packages/mod-identity/tests/test_pooled_authz.py` | Create | Test object-authz Check deny-by-default. |
+| `tigerexchange/packages/mod-pooled-plane/tests/test_tenant_session.py` | Create | Test SET LOCAL transaction-scope + no cross-borrow leak. |
+| `tigerexchange/packages/mod-pooled-plane/tests/test_cross_tenant_read_denied.py` | Create | The §7.7 contract test: BOLA / direct / SECURITY DEFINER / borrowed PgBouncer connection — all denied. |
 | `tigerexchange/tools/ci/tests/test_forbid_security_definer.py` | Create | Test the CI lint catches a SECURITY DEFINER violation. |
 
 ---
@@ -49,12 +49,12 @@ No existing sub-plan markdown files for 0a/0c to import conventions from, and no
 
 ### Task 1: OIDC claim extraction (eduPersonScopedAffiliation + eduPersonUniqueId), fail-closed
 
-**Files:** Create `tigerexchange/services/mod_identity/pyproject.toml`, `tigerexchange/services/mod_identity/src/mod_identity/__init__.py`, `tigerexchange/services/mod_identity/src/mod_identity/oidc_claims.py`, Test `tigerexchange/services/mod_identity/tests/test_oidc_claims.py`
+**Files:** Create `tigerexchange/packages/mod-identity/pyproject.toml`, `tigerexchange/packages/mod-identity/src/mod_identity/__init__.py`, `tigerexchange/packages/mod-identity/src/mod_identity/oidc_claims.py`, Test `tigerexchange/packages/mod-identity/tests/test_oidc_claims.py`
 
 - [ ] **Step 1: Write the failing test**
 
 ```python
-# tigerexchange/services/mod_identity/tests/test_oidc_claims.py
+# tigerexchange/packages/mod-identity/tests/test_oidc_claims.py
 import pytest
 
 from mod_identity.oidc_claims import VerifiedSubject, extract_subject, ClaimError
@@ -97,7 +97,7 @@ def test_falls_back_to_oidc_sub_when_no_edu_unique_id() -> None:
 - [ ] **Step 2: Run test to verify it fails**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/services/mod_identity && python -m pytest tests/test_oidc_claims.py -q
+cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/packages/mod-identity && python -m pytest tests/test_oidc_claims.py -q
 ```
 
 Expected: `ModuleNotFoundError: No module named 'mod_identity.oidc_claims'` (or collection error) — fails because the module does not exist yet.
@@ -105,7 +105,7 @@ Expected: `ModuleNotFoundError: No module named 'mod_identity.oidc_claims'` (or 
 - [ ] **Step 3: Write minimal implementation**
 
 ```toml
-# tigerexchange/services/mod_identity/pyproject.toml
+# tigerexchange/packages/mod-identity/pyproject.toml
 [project]
 name = "tigerexchange-mod-identity"
 version = "0.0.0"
@@ -137,12 +137,12 @@ forbidden_modules = ["psycopg", "qdrant_client", "opensearchpy", "kuzu", "neo4j"
 ```
 
 ```python
-# tigerexchange/services/mod_identity/src/mod_identity/__init__.py
+# tigerexchange/packages/mod-identity/src/mod_identity/__init__.py
 """Federated identity module (Direct OIDC/CILogon, Phase-0)."""
 ```
 
 ```python
-# tigerexchange/services/mod_identity/src/mod_identity/oidc_claims.py
+# tigerexchange/packages/mod-identity/src/mod_identity/oidc_claims.py
 """Extract the canonical federation identity claims from a VERIFIED OIDC token.
 
 Phase-0 (§7.1): authorize on `eduPersonScopedAffiliation` + stable
@@ -202,7 +202,7 @@ def extract_subject(claims: dict[str, object]) -> VerifiedSubject:
 - [ ] **Step 4: Run test to verify it passes**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/services/mod_identity && pip install -e . -q && python -m pytest tests/test_oidc_claims.py -q
+cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/packages/mod-identity && pip install -e . -q && python -m pytest tests/test_oidc_claims.py -q
 ```
 
 Expected: `4 passed`.
@@ -210,7 +210,7 @@ Expected: `4 passed`.
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy && git add tigerexchange/services/mod_identity && git commit -m "feat(identity): extract eduPersonScopedAffiliation + eduPersonUniqueId from verified OIDC, fail-closed
+cd /home/anurag/codebase/tiger_research_buddy && git add tigerexchange/packages/mod-identity && git commit -m "feat(identity): extract eduPersonScopedAffiliation + eduPersonUniqueId from verified OIDC, fail-closed
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 ```
@@ -219,12 +219,12 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 
 ### Task 2: Edition→Entitlement catalog (PLG hard-OFF)
 
-**Files:** Create `tigerexchange/services/mod_identity/src/mod_identity/entitlement_catalog.py`, Test `tigerexchange/services/mod_identity/tests/test_entitlement_catalog.py`
+**Files:** Create `tigerexchange/packages/mod-identity/src/mod_identity/entitlement_catalog.py`, Test `tigerexchange/packages/mod-identity/tests/test_entitlement_catalog.py`
 
 - [ ] **Step 1: Write the failing test**
 
 ```python
-# tigerexchange/services/mod_identity/tests/test_entitlement_catalog.py
+# tigerexchange/packages/mod-identity/tests/test_entitlement_catalog.py
 import pytest
 
 from contracts import Capability, Edition, IsolationPosture, Tier
@@ -272,7 +272,7 @@ def test_catalog_entitlements_are_frozen() -> None:
 - [ ] **Step 2: Run test to verify it fails**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/services/mod_identity && python -m pytest tests/test_entitlement_catalog.py -q
+cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/packages/mod-identity && python -m pytest tests/test_entitlement_catalog.py -q
 ```
 
 Expected: `ModuleNotFoundError: No module named 'mod_identity.entitlement_catalog'`.
@@ -280,7 +280,7 @@ Expected: `ModuleNotFoundError: No module named 'mod_identity.entitlement_catalo
 - [ ] **Step 3: Write minimal implementation**
 
 ```python
-# tigerexchange/services/mod_identity/src/mod_identity/entitlement_catalog.py
+# tigerexchange/packages/mod-identity/src/mod_identity/entitlement_catalog.py
 """Frozen Edition -> Entitlement capability mapping (plan §2.3).
 
 Single source of truth for which capabilities/tier each edition grants. The PEP
@@ -356,7 +356,7 @@ def entitlement_for(edition: Edition) -> Entitlement:
 - [ ] **Step 4: Run test to verify it passes**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/services/mod_identity && python -m pytest tests/test_entitlement_catalog.py -q
+cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/packages/mod-identity && python -m pytest tests/test_entitlement_catalog.py -q
 ```
 
 Expected: `5 passed`.
@@ -364,7 +364,7 @@ Expected: `5 passed`.
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy && git add tigerexchange/services/mod_identity && git commit -m "feat(identity): frozen Edition->Entitlement catalog with PLG confidential/exchange hard-OFF
+cd /home/anurag/codebase/tiger_research_buddy && git add tigerexchange/packages/mod-identity && git commit -m "feat(identity): frozen Edition->Entitlement catalog with PLG confidential/exchange hard-OFF
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 ```
@@ -373,12 +373,12 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 
 ### Task 3: Build a frozen TenantContext from verified claims + resolved entitlement
 
-**Files:** Create `tigerexchange/services/mod_identity/src/mod_identity/context_builder.py`, Test `tigerexchange/services/mod_identity/tests/test_context_builder.py`
+**Files:** Create `tigerexchange/packages/mod-identity/src/mod_identity/context_builder.py`, Test `tigerexchange/packages/mod-identity/tests/test_context_builder.py`
 
 - [ ] **Step 1: Write the failing test**
 
 ```python
-# tigerexchange/services/mod_identity/tests/test_context_builder.py
+# tigerexchange/packages/mod-identity/tests/test_context_builder.py
 import pytest
 
 from contracts import Capability, Edition, IsolationPosture, TenantContext, Tier
@@ -431,7 +431,7 @@ def test_consortium_membership_carried() -> None:
 - [ ] **Step 2: Run test to verify it fails**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/services/mod_identity && python -m pytest tests/test_context_builder.py -q
+cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/packages/mod-identity && python -m pytest tests/test_context_builder.py -q
 ```
 
 Expected: `ModuleNotFoundError: No module named 'mod_identity.context_builder'`.
@@ -439,7 +439,7 @@ Expected: `ModuleNotFoundError: No module named 'mod_identity.context_builder'`.
 - [ ] **Step 3: Write minimal implementation**
 
 ```python
-# tigerexchange/services/mod_identity/src/mod_identity/context_builder.py
+# tigerexchange/packages/mod-identity/src/mod_identity/context_builder.py
 """Assemble the request-scoped, frozen TenantContext (plan §4, §7.1).
 
 Combines the verified OIDC subject (oidc_claims) with the tenant's resolved
@@ -479,7 +479,7 @@ def build_tenant_context(
 - [ ] **Step 4: Run test to verify it passes**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/services/mod_identity && python -m pytest tests/test_context_builder.py -q
+cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/packages/mod-identity && python -m pytest tests/test_context_builder.py -q
 ```
 
 Expected: `3 passed`.
@@ -487,7 +487,7 @@ Expected: `3 passed`.
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy && git add tigerexchange/services/mod_identity && git commit -m "feat(identity): build frozen TenantContext from verified claims + resolved entitlement
+cd /home/anurag/codebase/tiger_research_buddy && git add tigerexchange/packages/mod-identity && git commit -m "feat(identity): build frozen TenantContext from verified claims + resolved entitlement
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 ```
@@ -496,12 +496,12 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 
 ### Task 4: Keycloak broker — Direct OIDC/CILogon discovery + token verification (Phase-0)
 
-**Files:** Create `tigerexchange/services/mod_identity/src/mod_identity/keycloak_broker.py`, Test `tigerexchange/services/mod_identity/tests/test_keycloak_broker.py`
+**Files:** Create `tigerexchange/packages/mod-identity/src/mod_identity/keycloak_broker.py`, Test `tigerexchange/packages/mod-identity/tests/test_keycloak_broker.py`
 
 - [ ] **Step 1: Write the failing test**
 
 ```python
-# tigerexchange/services/mod_identity/tests/test_keycloak_broker.py
+# tigerexchange/packages/mod-identity/tests/test_keycloak_broker.py
 import time
 
 import pytest
@@ -571,7 +571,7 @@ def test_rejects_expired_token(rsa_key: JsonWebKey) -> None:
 - [ ] **Step 2: Run test to verify it fails**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/services/mod_identity && python -m pytest tests/test_keycloak_broker.py -q
+cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/packages/mod-identity && python -m pytest tests/test_keycloak_broker.py -q
 ```
 
 Expected: `ModuleNotFoundError: No module named 'mod_identity.keycloak_broker'`.
@@ -579,7 +579,7 @@ Expected: `ModuleNotFoundError: No module named 'mod_identity.keycloak_broker'`.
 - [ ] **Step 3: Write minimal implementation**
 
 ```python
-# tigerexchange/services/mod_identity/src/mod_identity/keycloak_broker.py
+# tigerexchange/packages/mod-identity/src/mod_identity/keycloak_broker.py
 """Direct OIDC/CILogon token verification via the Keycloak broker (plan §7.1).
 
 Phase-0 reality (§7.1): ship Direct OIDC/CILogon to the buyer's IdP ONLY.
@@ -640,7 +640,7 @@ class OidcBroker:
 - [ ] **Step 4: Run test to verify it passes**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/services/mod_identity && python -m pytest tests/test_keycloak_broker.py -q
+cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/packages/mod-identity && python -m pytest tests/test_keycloak_broker.py -q
 ```
 
 Expected: `3 passed`.
@@ -648,23 +648,23 @@ Expected: `3 passed`.
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy && git add tigerexchange/services/mod_identity && git commit -m "feat(identity): Keycloak broker Direct OIDC/CILogon token verification (Phase-0, no SAML)
+cd /home/anurag/codebase/tiger_research_buddy && git add tigerexchange/packages/mod-identity && git commit -m "feat(identity): Keycloak broker Direct OIDC/CILogon token verification (Phase-0, no SAML)
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 ```
 
 ---
 
-### Task 5: PEP entitlement evaluator — deny any capability/tier the edition lacks (contract test §2.3)
+### Task 5: `EntitlementEvaluator` — the entitlement step the PEP calls (deny any capability/tier the edition lacks, contract test §2.3)
 
-**Files:** Create `tigerexchange/services/pep/src/pep/entitlement_evaluator.py`, Test `tigerexchange/services/pep/tests/test_entitlement_evaluator.py`
+**Files:** Create `tigerexchange/packages/mod-identity/src/mod_identity/entitlement_evaluator.py`, Test `tigerexchange/packages/mod-identity/tests/test_entitlement_evaluator.py`
 
-> This is the central evaluation point from §2.3: a PLG tenant **physically cannot** construct a confidential-tier or exchange-participation request.
+> This is the entitlement step from §2.3, composed INTO the single `PolicyEnforcementPoint` (0c) as an injected dependency (Task 7) — NOT a second PEP. A PLG tenant **physically cannot** construct a confidential-tier or exchange-participation request because this gate, run first inside `PolicyEnforcementPoint.authorize`, denies it. It is an internal helper (not the kernel `IPolicyEnforcement`), so it takes the PEP-resolved object tier as a parameter; the kernel `authorize(request)` signature is unchanged.
 
 - [ ] **Step 1: Write the failing test**
 
 ```python
-# tigerexchange/services/pep/tests/test_entitlement_evaluator.py
+# tigerexchange/packages/mod-identity/tests/test_entitlement_evaluator.py
 import pytest
 
 from contracts import (
@@ -678,7 +678,7 @@ from contracts import (
     TenantContext,
     Tier,
 )
-from pep.entitlement_evaluator import EntitlementEvaluator
+from mod_identity.entitlement_evaluator import EntitlementEvaluator
 
 
 def _plg_ctx() -> TenantContext:
@@ -738,23 +738,27 @@ def test_tier_above_ceiling_denied_even_with_capability() -> None:
 - [ ] **Step 2: Run test to verify it fails**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/services/pep && python -m pytest tests/test_entitlement_evaluator.py -q
+cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/packages/mod-identity && python -m pytest tests/test_entitlement_evaluator.py -q
 ```
 
-Expected: `ModuleNotFoundError: No module named 'pep.entitlement_evaluator'`.
+Expected: `ModuleNotFoundError: No module named 'mod_identity.entitlement_evaluator'`.
 
 - [ ] **Step 3: Write minimal implementation**
 
 ```python
-# tigerexchange/services/pep/src/pep/entitlement_evaluator.py
-"""PEP-side entitlement gate (plan §2.3, §2.4).
+# tigerexchange/packages/mod-identity/src/mod_identity/entitlement_evaluator.py
+"""Entitlement step injected into the single PolicyEnforcementPoint (plan §2.3, §2.4).
 
 Entitlements are evaluated CENTRALLY at the PEP, not per-module (§2.3). This is
-the gate that makes "a PLG tenant cannot construct a confidential-tier or
-exchange-participation request" structurally true: a capability the edition
-lacks, or a tier above the edition's ceiling, is physically denied here BEFORE
-any ReBAC/ABAC/store access. Fail-closed: deny carries no payload (consistent
-with PepResponse.model_post_init).
+the entitlement step composed INTO 0c's `PolicyEnforcementPoint.authorize` (it
+is NOT a PEP itself and does not implement the kernel `IPolicyEnforcement`). It
+makes "a PLG tenant cannot construct a confidential-tier or exchange-participation
+request" structurally true: a capability the edition lacks, or a tier above the
+edition's ceiling, is physically denied here BEFORE any ReBAC/ABAC/store access.
+The PEP resolves the object tier from the classifier/broker (R2) and passes it as
+`requested_tier`; this helper never reads a caller kwarg off the kernel
+`authorize`. Fail-closed: deny carries no payload (consistent with
+PepResponse.model_post_init).
 """
 
 from __future__ import annotations
@@ -763,7 +767,7 @@ from contracts import Decision, PepRequest, PepResponse, Tier
 
 
 class EntitlementEvaluator:
-    """Deny-by-edition gate run first inside the single PEP (§2.3)."""
+    """Deny-by-edition entitlement step the single PEP runs first (§2.3)."""
 
     def evaluate(self, request: PepRequest, *, requested_tier: Tier) -> PepResponse:
         """Deny if the edition lacks the capability OR exceeds its tier ceiling."""
@@ -806,7 +810,7 @@ class EntitlementEvaluator:
 - [ ] **Step 4: Run test to verify it passes**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/services/pep && python -m pytest tests/test_entitlement_evaluator.py -q
+cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/packages/mod-identity && python -m pytest tests/test_entitlement_evaluator.py -q
 ```
 
 Expected: `4 passed`.
@@ -814,7 +818,7 @@ Expected: `4 passed`.
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy && git add tigerexchange/services/pep/src/pep/entitlement_evaluator.py tigerexchange/services/pep/tests/test_entitlement_evaluator.py && git commit -m "feat(pep): central entitlement gate denies capability/tier the edition lacks (§2.3 contract test)
+cd /home/anurag/codebase/tiger_research_buddy && git add tigerexchange/packages/mod-identity/src/mod_identity/entitlement_evaluator.py tigerexchange/packages/mod-identity/tests/test_entitlement_evaluator.py && git commit -m "feat(pep): central entitlement gate denies capability/tier the edition lacks (§2.3 contract test)
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 ```
@@ -823,17 +827,17 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 
 ### Task 6: Pooled-plane object-authz Check — deny-by-default primary boundary
 
-**Files:** Create `tigerexchange/services/pep/src/pep/pooled_authz.py`, Test `tigerexchange/services/pep/tests/test_pooled_authz.py`
+**Files:** Create `tigerexchange/packages/mod-identity/src/mod_identity/pooled_authz.py`, Test `tigerexchange/packages/mod-identity/tests/test_pooled_authz.py`
 
 > Primary boundary (§7.7): every pooled-plane request resolves the target object's owning tenant and does a `Check` on relation `tenant#member` **before** any data access. No grant → no path.
 
 - [ ] **Step 1: Write the failing test**
 
 ```python
-# tigerexchange/services/pep/tests/test_pooled_authz.py
+# tigerexchange/packages/mod-identity/tests/test_pooled_authz.py
 import pytest
 
-from pep.pooled_authz import PooledObjectAuthz, AuthzDenied
+from mod_identity.pooled_authz import PooledObjectAuthz, AuthzDenied
 
 
 class FakeRebac:
@@ -881,15 +885,15 @@ def test_unknown_object_denied() -> None:
 - [ ] **Step 2: Run test to verify it fails**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/services/pep && python -m pytest tests/test_pooled_authz.py -q
+cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/packages/mod-identity && python -m pytest tests/test_pooled_authz.py -q
 ```
 
-Expected: `ModuleNotFoundError: No module named 'pep.pooled_authz'`.
+Expected: `ModuleNotFoundError: No module named 'mod_identity.pooled_authz'`.
 
 - [ ] **Step 3: Write minimal implementation**
 
 ```python
-# tigerexchange/services/pep/src/pep/pooled_authz.py
+# tigerexchange/packages/mod-identity/src/mod_identity/pooled_authz.py
 """Pooled-plane object-level authz Check — the PRIMARY tenant boundary (plan §7.7).
 
 D7 co-locates multiple PLG tenants' own-materials in a pooled plane, which is
@@ -935,7 +939,7 @@ class PooledObjectAuthz:
 - [ ] **Step 4: Run test to verify it passes**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/services/pep && python -m pytest tests/test_pooled_authz.py -q
+cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/packages/mod-identity && python -m pytest tests/test_pooled_authz.py -q
 ```
 
 Expected: `4 passed`.
@@ -943,23 +947,23 @@ Expected: `4 passed`.
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy && git add tigerexchange/services/pep/src/pep/pooled_authz.py tigerexchange/services/pep/tests/test_pooled_authz.py && git commit -m "feat(pep): pooled-plane object-authz Check as deny-by-default primary tenant boundary (§7.7)
+cd /home/anurag/codebase/tiger_research_buddy && git add tigerexchange/packages/mod-identity/src/mod_identity/pooled_authz.py tigerexchange/packages/mod-identity/tests/test_pooled_authz.py && git commit -m "feat(pep): pooled-plane object-authz Check as deny-by-default primary tenant boundary (§7.7)
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 ```
 
 ---
 
-### Task 7: Wire entitlement + pooled-authz into the single PEP authorize() flow
+### Task 7: Inject the entitlement step + pooled-authz INTO 0c's `PolicyEnforcementPoint.authorize`
 
-**Files:** Modify `tigerexchange/services/pep/src/pep/pep_service.py`, Test `tigerexchange/services/pep/tests/test_pep_entitlement_wired.py`
+**Files:** Modify 0c's `PolicyEnforcementPoint` (`tigerexchange/packages/mod-pep/src/mod_pep/policy_enforcement_point.py`, owned by 0c — this plan only injects dependencies), Test `tigerexchange/packages/mod-identity/tests/test_pep_entitlement_wired.py`
 
-> The single PEP (0c) must run the entitlement gate FIRST, then (for pooled-plane `RETRIEVE`) the object-authz `Check`, before any broker fetch.
+> There is ONE PEP class — `PolicyEnforcementPoint` (0c), implementing the kernel `IPolicyEnforcement.authorize(request: PepRequest) -> PepResponse`. This plan does NOT create a second PEP class and does NOT add a `requested_tier` kwarg to the kernel `authorize`. It injects an `EntitlementEvaluator` (step 1) and the pooled-plane object-authz `Check` (feeding step 3, ReBAC) into the PEP's existing canonical decision order: (1) entitlement/edition gate → (2) capability gate → (3) ReBAC check → (4) ABAC tier check → (5) durable tombstone → (6) lease cache. The PEP resolves the object's tier from the classifier/broker lookup (R2) and passes that resolved tier to the injected `EntitlementEvaluator`; the tier is NEVER a caller-supplied kwarg and is NEVER hardcoded to `confidential`.
 
 - [ ] **Step 1: Write the failing test**
 
 ```python
-# tigerexchange/services/pep/tests/test_pep_entitlement_wired.py
+# tigerexchange/packages/mod-identity/tests/test_pep_entitlement_wired.py
 import pytest
 
 from contracts import (
@@ -970,11 +974,12 @@ from contracts import (
     IsolationPosture,
     PepAction,
     PepRequest,
-    TenantContext,
     Tier,
+    TenantContext,
 )
-from pep.pep_service import PepService
-from pep.pooled_authz import PooledObjectAuthz
+from mod_pep.policy_enforcement_point import PolicyEnforcementPoint
+from mod_identity.entitlement_evaluator import EntitlementEvaluator
+from mod_identity.pooled_authz import PooledObjectAuthz
 
 
 class FakeRebac:
@@ -983,6 +988,24 @@ class FakeRebac:
 
     def check(self, *, tenant_id: str, object_id: str) -> bool:
         return (tenant_id, object_id) in self._grants
+
+
+class FakeClassifier:
+    """Stand-in for the 0b classifier/broker tier lookup (R2).
+
+    The PEP resolves each object's tier here — it does NOT hardcode confidential.
+    Public/private objects MUST resolve to their real (non-confidential) tier so
+    they take the correct ABAC branch (0i retrieval / 0k funding stay off the
+    confidential path).
+    """
+
+    def __init__(self, tiers: dict[str, Tier]) -> None:
+        self._tiers = tiers
+
+    def tier_of(self, object_id: str | None) -> Tier:
+        if object_id is None:
+            return Tier.public
+        return self._tiers[object_id]
 
 
 def _ctx(edition: Edition, caps: set[Capability], max_tier: Tier) -> TenantContext:
@@ -995,88 +1018,132 @@ def _ctx(edition: Edition, caps: set[Capability], max_tier: Tier) -> TenantConte
     return TenantContext(tenant_id="tenantA", subject_id="pi@x.edu", entitlement=ent)
 
 
-def _service(grants: set[tuple[str, str]]) -> PepService:
-    return PepService(pooled_authz=PooledObjectAuthz(FakeRebac(grants)))
+def _pep(grants: set[tuple[str, str]], tiers: dict[str, Tier]) -> PolicyEnforcementPoint:
+    # 0d injects its entitlement step + pooled Check into the ONE 0c PEP; the
+    # classifier supplies the resolved object tier (R2). 0c owns any further
+    # constructor params (audit sink, OPA/SpiceDB clients) — pass via DI factory.
+    return PolicyEnforcementPoint(
+        entitlement_evaluator=EntitlementEvaluator(),
+        pooled_authz=PooledObjectAuthz(FakeRebac(grants)),
+        classifier=FakeClassifier(tiers),
+    )
 
 
-def test_plg_confidential_denied_before_object_check() -> None:
-    svc = _service(grants={("tenantA", "obj-1")})
+def test_plg_confidential_denied_at_entitlement_step() -> None:
+    # obj-1 is a confidential object; the PEP resolves its tier from the
+    # classifier and the entitlement step denies the PLG edition outright.
+    pep = _pep(grants={("tenantA", "obj-1")}, tiers={"obj-1": Tier.confidential})
     ctx = _ctx(Edition.PLG, {Capability.OWN_MATERIALS}, Tier.private)
     req = PepRequest(
         request_id="r1", tenant=ctx, action=PepAction.RETRIEVE,
         required_capability=Capability.CONFIDENTIAL_WORKSPACE, resource_id="obj-1",
     )
-    resp = svc.authorize(req, requested_tier=Tier.confidential)
+    resp = pep.authorize(req)  # kernel signature: one arg, no requested_tier
     assert resp.decision is Decision.DENY
     assert resp.payload is None
 
 
-def test_own_materials_allowed_when_object_check_passes() -> None:
-    svc = _service(grants={("tenantA", "obj-1")})
+def test_own_materials_private_allowed_when_object_check_passes() -> None:
+    pep = _pep(grants={("tenantA", "obj-1")}, tiers={"obj-1": Tier.private})
     ctx = _ctx(Edition.PLG, {Capability.OWN_MATERIALS}, Tier.private)
     req = PepRequest(
         request_id="r2", tenant=ctx, action=PepAction.RETRIEVE,
         required_capability=Capability.OWN_MATERIALS, resource_id="obj-1",
     )
-    resp = svc.authorize(req, requested_tier=Tier.private)
+    resp = pep.authorize(req)
     assert resp.decision is Decision.ALLOW
+
+
+def test_public_object_takes_non_confidential_branch() -> None:
+    # R2: a public object resolves to Tier.public, NOT confidential, so it does
+    # not get forced onto the confidential ABAC path.
+    pep = _pep(grants={("tenantA", "pub-1")}, tiers={"pub-1": Tier.public})
+    ctx = _ctx(Edition.PLG, {Capability.PUBLIC_RETRIEVAL, Capability.OWN_MATERIALS}, Tier.private)
+    req = PepRequest(
+        request_id="r3", tenant=ctx, action=PepAction.RETRIEVE,
+        required_capability=Capability.PUBLIC_RETRIEVAL, resource_id="pub-1",
+    )
+    resp = pep.authorize(req)
+    assert resp.decision is Decision.ALLOW
+    assert resp.effective_tier == Tier.public
 
 
 def test_own_materials_denied_when_cross_tenant_object() -> None:
     # Entitlement passes, but tenantA has no grant on obj-2 -> denied by Check.
-    svc = _service(grants={("tenantA", "obj-1")})
+    pep = _pep(grants={("tenantA", "obj-1")}, tiers={"obj-2": Tier.private})
     ctx = _ctx(Edition.PLG, {Capability.OWN_MATERIALS}, Tier.private)
     req = PepRequest(
-        request_id="r3", tenant=ctx, action=PepAction.RETRIEVE,
+        request_id="r4", tenant=ctx, action=PepAction.RETRIEVE,
         required_capability=Capability.OWN_MATERIALS, resource_id="obj-2",
     )
-    resp = svc.authorize(req, requested_tier=Tier.private)
+    resp = pep.authorize(req)
     assert resp.decision is Decision.DENY
 ```
 
 - [ ] **Step 2: Run test to verify it fails**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/services/pep && python -m pytest tests/test_pep_entitlement_wired.py -q
+cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/packages/mod-identity && python -m pytest tests/test_pep_entitlement_wired.py -q
 ```
 
-Expected: failure — `PepService` from 0c does not yet accept `pooled_authz` / run the entitlement gate (AttributeError or signature/assertion mismatch).
+Expected: failure — 0c's `PolicyEnforcementPoint` does not yet accept the `entitlement_evaluator` / `pooled_authz` / `classifier` injections, or does not yet run the entitlement step (TypeError or assertion mismatch).
 
 - [ ] **Step 3: Write minimal implementation**
 
-> The 0c `PepService` already owns `authorize(request)`. Add the entitlement gate + pooled-plane object-authz as the first checks. Insert the following into `pep_service.py` (constructor accepts an optional `pooled_authz`; `authorize` gains `requested_tier`). If 0c's `authorize` signature differs, keep its existing keyword and add `requested_tier` with a default of `Tier.public`.
+> 0c OWNS `PolicyEnforcementPoint` and its kernel-conformant `authorize(request: PepRequest) -> PepResponse`. 0d's contribution is the injected `EntitlementEvaluator` (the entitlement step) + the pooled-plane object-authz `Check`. Wire them into 0c's existing `authorize` decision order as steps (1) and (3). Do NOT add a `requested_tier` parameter to `authorize` — the PEP resolves the object's tier from the classifier/broker (R2) and hands it to the evaluator internally. The injected dependencies are provided by 0a's DI factory `get_pep` (`api.dependencies`).
 
 ```python
-# tigerexchange/services/pep/src/pep/pep_service.py  (additions/edits)
+# tigerexchange/packages/mod-pep/src/mod_pep/policy_enforcement_point.py  (0c-owned; 0d injects steps)
 from __future__ import annotations
 
 from contracts import Decision, PepRequest, PepResponse, Tier
 
-from pep.entitlement_evaluator import EntitlementEvaluator
-from pep.pooled_authz import AuthzDenied, PooledObjectAuthz
+from mod_identity.entitlement_evaluator import EntitlementEvaluator
+from mod_identity.pooled_authz import AuthzDenied, PooledObjectAuthz
 
 
-class PepService:
-    """The single Policy Enforcement Point (D4, §4.2).
+class PolicyEnforcementPoint:
+    """The SINGLE Policy Enforcement Point (D4, §4.2) — kernel IPolicyEnforcement.
 
-    Decision order (fail-closed, deny short-circuits):
-      1. Entitlement gate (§2.3) — edition capability + tier ceiling.
-      2. Pooled-plane object-authz Check (§7.7) — primary tenant boundary,
-         deny-by-default, run BEFORE any data access (RETRIEVE on pooled plane).
-      (3. ABAC/ReBAC/lease checks from 0c follow on ALLOW — unchanged.)
+    Canonical decision order inside authorize() (fail-closed, deny short-circuits):
+      1. entitlement/edition gate (this plan's EntitlementEvaluator) — edition
+         capability + tier ceiling, evaluated against the classifier-resolved
+         object tier.
+      2. capability gate.
+      3. ReBAC check (SpiceDB) — pooled-plane object-authz Check feeds here.
+      4. ABAC tier check (OPA).
+      5. owner-local durable tombstone check (AUTHORITATIVE deny dimension).
+      6. lease cache (narrow cache only).
+    Steps 2,4,5,6 are 0c's; 0d injects steps 1 and the pooled Check (step 3).
     """
 
-    def __init__(self, pooled_authz: PooledObjectAuthz | None = None) -> None:
-        self._entitlement = EntitlementEvaluator()
+    def __init__(
+        self,
+        *,
+        entitlement_evaluator: EntitlementEvaluator,
+        pooled_authz: PooledObjectAuthz | None = None,
+        classifier: object,  # 0b classifier/broker; .tier_of(object_id) -> Tier (R2)
+        # ... 0c's own deps (audit sink, OPA client, SpiceDB client, tombstone
+        # log, lease cache) continue here, unchanged.
+    ) -> None:
+        self._entitlement = entitlement_evaluator
         self._pooled_authz = pooled_authz
+        self._classifier = classifier
 
-    def authorize(
-        self, request: PepRequest, *, requested_tier: Tier = Tier.public
-    ) -> PepResponse:
-        gate = self._entitlement.evaluate(request, requested_tier=requested_tier)
+    def authorize(self, request: PepRequest) -> PepResponse:
+        # R2: resolve the object's REAL tier from the classifier/broker lookup —
+        # never hardcode (Tier.confidential, frozenset()); public/private objects
+        # must take their correct (non-confidential) branch.
+        resolved_tier: Tier = self._classifier.tier_of(request.resource_id)
+
+        # (1) Entitlement/edition gate.
+        gate = self._entitlement.evaluate(request, requested_tier=resolved_tier)
         if gate.decision is not Decision.ALLOW:
             return gate
 
+        # (3) ReBAC: pooled-plane object-authz Check (deny-by-default, before any
+        # data access). 0c's capability gate (2) precedes this; ABAC (4),
+        # durable tombstone (5), lease cache (6) follow on ALLOW — unchanged.
         if self._pooled_authz is not None and request.resource_id is not None:
             try:
                 self._pooled_authz.require_object_access(
@@ -1087,7 +1154,7 @@ class PepService:
                 return PepResponse(
                     request_id=request.request_id,
                     decision=Decision.DENY,
-                    effective_tier=requested_tier,
+                    effective_tier=resolved_tier,
                     payload=None,
                     reason=str(denied),
                 )
@@ -1095,7 +1162,7 @@ class PepService:
         return PepResponse(
             request_id=request.request_id,
             decision=Decision.ALLOW,
-            effective_tier=requested_tier,
+            effective_tier=resolved_tier,
             reason="entitlement + object-authz passed",
         )
 ```
@@ -1103,15 +1170,15 @@ class PepService:
 - [ ] **Step 4: Run test to verify it passes**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/services/pep && python -m pytest tests/test_pep_entitlement_wired.py tests/test_entitlement_evaluator.py tests/test_pooled_authz.py -q
+cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/packages/mod-identity && python -m pytest tests/test_pep_entitlement_wired.py tests/test_entitlement_evaluator.py tests/test_pooled_authz.py -q
 ```
 
-Expected: `10 passed` (3 wired + 4 evaluator + 4 pooled — adjust if 0c added more; all green).
+Expected: `12 passed` (4 wired + 4 evaluator + 4 pooled — adjust if 0c added more; all green).
 
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy && git add tigerexchange/services/pep && git commit -m "feat(pep): run entitlement gate then pooled object-authz Check first in authorize()
+cd /home/anurag/codebase/tiger_research_buddy && git add tigerexchange/packages/mod-pep/src/mod_pep/policy_enforcement_point.py tigerexchange/packages/mod-identity/tests/test_pep_entitlement_wired.py && git commit -m "feat(pep): inject entitlement step + pooled object-authz Check into PolicyEnforcementPoint.authorize (one PEP, kernel signature)
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 ```
@@ -1120,14 +1187,14 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 
 ### Task 8: Pooled own-materials migration — FORCE RLS, RESTRICTIVE, WITH CHECK, tenant_id-leading
 
-**Files:** Create `tigerexchange/db/migrations/0d_pooled_own_materials.sql`, `tigerexchange/db/migrations/0d_app_role.sql`, Test `tigerexchange/services/pooled_plane/tests/test_rls_migration.py`
+**Files:** Create `tigerexchange/db/migrations/0d_pooled_own_materials.sql`, `tigerexchange/db/migrations/0d_app_role.sql`, Test `tigerexchange/packages/mod-pooled-plane/tests/test_rls_migration.py`
 
 - [ ] **Step 1: Write the failing test**
 
 > Requires a local Postgres (the 0a foundation provides `TIGEREX_TEST_DSN`, a superuser DSN to a disposable test DB). The test applies the migration and asserts every §7.7 footgun is closed.
 
 ```python
-# tigerexchange/services/pooled_plane/tests/test_rls_migration.py
+# tigerexchange/packages/mod-pooled-plane/tests/test_rls_migration.py
 import os
 import pathlib
 
@@ -1204,7 +1271,7 @@ def test_app_pooled_role_is_not_superuser_and_no_bypassrls(conn) -> None:
 - [ ] **Step 2: Run test to verify it fails**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/services/pooled_plane && python -m pytest tests/test_rls_migration.py -q
+cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/packages/mod-pooled-plane && python -m pytest tests/test_rls_migration.py -q
 ```
 
 Expected: failures (or skip if no DSN) — migration files do not exist, so `_apply` raises `FileNotFoundError`. If `TIGEREX_TEST_DSN` is set, the test collects and fails.
@@ -1268,7 +1335,7 @@ CREATE POLICY p_tenant_isolation ON own_materials
 - [ ] **Step 4: Run test to verify it passes**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/services/pooled_plane && python -m pytest tests/test_rls_migration.py -q
+cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/packages/mod-pooled-plane && python -m pytest tests/test_rls_migration.py -q
 ```
 
 Expected: `4 passed` (requires `TIGEREX_TEST_DSN`; without it the suite skips — run in CI where the DSN is set).
@@ -1276,7 +1343,7 @@ Expected: `4 passed` (requires `TIGEREX_TEST_DSN`; without it the suite skips �
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy && git add tigerexchange/db/migrations/0d_app_role.sql tigerexchange/db/migrations/0d_pooled_own_materials.sql tigerexchange/services/pooled_plane/tests/test_rls_migration.py && git commit -m "feat(pooled): own_materials table with FORCE RLS, RESTRICTIVE+WITH CHECK, tenant_id-leading index (§7.7)
+cd /home/anurag/codebase/tiger_research_buddy && git add tigerexchange/db/migrations/0d_app_role.sql tigerexchange/db/migrations/0d_pooled_own_materials.sql tigerexchange/packages/mod-pooled-plane/tests/test_rls_migration.py && git commit -m "feat(pooled): own_materials table with FORCE RLS, RESTRICTIVE+WITH CHECK, tenant_id-leading index (§7.7)
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 ```
@@ -1285,20 +1352,20 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 
 ### Task 9: SET LOCAL transaction-scoped tenant session (PgBouncer-safe)
 
-**Files:** Create `tigerexchange/services/pooled_plane/src/pooled_plane/__init__.py`, `tigerexchange/services/pooled_plane/src/pooled_plane/tenant_session.py`, `tigerexchange/services/pooled_plane/pyproject.toml`, Test `tigerexchange/services/pooled_plane/tests/test_tenant_session.py`
+**Files:** Create `tigerexchange/packages/mod-pooled-plane/src/mod_pooled_plane/__init__.py`, `tigerexchange/packages/mod-pooled-plane/src/mod_pooled_plane/tenant_session.py`, `tigerexchange/packages/mod-pooled-plane/pyproject.toml`, Test `tigerexchange/packages/mod-pooled-plane/tests/test_tenant_session.py`
 
 > §7.7 + §13.1: `SET LOCAL` (transaction-scoped), never `SET`, so a borrowed PgBouncer transaction-mode connection cannot leak tenant context to the next borrower.
 
 - [ ] **Step 1: Write the failing test**
 
 ```python
-# tigerexchange/services/pooled_plane/tests/test_tenant_session.py
+# tigerexchange/packages/mod-pooled-plane/tests/test_tenant_session.py
 import os
 
 import psycopg
 import pytest
 
-from pooled_plane.tenant_session import tenant_transaction
+from mod_pooled_plane.tenant_session import tenant_transaction
 
 DSN = os.environ.get("TIGEREX_TEST_DSN")
 pytestmark = pytest.mark.skipif(not DSN, reason="TIGEREX_TEST_DSN not set")
@@ -1338,17 +1405,17 @@ def test_rejects_empty_tenant_id(conn) -> None:
 - [ ] **Step 2: Run test to verify it fails**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/services/pooled_plane && python -m pytest tests/test_tenant_session.py -q
+cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/packages/mod-pooled-plane && python -m pytest tests/test_tenant_session.py -q
 ```
 
-Expected: `ModuleNotFoundError: No module named 'pooled_plane.tenant_session'`.
+Expected: `ModuleNotFoundError: No module named 'mod_pooled_plane.tenant_session'`.
 
 - [ ] **Step 3: Write minimal implementation**
 
 ```toml
-# tigerexchange/services/pooled_plane/pyproject.toml
+# tigerexchange/packages/mod-pooled-plane/pyproject.toml
 [project]
-name = "tigerexchange-pooled-plane"
+name = "tigerexchange-mod-pooled-plane"
 version = "0.0.0"
 description = "Pooled-plane per-tenant isolation: SET LOCAL tenant session + own-materials repo behind object-authz + RLS (§7.7)."
 requires-python = ">=3.11"
@@ -1362,16 +1429,16 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/pooled_plane"]
+packages = ["src/mod_pooled_plane"]
 ```
 
 ```python
-# tigerexchange/services/pooled_plane/src/pooled_plane/__init__.py
+# tigerexchange/packages/mod-pooled-plane/src/mod_pooled_plane/__init__.py
 """Pooled-plane per-tenant isolation (PLG own-materials), §7.7."""
 ```
 
 ```python
-# tigerexchange/services/pooled_plane/src/pooled_plane/tenant_session.py
+# tigerexchange/packages/mod-pooled-plane/src/mod_pooled_plane/tenant_session.py
 """Transaction-scoped tenant pinning for the pooled plane (plan §7.7, §13.1).
 
 Pins `app.tenant_id` via `SET LOCAL` (transaction-scoped) so PgBouncer in
@@ -1410,7 +1477,7 @@ def tenant_transaction(
 - [ ] **Step 4: Run test to verify it passes**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/services/pooled_plane && pip install -e . -q && python -m pytest tests/test_tenant_session.py -q
+cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/packages/mod-pooled-plane && pip install -e . -q && python -m pytest tests/test_tenant_session.py -q
 ```
 
 Expected: `3 passed` (with `TIGEREX_TEST_DSN`; skips otherwise).
@@ -1418,7 +1485,7 @@ Expected: `3 passed` (with `TIGEREX_TEST_DSN`; skips otherwise).
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy && git add tigerexchange/services/pooled_plane && git commit -m "feat(pooled): SET LOCAL transaction-scoped tenant session, PgBouncer-safe (no cross-borrow leak, §7.7)
+cd /home/anurag/codebase/tiger_research_buddy && git add tigerexchange/packages/mod-pooled-plane && git commit -m "feat(pooled): SET LOCAL transaction-scoped tenant session, PgBouncer-safe (no cross-borrow leak, §7.7)
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 ```
@@ -1427,20 +1494,20 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 
 ### Task 10: Own-materials repo — authz Check first, then RLS-protected query
 
-**Files:** Create `tigerexchange/services/pooled_plane/src/pooled_plane/own_materials_repo.py`, Test `tigerexchange/services/pooled_plane/tests/test_own_materials_repo.py`
+**Files:** Create `tigerexchange/packages/mod-pooled-plane/src/mod_pooled_plane/own_materials_repo.py`, Test `tigerexchange/packages/mod-pooled-plane/tests/test_own_materials_repo.py`
 
 - [ ] **Step 1: Write the failing test**
 
 ```python
-# tigerexchange/services/pooled_plane/tests/test_own_materials_repo.py
+# tigerexchange/packages/mod-pooled-plane/tests/test_own_materials_repo.py
 import os
 import pathlib
 
 import psycopg
 import pytest
 
-from pep.pooled_authz import AuthzDenied, PooledObjectAuthz
-from pooled_plane.own_materials_repo import OwnMaterialsRepo
+from mod_identity.pooled_authz import AuthzDenied, PooledObjectAuthz
+from mod_pooled_plane.own_materials_repo import OwnMaterialsRepo
 
 DSN = os.environ.get("TIGEREX_TEST_DSN")
 MIG = pathlib.Path(__file__).parents[3] / "db" / "migrations"
@@ -1495,15 +1562,15 @@ def test_cross_tenant_denied_at_authz_check(conn) -> None:
 - [ ] **Step 2: Run test to verify it fails**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/services/pooled_plane && python -m pytest tests/test_own_materials_repo.py -q
+cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/packages/mod-pooled-plane && python -m pytest tests/test_own_materials_repo.py -q
 ```
 
-Expected: `ModuleNotFoundError: No module named 'pooled_plane.own_materials_repo'`.
+Expected: `ModuleNotFoundError: No module named 'mod_pooled_plane.own_materials_repo'`.
 
 - [ ] **Step 3: Write minimal implementation**
 
 ```python
-# tigerexchange/services/pooled_plane/src/pooled_plane/own_materials_repo.py
+# tigerexchange/packages/mod-pooled-plane/src/mod_pooled_plane/own_materials_repo.py
 """Pooled own-materials repository (plan §7.7).
 
 Order: (1) object-authz Check (PRIMARY boundary, deny-by-default) then
@@ -1516,9 +1583,9 @@ from __future__ import annotations
 
 import psycopg
 
-from pep.pooled_authz import PooledObjectAuthz
+from mod_identity.pooled_authz import PooledObjectAuthz
 
-from pooled_plane.tenant_session import tenant_transaction
+from mod_pooled_plane.tenant_session import tenant_transaction
 
 
 class OwnMaterialsRepo:
@@ -1546,7 +1613,7 @@ class OwnMaterialsRepo:
 - [ ] **Step 4: Run test to verify it passes**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/services/pooled_plane && python -m pytest tests/test_own_materials_repo.py -q
+cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/packages/mod-pooled-plane && python -m pytest tests/test_own_materials_repo.py -q
 ```
 
 Expected: `2 passed` (requires DSN + the `pep` package installed: `pip install -e ../pep`).
@@ -1554,7 +1621,7 @@ Expected: `2 passed` (requires DSN + the `pep` package installed: `pip install -
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy && git add tigerexchange/services/pooled_plane/src/pooled_plane/own_materials_repo.py tigerexchange/services/pooled_plane/tests/test_own_materials_repo.py && git commit -m "feat(pooled): own-materials repo runs object-authz Check before RLS-scoped query (§7.7)
+cd /home/anurag/codebase/tiger_research_buddy && git add tigerexchange/packages/mod-pooled-plane/src/mod_pooled_plane/own_materials_repo.py tigerexchange/packages/mod-pooled-plane/tests/test_own_materials_repo.py && git commit -m "feat(pooled): own-materials repo runs object-authz Check before RLS-scoped query (§7.7)
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 ```
@@ -1706,14 +1773,14 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 
 ### Task 12: The §7.7 cross-tenant-read-denied contract test (BOLA / direct / SECURITY DEFINER / borrowed PgBouncer)
 
-**Files:** Create `tigerexchange/services/pooled_plane/tests/test_cross_tenant_read_denied.py`
+**Files:** Create `tigerexchange/packages/mod-pooled-plane/tests/test_cross_tenant_read_denied.py`
 
 > This is the headline contract test from §2.3/§7.7/§15.2. It must be in the same security-contract suite as the PLG-cannot-construct-confidential test (Task 5). It exercises all four attack paths and asserts every one is denied.
 
 - [ ] **Step 1: Write the failing test**
 
 ```python
-# tigerexchange/services/pooled_plane/tests/test_cross_tenant_read_denied.py
+# tigerexchange/packages/mod-pooled-plane/tests/test_cross_tenant_read_denied.py
 """§7.7 contract: pooled-plane cross-tenant read denied across ALL paths.
 
 Tenant A is authenticated and attempts to read tenant B's own-materials object:
@@ -1731,9 +1798,9 @@ import pathlib
 import psycopg
 import pytest
 
-from pep.pooled_authz import AuthzDenied, PooledObjectAuthz
-from pooled_plane.own_materials_repo import OwnMaterialsRepo
-from pooled_plane.tenant_session import tenant_transaction
+from mod_identity.pooled_authz import AuthzDenied, PooledObjectAuthz
+from mod_pooled_plane.own_materials_repo import OwnMaterialsRepo
+from mod_pooled_plane.tenant_session import tenant_transaction
 
 DSN = os.environ.get("TIGEREX_TEST_DSN")
 MIG = pathlib.Path(__file__).parents[3] / "db" / "migrations"
@@ -1822,7 +1889,7 @@ def test_path4_borrowed_pgbouncer_connection_after_A_txn_denied(conn) -> None:
 - [ ] **Step 2: Run test to verify it fails**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/services/pooled_plane && python -m pytest tests/test_cross_tenant_read_denied.py -q
+cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/packages/mod-pooled-plane && python -m pytest tests/test_cross_tenant_read_denied.py -q
 ```
 
 Expected (with DSN): collection/import error initially if `ci` is not on the path, or assertion failures if any path leaks; without DSN it skips. The intent is RED → GREEN once Tasks 8–11 are in place and the `pep`/`ci` packages are importable.
@@ -1832,14 +1899,14 @@ Expected (with DSN): collection/import error initially if `ci` is not on the pat
 > No new production code — Tasks 6, 8, 9, 10, 11 already implement every boundary this test exercises. The only work here is making the cross-package imports resolve in the test environment. Add a `conftest.py` that puts the sibling packages on `sys.path`:
 
 ```python
-# tigerexchange/services/pooled_plane/tests/conftest.py
+# tigerexchange/packages/mod-pooled-plane/tests/conftest.py
 """Make sibling packages importable for the cross-tenant contract suite."""
 
 import pathlib
 import sys
 
 _ROOT = pathlib.Path(__file__).parents[3]
-for rel in ("services/pep/src", "tools/ci"):
+for rel in ("packages/mod-identity/src", "packages/mod-pep/src", "tools/ci"):
     p = str(_ROOT / rel)
     if p not in sys.path:
         sys.path.insert(0, p)
@@ -1848,7 +1915,7 @@ for rel in ("services/pep/src", "tools/ci"):
 - [ ] **Step 4: Run test to verify it passes**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/services/pooled_plane && python -m pytest tests/test_cross_tenant_read_denied.py -q
+cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/packages/mod-pooled-plane && python -m pytest tests/test_cross_tenant_read_denied.py -q
 ```
 
 Expected: `4 passed` (with `TIGEREX_TEST_DSN`; CI runs this as a gating security-contract test).
@@ -1856,7 +1923,7 @@ Expected: `4 passed` (with `TIGEREX_TEST_DSN`; CI runs this as a gating security
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /home/anurag/codebase/tiger_research_buddy && git add tigerexchange/services/pooled_plane/tests/test_cross_tenant_read_denied.py tigerexchange/services/pooled_plane/tests/conftest.py && git commit -m "test(pooled): §7.7 cross-tenant-read-denied contract (BOLA, direct, SECURITY DEFINER, borrowed PgBouncer)
+cd /home/anurag/codebase/tiger_research_buddy && git add tigerexchange/packages/mod-pooled-plane/tests/test_cross_tenant_read_denied.py tigerexchange/packages/mod-pooled-plane/tests/conftest.py && git commit -m "test(pooled): §7.7 cross-tenant-read-denied contract (BOLA, direct, SECURITY DEFINER, borrowed PgBouncer)
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 ```
@@ -1865,9 +1932,9 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 
 ### Task 13: FastAPI auth dependency — token→TenantContext→PEP, end to end
 
-**Files:** Modify `tigerexchange/services/api/src/api/deps.py` (or 0a's FastAPI skeleton), Create `tigerexchange/services/api/tests/test_auth_dependency.py`
+**Files:** Modify `tigerexchange/services/api/src/api/dependencies.py` (the DI factory module OWNED by 0a — this plan adds the `authenticate_request` helper alongside 0a's `get_pep`/`get_*` factories), Create `tigerexchange/services/api/tests/test_auth_dependency.py`
 
-> Ties identity to the PEP: a request's bearer token is verified, mapped to a frozen `TenantContext`, and a PLG token attempting a confidential action is denied at the PEP — the full §2.3 contract surfaced through the API.
+> Ties identity to the PEP: a request's bearer token is verified, mapped to a frozen `TenantContext`, and a PLG token attempting a confidential action is denied at the single `PolicyEnforcementPoint` (resolved via 0a's `get_pep` factory) — the full §2.3 contract surfaced through the API. The handler calls the kernel `authorize(request)` — one arg, no `requested_tier`.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -1876,9 +1943,10 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 import pytest
 
 from contracts import Capability, Decision, Edition, PepAction, PepRequest, Tier
-from api.deps import authenticate_request, AuthError
-from mod_identity.keycloak_broker import BrokerConfig
-from pep.pep_service import PepService
+from api.dependencies import authenticate_request, AuthError
+from mod_identity.entitlement_evaluator import EntitlementEvaluator
+from mod_identity.pooled_authz import PooledObjectAuthz
+from mod_pep.policy_enforcement_point import PolicyEnforcementPoint
 
 
 class FakeBroker:
@@ -1889,6 +1957,22 @@ class FakeBroker:
         if raw_token != "good-token":
             raise ValueError("bad token")
         return self._claims
+
+
+class FakeRebac:
+    def __init__(self, grants: set[tuple[str, str]]) -> None:
+        self._grants = grants
+
+    def check(self, *, tenant_id: str, object_id: str) -> bool:
+        return (tenant_id, object_id) in self._grants
+
+
+class FakeClassifier:
+    def __init__(self, tiers: dict[str, Tier]) -> None:
+        self._tiers = tiers
+
+    def tier_of(self, object_id: str | None) -> Tier:
+        return Tier.public if object_id is None else self._tiers[object_id]
 
 
 def test_authenticate_builds_plg_context() -> None:
@@ -1918,12 +2002,18 @@ def test_plg_confidential_request_denied_at_pep() -> None:
         broker=broker, raw_token="good-token", tenant_id="indiv",
         edition=Edition.PLG, consortium_ids=frozenset(), subject_active=True,
     )
-    pep = PepService()
+    # The ONE PEP (0c), wired with 0d's entitlement step + classifier (R2).
+    # In the app this is built by 0a's get_pep factory; here we build it directly.
+    pep = PolicyEnforcementPoint(
+        entitlement_evaluator=EntitlementEvaluator(),
+        pooled_authz=PooledObjectAuthz(FakeRebac({("indiv", "x")})),
+        classifier=FakeClassifier({"x": Tier.confidential}),
+    )
     req = PepRequest(
         request_id="r1", tenant=ctx, action=PepAction.RETRIEVE,
         required_capability=Capability.CONFIDENTIAL_WORKSPACE, resource_id="x",
     )
-    resp = pep.authorize(req, requested_tier=Tier.confidential)
+    resp = pep.authorize(req)  # kernel signature: one arg, no requested_tier
     assert resp.decision is Decision.DENY
 ```
 
@@ -1933,17 +2023,20 @@ def test_plg_confidential_request_denied_at_pep() -> None:
 cd /home/anurag/codebase/tiger_research_buddy/tigerexchange/services/api && python -m pytest tests/test_auth_dependency.py -q
 ```
 
-Expected: `ImportError`/`AttributeError` — `authenticate_request`/`AuthError` not defined in 0a's `deps.py`.
+Expected: `ImportError`/`AttributeError` — `authenticate_request`/`AuthError` not defined in 0a's `api.dependencies`.
 
 - [ ] **Step 3: Write minimal implementation**
 
 ```python
-# tigerexchange/services/api/src/api/deps.py  (additions)
+# tigerexchange/services/api/src/api/dependencies.py  (additions; module OWNED by 0a)
 """API auth dependency: verify token -> frozen TenantContext (plan §7.1).
 
-The verified TenantContext is then handed to the single PEP for every action;
-no API handler authorizes directly. This is the request entry to the §2.3
-"entitlements evaluate at the PEP" contract.
+Added alongside 0a's get_* DI factories (get_pep, get_model_router,
+get_lit_retrieval, get_draft_store, get_discovery, get_funding, get_audit_sink,
+get_classifier, ...). The verified TenantContext is handed to the single
+PolicyEnforcementPoint (resolved via get_pep) for every action; no API handler
+authorizes directly. This is the request entry to the §2.3 "entitlements
+evaluate at the PEP" contract.
 """
 
 from __future__ import annotations
@@ -1989,7 +2082,7 @@ def authenticate_request(
         raise AuthError(str(exc)) from exc
 ```
 
-> Ensure the `api` service `pyproject.toml` depends on `tigerexchange-mod-identity`, `tigerexchange-pep`, and `tigerexchange-contracts`. `BrokerConfig` import in the test is illustrative; the test uses a `FakeBroker`, so no live IdP is needed.
+> Ensure the `api` service `pyproject.toml` depends on `tigerexchange-mod-identity`, `tigerexchange-mod-pep` (the 0c PEP), `tigerexchange-mod-pooled-plane`, and `tigerexchange-contracts`. The test uses a `FakeBroker`/`FakeClassifier`, so no live IdP or classifier is needed.
 
 - [ ] **Step 4: Run test to verify it passes**
 
@@ -2058,23 +2151,23 @@ Expected: `ABSENT (expected)`.
       - name: Install packages
         run: |
           pip install -e tigerexchange/packages/contracts
-          pip install -e tigerexchange/services/pep
-          pip install -e tigerexchange/services/pooled_plane
-          pip install -e tigerexchange/services/mod_identity
+          pip install -e tigerexchange/packages/mod-pep
+          pip install -e tigerexchange/packages/mod-pooled-plane
+          pip install -e tigerexchange/packages/mod-identity
       - name: Forbid SECURITY DEFINER / matview over tenant tables (§7.7)
         run: PYTHONPATH=tigerexchange/tools/ci python -m ci.forbid_security_definer tigerexchange/db/migrations
       - name: Security-contract suite (§2.3 + §7.7)
         run: |
           python -m pytest \
-            tigerexchange/services/pep/tests/test_entitlement_evaluator.py \
-            tigerexchange/services/pooled_plane/tests/test_rls_migration.py \
-            tigerexchange/services/pooled_plane/tests/test_cross_tenant_read_denied.py \
+            tigerexchange/packages/mod-identity/tests/test_entitlement_evaluator.py \
+            tigerexchange/packages/mod-pooled-plane/tests/test_rls_migration.py \
+            tigerexchange/packages/mod-pooled-plane/tests/test_cross_tenant_read_denied.py \
             -q
       - name: Kernel + module import-linter fitness
         run: |
           pip install import-linter
           (cd tigerexchange/packages/contracts && lint-imports)
-          (cd tigerexchange/services/mod_identity && lint-imports)
+          (cd tigerexchange/packages/mod-identity && lint-imports)
 ```
 
 - [ ] **Step 4: Run test to verify it passes**
@@ -2098,6 +2191,8 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 ## Notes for the implementing agent
 
 - **Kernel is imported, never redefined.** `TenantContext`, `Edition`, `Entitlement`, `Capability`, `IsolationPosture`, `Tier`, `Decision`, `PepRequest`, `PepResponse`, `PepAction` all come from `contracts` verbatim (0b kernel). Do not re-declare them.
+- **ONE PEP class (R1).** There is exactly one Policy Enforcement Point: `PolicyEnforcementPoint` (owned by 0c), implementing the kernel `IPolicyEnforcement.authorize(request: PepRequest) -> PepResponse`. This plan defines NO `PepService` and adds NO `requested_tier` kwarg to the kernel `authorize`. 0d's entitlement/pooled-authz logic is composed INTO that single PEP via an injected `EntitlementEvaluator` (entitlement step) + pooled object-authz `Check` (ReBAC step). The PEP resolves each object's tier from the classifier/broker lookup (R2) — never hardcoding `(Tier.confidential, frozenset())`; public/private objects take their correct non-confidential ABAC branch.
+- **Phase-0 scope = SINGLE-TENANT own-data only.** The cross-institution sharing/exchange and the cross-institution revocation AUTHORITY are Phase-1+ (kernel interfaces stubbed, not active here). 0d's pooled plane holds each PLG tenant's OWN materials only; PLG `EXCHANGE_PARTICIPATION` / `CROSS_INSTITUTION_GRANTS` are hard-OFF and the PEP denies them structurally.
 - **PgBouncer mode (§13.1):** the pooled plane assumes PgBouncer in transaction-pooling mode. The `SET LOCAL` approach in `tenant_session.py` is exactly what makes that mode safe (no `RESET ALL` needed, context dies at COMMIT). Do not switch to plain `SET`.
 - **RLS is defense-in-depth, never sole boundary (§7.7).** The object-authz `Check` (Task 6) is the primary boundary; every read path must call it before touching SQL (Task 10 enforces the order).
 - **Deferred seams untouched:** `IExchangeFeed`, `IRevocationAuthority`, confidential cross-institution grants, HYOK — all out of Phase-0 scope here. PLG's `EXCHANGE_PARTICIPATION` / `CROSS_INSTITUTION_GRANTS` capabilities are hard-OFF and the PEP denies them structurally; no exchange code ships.

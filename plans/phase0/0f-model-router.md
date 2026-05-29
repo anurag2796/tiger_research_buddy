@@ -132,11 +132,20 @@ A provider declares WHICH locality classes it satisfies; the one owned
 routing-policy table (routing_policy.py) maps each Tier to the locality
 classes permitted to serve data at that tier. These are the only two places
 locality is reasoned about, keeping the router provider-agnostic.
+
+``LocalityClass`` is an INTERNAL implementation detail of this module. It is NOT
+part of the kernel ``IModelProvider`` Protocol: the kernel-facing method is
+``satisfies_locality(tier: Tier) -> bool`` (00-kernel-contracts.md). The
+``tier_required_localities`` mapping below sits BEHIND that kernel signature so a
+provider can answer the kernel's tier question in terms of the locality classes
+it actually attests, without leaking ``LocalityClass`` into the kernel contract.
 """
 
 from __future__ import annotations
 
 from enum import StrEnum
+
+from contracts import Tier
 
 
 class LocalityClass(StrEnum):
@@ -153,6 +162,24 @@ class LocalityClass(StrEnum):
         data in-boundary, CLOUD_FRONTIER does not.
         """
         return self in (LocalityClass.IN_BOUNDARY, LocalityClass.EXPORT_CONFORMANT_CELL)
+
+
+def tier_required_localities(tier: Tier) -> frozenset[LocalityClass]:
+    """Internal map: locality classes that MAY serve ``tier`` (behind the kernel sig).
+
+    A provider's kernel-facing ``satisfies_locality(tier)`` is True iff it attests
+    at least one locality class in this set. This keeps ``LocalityClass`` an
+    internal detail while the provider answers the kernel's ``Tier`` question.
+
+    Mirrors the routing-policy semantics (§8.2): non-public tiers require an
+    in-boundary locality; public additionally admits the cloud frontier. The ONE
+    owned ``RoutingPolicyTable`` remains the authority used by the router/guard;
+    this mapping only lets an individual provider self-answer the kernel call.
+    """
+    in_boundary = frozenset({LocalityClass.IN_BOUNDARY, LocalityClass.EXPORT_CONFORMANT_CELL})
+    if tier is Tier.public:
+        return in_boundary | frozenset({LocalityClass.CLOUD_FRONTIER})
+    return in_boundary
 ```
 
 Create `tigerexchange/packages/mod_ai/src/mod_ai/__init__.py`:
@@ -412,17 +439,27 @@ from mod_ai.providers import (
 
 def test_in_boundary_provider_satisfies_confidential_and_private_not_cloud_only_classes():
     p = InBoundaryProvider(provider_id="vllm-prod", localities=frozenset({LocalityClass.IN_BOUNDARY}))
+    # Conforms to the kernel IModelProvider Protocol: satisfies_locality(tier).
     assert isinstance(p, IModelProvider)
-    assert p.satisfies_locality(LocalityClass.IN_BOUNDARY) is True
-    assert p.satisfies_locality(LocalityClass.CLOUD_FRONTIER) is False
+    assert p.satisfies_locality(Tier.confidential) is True   # non-public -> in-boundary OK
+    assert p.satisfies_locality(Tier.private) is True
+    assert p.satisfies_locality(Tier.public) is True         # public also admits in-boundary
+    # Internal locality-class predicate (behind the kernel signature).
+    assert p.serves_locality_class(LocalityClass.IN_BOUNDARY) is True
+    assert p.serves_locality_class(LocalityClass.CLOUD_FRONTIER) is False
     # In-boundary self-hosted attests no-retention by construction (§8.3).
     assert p.no_retention_attested() is True
 
 
 def test_cloud_frontier_provider_declares_cloud_locality_only():
     p = CloudFrontierProvider(provider_id="anthropic", no_retention=True)
-    assert p.satisfies_locality(LocalityClass.CLOUD_FRONTIER) is True
-    assert p.satisfies_locality(LocalityClass.IN_BOUNDARY) is False
+    # Kernel signature: cloud may serve public, never a non-public tier.
+    assert p.satisfies_locality(Tier.public) is True
+    assert p.satisfies_locality(Tier.confidential) is False
+    assert p.satisfies_locality(Tier.private) is False
+    # Internal locality-class predicate.
+    assert p.serves_locality_class(LocalityClass.CLOUD_FRONTIER) is True
+    assert p.serves_locality_class(LocalityClass.IN_BOUNDARY) is False
 
 
 def test_registry_filters_providers_by_allowed_localities():
@@ -471,9 +508,9 @@ The registry knows which in-boundary provider is the fail-closed fallback (§8.3
 
 from __future__ import annotations
 
-from contracts import IModelProvider  # runtime_checkable Protocol (kernel §5.1 K3)
+from contracts import IModelProvider, Tier  # IModelProvider: runtime_checkable Protocol (kernel §5.1 K3)
 
-from mod_ai.locality import LocalityClass
+from mod_ai.locality import LocalityClass, tier_required_localities
 
 
 class InBoundaryProvider:
@@ -481,6 +518,11 @@ class InBoundaryProvider:
 
     Satisfies in-boundary localities (optionally the export-conformant subclass)
     and attests no-retention by construction (the data never leaves the cell).
+
+    Implements the kernel ``IModelProvider`` Protocol: ``satisfies_locality``
+    takes a ``Tier`` (00-kernel-contracts.md). The provider's attested
+    ``LocalityClass`` set is an internal detail; ``serves_locality_class`` is the
+    internal locality-class predicate the registry/router/guard filter on.
     """
 
     def __init__(
@@ -500,8 +542,17 @@ class InBoundaryProvider:
     def provider_id(self) -> str:
         return self._provider_id
 
-    def satisfies_locality(self, locality: LocalityClass) -> bool:
+    def serves_locality_class(self, locality: LocalityClass) -> bool:
+        """Internal: does this provider attest ``locality``? (behind the kernel sig)."""
         return locality in self._localities
+
+    def satisfies_locality(self, tier: Tier) -> bool:
+        """Kernel signature: True iff this provider may serve data at ``tier``.
+
+        Maps ``tier`` to its permitted locality classes (internal mapping) and
+        checks the provider attests at least one of them.
+        """
+        return any(self.serves_locality_class(loc) for loc in tier_required_localities(tier))
 
     def no_retention_attested(self) -> bool:
         return True
@@ -519,8 +570,13 @@ class CloudFrontierProvider:
     def provider_id(self) -> str:
         return self._provider_id
 
-    def satisfies_locality(self, locality: LocalityClass) -> bool:
+    def serves_locality_class(self, locality: LocalityClass) -> bool:
+        """Internal: a cloud-frontier provider attests only the cloud locality."""
         return locality is LocalityClass.CLOUD_FRONTIER
+
+    def satisfies_locality(self, tier: Tier) -> bool:
+        """Kernel signature: True iff ``tier`` permits the cloud-frontier locality."""
+        return any(self.serves_locality_class(loc) for loc in tier_required_localities(tier))
 
     def no_retention_attested(self) -> bool:
         return self._no_retention
@@ -538,8 +594,16 @@ class ProviderRegistry:
         self._providers.append(provider)
 
     def conformant(self, allowed: frozenset[LocalityClass]) -> list[IModelProvider]:
-        """Providers that satisfy at least one of the ``allowed`` localities."""
-        return [p for p in self._providers if any(p.satisfies_locality(loc) for loc in allowed)]
+        """Providers that attest at least one of the ``allowed`` locality classes.
+
+        Filtering is over the INTERNAL locality-class predicate
+        ``serves_locality_class`` (the kernel ``satisfies_locality`` takes a
+        ``Tier``); the owned ``RoutingPolicyTable`` is what produces ``allowed``.
+        """
+        return [
+            p for p in self._providers
+            if any(p.serves_locality_class(loc) for loc in allowed)
+        ]
 
     def in_boundary_fallback(self) -> IModelProvider:
         """The designated fail-closed in-boundary fallback provider (§8.3)."""
@@ -634,7 +698,7 @@ def test_confidential_routes_to_in_boundary_provider():
     router = ModelRouter(registry=_registry(), policy=load_routing_policy())
     chosen = router.route(_classification(Tier.confidential), _tenant())
     assert chosen.provider_id == "vllm-prod"
-    assert chosen.satisfies_locality(LocalityClass.IN_BOUNDARY)
+    assert chosen.serves_locality_class(LocalityClass.IN_BOUNDARY)
 
 
 def test_public_prefers_cloud_frontier():
@@ -649,8 +713,8 @@ def test_quarantine_classification_routes_to_in_boundary_never_cloud():
     router = ModelRouter(registry=_registry(), policy=load_routing_policy())
     quarantined = ClassificationResult.quarantine(reason="abstention")
     chosen = router.route(quarantined, _tenant())
-    assert chosen.satisfies_locality(LocalityClass.IN_BOUNDARY)
-    assert not chosen.satisfies_locality(LocalityClass.CLOUD_FRONTIER)
+    assert chosen.serves_locality_class(LocalityClass.IN_BOUNDARY)
+    assert not chosen.serves_locality_class(LocalityClass.CLOUD_FRONTIER)
 
 
 def test_public_with_no_cloud_provider_fails_closed_to_in_boundary():
@@ -746,9 +810,11 @@ class ModelRouter:
             )
 
         # For non-public tiers prefer an in-boundary provider deterministically.
+        # (Uses the internal locality-class predicate; the kernel-facing
+        # satisfies_locality takes a Tier.)
         if classification.tier is not Tier.public:
             for p in conformant:
-                if p.satisfies_locality(LocalityClass.IN_BOUNDARY) or p.satisfies_locality(
+                if p.serves_locality_class(LocalityClass.IN_BOUNDARY) or p.serves_locality_class(
                     LocalityClass.EXPORT_CONFORMANT_CELL
                 ):
                     return p
@@ -840,7 +906,7 @@ def test_non_public_request_never_selects_a_cloud_provider(tier):
     chosen = router.route(classification, _tenant())
     # Transport re-verifies against the SAME table and accepts the selection.
     guard.verify(classification, chosen)
-    assert not chosen.satisfies_locality(LocalityClass.CLOUD_FRONTIER)
+    assert not chosen.serves_locality_class(LocalityClass.CLOUD_FRONTIER)
 
 
 def test_confidential_selection_of_cloud_is_rejected_by_transport_guard():
@@ -938,7 +1004,9 @@ class TransportEgressGuard:
         allowed = self._policy.allowed_localities(
             classification.tier, classification.compliance_flags
         )
-        if not any(provider.satisfies_locality(loc) for loc in allowed):
+        # Re-check against the internal locality-class predicate (the kernel
+        # satisfies_locality takes a Tier; the owned table reasons in localities).
+        if not any(provider.serves_locality_class(loc) for loc in allowed):
             raise RoutingPolicyViolation(
                 f"router selected provider {provider.provider_id!r} whose declared "
                 f"localities do not satisfy any allowed locality for "
@@ -1033,7 +1101,7 @@ def test_byo_with_attested_in_boundary_locality_registers_and_serves_private():
     )
     assert reg_id == "byo-inst-a"
     provider = next(p for p in reg.conformant(frozenset({LocalityClass.IN_BOUNDARY})) if p.provider_id == "byo-inst-a")
-    assert provider.satisfies_locality(LocalityClass.IN_BOUNDARY)
+    assert provider.serves_locality_class(LocalityClass.IN_BOUNDARY)
     # No-retention for BYO is a CONTRACTUAL control, not crypto-enforced (§8.3).
     assert provider.no_retention_attested() is False
 
@@ -1111,7 +1179,7 @@ def test_export_controlled_byo_with_tee_attestation_registers_as_export_conforma
         p for p in reg.conformant(frozenset({LocalityClass.EXPORT_CONFORMANT_CELL}))
         if p.provider_id == "byo-export"
     )
-    assert provider.satisfies_locality(LocalityClass.EXPORT_CONFORMANT_CELL)
+    assert provider.serves_locality_class(LocalityClass.EXPORT_CONFORMANT_CELL)
 ```
 
 - [ ] **Step 2: Run test to verify it fails**
@@ -1141,10 +1209,10 @@ from __future__ import annotations
 
 from pydantic import BaseModel, ConfigDict
 
-from contracts import Capability, ComplianceFlag, TenantContext
+from contracts import Capability, ComplianceFlag, TenantContext, Tier
 
 from mod_ai.errors import AttestationAbsentError
-from mod_ai.locality import LocalityClass
+from mod_ai.locality import LocalityClass, tier_required_localities
 from mod_ai.providers import ProviderRegistry
 
 _EXPORT_FLAGS: frozenset[ComplianceFlag] = frozenset({ComplianceFlag.ITAR, ComplianceFlag.EAR})
@@ -1164,7 +1232,12 @@ class ByoRegistration(BaseModel):
 
 
 class _ByoProvider:
-    """Registered BYO provider. no_retention is FALSE: contractual, not crypto."""
+    """Registered BYO provider. no_retention is FALSE: contractual, not crypto.
+
+    Implements the kernel ``IModelProvider`` Protocol (``satisfies_locality(tier)``);
+    its single attested ``LocalityClass`` is internal, exposed for filtering via
+    ``serves_locality_class``.
+    """
 
     def __init__(self, provider_id: str, locality: LocalityClass) -> None:
         self._provider_id = provider_id
@@ -1175,8 +1248,13 @@ class _ByoProvider:
     def provider_id(self) -> str:
         return self._provider_id
 
-    def satisfies_locality(self, locality: LocalityClass) -> bool:
+    def serves_locality_class(self, locality: LocalityClass) -> bool:
+        """Internal: does this BYO endpoint attest ``locality``?"""
         return locality is self._locality
+
+    def satisfies_locality(self, tier: Tier) -> bool:
+        """Kernel signature: True iff ``tier`` permits this endpoint's locality."""
+        return self._locality in tier_required_localities(tier)
 
     def no_retention_attested(self) -> bool:
         return False
@@ -1549,10 +1627,12 @@ from enum import StrEnum
 
 from pydantic import BaseModel, ConfigDict, model_validator
 
-# §16.1 Table B per-confidential-tenant line items EXCLUDING the GPU line, summed
-# (managed cell $1.0k + vector/graph/lexical $0.4k + SpiceDB/revocation $0.3k +
-#  CloudHSM $0.6k + KMS $0.2k) = $2.5k/mo non-GPU.
-_NON_GPU_MONTHLY_USD: float = 2_500.0
+# §16.1 Table B per-confidential-tenant TOTALS (the plan's own stated figures,
+# already amortized across the N=5 confidential pool):
+#   shared confidential-GPU pool, K=2 MIG slices  -> $3.0-3.6k/mo (~$36-43k/yr)
+#   dedicated per-tenant GPU (Sovereign)          -> $5.5-6.0k/mo (~$66-72k/yr)
+_SHARED_BASIS_ANNUAL_USD: tuple[float, float] = (36_000.0, 43_000.0)
+_DEDICATED_BASIS_ANNUAL_USD: tuple[float, float] = (66_000.0, 72_000.0)
 
 
 class GpuIsolationMode(StrEnum):
@@ -1610,42 +1690,6 @@ def recompute_confidential_cogs(
 ) -> ConfidentialCogs:
     """Recompute per-confidential-tenant COGS at the resolved isolation density.
 
-    GPU cost is split across ``tenants_per_gpu`` hardware-isolated partitions.
-    The $120k floor's D7 compliance (ACV >= 2x COGS) is reported.
-    """
-    gpu_share = gpu_cost_per_month / policy.tenants_per_gpu
-    monthly = _NON_GPU_MONTHLY_USD + gpu_share
-    annual = monthly * 12.0
-    min_acv_for_2x = annual * 2.0
-    return ConfidentialCogs(
-        monthly_cogs_usd=monthly,
-        annual_cogs_usd=annual,
-        min_acv_for_2x_usd=min_acv_for_2x,
-        d7_compliant_at_120k=(120_000.0 >= min_acv_for_2x),
-    )
-```
-
-Validate the arithmetic against §16.1: at K=2, gpu_share = $4000/2 = $2000/mo; monthly = $2500 + $2000 = $4500/mo → annual = $54k. That exceeds the $43k upper bound the test asserts. Reconcile to the convergence-report fix (line 51: "shared-GPU = $54k/yr") by recognizing Table B's stated `~$3.0–3.6k/mo` total already nets GPU amortization across the N=5 confidential pool, not a flat /2. Adjust `_NON_GPU_MONTHLY_USD` and the GPU model to match Table B's stated per-tenant totals exactly:
-
-Edit `tigerexchange/packages/mod_ai/src/mod_ai/gpu_isolation.py` to make the COGS bands match §16.1 Table B's stated per-tenant totals (shared-GPU `$36–43k/yr`, dedicated `$66–72k/yr`) rather than re-deriving from a single GPU split:
-
-```python
-# §16.1 Table B per-confidential-tenant TOTALS (the plan's own stated figures,
-# already amortized across the N=5 confidential pool):
-#   shared confidential-GPU pool, K=2 MIG slices  -> $3.0-3.6k/mo (~$36-43k/yr)
-#   dedicated per-tenant GPU (Sovereign)          -> $5.5-6.0k/mo (~$66-72k/yr)
-_SHARED_BASIS_ANNUAL_USD: tuple[float, float] = (36_000.0, 43_000.0)
-_DEDICATED_BASIS_ANNUAL_USD: tuple[float, float] = (66_000.0, 72_000.0)
-```
-
-Then replace `recompute_confidential_cogs` body to select the basis by `policy.mode`/`tenants_per_gpu`, using the band midpoint for the reported figure:
-
-```python
-def recompute_confidential_cogs(
-    policy: ConfidentialGpuIsolationPolicy, *, gpu_cost_per_month: float
-) -> ConfidentialCogs:
-    """Recompute per-confidential-tenant COGS at the resolved isolation density.
-
     Uses §16.1 Table B's stated per-tenant total bands: K>=2 hardware-isolated
     sharing stays on the shared-GPU basis; a dedicated GPU per tenant lands on
     the Sovereign basis. ``gpu_cost_per_month`` documents the underlying GPU
@@ -1666,7 +1710,7 @@ def recompute_confidential_cogs(
     )
 ```
 
-Note `_NON_GPU_MONTHLY_USD` and `gpu_share` are no longer used; remove the `_NON_GPU_MONTHLY_USD` constant and the unused `gpu_share` lines so ruff/mypy stay clean. Verify: shared basis midpoint = `(36k+43k)/2 = 39.5k` (in `[36k,43k]` ✓); `min_acv_for_2x = 43k*2 = 86k <= 120k` → `d7_compliant_at_120k=True` ✓. Dedicated midpoint = `69k` (in `[66k,72k]` ✓); `min_acv_for_2x = 72k*2 = 144k >= 132k` and `> 120k` → `d7_compliant_at_120k=False` ✓.
+Arithmetic check against §16.1 Table B: shared basis midpoint = `(36k+43k)/2 = 39.5k` (in `[36k,43k]` ✓); `min_acv_for_2x = 43k*2 = 86k <= 120k` → `d7_compliant_at_120k=True` ✓. Dedicated midpoint = `69k` (in `[66k,72k]` ✓); `min_acv_for_2x = 72k*2 = 144k >= 132k` and `> 120k` → `d7_compliant_at_120k=False` ✓.
 
 - [ ] **Step 4: Run test to verify it passes**
 

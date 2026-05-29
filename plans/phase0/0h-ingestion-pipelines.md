@@ -10,7 +10,7 @@ I have everything needed. The bitmap sizing math: N=200 public corpus ~80-100M r
 
 **Tech Stack:** Python 3.11+, Dagster, Postgres (FORCE RLS, `SET LOCAL` tenant scope), Pydantic v2, the `contracts` kernel package, Qdrant (vector), OpenSearch (BM25), Apache AGE (graph). All consumed behind kernel interfaces; ORCID CC0 dump (not API), self-hosted OpenAlex snapshot (not metered API).
 
-**Depends on:** `0a-foundation` (monorepo scaffold, Postgres FORCE-RLS + `TenantContext` + `SET LOCAL` session, CI), `0b-classification-engine` (the single fail-closed `IClassifier` + quarantine + adjudication queue).
+**Depends on:** `0a-foundation` (monorepo scaffold, Postgres FORCE-RLS + `TenantContext` + `SET LOCAL` session, CI), `0b-classification-engine` (the single fail-closed `IClassifier` implemented in the `classification.classifier` module — the canonical classifier module name — + quarantine + adjudication queue). All references to the classifier module in this sub-plan use `classification.classifier` verbatim (never `classifier.engine`, `classification.engine`, or `classification_engine`).
 
 ---
 
@@ -119,6 +119,9 @@ packages = ["src/mod_ingestion"]
 
 # Fitness function: mod-ingestion may not import another module's internals or
 # the central-index store directly; it talks to indices through injected sinks.
+# The classifier is reached ONLY via the kernel `IClassifier` Protocol (injected
+# from 0b's `classification.classifier` module) — never by importing the
+# `classification.classifier` internals directly.
 [tool.importlinter]
 root_package = "mod_ingestion"
 
@@ -126,7 +129,7 @@ root_package = "mod_ingestion"
 name = "mod-ingestion-no-sibling-module-internals"
 type = "forbidden"
 source_modules = ["mod_ingestion"]
-forbidden_modules = ["mod_lit_intelligence", "mod_discovery", "mod_funding"]
+forbidden_modules = ["mod_lit_intelligence", "mod_discovery", "mod_funding", "classification.classifier"]
 ```
 
 ```python
@@ -1921,7 +1924,8 @@ Expected failure: `ModuleNotFoundError: No module named 'mod_ingestion.resources
 """Dagster resource bundle wiring injected sinks/classifier (plan §10.1, §5.8).
 
 Holds the public-corpus TenantContext, the single fail-closed classifier
-(IClassifier from 0b), the vector/lexical/graph sinks, the transactional outbox
+(IClassifier, implemented by 0b's `classification.classifier` module), the
+vector/lexical/graph sinks, the transactional outbox
 store, and the per-CELL revocation epoch. Engines are injected so engine choice
 stays insulated.
 """

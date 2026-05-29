@@ -209,12 +209,15 @@ from __future__ import annotations
 
 from typing import Protocol, runtime_checkable
 
-from contracts import AuditEvent, TenantContext
+from contracts import AuditEvent
 
 
 @runtime_checkable
 class AuditChainStore(Protocol):
-    def append(self, event: AuditEvent, tenant: TenantContext) -> None: ...
+    # NOTE: the STORE's write method is named `persist` (NOT `append`) so it is
+    # never confused with the kernel one-arg IAuditSink.append(event). It takes
+    # the tenant_id (string) for the RLS chain key — no TenantContext needed.
+    def persist(self, event: AuditEvent, tenant_id: str) -> None: ...
     def head(self, tenant_id: str, stream_id: str) -> AuditEvent | None: ...
     def read_chain(self, tenant_id: str, stream_id: str) -> list[AuditEvent]: ...
     def next_sequence(self, tenant_id: str, stream_id: str) -> int: ...
@@ -506,46 +509,40 @@ def _event(stream: str, seq: int, prev: str | None, tenant: str = "t1") -> Audit
     )
 
 
-def _ctx(tenant: str = "t1"):
-    from tests._fixtures import make_tenant  # provided by 0a-foundation test utils
-
-    return make_tenant(tenant_id=tenant)
-
-
 def test_next_sequence_starts_at_zero() -> None:
     store = InMemoryAuditChainStore()
     assert store.next_sequence("t1", "s1") == 0
 
 
-def test_append_increments_sequence_per_stream() -> None:
+def test_persist_increments_sequence_per_stream() -> None:
     store = InMemoryAuditChainStore()
-    store.append(_event("s1", 0, None), _ctx())
-    store.append(_event("s1", 1, "h0"), _ctx())
+    store.persist(_event("s1", 0, None), "t1")
+    store.persist(_event("s1", 1, "h0"), "t1")
     assert store.next_sequence("t1", "s1") == 2
     # A different stream is independent.
     assert store.next_sequence("t1", "s2") == 0
 
 
-def test_head_returns_last_appended() -> None:
+def test_head_returns_last_persisted() -> None:
     store = InMemoryAuditChainStore()
-    store.append(_event("s1", 0, None), _ctx())
+    store.persist(_event("s1", 0, None), "t1")
     e1 = _event("s1", 1, "h0")
-    store.append(e1, _ctx())
+    store.persist(e1, "t1")
     head = store.head("t1", "s1")
     assert head is not None and head.sequence == 1
 
 
-def test_append_rejects_nonmonotonic_sequence() -> None:
+def test_persist_rejects_nonmonotonic_sequence() -> None:
     store = InMemoryAuditChainStore()
-    store.append(_event("s1", 0, None), _ctx())
+    store.persist(_event("s1", 0, None), "t1")
     with pytest.raises(ValueError, match="sequence"):
-        store.append(_event("s1", 0, "h0"), _ctx())  # reused sequence
+        store.persist(_event("s1", 0, "h0"), "t1")  # reused sequence
 
 
 def test_streams_are_isolated_per_tenant() -> None:
     store = InMemoryAuditChainStore()
-    store.append(_event("s1", 0, None, tenant="t1"), _ctx("t1"))
-    store.append(_event("s1", 0, None, tenant="t2"), _ctx("t2"))
+    store.persist(_event("s1", 0, None, tenant="t1"), "t1")
+    store.persist(_event("s1", 0, None, tenant="t2"), "t2")
     assert store.next_sequence("t1", "s1") == 1
     assert store.next_sequence("t2", "s1") == 1
     assert len(store.read_chain("t1", "s1")) == 1
@@ -602,14 +599,20 @@ from __future__ import annotations
 import threading
 from typing import Protocol, runtime_checkable
 
-from contracts import AuditEvent, TenantContext
+from contracts import AuditEvent
 
 
 @runtime_checkable
 class AuditChainStore(Protocol):
-    """Durable per-stream append-only chain storage."""
+    """Durable per-stream append-only chain storage.
 
-    def append(self, event: AuditEvent, tenant: TenantContext) -> None:
+    The write method is named ``persist`` (NOT ``append``) so it is never
+    conflated with the kernel one-arg ``IAuditSink.append(event)``. It takes the
+    raw ``tenant_id`` for the chain key / RLS GUC — never a TenantContext (audit
+    is mandatory and not entitlement-gated, so no Entitlement is needed here).
+    """
+
+    def persist(self, event: AuditEvent, tenant_id: str) -> None:
         """Persist one event. MUST reject a non-monotonic per-stream sequence."""
         ...
 
@@ -642,11 +645,11 @@ class InMemoryAuditChainStore:
     def _key(self, tenant_id: str, stream_id: str) -> tuple[str, str]:
         return (tenant_id, stream_id)
 
-    def append(self, event: AuditEvent, tenant: TenantContext) -> None:
-        if event.tenant_id != tenant.tenant_id:
+    def persist(self, event: AuditEvent, tenant_id: str) -> None:
+        if event.tenant_id != tenant_id:
             raise ValueError(
-                "audit append tenant mismatch: event.tenant_id "
-                f"{event.tenant_id!r} != context {tenant.tenant_id!r}"
+                "audit persist tenant mismatch: event.tenant_id "
+                f"{event.tenant_id!r} != {tenant_id!r}"
             )
         key = self._key(event.tenant_id, event.stream_id)
         with self._lock:
@@ -865,6 +868,15 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 ---
 
 ### Task 5: Signed chain-head checkpoints + control-plane sink
+
+> **Phase-0 scope = SINGLE-TENANT own-data only.** The signed chain-head
+> checkpoints here anchor the center's OWN per-tenant audit chains to a local
+> control-plane sink (the Phase-0 stand-in for the TXP transparency log). The
+> cross-institution sharing/exchange and the cross-institution revocation
+> AUTHORITY are Phase-1+ (kernel interfaces `IExchangeFeed` /
+> `IRevocationAuthority` are stubbed, not active here). The `ControlPlaneCheckpointSink`
+> is in-process; cross-institution / external transparency-log anchoring is not
+> wired in Phase-0.
 
 **Files:** Create `tigerexchange/packages/mod-audit/src/mod_audit/checkpoint.py` (complete), Test `tigerexchange/packages/mod-audit/tests/test_checkpoint.py`
 
@@ -1352,7 +1364,7 @@ class HashChainAuditSink:
             linked = event.model_copy(update={"sequence": seq, "prev_hash": prev_hash})
             entry_hash = compute_entry_hash(prev_hash, linked)
             finalized = linked.model_copy(update={"entry_hash": entry_hash})
-            self._store.append(finalized, tenant)
+            self._store.persist(finalized, tenant.tenant_id)
             return finalized
 
     def head(self, stream_id: str) -> AuditEvent | None:
@@ -1398,35 +1410,11 @@ Confirm the class' instances structurally satisfy the kernel Protocol (the kerne
             linked = event.model_copy(update={"sequence": seq, "prev_hash": prev_hash})
             entry_hash = compute_entry_hash(prev_hash, linked)
             finalized = linked.model_copy(update={"entry_hash": entry_hash})
-            self._store.append(finalized, self._bound_tenant_context(event.tenant_id))
+            # The store only needs the tenant_id for the chain key / RLS GUC.
+            # NO TenantContext is fabricated on the audit write path: audit is
+            # mandatory (not entitlement-gated), so no Entitlement is required.
+            self._store.persist(finalized, event.tenant_id)
             return finalized
-
-    @staticmethod
-    def _bound_tenant_context(tenant_id: str):
-        """Minimal TenantContext the store's RLS path needs (tenant_id only).
-
-        The store only reads tenant.tenant_id for the chain key + RLS GUC; a
-        full Entitlement is not required to APPEND audit (audit is mandatory,
-        not entitlement-gated). Built here to satisfy the store contract.
-        """
-        from contracts import (
-            Capability,
-            Edition,
-            Entitlement,
-            IsolationPosture,
-            TenantContext,
-            Tier,
-        )
-
-        ent = Entitlement(
-            edition=Edition.INSTITUTIONAL,
-            capabilities=frozenset({Capability.OWN_MATERIALS}),
-            isolation=IsolationPosture.DEDICATED_CELL,
-            max_tier=Tier.private,
-        )
-        return TenantContext(
-            tenant_id=tenant_id, subject_id="audit-sink", entitlement=ent
-        )
 ```
 
 Update the Task-3/4/5 tests that called `sink.append(event, tenant)` to the kernel signature `sink.append(event)` (the `tenant` arg is dropped; tenant rides on `event.tenant_id`). Apply this edit to `tests/test_tamper_detection.py`, `tests/test_checkpoint.py`, and `tests/test_sink_kernel_contract.py`:
@@ -1434,7 +1422,7 @@ Update the Task-3/4/5 tests that called `sink.append(event, tenant)` to the kern
 ```bash
 cd tigerexchange/packages/mod-audit && grep -rl "sink.append(" tests/
 ```
-Then in each match replace `sink.append(<event>, tenant)` with `sink.append(<event>)` and `sink.append(<event>, make_tenant())` with `sink.append(<event>)`. (Store-level `InMemoryAuditChainStore.append(event, ctx)` keeps its two-arg form — only the SINK signature changed.)
+Then in each match replace `sink.append(<event>, tenant)` with `sink.append(<event>)` and `sink.append(<event>, make_tenant())` with `sink.append(<event>)`. (The store-level write `InMemoryAuditChainStore.persist(event, tenant_id)` keeps its two-arg form — `persist`, never `append` — only the SINK exposes the one-arg kernel `append`.)
 
 - [ ] **Step 4: Run test to verify it passes**
 
@@ -1700,7 +1688,6 @@ psycopg = pytest.importorskip("psycopg")
 from contracts import AuditEvent, AuditEventType, Decision  # noqa: E402
 
 from mod_audit.store import PostgresAuditChainStore  # noqa: E402
-from tests._fixtures import make_tenant  # noqa: E402
 
 DSN = os.environ.get("TIGEREXCHANGE_TEST_DSN")
 pytestmark = pytest.mark.skipif(not DSN, reason="no Postgres DSN configured")
@@ -1729,26 +1716,22 @@ def store():
     return s
 
 
-def test_append_and_read_under_rls(store) -> None:
-    t1 = make_tenant("tenant-A")
-    store.append(_event("tenant-A", "cell-A", 0), t1)
+def test_persist_and_read_under_rls(store) -> None:
+    store.persist(_event("tenant-A", "cell-A", 0), "tenant-A")
     chain = store.read_chain("tenant-A", "cell-A")
     assert len(chain) == 1 and chain[0].tenant_id == "tenant-A"
 
 
 def test_rls_blocks_cross_tenant_read(store) -> None:
-    t1 = make_tenant("tenant-A")
-    t2 = make_tenant("tenant-B")
-    store.append(_event("tenant-A", "cell-A", 0), t1)
-    store.append(_event("tenant-B", "cell-A", 0), t2)
+    store.persist(_event("tenant-A", "cell-A", 0), "tenant-A")
+    store.persist(_event("tenant-B", "cell-A", 0), "tenant-B")
     # Reading under tenant-B's RLS context returns ONLY tenant-B rows.
     assert store.read_chain("tenant-B", "cell-A")[0].tenant_id == "tenant-B"
     assert len(store.read_chain("tenant-B", "cell-A")) == 1
 
 
 def test_next_sequence_is_per_tenant_stream(store) -> None:
-    t1 = make_tenant("tenant-A")
-    store.append(_event("tenant-A", "cell-A", 0), t1)
+    store.persist(_event("tenant-A", "cell-A", 0), "tenant-A")
     assert store.next_sequence("tenant-A", "cell-A") == 1
     assert store.next_sequence("tenant-A", "cell-B") == 0
 ```
@@ -1804,7 +1787,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 
-from contracts import AuditEvent, AuditEventType, Decision, TenantContext
+from contracts import AuditEvent, AuditEventType, Decision
 
 _MIGRATION = (
     Path(__file__).resolve().parents[3] / "migrations" / "0001_audit_chain.sql"
@@ -1835,12 +1818,12 @@ class PostgresAuditChainStore:
         # SET LOCAL is transaction-scoped; safe under connection pooling (§7.7).
         cur.execute("SET LOCAL app.tenant_id = %s", (tenant_id,))
 
-    def append(self, event: AuditEvent, tenant: TenantContext) -> None:
-        if event.tenant_id != tenant.tenant_id:
-            raise ValueError("audit append tenant mismatch")
+    def persist(self, event: AuditEvent, tenant_id: str) -> None:
+        if event.tenant_id != tenant_id:
+            raise ValueError("audit persist tenant mismatch")
         with self._psycopg.connect(self._dsn) as conn:
             with conn.cursor() as cur:
-                self._pin(cur, tenant.tenant_id)
+                self._pin(cur, tenant_id)
                 cur.execute("SELECT COALESCE(MAX(sequence)+1,0) "
                             "FROM audit_chain_entry "
                             "WHERE tenant_id=%s AND stream_id=%s",

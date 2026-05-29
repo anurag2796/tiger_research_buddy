@@ -121,7 +121,7 @@ name = "retrieval-does-not-import-classifier-impls"
 type = "forbidden"
 source_modules = ["retrieval", "eval"]
 forbidden_modules = [
-    "classification.engine",
+    "classification.classifier",
     "broker.credentials",
 ]
 
@@ -756,7 +756,7 @@ class FakePEP:
                 "artifact_id": rid,
                 "owner_tenant_id": request.tenant.tenant_id,
                 "tier": (request.attributes or {}).get("tier", Tier.public.wire),
-                "discoverability_scope": DiscoverabilityScope.FEDERATION_WIDE.value,
+                "discoverability_scope": DiscoverabilityScope.FEDERATION_WIDE,
                 "fields": {"text": (request.attributes or {}).get("text", "")},
             }],
         )
@@ -985,6 +985,7 @@ from typing import Any
 from contracts import (
     Capability,
     Decision,
+    DiscoverabilityScope,
     IPolicyEnforcement,
     IReranker,
     IRetrievalStrategy,
@@ -1056,7 +1057,7 @@ class HybridRetriever(IRetrievalStrategy):
                         artifact_id=str(row["artifact_id"]),
                         owner_tenant_id=str(row["owner_tenant_id"]),
                         tier=Tier.parse(row.get("tier")),
-                        discoverability_scope=row["discoverability_scope"],
+                        discoverability_scope=DiscoverabilityScope(row["discoverability_scope"]),
                         fields=dict(row.get("fields", {})),
                     )
                 )
@@ -2198,4 +2199,5 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 - **D6 / fail-closed everywhere.** The retriever drops any non-ALLOW PEP response (Task 7); `PublishableProjection` itself rejects `confidential` tier at validation (kernel), so a confidential read is returned only via the broker's projected non-confidential envelope. The eval judge fails closed (`JudgeRoutingError`) on any non-local provider for non-public tiers (Task 10).
 - **The HIGH item is addressed by Tasks 8–10, 12, 16:** eval artifacts are confidential-tier by default (Task 8), persisted only through the KEK-encrypted store with crypto-shred + per-subject erasure (Task 9), judged in-boundary with an enforced routing rule + contract test (Task 10), persisted via the harness with no plaintext side-door (Task 12), and the contract tests are named in the CI gate so they cannot be skipped (Task 16).
 - **Dependency seams:** `0c` provides the real `IPolicyEnforcement`/broker (CI uses `FakePEP`), `0f` the real `IModelRouter` (CI uses `FakeModelRouter`), `0g` the real per-tenant KEK derivative store (CI uses `FakeKEKStore`), `0h` the indexed confidential/public corpora the engines query. Swap the fakes for the real injected components at integration time — no retrieval/eval code changes, since all are consumed through kernel Protocols.
+- **Discoverability filtering is NOT done here.** This plan's `HybridRetriever` does cell-local `PepAction.RETRIEVE` gating of a tenant's OWN corpus only. Any central-index, `discoverability_scope`-based read filtering is the SOLE responsibility of `0j`'s authoritative `CentralIndexReadPEP` (owner-committed, strongly-consistent scope-epoch) — this package MUST NOT carry a local copy of that scope-filter and does not. When a caller needs scope-filtered central-index reads, it routes through `0j`'s `CentralIndexReadPEP`, not through any retrieval-package code. `discoverability_scope` is always passed as the `DiscoverabilityScope` enum member (never a raw string) across this seam.
 - **CI discipline (§15.2):** confidential-path inference (real reranker/judge weights) runs on vLLM/cloud GPU staging, never the M4 Max; unit tests inject `score_fn`/`ragas_fn`/`generate_fn` stubs so the fast gate loads no weights.

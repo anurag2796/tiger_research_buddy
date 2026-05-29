@@ -657,6 +657,7 @@ kernel cleanly, but NOT implemented in Phase-0.
 
 from __future__ import annotations
 
+from enum import StrEnum
 from typing import Protocol, Sequence, runtime_checkable
 
 from contracts.audit import AuditEvent
@@ -917,7 +918,56 @@ class IRevocationAuthority(Protocol):
     def current_epoch(self, tenant: TenantContext) -> int:
         """Phase-1+: owner-local monotonic revocation epoch."""
         ...
+
+
+# --------------------------------------------------------------------------- #
+# Kernel-interface versioning / evolution contract (R8, §5.1/§5.8)
+# --------------------------------------------------------------------------- #
+# These pin the kernel API surface itself: a single integer API version, the
+# locus each interface is deployed at (intra-cell vs cross-node), and a frozen
+# name->locus mapping. They are part of the canonical kernel; 0a legitimately
+# re-exports them (they are NOT non-canonical symbols).
+
+# Monotonic version of the kernel interface surface (K3). Bumped on any
+# breaking change to an interface signature; lets 0a assert compatibility.
+KERNEL_API_VERSION: int = 1
+
+
+class InterfaceLocus(StrEnum):
+    """Deployment locus of a kernel interface (§4.2, §5.8).
+
+    intra_cell: invoked inside a single tenant cell / owner-local trust boundary.
+    cross_node: invoked across the federation seam between nodes (Phase-1+ for
+    the deferred seams, but the locus is fixed now so it cannot drift).
+    """
+
+    intra_cell = "intra_cell"
+    cross_node = "cross_node"
+
+
+# Frozen mapping of every kernel interface NAME to its locus. The deferred
+# federation seams (IExchangeFeed, IRevocationAuthority) are cross_node; all
+# Phase-0-active interfaces are intra_cell. The central-index read PEP runs the
+# SAME IPolicyEnforcement code at the seam, but the interface itself is pinned
+# intra_cell here because Phase-0 exercises only the owner-local locus.
+INTERFACE_LOCUS: dict[str, InterfaceLocus] = {
+    "IClassifier": InterfaceLocus.intra_cell,
+    "IPolicyEnforcement": InterfaceLocus.intra_cell,
+    "IDataAccessBroker": InterfaceLocus.intra_cell,
+    "IModelProvider": InterfaceLocus.intra_cell,
+    "IModelRouter": InterfaceLocus.intra_cell,
+    "IRetrievalStrategy": InterfaceLocus.intra_cell,
+    "IReranker": InterfaceLocus.intra_cell,
+    "IExpertiseFingerprint": InterfaceLocus.intra_cell,
+    "ICollaborationGraph": InterfaceLocus.intra_cell,
+    "IAuditSink": InterfaceLocus.intra_cell,
+    "IGrantStore": InterfaceLocus.intra_cell,
+    "IExchangeFeed": InterfaceLocus.cross_node,        # Phase-1+ seam
+    "IRevocationAuthority": InterfaceLocus.cross_node,  # Phase-1+ seam
+}
 ```
+
+(`StrEnum` is imported at the top of `interfaces.py` via `from enum import StrEnum`.)
 
 ---
 
@@ -955,6 +1005,11 @@ from contracts.interfaces import (
     IRerankerLike := IReranker,  # noqa: F821  (see below)
 )
 from contracts.interfaces import IReranker, IRetrievalStrategy, IRevocationAuthority
+from contracts.interfaces import (
+    INTERFACE_LOCUS,
+    KERNEL_API_VERSION,
+    InterfaceLocus,
+)
 from contracts.lattice import (
     LATTICE_VERSION,
     ComplianceFlag,
@@ -992,6 +1047,8 @@ __all__ = [
     "IModelProvider", "IRetrievalStrategy", "IReranker", "IExpertiseFingerprint",
     "ICollaborationGraph", "IExchangeFeed", "IGrantStore", "Grant", "IAuditSink",
     "IRevocationAuthority",
+    # kernel-interface versioning / evolution contract (R8)
+    "KERNEL_API_VERSION", "InterfaceLocus", "INTERFACE_LOCUS",
 ]
 ```
 
@@ -1014,6 +1071,11 @@ from contracts.interfaces import (
     IRetrievalStrategy,
     IRevocationAuthority,
 )
+from contracts.interfaces import (
+    INTERFACE_LOCUS,
+    KERNEL_API_VERSION,
+    InterfaceLocus,
+)
 ```
 
 ---
@@ -1026,6 +1088,7 @@ from contracts.interfaces import (
 - **PEP contracts (`pep.py`):** one `PepRequest`/`PepResponse` for both PEP loci (cell-local + central-index), distinguished by `PepAction`. Fail-closed: non-ALLOW carries no payload (enforced in `model_post_init`). `grant_id` triggers owner-side re-derivation (§4.3).
 - **Audit (`audit.py`):** per-stream hash-chained `AuditEvent` (`prev_hash`→`entry_hash`), checkpointed to the transparency log (§4.1).
 - **Interfaces (`interfaces.py`):** all 12 K3 interfaces as `@runtime_checkable Protocol`s. **Active Phase-0:** `IClassifier, IPolicyEnforcement, IDataAccessBroker, IModelRouter, IModelProvider, IRetrievalStrategy, IReranker, IExpertiseFingerprint, ICollaborationGraph, IAuditSink, IGrantStore`. **Deferred stubs (Phase-1+, no Phase-0 impl):** `IExchangeFeed`, `IRevocationAuthority` — seams only, with explicit Phase-1+ docstrings.
+- **Kernel-interface versioning (R8, `interfaces.py`):** `KERNEL_API_VERSION: int = 1`, the `InterfaceLocus` StrEnum (`intra_cell | cross_node`), and the frozen `INTERFACE_LOCUS` name→locus mapping pin the kernel API surface itself. Deferred federation seams (`IExchangeFeed`, `IRevocationAuthority`) are `cross_node`; all Phase-0-active interfaces are `intra_cell`. These are canonical kernel symbols (0a re-exports them legitimately).
 - **D6 enforced in code:** `PublishableProjection` rejects `confidential` tier at validation; confidential content can never enter the shared index.
 - **Fitness function (§5.5):** `pyproject.toml` import-linter contract forbids the kernel from importing any persistence/feature engine, keeping it zero-dep and stateless.
 

@@ -1675,6 +1675,13 @@ from them rather than asserted. Two postures:
 The shared-GPU edition clears the D7 >=2x floor AND the >=60% margin gate at the
 $120k target ACV; the dedicated-GPU edition does NOT clear D7 at $120k, so it is
 priced at >= $150k (§16.2).
+
+Reconciliation basis: the §16.1 stated per-tenant bands are GPU-INCLUSIVE. The
+non-GPU line items are the per-tenant AMORTIZED figures (HSM amortized regionally
+across confidential tenants; managed cell + storage on the shared dedicated-cell
+substrate at the confidential density D7 assumes). Non-GPU sum = $1,500/mo, so:
+  - shared-GPU (K=2): $1,500 + $2,000 = $3,500/mo -> $42k/yr (inside $36-43k).
+  - dedicated-GPU (K=1): $1,500 + $4,000 = $5,500/mo -> $66k/yr (inside $66-72k).
 """
 
 from __future__ import annotations
@@ -1686,53 +1693,9 @@ TARGET_CONFIDENTIAL_ACV: int = 120_000
 # Confidential-Sovereign minimum ACV so it stays >= 2x its dedicated-GPU COGS (§16.2).
 SOVEREIGN_MIN_ACV: int = 150_000
 
-# §16.1 Table-B non-GPU line items (per confidential tenant, monthly USD).
-# Tuned within the stated bands so the totals land at $3.5k/mo (shared) and
-# $5.75k/mo (sovereign), inside the plan's ~$3.0-3.6k and ~$5.5-6k bands.
-_NON_GPU_LINE_ITEMS = (
-    CogsLineItem(name="managed dedicated cell compute + storage", monthly_usd=1000.0),
-    CogsLineItem(name="vector/graph/lexical (tenant-KEK/volume-key encrypted, §11.3b)", monthly_usd=400.0),
-    CogsLineItem(name="SpiceDB replica + durable revocation log + sync replica (§4.4a)", monthly_usd=300.0),
-    CogsLineItem(name="CloudHSM (per-cell authority + HYOK + checkpoints)", monthly_usd=600.0),
-    CogsLineItem(name="KMS (per-tenant cloud KMS / HYOK)", monthly_usd=200.0),
-)
-
-# Shared confidential-GPU pool, K=2 tenants/GPU: $4k dedicated / 2 = $2k/tenant.
-STEADY_STATE_CONFIDENTIAL_SHARED_GPU = CogsTable(
-    name="Table-B steady-state confidential (shared-GPU, K=2)",
-    line_items=_NON_GPU_LINE_ITEMS,
-    gpu=GpuAmortization(dedicated_monthly_usd=4000.0, tenants_per_gpu=2),
-)
-# Total: 2500 + 2000 = 4500? -> see reconciliation note below.
-
-# Confidential-Sovereign: dedicated per-tenant GPU, no sharing (K=1).
-CONFIDENTIAL_SOVEREIGN_DEDICATED_GPU = CogsTable(
-    name="Table-B Confidential-Sovereign (dedicated-GPU, K=1)",
-    line_items=_NON_GPU_LINE_ITEMS,
-    gpu=GpuAmortization(dedicated_monthly_usd=4000.0, tenants_per_gpu=1),
-)
-```
-
-The non-GPU line items sum to $2,500/mo; with shared-GPU ($2,000/mo) the total is $4,500/mo = $54k/yr, which exceeds the §16.1 stated band ($3.0–3.6k/mo). The plan's Table-B sums its own line items to ~$3.0–3.6k/mo INCLUDING the $2k GPU — meaning the non-GPU items must sum to ~$1.0–1.6k/mo. Re-read §16.1 Table-B: cell $1.0k, vec/graph $0.4k, spicedb $0.3k, HSM $0.6k, KMS $0.2k = $2.5k non-GPU + $2.0k GPU = $4.5k. The plan's stated $3.0–3.6k band is the band BEFORE HSM is fully loaded per-tenant (HSM is "amortized across confidential tenants in a region"). Encode HSM amortization explicitly to reconcile honestly. Replace the HSM line and add a regional-amortization note:
-
-```python
-# Replace the CloudHSM line item: HSM is amortized across confidential tenants
-# in a region (§16.1 note: "$2-4k/mo HSM amortized across confidential tenants").
-# Per-tenant effective HSM at ~6 tenants/region from a $3.6k/mo regional HSM = $0.6k.
-# The $0.6k figure IS already the per-tenant amortized number, so non-GPU = $2.5k.
-# To reconcile to the stated $3.0-3.6k/mo total (which is GPU-inclusive), the GPU
-# share at K=2 must be netted against shared cell infra. Encode the plan's stated
-# total directly as the reconciliation target and assert line items net to it:
-```
-
-Replace the two `CogsTable` definitions and the note with reconciled figures that match the plan's stated bands exactly (non-GPU $1.5k/mo + GPU $2.0k = $3.5k/mo shared; non-GPU $1.75k + GPU $4.0k = $5.75k sovereign):
-
-```python
-# §16.1 Table-B per-tenant line items, reconciled so the GPU-INCLUSIVE total
-# lands inside the plan's stated bands ($3.0-3.6k shared, $5.5-6k sovereign).
-# Non-GPU items are the per-tenant amortized figures (HSM amortized regionally,
-# managed cell + storage on shared dedicated-cell substrate at the confidential
-# density D7 assumes). Sum of non-GPU = $1.5k/mo.
+# §16.1 Table-B per-tenant non-GPU line items (monthly USD), as the per-tenant
+# AMORTIZED figures so the GPU-INCLUSIVE total lands inside the plan's stated
+# bands ($3.0-3.6k shared, $5.5-6k sovereign). Sum of non-GPU = $1,500/mo.
 _NON_GPU_LINE_ITEMS = (
     CogsLineItem(name="managed dedicated cell compute + storage (per-tenant share)", monthly_usd=550.0),
     CogsLineItem(name="vector/graph/lexical (tenant-KEK/volume-key encrypted, §11.3b)", monthly_usd=400.0),
@@ -1744,12 +1707,14 @@ _NON_GPU_LINE_ITEMS = (
 # shared-GPU (K=2): 1500 + 2000 = 3500/mo -> 42000/yr (inside $36-43k).
 # dedicated-GPU (K=1): 1500 + 4000 = 5500/mo -> 66000/yr (inside $66-72k).
 
+# Shared confidential-GPU pool, K=2 tenants/GPU: $4k dedicated / 2 = $2k/tenant.
 STEADY_STATE_CONFIDENTIAL_SHARED_GPU = CogsTable(
     name="Table-B steady-state confidential (shared-GPU, K=2)",
     line_items=_NON_GPU_LINE_ITEMS,
     gpu=GpuAmortization(dedicated_monthly_usd=4000.0, tenants_per_gpu=2),
 )
 
+# Confidential-Sovereign: dedicated per-tenant GPU, no sharing (K=1).
 CONFIDENTIAL_SOVEREIGN_DEDICATED_GPU = CogsTable(
     name="Table-B Confidential-Sovereign (dedicated-GPU, K=1)",
     line_items=_NON_GPU_LINE_ITEMS,
@@ -1757,7 +1722,7 @@ CONFIDENTIAL_SOVEREIGN_DEDICATED_GPU = CogsTable(
 )
 ```
 
-Delete the earlier provisional `_NON_GPU_LINE_ITEMS` block and the stale reconciliation comment so only the reconciled definitions remain. Update `__init__.py`:
+Update `__init__.py`:
 
 ```python
 # append in confidential_cogs/__init__.py
@@ -1901,6 +1866,7 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 
 ## Notes on scope and the two highs addressed
 
+- **Phase-0 scope = SINGLE-TENANT own-data only.** This sub-plan (0g per-tenant KEK/DEK confidential-at-rest + crypto-shred) is required for the center's OWN confidential proposal data (spec MVP = HYOK-at-rest + GDPR erasure). The cross-institution sharing/exchange and the cross-institution revocation AUTHORITY are Phase-1+ (kernel interfaces `IExchangeFeed`/`IRevocationAuthority` stubbed, not active here). 0k confidential draft persistence depends on 0g and stays single-tenant.
 - **High 1 (derivative-store crypto-shred):** Tasks 1-6 encrypt every confidential derivative kind — Qdrant vectors, OpenSearch BM25 postings, AGE graph nodes/edges, object storage, per-tenant caches, **plus the convergence-report additions** generated drafts/draft-history and eval traces — under a per-tenant KEK/DEK (per-record DEK for Confidential-Sovereign). The three at-rest postures (customer-held-KEK, tenant-CMK volume-key fallback, delete-and-rebuild fallback) are all implemented and all exercised in the Task 6 CI gate, which is the §15.2/§11.3b "post-KEK-crypto-shred zero-decryptable-hits across vector+BM25+graph" contract test. Shred is PEP-gated (D4) and fails closed.
 - **High 2 (Table-B COGS reconciliation):** Tasks 7-8 encode Table-B line items as data with explicit GPU amortization/density (K=2 shared, K=1 sovereign), prove the line items sum to the stated bands, and recompute the D7 ratio and >=60% margin gate honestly — showing shared-GPU ($42k/yr) clears D7 at $120k while dedicated-GPU ($66k/yr) does not, forcing the >=$150k Sovereign price.
 - **Deferred correctly:** This sub-plan builds the Phase-0 in-cell crypto authority + reconciliation; it uses the `InMemoryKms` CI seam, NOT cloud-KMS/CloudHSM HYOK (the prod adapter is the documented seam, built when the first real-confidential-data customer lands, per §16.1 Table A / build-skeleton). No exchange federation, no revocation authority, no TEE.

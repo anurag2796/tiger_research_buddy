@@ -118,14 +118,14 @@ __all__ = [
 
 Create empty `tigerexchange/services/classification/tests/__init__.py` (no content).
 
-- [ ] **Step 4: Run test to verify it passes**
+- [ ] **Step 4: Run test to verify it passes (AFTER Tasks 2–6 land)**
+
+The import smoke test exercises the package's public surface, which re-exports `config`, `classifier`, `queue`, and `ingest_gate`. Those modules are created in Tasks 2–6, so this step runs ONCE, after Task 6 has landed all four modules. Do not create placeholder modules; run this step at the point where the real modules exist.
 
 ```bash
 cd /home/anurag/codebase/tigerexchange/services/classification && pip install -e . && python -m pytest tests/test_imports.py -q
 ```
-Expected: `1 passed`. (The package imports succeed because the modules referenced are created in later tasks — if running before Task 2–6, this test is deferred; for strict TDD ordering, run it again at the end of Task 6. To keep Step 4 green now, the `__init__.py` imports below resolve only after Tasks 2–6. Mark this step complete once Task 6 lands; the package metadata + scaffold is the deliverable here.)
-
-NOTE for the worker: to keep ordering clean, create stub modules so the import smoke test passes immediately. Create `tigerexchange/services/classification/src/classification/config.py`, `classifier.py`, `queue.py`, `ingest_gate.py` as one-line placeholders ONLY if you run Step 4 before Task 6. The placeholder content is replaced verbatim in Tasks 2–6. Preferred path: implement Tasks 2–6, then run Step 4. Do not leave placeholders after Task 6.
+Expected: `1 passed`.
 
 - [ ] **Step 5: Commit**
 
