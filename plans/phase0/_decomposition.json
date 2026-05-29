@@ -1,0 +1,254 @@
+{
+  "project_root": "tigerexchange",
+  "subplans": [
+    {
+      "id": "0a-foundation",
+      "name": "Foundation: monorepo, contracts/kernel, FORCE-RLS tenant isolation, FastAPI skeleton, CI",
+      "goal": "Stand up the walking skeleton every later plan extends: a Python 3.12 monorepo with the shared/contracts kernel package (TierLattice, PublishableProjection type, the ~15 pinned interface signatures), Postgres with FORCE ROW LEVEL SECURITY tenant isolation, TenantContext via SET LOCAL, config, a runnable FastAPI app, and CI (pytest/ruff/mypy). Also carries the Week-1 GTM/cost validation gates (Gate A price indication, Gate B D3 three-conditions, Q17 CISO sandbox-without-review, line-(a) ACV/win-rate quantification, PLG-funnel-sequencing reconciliation) as non-code deliverables so the build is not committed against unvalidated revenue.",
+      "deliverable": "A single deployable FastAPI service that boots, exposes a health endpoint, sets per-request TenantContext via SET LOCAL on a transaction-scoped connection, and demonstrates FORCE RLS isolation with a passing cross-tenant-read-denied test (RESTRICTIVE policies, WITH CHECK, tenant_id-leading index, no SECURITY DEFINER/matview bypass). shared/contracts is importable, versioned (per-interface or whole-package backward+forward compat rule), and import-linter + a kernel fan-in/size fitness check run green in CI. A written Gate A/B/Q17 sign-off doc plus a quantified line-(a) ACV/burn-coverage stress test and a PLG-positioning resolution are committed.",
+      "depends_on": [],
+      "spec_sections": [
+        "3.2",
+        "3.3",
+        "3.4",
+        "5.1",
+        "5.2",
+        "5.5",
+        "5.6",
+        "5.6b",
+        "7.7",
+        "12",
+        "13.1",
+        "13.5",
+        "16.2",
+        "16.3",
+        "18"
+      ],
+      "highs_addressed": [
+        "Kernel-interface versioning/evolution contract (extend the projection/event schema-discipline to the ~15 kernel interfaces; intra-cell vs cross-node; CI compat check on the kernel package)",
+        "Line-(a) public-assistant ACV/win-rate quantified and runway stress-tested at $20-60k (not implicitly $120k)",
+        "PLG champion-funnel sequencing reconciled (PLG is not the Phase-0/1/2 funnel, or model the funnel mechanism)"
+      ]
+    },
+    {
+      "id": "0b-classification-engine",
+      "name": "Fail-closed classification engine + quarantine/adjudication queue",
+      "goal": "Build the single fail-closed classifier with explicit abstention/ambiguity semantics: any record below the confidence threshold is quarantined to unclassified=confidential, excluded from ALL retrieval, and routed to a human-adjudication queue. A confidently-labeled record uses its label. This is the hard classify-gates-index edge that every ingestion and retrieval path depends on.",
+      "deliverable": "A classifier module exposing the kernel classification contract that labels records into the frozen 3-tier lattice + compliance codes, emits a quarantine state for low-confidence/adversarial inputs, and persists a human-adjudication queue with a review/release workflow. Passing Phase-0 contract test: inject low-confidence and adversarial records (confidential content with public-looking metadata) and assert zero leak into any retrievable surface. MAX-rule and sticky-flag-UNION property tests pass.",
+      "depends_on": [
+        "0a-foundation"
+      ],
+      "spec_sections": [
+        "5.6",
+        "6.1",
+        "11.1",
+        "11.8",
+        "15.2"
+      ],
+      "highs_addressed": []
+    },
+    {
+      "id": "0c-pep-broker-chokepoint",
+      "name": "Single PEP + data-access broker chokepoint (ABAC/OPA + ReBAC/SpiceDB), revocation decision-order",
+      "goal": "Build the one Policy Enforcement Point + data-access broker that is the sole chokepoint for retrieval/egress/derivation (D4). ABAC via OPA (tier sensitivity x subject attributes x edition) + ReBAC via SpiceDB (relationships/entitlements). Resolve the broker-topology ambiguity: the broker holds raw-store credentials ONLY for the shared confidential-artifact/classification tables, never feature-module-owned schemas. Pin the revocation hot-path decision order so lease/log/SpiceDB-Check compose unambiguously (durable tombstone high-water-mark is authoritative for deny; lease and SpiceDB cache are narrow-only). ABAC narrows-only, deny-on-missing-attr, no cache-fallback on confidential.",
+      "deliverable": "A PEP that, given (subject, object, action), runs ReBAC Check (SpiceDB) then ABAC (OPA) then the revocation/lease read in one stated order and returns allow/deny with already-projected, already-tier-checked result objects. Feature modules cannot import the raw store, the classifier, or construct a PublishableProjection (import-linter enforced). Passing contract tests: broker DB-role can read ONLY confidential-artifact/classification tables not any feature schema; ABAC-narrows-only; missing-ABAC-attr->deny; PIP-unavailable-on-confidential->deny. A documented single decision-order with the durable log as the authoritative deny store.",
+      "depends_on": [
+        "0a-foundation",
+        "0b-classification-engine"
+      ],
+      "spec_sections": [
+        "4.2",
+        "4.4",
+        "4.5",
+        "5.8",
+        "7.2",
+        "7.3",
+        "7.4",
+        "7.6",
+        "11.8",
+        "15.2"
+      ],
+      "highs_addressed": [
+        "Lease-vs-durable-log-vs-SpiceDB composition: specify one decision order with the durable tombstone log authoritative for the deny dimension and lease/SpiceDB caches narrow-only; reconcile zero-allow-window security-reason path with the 15ms lease read",
+        "Broker topology: broker does NOT hold credentials to module-owned schemas; chokepoint is enforcement over the shared confidential-artifact/classification tables only; add the broker-role contract test"
+      ]
+    },
+    {
+      "id": "0d-identity-entitlement",
+      "name": "Identity (Keycloak + CILogon OIDC) + Entitlement/Edition evaluated at the PEP + pooled-plane object-authz",
+      "goal": "Wire federated identity (Keycloak per-cell + control-plane broker, Direct OIDC/CILogon to the buyer's IdP for Phase-0) and a first-class Entitlement/Edition service evaluated centrally at the PEP. Implement the pooled-plane (PLG-edition) per-tenant isolation: object-authz Check primary boundary (deny-by-default) + FORCE-RLS defense-in-depth, with confidential/exchange capabilities hard-OFF for PLG.",
+      "deliverable": "Authenticated requests carry eduPersonScopedAffiliation + stable eduPersonUniqueId; the PEP resolves the tenant->capability set and physically denies any capability the edition lacks. Passing contract tests: a PLG-edition tenant cannot construct a confidential-tier or exchange-participation request; pooled-plane cross-tenant-read-denied (by-ID/BOLA, via SECURITY DEFINER path, and via a borrowed PgBouncer connection after the prior tenant's transaction) all denied. PgBouncer runs in a SET LOCAL-compatible mode.",
+      "depends_on": [
+        "0a-foundation",
+        "0c-pep-broker-chokepoint"
+      ],
+      "spec_sections": [
+        "2.3",
+        "7.1",
+        "7.2",
+        "7.5",
+        "7.7",
+        "11.8",
+        "13.1"
+      ],
+      "highs_addressed": [
+        "Pooled-plane per-tenant isolation boundary: object-authz Check primary + FORCE-RLS/SET-LOCAL/WITH-CHECK/RESTRICTIVE/tenant_id-leading defense-in-depth; forbid SECURITY DEFINER/matview bypass; cross-tenant-read-denied test"
+      ]
+    },
+    {
+      "id": "0e-audit-spine",
+      "name": "Per-stream hash-chain audit sink",
+      "goal": "Build the audit spine as a per-(tenant/stream) parallel hash-chained, tamper-evident sink with periodic signed chain-head checkpoints (the kernel IAuditSink). This is the kernel later phases extend with external transparency-log anchoring and fair-exchange receipts; Phase-0 ships the hash-chain + per-stream parallel chains (beyond the plan's own append-only Phase-0 floor, per task scope).",
+      "deliverable": "An IAuditSink implementation writing per-stream hash-chained records with a verifiable chain head, an append-rate ceiling stated and shown to exceed peak per-cell operation rate, and periodic signed chain-head checkpoints emitted to a control-plane sink. PEP decisions and data-access events are recorded. A chain-tamper-detection test passes.",
+      "depends_on": [
+        "0a-foundation",
+        "0c-pep-broker-chokepoint"
+      ],
+      "spec_sections": [
+        "4.1",
+        "11.4",
+        "11.8",
+        "14.3",
+        "15.1"
+      ],
+      "highs_addressed": []
+    },
+    {
+      "id": "0f-model-router",
+      "name": "Provider-agnostic classification-routed Model Router (D-AI) + guardrails + GPU-density resolution",
+      "goal": "Build the provider-agnostic Model Router selecting over an IModelProvider registry whose providers declare the locality classes they satisfy. One owned tier->locality routing-policy table consulted by BOTH router and transport/egress (disagreement = hard-fail). Confidential/private route to in-boundary vLLM(prod)/Ollama(dev); public routes to cloud frontier. BYO provider/keys per tenant with attested locality and fail-closed fallback to in-boundary when attestation is absent. Resolve the K=2 confidential-GPU density-vs-isolation question (MIG/dedicated process, no shared KV cache) and the consequent steady-state confidential COGS so the D7 ratio is defensible.",
+      "deliverable": "A router that, given a data classification, selects a conformant provider or hard-fails; a contract test that a confidential request can never select a cloud provider and that a router/transport policy disagreement hard-fails; BYO registration with attested locality and fail-closed-to-in-boundary. A documented GPU-isolation decision (per-confidential-tenant MIG/process, no cross-tenant KV cache) with the recomputed confidential-tier COGS and the resulting ACV-floor implication.",
+      "depends_on": [
+        "0a-foundation",
+        "0c-pep-broker-chokepoint"
+      ],
+      "spec_sections": [
+        "5.8",
+        "8.1",
+        "8.2",
+        "8.3",
+        "8.4",
+        "8.5",
+        "11.8",
+        "16.1"
+      ],
+      "highs_addressed": [
+        "K=2 confidential-GPU density vs in-process KV-cache isolation: mandate per-confidential-tenant GPU isolation (MIG/dedicated process) and recompute COGS, raising the confidential ACV floor if density falls"
+      ]
+    },
+    {
+      "id": "0g-confidential-kek-stores",
+      "name": "Confidential-tier KEK/DEK derivative-store encryption + crypto-shred + Table-B COGS reconciliation",
+      "goal": "Make crypto-shred actually shred the searchable copies: encrypt ALL confidential-tier derivative stores (Qdrant vectors, OpenSearch postings, AGE graph nodes/edges, object storage, per-tenant caches) under the tenant KEK/DEK, with the tenant-CMK volume-encryption fallback and the delete-and-rebuild fallback where an engine has no customer-held-KEK at-rest support. Per-tenant DEK default; per-record DEK for the highest-isolation edition. Reconcile the Table-B steady-state confidential COGS from its own line items so D7 ratios and the gross-margin gate are computed off internally-consistent numbers.",
+      "deliverable": "Per-tenant KMS keys + tenant-CMK volume encryption provisioned for a confidential cell's derivative stores; a crypto-shred operation that renders the wrapped DEK undecryptable. Passing CI gate: after KEK crypto-shred, a search across vector+BM25+graph returns no decryptable hits. A reconciled Table-B COGS (line items summed to the stated total, GPU amortization/density assumption explicit) feeding the confidential ACV floor.",
+      "depends_on": [
+        "0a-foundation",
+        "0c-pep-broker-chokepoint",
+        "0f-model-router"
+      ],
+      "spec_sections": [
+        "11.3",
+        "11.3b",
+        "11.7",
+        "11.8",
+        "13.1",
+        "16.1"
+      ],
+      "highs_addressed": [
+        "ALL confidential derivative stores (Qdrant/OpenSearch/AGE/object/cache) encrypted under the tenant KEK/DEK with volume-key and delete-and-rebuild fallbacks; post-shred zero-decryptable-hits contract test",
+        "Table-B steady-state confidential COGS reconciled to its own line items (GPU amortization/density explicit); D7 ratio and >=60% margin gate recomputed honestly"
+      ]
+    },
+    {
+      "id": "0h-ingestion-pipelines",
+      "name": "Dagster ingestion pipelines (OpenAlex/Crossref/ROR/ORCID/SPECTER2 + grants) with classify-gate-index outbox + entity resolution",
+      "goal": "Build the Dagster batch DAGs: self-hosted OpenAlex CC0 snapshot, Crossref, ROR, ORCID CC0 dump, SPECTER2 vectors, plus Grants.gov/RePORTER/NSF awards. Entity resolution / author disambiguation (deterministic ORCID/DOI/ROR anchors then probabilistic blocking) as an evicted service. Enforce the classify-gates-index hard edge via a transactional-outbox-polling pattern (Dagster-only; defer Temporal/Debezium/Kafka). Disambiguate the epoch model: a per-CELL fenced revocation_epoch (versions the tombstone set / detects backward recovery) distinct from a per-RECORD projection_version (used by the CDC/outbox applier's lower-version-reject rule).",
+      "deliverable": "Runnable Dagster DAGs that snapshot the public corpora and grant feeds, entity-resolve, distill, classify (gating index), embed, index, and graph-build, with quarantined/unclassified records never reaching any index. A transactional outbox table + Dagster-sensor poller that emits index/grant events with both projection_version (per-record, monotonic, lower-version-reject) and the cell revocation_epoch carried distinctly; documented bitmap indexing scheme and replicated-bytes sizing.",
+      "depends_on": [
+        "0a-foundation",
+        "0b-classification-engine"
+      ],
+      "spec_sections": [
+        "6.2",
+        "6.3",
+        "10.1",
+        "10.2",
+        "10.3",
+        "10.4",
+        "12"
+      ],
+      "highs_addressed": [
+        "Disambiguate overloaded 'epoch': per-CELL fenced revocation_epoch vs per-RECORD projection_version; state the tombstone-bitmap indexing scheme, its size at N=200, and the per-cycle replicated bytes; switch to delta/log-tail replication if the bitmap is large"
+      ]
+    },
+    {
+      "id": "0i-retrieval-eval",
+      "name": "Hybrid retrieval (Qdrant + OpenSearch + RRF + reranker) + PEP-gated RAGAS eval harness",
+      "goal": "Build the Phase-0 hybrid retrieval core behind IRetrievalStrategy: Qdrant vector + OpenSearch BM25 + RRF (k~60) + local reranker (BGE/Qwen3) top-50->top-8. Build the RAGAS-in-CI eval harness (faithfulness, context-precision/recall, nDCG@k/Recall@k) as a release gate, run per-tenant and per-model-route. The eval path MUST be a first-class PEP-gated confidential flow: per-tenant gold-sets, stored eval traces, and judge I/O are confidential-tier artifacts living in the cell, KEK-encrypted per the derivative-store rule, with the judge bound to the in-boundary routing policy.",
+      "deliverable": "A retrieval planner returning fused, reranked, PEP-projected results for mod-lit-intelligence proposal grounding; a RAGAS-in-CI gate that fails the build on regression. Passing contract tests: a confidential eval cannot route to a cloud judge; confidential eval traces are KEK-encrypted and shred on crypto-shred; confidential gold-sets/traces are covered by per-subject erasure. On the confidential tier the vector/lexical derivative stores are KEK-decryptable only.",
+      "depends_on": [
+        "0c-pep-broker-chokepoint",
+        "0f-model-router",
+        "0g-confidential-kek-stores",
+        "0h-ingestion-pipelines"
+      ],
+      "spec_sections": [
+        "9.1",
+        "9.3",
+        "9.4",
+        "11.3b",
+        "15.2"
+      ],
+      "highs_addressed": [
+        "RAGAS eval gold-set + judge path routed through the single PEP: gold-sets/traces/judge-I-O tagged confidential-tier, KEK-encrypted, in-boundary-judge-only (enforced routing rule + contract test), covered by per-subject erasure"
+      ]
+    },
+    {
+      "id": "0j-central-index-read-pep",
+      "name": "Central-index read PEP: per-query authz + discoverability_scope (emit-time strong consistency) + at-rest control-plane encryption",
+      "goal": "Build the central-index read PEP (same PEP code/policy engine deployed at the central-index location) that authorizes discovery READS: per-query authz (deny-by-default, no membership -> no result), first-class discoverability_scope (public-web | federation-wide | named-consortium | named-tenants | none) enforced at query time, aggregate treated as at-least-private-tier with at-rest encryption under control-plane keys distinct from tenant keys. Close the share-correctness gap: a projection becomes discoverable only after the owner durably commits its scope, and the PEP evaluates against the owner-authoritative (monotonic scope-epoch) value, never a stale-HIGH cached scope.",
+      "deliverable": "A read PEP in front of the central index enforcing per-query authz + discoverability_scope; the index is encrypted at rest under control-plane keys. Passing tests: discoverability-scope denied to a non-member; named-tenants allowlist enforced; and a property test that no projection is ever queryable at a scope wider than the owner's currently-committed scope across version-skew and replay (the additive counterpart to the revocation gate). This is the read PEP kernel that the deferred exchange-federation seam extends, with confidential payloads structurally absent (D6).",
+      "depends_on": [
+        "0a-foundation",
+        "0c-pep-broker-chokepoint",
+        "0d-identity-entitlement"
+      ],
+      "spec_sections": [
+        "4.7",
+        "11.2",
+        "11.2b",
+        "10.3",
+        "15.2"
+      ],
+      "highs_addressed": [
+        "Share-correctness across the federation seam: discoverability_scope made strongly-consistent at the owner at emit time; central-index PEP evaluates against owner-committed scope (monotonic scope-epoch), never stale-HIGH; add the no-projection-wider-than-committed-scope property test"
+      ]
+    },
+    {
+      "id": "0k-feature-modules",
+      "name": "Feature modules: mod-lit-intelligence (grounded drafting), mod-discovery (public OpenAlex), mod-funding-lite (grant match)",
+      "goal": "Build the three Phase-0 feature modules atop the chokepoint. mod-lit-intelligence: grounded proposal drafting + semantic search over the tenant's own corpus + public scholarly data, classification-enforced, with citations and RAGAS faithfulness gating; the generated draft and ALL its persistence (autosave, version history, synthesizer intermediate buffers, RAG cache of confidential context) inherit the MAX-rule tier and live only in tenant-KEK derivative stores. mod-discovery: cross-institution PUBLIC-tier expert discovery over OpenAlex (expertise fingerprint + collaboration graph), zero confidentiality machinery. mod-funding-lite: grant-opportunity match over Grants.gov/RePORTER/NSF.",
+      "deliverable": "Three pluggable modules consuming only kernel interfaces and the broker (no raw-store/classifier/projection imports): mod-lit-intelligence drafts grounded, cited proposal sections at p95<4s with the draft+history KEK-bound; mod-discovery returns public-tier cross-institution experts; mod-funding-lite returns ranked grant-opportunity matches. The generated-draft + draft-history store is in the post-crypto-shred zero-decryptable-hits contract test.",
+      "depends_on": [
+        "0c-pep-broker-chokepoint",
+        "0f-model-router",
+        "0g-confidential-kek-stores",
+        "0h-ingestion-pipelines",
+        "0i-retrieval-eval"
+      ],
+      "spec_sections": [
+        "3.1",
+        "3.2",
+        "5.3",
+        "8.5",
+        "9.1",
+        "11.3b",
+        "11.5",
+        "11.7"
+      ],
+      "highs_addressed": [
+        "Generated proposal draft (+ autosave/version-history/synthesizer buffers/RAG cache) classified via MAX-rule and persisted only in tenant-KEK derivative stores; added to the post-crypto-shred zero-decryptable-hits contract test"
+      ]
+    }
+  ]
+}
