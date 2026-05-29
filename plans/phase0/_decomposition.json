@@ -115,7 +115,7 @@
     },
     {
       "id": "0f-model-router",
-      "name": "Provider-agnostic classification-routed Model Router (D-AI) + guardrails + GPU-density resolution",
+      "name": "Provider-agnostic classification-routed Model Router (AI/model-router requirement) + guardrails + GPU-density resolution",
       "goal": "Build the provider-agnostic Model Router selecting over an IModelProvider registry whose providers declare the locality classes they satisfy. One owned tier->locality routing-policy table consulted by BOTH router and transport/egress (disagreement = hard-fail). Confidential/private route to in-boundary vLLM(prod)/Ollama(dev); public routes to cloud frontier. BYO provider/keys per tenant with attested locality and fail-closed fallback to in-boundary when attestation is absent. Resolve the K=2 confidential-GPU density-vs-isolation question (MIG/dedicated process, no shared KV cache) and the consequent steady-state confidential COGS so the D7 ratio is defensible.",
       "deliverable": "A router that, given a data classification, selects a conformant provider or hard-fails; a contract test that a confidential request can never select a cloud provider and that a router/transport policy disagreement hard-fails; BYO registration with attested locality and fail-closed-to-in-boundary. A documented GPU-isolation decision (per-confidential-tenant MIG/process, no cross-tenant KV cache) with the recomputed confidential-tier COGS and the resulting ACV-floor implication.",
       "depends_on": [

@@ -1,6 +1,6 @@
 I now have all the spec detail required. I'll write the complete implementation plan.
 
-# Provider-Agnostic Classification-Routed Model Router (D-AI) + Guardrails + GPU-Density Resolution Implementation Plan
+# Provider-Agnostic Classification-Routed Model Router (AI/model-router requirement) + Guardrails + GPU-Density Resolution Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (- [ ]) syntax for tracking.
 
@@ -94,7 +94,7 @@ Create `tigerexchange/packages/mod_ai/pyproject.toml`:
 [project]
 name = "tigerexchange-mod-ai"
 version = "0.0.0"
-description = "TigerExchange provider-agnostic classification-routed Model Router (D-AI): IModelProvider registry, one owned tier->locality routing-policy table, BYO attested-locality, guardrails, confidential-GPU isolation decision."
+description = "TigerExchange provider-agnostic classification-routed Model Router (AI/model-router requirement): IModelProvider registry, one owned tier->locality routing-policy table, BYO attested-locality, guardrails, confidential-GPU isolation decision."
 requires-python = ">=3.11"
 dependencies = [
     "pydantic>=2.6,<3",
@@ -185,7 +185,7 @@ def tier_required_localities(tier: Tier) -> frozenset[LocalityClass]:
 Create `tigerexchange/packages/mod_ai/src/mod_ai/__init__.py`:
 
 ```python
-"""TigerExchange provider-agnostic Model Router (D-AI) — public surface."""
+"""TigerExchange provider-agnostic Model Router (AI/model-router requirement) — public surface."""
 
 from mod_ai.locality import LocalityClass
 
@@ -752,7 +752,7 @@ Expected failure: `ModuleNotFoundError: No module named 'mod_ai.router'`.
 Create `tigerexchange/packages/mod_ai/src/mod_ai/router.py`:
 
 ```python
-"""Provider-agnostic, classification-routed Model Router (plan §5.8, §8.1, D-AI).
+"""Provider-agnostic, classification-routed Model Router (plan §5.8, §8.1, AI/model-router requirement).
 
 The router consults the ONE owned routing-policy table to learn which locality
 classes the data's classification permits, filters the provider registry to
@@ -1903,7 +1903,7 @@ Expected failure: `AssertionError` (only `LocalityClass` currently exported).
 Replace `tigerexchange/packages/mod_ai/src/mod_ai/__init__.py`:
 
 ```python
-"""TigerExchange provider-agnostic Model Router (D-AI) — public surface.
+"""TigerExchange provider-agnostic Model Router (AI/model-router requirement) — public surface.
 
 Re-exports the router building blocks so callers (the PEP/broker derivation path
 in 0c, and mod-lit-intelligence in a later sub-plan) import from one place.

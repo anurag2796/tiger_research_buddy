@@ -2,18 +2,6 @@
 
 > AUTHORITATIVE interface definitions. Every sub-plan imports these verbatim.
 
-I now have all required sections (4, 5, 7, 8, 9) plus the decisions document. I have everything needed to define the canonical kernel package. Let me produce the reference document.
-
-Key authoritative facts extracted from the plan that the kernel must encode:
-- 3-tier lattice: `public < private < confidential`, MAX-rule, unknown=most-restrictive (§5.6)
-- Decisions: ALLOW/DENY/QUARANTINE; abstention→quarantine→default-deny (D6, §8/classifier)
-- DiscoverabilityScope: `public-web | federation-wide | named-consortium | named-tenants | none` (§4.7, §7.3)
-- Interface list verbatim from §5.1 K3
-- PEP request/response + audit event (per-stream hash-chain, §4.1 AUDa)
-- Compliance flags: FERPA|IRB|ITAR|EAR|GDPR-personal, sticky UNION (§6.1)
-- Caveats: transfer_legality, export_attestation, FERPA_role (§4.3, §7.3)
-- Deferred stubs: IRevocationAuthority, IExchangeFeed (Phase 1+)
-
 ---
 
 # TigerExchange — Canonical Shared `contracts/kernel` Package (Phase-0)
@@ -713,7 +701,7 @@ class IDataAccessBroker(Protocol):
 
 
 # --------------------------------------------------------------------------- #
-# AI / Model-Router layer (D-AI, §8)
+# AI / Model-Router layer (AI/model-router requirement, §8)
 # --------------------------------------------------------------------------- #
 
 @runtime_checkable
@@ -736,7 +724,7 @@ class IModelProvider(Protocol):
 
 @runtime_checkable
 class IModelRouter(Protocol):
-    """Provider-agnostic, classification-routed model router (D-AI, §8.1/§8.2).
+    """Provider-agnostic, classification-routed model router (AI/model-router requirement, §8.1/§8.2).
 
     Selects a provider whose declared locality satisfies the data's
     classification (local/in-boundary for non-public; cloud frontier for
