@@ -1,0 +1,646 @@
+{
+  "product_summary": "TigerExchange is a self-hosted Research Collaboration Loop Engine for a single research organization (modeled as multiple groups/tenants) running entirely on one NVIDIA Jetson AGX Orin 64GB with no cloud dependency. Its centerpiece \u2014 the position no incumbent occupies \u2014 is a CLOSED, COMPOUNDING collaboration loop: (1) a funding opportunity match triggers a 'Pursuit'; (2) the platform assembles a cross-group team from a LIVING expertise graph (two-axis: expertise COVERAGE of the RFP + prior-collaboration CONNECTIVITY, always human-curatable); (3) the team co-authors a CONFIDENTIAL grant proposal grounded in BOTH the shared public scholarly+funding corpus AND the tenant's OWN prior confidential winning proposals (via a per-tenant confidential retrieval surface, never a shared one) inside a per-tenant encrypted CRDT workspace; (4) the funding OUTCOME is recorded; (5) on a WIN, the team, award, and produced artifacts are WRITTEN BACK into the public expertise graph (outcome-weighted, transparently), so every won proposal demonstrably improves the next match. More collaboration -> richer graph -> better matches -> more funding. Incumbents are structurally split across this loop: RIM tools (Pure/Symplectic/VIVO) and Clarivate WoS Research Intelligence own discovery+visibility but stop at the front door; Instrumentl/Granted own drafting but never ground in a shared scholarly corpus and have zero confidentiality controls; IN-PART/AcademicLabs own the introduction then hand off to humans. TigerExchange owns the SEAMS they lack \u2014 discovery -> confidential workspace -> outcome capture -> graph write-back \u2014 and is the only design that learns from outcomes. We deliberately do NOT compete on funder-database breadth (Pivot-RP 3.6M profiles etc.), unwinnable on one HDD-bound box; our moat is depth-within-tenant corpus grounding + per-tenant cryptographic confidentiality + the outcome-learning loop. Identity aligns to mandatory federal rails (ORCID canonical researcher ID, SciENcv Common Forms biosketch interchange, NIH-required from May 2026) so assembled teams are submission-ready. The compounding loop is empirically validated (collaborators win 2-4x more funding over 10 years; co-authorship 13.8pp more likely after a prior co-proposal, limited to SUCCESSFUL participants), so the value claim is real, not marketing. The build is sequenced as a WALKING SKELETON first: prove the end-to-end loop with the full security spine on the simplest substrate (one tenant pair, real-time editing only, binary allow/quarantine classification, drop-encrypted-tablespace crypto-shred, single embedding space, pgvector HNSW), then add breadth (suggesting mode, anchored comments, HippoRAG2, probabilistic identity resolution, hardware key anchor) in P1.",
+  "collaboration_loop_design": "The loop is made FIRST-CLASS by (a) a single durable domain object \u2014 the Pursuit \u2014 threading all five stages, and (b) an explicit, TESTED write-back data flow the v2 plans never wired. STAGE 1 (discover/trigger): mod-funding ingests Grants.gov daily OPPORTUNITIES + NIH-RePORTER/NSF AWARDS; a saved Pursuit (Instrumentl-style project+tracker) binds matched Opportunity -> draft Proposal -> candidate team + ongoing match alerts. Funding is the top-of-loop trigger (concrete need beats aimless expert browsing; rejects discovery-first cold-start). STAGE 2 (team): mod-discovery ranks candidates on TWO axes over the PUBLIC-tier expertise graph \u2014 expertise-COVERAGE of the RFP's required concept areas (complementary/gap-filling, shown as a coverage matrix with gaps) AND graph CONNECTIVITY / prior co-authorship+co-funding distance \u2014 with an outcome-weighted overlay and per-candidate 'why', and the PI always curates (team-formation literature: algorithm alone produces worse teams). STAGE 3 (co-author): mod-workspace (PROMOTED to first-class) provides editorial modes \u2014 WALKING-SKELETON P0 ships REAL-TIME concurrent edit only; suggesting/tracked-changes with PI accept/reject and anchored comments+resolve are P1 \u2014 over Notion-style scoped roles (PI=owner, co-PI=edit, reviewer=comment, viewer=view), permission cascade, highest-permission-wins. The live edit buffer is a CRDT (Yjs/y-crdt via pycrdt, aarch64 wheels) served by a self-hosted pycrdt-websocket server. GROUNDING IS DUAL-SOURCE and this resolves the prior STAGE-3-vs-public-only contradiction: mod-lit-intelligence retrieves over (i) the SHARED PUBLIC corpus index (cross-tenant, public-tier only) AND (ii) a PER-TENANT CONFIDENTIAL retrieval surface \u2014 a tenant-scoped, RLS-isolated vector+BM25 index living on a per-tenant ENCRYPTED TABLESPACE that holds ONLY that tenant's own confidential drafts and prior winning proposals; the PEP enforces that ONLY that tenant's confidential drafting path can query it (tenant A grounds on A's prior proposals; tenant B physically cannot retrieve them). 'Confidential content never enters any SHARED index' means the cross-tenant public index \u2014 NOT that confidential content is unindexable for its owning tenant. The draft is MAX-rule-tagged confidential and periodically snapshotted (AES-256-GCM, per-tenant DEK, non-searchable blob) into the per-tenant KEK-bound encrypted store so crypto-shred reaches it. STAGE 4 (outcome): mod-funding records won/lost/submitted, emitting `proposal.outcome_recorded`. STAGE 5 (write-back, THE CENTERPIECE): a Dagster sensor on the outbox fires an ASYNC enrichment job (off the interactive hot path, semaphore-gated to yield to interactive generation, capped DuckDB/embedding memory, respecting HDD latency) that (i) materializes in-platform CO_PI_WITH edges between actual team members tagged with the proposal/award, (ii) attaches a TRANSPARENT outcome-weighted expertise signal per member for the RFP concepts (ONE signal among similarity+connectivity, to dodge the incumbency-bias trap), (iii) ingests produced artifacts as new public WORK nodes through the SAME classify-gates-index monotonic-applier (idempotent; cannot resurrect revoked/down-classified records). MEASURABILITY: a dedicated NON-security loop-event stream (pursuit_created, opportunity_matched, team_shortlisted, invite_sent, collaborator_joined[cross-tenant], first_co_edit, suggestion_resolved, proposal_submitted, outcome_recorded, graph_enriched) keeps the hash-chained security audit clean; ACTIVATION NORTH-STAR is `collaborator_joined` where joining_tenant != workspace_owner_tenant (a cross-GROUP collaborative act, per Miro/Dropbox aha-moment evidence); loop health = conversion match->team->edit->submit->win + time-to-team + cross-group edit ratio.",
+  "architecture_overview": "TigerExchange (single-Orin edition) is a MODULAR MONOLITH: one FastAPI application + one Postgres 16 instance + a SMALL FIXED SET of model-serving processes (NOT one all-in-one runtime), all co-resident on a single Jetson AGX Orin 64GB. No Kubernetes, no microservices, no second region, no second box. Layers: (1) the near-frozen `contracts` KERNEL (Tier lattice, PublishableProjection, all I* Protocol interfaces, PEP request/response types) that everything imports and that imports nothing feature-side; (2) the SECURITY KERNEL built first \u2014 one IN-PROCESS Policy Enforcement Point (PEP) + data-access broker that is the SOLE chokepoint for every retrieve/egress/derive call (carries v2 D4 forward, collapsed from two PEP loci to one because there is one node); (3) the DATA PLANE \u2014 a SINGLE Postgres providing relational tables, pgvector HNSW dense vectors, native BM25 lexical search, RRF in SQL, and a metadata-backbone graph as an edge table traversed by recursive CTEs (this collapses v2's Qdrant+OpenSearch+SpiceDB+Apache-AGE polyglot into ONE engine per the retrieval+security research); the data plane hosts BOTH the shared public retrieval index AND, on per-tenant encrypted tablespaces, the per-tenant confidential retrieval surfaces; (4) the AI plane \u2014 THREE small vLLM processes (one for the Qwen3-30B-A3B MoE generator/judge, one embedder, one reranker), each one-model-per-process with its own CUDA context, behind a classification-routed IModelRouter; SPECTER2 is NOT a serve-time process \u2014 its citation-aware embeddings are PRECOMPUTED AT INGEST and the model is unloaded before serving; (5) FEATURE MODULES as 'dumb' plug-ins behind the PEP: mod-discovery (team assembly), mod-lit-intelligence (dual-source proposal grounding), mod-workspace (confidential CRDT co-authoring \u2014 PROMOTED to first-class Phase-0, the centerpiece), mod-funding (opportunity+award feeds); (6) the LOOP ENGINE \u2014 an async Dagster write-back job that, on a recorded WON outcome, re-ingests team+award+artifacts through the same classify-gates-index pipeline to re-weight the expertise graph, closing the compounding loop. Tenants = research groups on one box, isolated by FORCE-RLS + transaction-scoped SET LOCAL + per-tenant DEK-on-encrypted-tablespace + per-tenant KEK envelope crypto for non-searchable blobs. Storage tiered: HDD = cold sequential archive of raw CC0 snapshots ONLY; attached NVMe (effectively mandatory in BOM) = hot tier for Postgres data/WAL, live vector/BM25/graph indexes, Parquet working sets; RAM = transient + model weights + index hot pages. CONCURRENCY IS PHASE-PARTITIONED (no triple-counted headroom): the box runs in exactly one of three mutually-exclusive memory regimes at a time \u2014 SERVE (interactive), INGEST-WINDOW (bulk DuckDB load with serving paused / shared_buffers reduced), WRITEBACK-WINDOW (semaphore-gated async enrichment yielding to interactive generation). All cross-BOX federation (central network read-PEP, tombstone-bitmap replication, broker DPoP tokens, cross-node schema negotiation, distributed tuple resolution, SpiceDB replication) is DEFERRED behind clean kernel Protocol seams (IExchangeFeed, IRevocationAuthority, PublishableProjection.discoverability_scope); the future-federation doc is HONEST that two single-box mechanisms (volume/tablespace crypto-shred and local-only CTE ReBAC resolution) are KNOWN federation-boundary REWRITES, not transport swaps.",
+  "tech_stack": [
+    {
+      "layer": "Deploy target / OS baseline",
+      "choice": "Jetson AGX Orin 64GB, JetPack 6.2 (L4T r36.4.3), CUDA 12.6, Ubuntu 22.04 aarch64, Python 3.11+, power mode MAXN, GPU SM 8.7 (Ampere)",
+      "rationale": "Fixed hardware. PIN this verbatim in the runbook. ALL CUDA Python wheels (torch, vLLM, flash-attn, xformers, bitsandbytes) MUST come from https://pypi.jetson-ai-lab.io/jp6/cu126 \u2014 default PyPI cu126 wheels omit SM 8.7 SASS and will fail or silently fall to CPU (the #1 Jetson LLM failure mode).",
+      "arm64_status": "verified-available",
+      "fallback": "If JetPack 6.2 unavailable, JetPack 6.1 (CUDA 12.6) is the documented alternate; never downgrade below CUDA 12.6 or the pinned wheels break."
+    },
+    {
+      "layer": "Primary in-boundary LLM (generator + RAGAS judge)",
+      "choice": "Qwen3-30B-A3B (MoE, 30.5B total / 3.3B active) at W4A16 AWQ or GPTQ-Int4, served in ONE shared vLLM process for ALL tenants",
+      "rationale": "MoE activation sparsity makes decode bandwidth-bound at ~3B speed (~30-45 tok/s on Orin) at near-32B quality, with strong grounded-RAG + structured output. Resident ~17GB at INT4. CRITICAL: there is only ONE resident copy \u2014 confidential isolation is achieved WITHOUT a second model copy (see D10), because a second resident 30B (~17GB weights + ~4-8GB context) would push the total to ~70GB > 64GB. Chose over dense Qwen2.5-32B (~19GB Q4 AND slower dense decode), Mixtral 8x7B, Gemma3-27B dense, Llama-3.x-70B.",
+      "arm64_status": "verified-available",
+      "fallback": "Qwen3-14B dense (~9GB weights at INT4) \u2014 used BOTH if the A3B MoE quant misbehaves AND as the model loaded by an optional dedicated confidential process (with the public 30B PAUSED/EVICTED, never both 30B copies resident)."
+    },
+    {
+      "layer": "LLM/embedding/reranker serving runtime",
+      "choice": "vLLM (jetson-ai-lab PyTorch index + community SM 8.7 GPTQ-Marlin/AWQ INT4 wheel, pin vLLM >=0.10.x) run as THREE SEPARATE PROCESSES: (1) `vllm serve` for the LLM, (2) a pooling/embedding process, (3) a score/reranker process \u2014 each one-model-per-process with its own CUDA context",
+      "rationale": "+30-40% decode and 3.8x faster prefill vs llama.cpp, OpenAI-compatible API, zero per-model compile. CORRECTION FROM PRIOR DRAFT: vLLM is strictly ONE model per process; it cannot host the generator AND embedder AND reranker in a single instance, so 'one runtime' = the same software run as 3 processes (3 CUDA contexts, ~1.3GB context each, all counted in the memory budget). This is still operationally simpler than three DIFFERENT serving systems and still closes the Ollama reranker gap (Ollama has NO /api/rerank as of 2026).",
+      "arm64_status": "verified-available",
+      "fallback": "1 vLLM process for the LLM + sentence-transformers IN-PROCESS for embed/rerank \u2014 avoids two extra CUDA contexts (~2.6GB) and may be lighter on Orin; this is the RECOMMENDED memory-saving variant if the 3-process budget is tight. Ollama is dev-time-only for the LLM, never the reranker."
+    },
+    {
+      "layer": "Retriever embedding model",
+      "choice": "bge-m3 (dense+sparse+ColBERT, 8192 ctx, 568M) OR Qwen3-Embedding-0.6B as the SINGLE serve-time retriever embedder",
+      "rationale": "Small (137M-568M), coexists with the 30B generator in 64GB; bge-m3's single-model multi-representation simplifies the hybrid stack. Chose over Qwen3-Embedding-8B (MTEB #1 but 8B resident not worth it on a shared box).",
+      "arm64_status": "verified-available",
+      "fallback": "nomic-embed-text (137M) if even 568M is tight; serve via sentence-transformers if vLLM pooling misbehaves."
+    },
+    {
+      "layer": "Citation-aware expertise embedding (SPECTER2) \u2014 INGEST-ONLY, NOT serve-resident",
+      "choice": "SPECTER2 (Apache-2.0) base + PROXIMITY adapter via the `adapters` (adapter-transformers) library on the SM 8.7 PyTorch wheel, run as a BATCH job at ingest to PRECOMPUTE ExpertiseFingerprint / paper-similarity vectors, then UNLOADED",
+      "rationale": "SPECTER2 beats general models on citation-proximity, directly powering collaborator discovery \u2014 but it is a REQUIRED SECOND embedding space the budget must account for. CORRECTION: it is an adapter on SciBERT (bert-base) requiring the proximity adapter loaded on the base; it is NOT a drop-in sentence-transformers model and is NOT served by vLLM pooling. Precomputing at ingest (then unloading, ~0GB at serve) is the right call on this box \u2014 its ~0.5-1GB footprint + the adapter library appear only in the INGEST-WINDOW budget, never serve-time.",
+      "arm64_status": "verified-available",
+      "fallback": "If the `adapters` library is troublesome on aarch64, fall back to using bge-m3 embeddings for the connectivity/similarity axis at reduced citation-precision; SPECTER2 then becomes a P1 enhancement."
+    },
+    {
+      "layer": "Reranker (cross-encoder, stage-2)",
+      "choice": "bge-reranker-v2-m3 (568M) OR Qwen3-Reranker-0.6B, served via a DEDICATED vLLM score-endpoint process (its own CUDA context, counted in budget)",
+      "rationale": "Lightweight, multilingual, +5-15 nDCG@10 for <200ms. Chose over Ollama (no rerank endpoint) and large rerankers (won't fit hot beside the 30B).",
+      "arm64_status": "verified-available",
+      "fallback": "sentence-transformers CrossEncoder in-process on the SM 8.7 PyTorch wheel (avoids the third CUDA context \u2014 the recommended saver)."
+    },
+    {
+      "layer": "Relational + vector + lexical + graph datastore",
+      "choice": "SINGLE Postgres 16: relational tables + pgvector HNSW (dense) + native BM25 (VectorChord-BM25 with ParadeDB pg_search as co-equal alternate) + RRF in SQL + edge-table graph via recursive CTE",
+      "rationale": "One memory-shared Orin with a slow HDD cannot afford Qdrant + OpenSearch + SpiceDB + Apache-AGE as extra always-on services competing for the 64GB the models need. CORRECTION: VectorChord-BM25 DOES support aarch64 with SVE SIMD + runtime CPU dispatch (and ARM64 benchmarks competitively), but we DO NOT lean on any inherited x86 '3x-vs-Elasticsearch' number as the single-box rationale \u2014 the only rationale that matters here is one-engine consolidation. Native-BM25 Postgres extensions are production-grade; one transactional store makes per-tenant RLS isolation and tablespace-level crypto-shred dramatically simpler for a 30B builder. REVISES v2's locked Qdrant+OpenSearch and Apache-AGE choices for the single-box edition.",
+      "arm64_status": "verified-available",
+      "fallback": "pgvector HNSW is the VERIFIED P0 dense default; ParadeDB pg_search is a co-equal verified BM25 alternate if VectorChord's Rust extension won't build on the JetPack base. Qdrant/OpenSearch adapters are kept ONLY as documented future scale-out, not P0."
+    },
+    {
+      "layer": "Disk-friendly vector index (P1 upgrade path ONLY, not P0 load-bearing)",
+      "choice": "VectorChord IVF+RaBitQ / DiskANN-style (~1-bit quantized codes) \u2014 a P1 'verify-then-adopt' task, NOT a P0 dependency; pgvector HNSW kept RAM-resident is the P0 default",
+      "rationale": "Scans bit-packed quantized codes instead of float vectors, attractive IF the index ever exceeds RAM. CORRECTION: the P0 design REQUIRES the live index to fit RAM/NVMe regardless (HNSW off HDD = 10s+ queries), so the '>RAM index via RaBitQ' story is NOT load-bearing for P0 and is moved entirely to P1 after on-aarch64 verification. HNSW is pure random I/O and catastrophic off HDD, so whichever index is chosen MUST stay RAM-resident / on NVMe.",
+      "arm64_status": "needs-verification",
+      "fallback": "pgvector HNSW (compiles cleanly on aarch64, ARM-optimized distance kernels) kept RAM-resident \u2014 the P0 default, no upgrade required."
+    },
+    {
+      "layer": "Concurrent co-authoring engine (mod-workspace)",
+      "choice": "CRDT via Yjs/y-crdt (pycrdt, successor to y-py) with a self-hosted pycrdt-websocket / Hocuspocus-style server on the Orin; CRDT doc is the live buffer, snapshotted (AES-256-GCM, non-searchable blob) into the KEK-bound draft store",
+      "rationale": "CRDT merges in any order, survives server restart, supports offline edit + autosave recovery (Notion/Figma model), fully self-hostable on one box. Chose over Operational Transformation (requires central server, worse offline/recovery) and last-write-wins (silently loses concurrent edits).",
+      "arm64_status": "verified-available",
+      "fallback": "If pycrdt's aarch64 wheel breaks, build y-crdt from Rust source on the box; the CRDT doc per proposal is KB-MB so the constraint is never the CRDT."
+    },
+    {
+      "layer": "ABAC engine (tier/classification lattice)",
+      "choice": "IN-PROCESS Python inside the single PEP using the kernel lattice (tier_join_all MAX-rule, Entitlement.permits_tier, caveats re-evaluated at access)",
+      "rationale": "The ABAC ruleset is a tiny FIXED 3-tier lattice + capability gate \u2014 a few lines of fail-closed Python beat standing up a policy engine; nothing to sync, nothing to operate, impossible for a module to bypass (lives inside the PEP). REVISES v2/CONVENTIONS 'ABAC=OPA' for the single-box edition (no Go daemon).",
+      "arm64_status": "verified-available",
+      "fallback": "None needed \u2014 it is pure Python; OPA stays a documented considered-alternative only."
+    },
+    {
+      "layer": "ReBAC engine (team membership, sharing grants)",
+      "choice": "Postgres-native relation-tuple table (subject, relation, object, tenant_id) evaluated by a recursive-CTE Check() function in the SAME Postgres, behind the kernel IPolicyEnforcement/relation-Check Protocol",
+      "rationale": "Zanzibar's tuple model maps to one indexed Postgres table; recursive CTEs evaluate nested relations fast with proper indexes; zero new infra, tuples inherit tenant RLS isolation, pure Python+SQL. REVISES v2/CONVENTIONS 'ReBAC=SpiceDB' for the single-box edition. HONEST CAVEAT: the recursive-CTE Check resolves LOCAL tables only \u2014 cross-box federation needs distributed tuple resolution this cannot do, so this is a KNOWN federation-boundary rewrite (documented in 15-future), NOT a clean transport swap.",
+      "arm64_status": "verified-available",
+      "fallback": "None needed (pure SQL); SpiceDB stays a documented future-federation alternative behind the unchanged Protocol."
+    },
+    {
+      "layer": "Key management / crypto-shred custody",
+      "choice": "Dependency-free in-process LocalKms behind the kernel IKms Protocol holding per-tenant KEKs encrypted under ONE box-master key. P0 DEFAULT box-master anchoring = fTPM via the userspace tpm2-tools/tpm2-pytss stack (seal to a PCR) OR a passphrase-derived master key entered at boot (NIST SP 800-108 KDF, key never on disk). destroy_kek() = crypto-shred.",
+      "rationale": "CORRECTION: the OP-TEE/EKB secure-world anchor is NOT turnkey \u2014 it requires irreversible OEM fuse-burning + Secure Boot provisioning + a custom OP-TEE Trusted Application in C, and NVIDIA's own forums show unresolved EKB/SSK derivation failures. That is firmware/secure-world C engineering far beyond a Python-writing 30B builder and a likely hard build wall. So the Phase-0 builder default is the USERSPACE fTPM (tpm2-tools, no custom TA) or passphrase-KDF path. This still REPLACES v2's CloudHSM/cloud-KMS seam (wrong for a no-cloud box). Chose over raw key file (master key plaintext on slow HDD \u2014 unacceptable).",
+      "arm64_status": "verified-available",
+      "fallback": "OP-TEE/EKB hardware anchor documented as an OPTIONAL human-operator hardening step (irreversible fuse-burn, OUT OF SCOPE for the automated build) behind the SAME IKms; OpenBao Transit as an optional stronger backend."
+    },
+    {
+      "layer": "Crypto-shred of SEARCHABLE confidential derivatives",
+      "choice": "Per-tenant ENCRYPTED TABLESPACE / LUKS-dm-crypt volume holding the tenant's confidential vector + BM25 + graph indexes; crypto-shred = DESTROY the per-tenant DEK that unlocks that volume (then drop-and-rebuild)",
+      "rationale": "CORRECTION (was inverted in the prior draft): AES-256-GCM application-layer encryption on vectors/BM25 postings is MATHEMATICALLY incompatible with searching them \u2014 AES ciphertext destroys the distance metric pgvector/HNSW need and encrypted postings cannot be tokenized/scored. Therefore volume/tablespace-level encryption is the PRIMARY (not fallback) crypto-shred mechanism for ALL searchable confidential derivatives: the index data stays plaintext-AT-REST-INSIDE an encrypted block device, searchable while mounted, and crypto-shredded by destroying the unlocking DEK. This is node-local (a KNOWN federation-boundary rewrite, see 15-future).",
+      "arm64_status": "verified-available",
+      "fallback": "Per-tenant logical Postgres tablespace + DROP on shred where full LUKS-per-tenant is impractical; physical scrub as last resort."
+    },
+    {
+      "layer": "Application-layer encryption (NON-searchable blobs ONLY)",
+      "choice": "AES-256-GCM via the `cryptography` library, per-tenant DEK, applied ONLY to non-searchable at-rest blobs: CRDT draft snapshots, autosave, version history, eval traces, cache VALUES",
+      "rationale": "CORRECTION: ALE is the right mechanism EXACTLY where the data is never searched (opaque blobs), and the WRONG mechanism for indexes. Scoping ALE to non-searchable blobs makes crypto-shred reach drafts/history/eval while leaving searchable indexes to tablespace-level crypto-shred. ARM64-trivial. Rejected homomorphic/searchable/distance-preserving encryption (research-grade, x86-tuned, beyond a 30B builder).",
+      "arm64_status": "verified-available",
+      "fallback": "None needed for blobs; the searchable-index path is handled entirely by the encrypted-tablespace mechanism above."
+    },
+    {
+      "layer": "Ingestion / bulk-transform engine",
+      "choice": "DuckDB (out-of-core, spill-to-disk) reading gzip-JSONL/NDJSON directly -> writing Parquet on NVMe, with SET memory_limit (e.g. 8GB) and capped threads EXPLICITLY set",
+      "rationale": "Native aarch64 build, reads gzip NDJSON natively, spills to disk so it processes the >RAM OpenAlex/Crossref sets on a 64GB box without loading into RAM. CORRECTION: DuckDB still wants several GB working RAM for hash joins/sorts, so its memory_limit is CAPPED and it runs only in the INGEST-WINDOW or semaphore-gated WRITEBACK-WINDOW \u2014 never silently concurrent with full serving. Chose over Spark (heavy), Pandas (won't fit), hand-rolled streamers.",
+      "arm64_status": "verified-available",
+      "fallback": "pyarrow streaming as a thin alternate for tiny sources."
+    },
+    {
+      "layer": "Orchestration",
+      "choice": "Dagster (pin dagster>=1.8,<2) for the classify-gates-index ingestion DAGs + the transactional-outbox sensor that triggers the semaphore-gated async loop write-back job",
+      "rationale": "Correct minimalist substrate for one box, already in the TigerBuddy stack; outbox-polling avoids Kafka/Temporal/Debezium. Chose over Temporal/Kafka CDC (scale machinery) and ad-hoc cron (no lineage, no sensor model).",
+      "arm64_status": "verified-available",
+      "fallback": "Plain Python + systemd timers if Dagster's aarch64 install is troublesome, but Dagster is the documented default."
+    },
+    {
+      "layer": "App framework + connection pooling",
+      "choice": "FastAPI (latest 0.11x) + asyncpg + SQLAlchemy 2 + PgBouncer (transaction mode); tenant context pinned per-transaction via set_config('app.tenant_id', <bound param>, true) (SET LOCAL)",
+      "rationale": "All first-class aarch64. SET LOCAL (not SET SESSION) is mandatory under PgBouncer transaction mode or the previous tenant's context leaks to the next request on a reused connection; bound parameter avoids tenant-id SQL injection.",
+      "arm64_status": "verified-available",
+      "fallback": "None needed."
+    },
+    {
+      "layer": "Frontend",
+      "choice": "Next.js + React (served from the box) connecting to FastAPI; CRDT client (y-websocket) for the workspace editor; force-graph for the expertise-graph/coverage views",
+      "rationale": "Matches the existing TigerBuddy frontend stack; the editor needs a real CRDT-aware client. Kept deliberately thin \u2014 the box's scarce resources go to models, not the UI tier.",
+      "arm64_status": "verified-available",
+      "fallback": "A Streamlit app for an internal/admin surface if the Next.js build is too heavy to host on-box (build off-box, serve static)."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D1",
+      "title": "Product category = Research Collaboration Loop Engine (not a RIM, funding DB, or grant writer)",
+      "decision": "Position and build TigerExchange as the integrated, outcome-learning collaboration loop (discover -> assemble -> confidentially co-author -> win -> feed outcomes back), explicitly NOT as another research-information-management system, funding database, or standalone grant-writing assistant.",
+      "rationale": "Every adjacent category has an entrenched data-moat or workflow incumbent; the ONE position no one occupies is the integrated loop that learns from funding outcomes, empirically validated (collaborators win 2-4x more funding over 10 years). This is the user's stated centerpiece.",
+      "alternatives_rejected": "Better funding database (lose on breadth + HDD/single-box limits vs Pivot-RP/WoS-RI/Instrumentl); standalone AI grant writer (commoditized \u2014 Instrumentl Apply drafts in 5 min); VIVO-style RIM (mature, low-growth, maintenance-fatigued).",
+      "consequences": "The build must wire the write-back EDGE (Stage 5), which v2 omitted; success metrics are loop-conversion + cross-group activation, not search volume; we accept being narrow-corpus by design."
+    },
+    {
+      "id": "D2",
+      "title": "Single-box modular monolith; cross-BOX federation deferred behind clean seams (with HONEST carry-forward annotations)",
+      "decision": "Build a modular monolith (one FastAPI deployable, in-process module boundaries, in-process event bus) on ONE Orin. Tenants = groups/institutions. Design \u2014 but do NOT build \u2014 cross-box federation behind kernel Protocol seams (IExchangeFeed, IRevocationAuthority, PublishableProjection.discoverability_scope). The future-federation doc explicitly lists which seams carry forward cleanly vs which are single-box-only semantics.",
+      "rationale": "The deploy target is literally one box; microservices/K8s/multi-region waste the scarce 64GB. Clean seams make MUCH of the future layer a transport addition. CORRECTION: not EVERYTHING is 'just a transport addition' \u2014 see consequences.",
+      "alternatives_rejected": "Build multi-box federation now (out of scope, premature, high risk for a 30B builder); single-tenant with no seams (forces a rewrite to federate); independently-deployed microservices (K8s overhead the box cannot afford).",
+      "consequences": "Collapse v2's dual PEP into ONE in-process PEP. HONESTLY FLAG as KNOWN federation-boundary REWRITES (not transport swaps): (1) crypto-shred-by-encrypted-volume is node-local \u2014 a future IRevocationAuthority CANNOT crypto-shred another node's tablespace; (2) the recursive-CTE ReBAC resolves LOCAL tables only \u2014 federation needs distributed tuple resolution. Carry-forward-clean: PublishableProjection.discoverability_scope, IExchangeFeed, owner-authoritative re-derivation."
+    },
+    {
+      "id": "D3",
+      "title": "Single Policy Enforcement Point + data-access broker is the sole confidentiality chokepoint",
+      "decision": "All retrieve/egress/derive flows through ONE in-process PEP + broker. Feature modules receive already-projected, already-tier-checked objects; they NEVER import the raw store, classifier engine, or construct a PublishableProjection (import-linter + AST test enforced). The broker holds raw-store credentials ONLY for the shared confidential-artifact/classification tables AND per-tenant confidential-index access, NOT every module's schema.",
+      "rationale": "On one box every group's data shares the same disk/process, so a single chokepoint is MORE important. New capabilities inherit enforcement for free. Scoping broker creds to shared+confidential tables (not module schemas) resolves the v2 'broker-as-god-object vs module-owns-its-data' contradiction.",
+      "alternatives_rejected": "Per-module re-implementation of confidentiality mechanisms (a 30B builder will get one wrong = leak); broker holding creds to every module schema (re-centralized coupling); query-time post-filtering only (leaves confidential content in the shared index = standing breach).",
+      "consequences": "PEP is built FIRST; decision order is fixed (D4); the broker also gates the per-tenant confidential retrieval surface so only the owning tenant's drafting path can query it (D6/STAGE-3 fix)."
+    },
+    {
+      "id": "D4",
+      "title": "Fixed fail-closed PEP decision order with in-Python ABAC and Postgres-CTE ReBAC",
+      "decision": "PolicyEnforcementPoint.authorize() runs a single fixed order, cheap-first, fail-closed (any step that errors or abstains DENIES): (1) entitlement/edition gate, (2) capability gate, (3) ABAC tier check (in-process Python lattice), (4) ReBAC relation Check (Postgres recursive CTE), (5) owner-local durable tombstone read (AUTHORITATIVE deny), (6) short-TTL lease (narrow-only positive cache). Caches are narrow-only; the durable log is authoritative for deny.",
+      "rationale": "The convergence report's #1 finding was that three stores gating one decision with undefined composition is a fail-OPEN risk; one stated order + durable-log-authoritative-deny + narrow-only caches removes the ambiguity a 30B builder would resolve unsafely. In-Python ABAC and Postgres-CTE ReBAC eliminate the OPA Go daemon and SpiceDB cluster while keeping the same decision semantics behind the kernel Protocol.",
+      "alternatives_rejected": "OPA/Rego ABAC (Go daemon, Rego, data-sync \u2014 overkill for a fixed 3-tier lattice); SpiceDB/OpenFGA-as-service (high single-node complexity, separate datastore+operator, Go); undefined multi-store composition (fail-open risk).",
+      "consequences": "REVISES CONVENTIONS 'ABAC=OPA / ReBAC=SpiceDB'; both engines in-box for P0; IPolicyEnforcement Protocol is the federation seam (but CTE Check is local-only \u2014 a federation rewrite, see D2). A HUMAN, not the 30B builder, authors the adversarial CI gates that encode this order."
+    },
+    {
+      "id": "D5",
+      "title": "Per-tenant isolation = FORCE-RLS + RESTRICTIVE + WITH CHECK + SET LOCAL + tenant_id-leading index, with a 4th VIEW guard",
+      "decision": "Every tenant-scoped table uses FORCE ROW LEVEL SECURITY + AS RESTRICTIVE policy FOR ALL with BOTH USING and WITH CHECK on current_setting('app.tenant_id', true), tenant_id as the LEADING index column, set transaction-scoped via set_config(...,true). The app connects as a NOSUPERUSER/NOBYPASSRLS/NOINHERIT non-owner role. Forbid SECURITY DEFINER, MATERIALIZED VIEWs, AND VIEWs over tenant tables unless created with security_invoker=true.",
+      "rationale": "Directly load-bearing for multi-group collaboration on one shared Postgres. FORCE closes owner-bypass; RESTRICTIVE prevents future migrations widening access; WITH CHECK blocks cross-tenant writes; SET LOCAL is leak-proof under PgBouncer transaction pooling; leading tenant_id index makes the predicate an index seek (critical on the HDD box). The VIEW guard is a 3rd bypass vector v2's lint missed.",
+      "alternatives_rejected": "Schema-per-tenant / database-per-tenant (migration sprawl / resource-prohibitive on one 64GB box); PERMISSIVE policies (OR-combined, accidentally widened); session-level SET (leaks tenant across pooled connections); omitting WITH CHECK (write-side cross-tenant leak/poisoning).",
+      "consequences": "Extend check_rls_bypass.py CI lint to flag non-security_invoker views; add a regression test asserting a transaction with NO SET LOCAL returns ZERO rows; add a CI probe that the app role is NOSUPERUSER/NOBYPASSRLS. The per-tenant confidential retrieval surface (D6) is also RLS-isolated by this exact mechanism."
+    },
+    {
+      "id": "D6",
+      "title": "Classify-gates-index for the SHARED index; per-tenant CONFIDENTIAL retrieval surface for own-tenant grounding",
+      "decision": "A record is classified BEFORE it can be embedded/indexed/graphed. Only ClassificationResult.is_retrievable (Decision.ALLOW, public-tier) records reach the SHARED CROSS-TENANT index (vector/BM25/graph/outbox). Classifier abstention/ambiguity -> QUARANTINE (unclassified = treated confidential) -> human adjudication queue. SEPARATELY, each tenant's OWN confidential drafts + prior winning proposals ARE indexed into a PER-TENANT CONFIDENTIAL retrieval surface (tenant-scoped, RLS-isolated, on a per-tenant encrypted tablespace) that ONLY that tenant's confidential drafting path can query (PEP-enforced). The PublishableProjection validator still rejects the confidential tier so confidential content can never be CONSTRUCTED for the SHARED index.",
+      "rationale": "CORRECTION resolving the STAGE-3 contradiction: 'confidential content never enters any SHARED index' meant the CROSS-TENANT public index \u2014 it must NOT mean confidential content is unindexable for its OWNING tenant, or the centerpiece moat (grounding drafts in the tenant's own prior winning proposals) is non-functional. A per-tenant confidential surface, isolated by RLS + encrypted tablespace + PEP, indexes own-tenant confidential content for own-tenant retrieval only. Structural fail-closed classification at the SHARED edge remains for cross-tenant content.",
+      "alternatives_rejected": "Query-time post-filtering on a single shared index (leaves confidential content cross-tenant-visible = standing breach); making confidential content wholly unindexable (kills STAGE-3 grounding = the moat); classifier fail-open on low confidence (violates fail-closed).",
+      "consequences": "mod-discovery + the expertise graph remain PUBLIC-tier-only by construction; mod-lit-intelligence grounds on TWO surfaces (shared public + own-tenant confidential); P0.9 test: tenant A grounds on A's prior proposal, tenant B cannot retrieve it; the confidential surface lives on the encrypted tablespace whose DEK destruction is the crypto-shred (D7)."
+    },
+    {
+      "id": "D7",
+      "title": "Per-tenant crypto-shred: encrypted-tablespace DEK destruction for SEARCHABLE derivatives; AES-GCM ALE for NON-searchable blobs; fTPM/passphrase-anchored master key",
+      "decision": "Crypto-shred is split by searchability. (A) SEARCHABLE confidential derivatives (per-tenant vector/BM25/graph indexes) live on a PER-TENANT ENCRYPTED TABLESPACE / LUKS volume; crypto-shred = destroy the per-tenant DEK unlocking that volume, then drop-and-rebuild. (B) NON-searchable confidential blobs (CRDT draft snapshots, autosave, version history, eval traces, cache values) get application-layer AES-256-GCM under the per-tenant DEK before insert. The per-tenant KEK wraps the DEK; the box-master key (wrapping KEKs) is anchored by the P0 DEFAULT fTPM-via-tpm2-tools (seal-to-PCR) OR passphrase-derived KDF (key never on disk). destroy_kek() = O(1) crypto-shred. A post-shred zero-decryptable-hits CI gate proves erasure across BOTH paths.",
+      "rationale": "CORRECTION of two prior errors. (1) AES-GCM on vectors/BM25 is mathematically impossible to search (ciphertext destroys distance metrics; encrypted postings cannot be tokenized/scored), so the prior 'ALE on vectors before insert' instruction would produce a broken or insecure system \u2014 encrypted-volume + DEK-destroy is the ONLY workable crypto-shred for searchable indexes and is now PRIMARY (was wrongly labeled fallback). (2) The OP-TEE/EKB hardware anchor is NOT turnkey (irreversible fuse-burn + secure-world C TA + documented unresolved NVIDIA-forum failures) \u2014 far beyond a Python 30B builder \u2014 so the P0 default is the userspace fTPM/passphrase path. Envelope crypto-shred remains O(1) and provable vs O(records x engines) physical deletion.",
+      "alternatives_rejected": "ALE-on-searchable-derivatives (unsearchable or insecure \u2014 the inverted prior design); CloudHSM/cloud-KMS (contradicts no-cloud single box); OP-TEE/EKB as a Phase-0 BUILD deliverable (firmware C + irreversible fuse-burn = a hard wall for the builder, demoted to optional human hardening); per-record physical deletion across engines (unprovable, races); raw key file (master key plaintext on slow HDD).",
+      "consequences": "P0.4 SPLITS into P0.4a (KEK/DEK + LocalKms + fTPM/passphrase anchor + AES-GCM blob encryption \u2014 NO store dependency) and P0.4b (per-tenant encrypted tablespace + DEK-destroy crypto-shred of search indexes \u2014 runs AFTER the data plane P0.5 exists). OP-TEE/EKB documented in 06/15 as optional human hardening behind the same IKms; OpenBao Transit optional stronger backend."
+    },
+    {
+      "id": "D8",
+      "title": "Retrieval = single-Postgres hybrid (pgvector + native-BM25 + RRF) -> local cross-encoder rerank; verified-on-aarch64 default, no inherited x86 claims",
+      "decision": "P0 retrieval is two-stage behind ONE IRetrievalStrategy: Stage 1 hybrid dense (pgvector HNSW \u2014 the VERIFIED P0 default) + native BM25 (VectorChord-BM25 or ParadeDB pg_search, whichever benchmarks well on actual aarch64) fused with RRF k=60 in SQL; Stage 2 local cross-encoder rerank top-50 -> top-8. VectorChord IVF+RaBitQ '>RAM index' is a P1 verify-then-adopt task, NOT a P0 dependency. ALL of IVectorStore/ILexicalIndex/IGraph are backed by the single Postgres. A P0.5 acceptance test BENCHMARKS BM25 latency on real aarch64 (no inherited x86 number).",
+      "rationale": "Two-stage hybrid+rerank is the evidence-backed quality floor (Recall@5 0.816 vs 0.695 single-stage); BM25 is mandatory for entity-heavy scholarly+grant queries; RRF needs zero labels (correct for a fresh deployment). All-in-Postgres avoids extra always-on services competing for the 64GB. CORRECTION: VectorChord-BM25 supports aarch64 (SVE SIMD, runtime dispatch) and benchmarks competitively, but the single-box rationale is one-engine consolidation + isolation simplicity, NOT any x86 '3x-vs-ES' figure; and the disk-friendly RaBitQ upgrade is deliberately de-risked to P1.",
+      "alternatives_rejected": "Qdrant+OpenSearch+RRF (two extra services on a memory-shared box \u2014 demote to future adapters); vector-only RAG (misses exact entities); learned/convex fusion (needs per-tenant labels you won't have at launch); skipping rerank (leaves the cheapest large quality win on the table); making RaBitQ a P0 dependency (unverified on the target).",
+      "consequences": "The live HNSW index MUST stay RAM-resident / on NVMe; graph is an edge table + recursive CTE (no Apache AGE); HippoRAG2 PPR is a P1 SQL add; the per-tenant confidential surface (D6) reuses this exact two-stage pipeline on its own encrypted tablespace."
+    },
+    {
+      "id": "D9",
+      "title": "vLLM is the serving SOFTWARE, run as THREE processes (LLM + embedder + reranker); Qwen3-30B-A3B in ONE shared generator process",
+      "decision": "Use vLLM (jetson-ai-lab SM 8.7 wheel path, pinned versions) as the serving software, run as THREE separate one-model-per-process instances: (1) the Qwen3-30B-A3B INT4 generator (ONE shared instance for all tenants), (2) an embedder pooling process, (3) a reranker score process. SPECTER2 is NOT served \u2014 precomputed at ingest. Plan latency SLOs against ~30 tok/s decode + ~2000 tok/s prefill.",
+      "rationale": "Best decode (+30-40% vs llama.cpp), 3.8x faster prefill, OpenAI-compatible. CORRECTION: vLLM is ONE model per process \u2014 a single instance CANNOT host generator+embedder+reranker, so 'one runtime' means the same software as 3 processes, each with its own CUDA context (~1.3GB each), ALL counted in the memory budget. The A3B MoE keeps decode bandwidth-bound at ~3B speed where a dense 32B would crawl. The RECOMMENDED memory-saver is 1 vLLM (LLM) + sentence-transformers in-process for embed/rerank (avoids 2 extra CUDA contexts).",
+      "alternatives_rejected": "Single vLLM instance hosting all three models (impossible \u2014 one model per process); TensorRT-LLM (30-90 min per-model engine compile, Jetson support preview-grade); MLC-LLM (weak prefill on Jetson); Ollama for prod (NO /api/rerank as of 2026) \u2014 dev-only; dense Qwen2.5-32B (slower decode + ~19GB).",
+      "consequences": "Pin JetPack 6.2/CUDA 12.6/Python 3.11/SM 8.7 wheels verbatim; NEVER pip install vllm from default PyPI; the memory table has explicit line items for all 3 CUDA contexts + weights; confidential isolation does NOT add a second 30B copy (D10)."
+    },
+    {
+      "id": "D10",
+      "title": "Confidential-tenant KV isolation WITHOUT a second model copy: one shared generator, prefix-caching disabled + KV flush for confidential requests",
+      "decision": "Confidential drafting runs on the SAME single shared Qwen3-30B-A3B vLLM process as everything else. KV-cache isolation is achieved by (a) disabling prefix caching for confidential requests (--enable-prefix-caching=False on that path) so no prefix/KV is shared across requests, and (b) strict request serialization with a KV-cache boundary between confidential and non-confidential requests. NO per-confidential-tenant model duplication. MIG is unavailable on Orin Ampere and is deferred to a future Thor/Blackwell interface only.",
+      "rationale": "CRITICAL CORRECTION: a dedicated vLLM PROCESS per confidential tenant would require a SECOND FULL resident copy of the 30B (~17GB weights + ~4-8GB context), pushing the steady-state total from ~49GB to ~70GB > 64GB \u2014 the centerpiece path could not run. vLLM does NOT leak KV across separate requests by default; the real cross-request leak vector is shared-prefix caching, which we disable for confidential requests. So one shared process + prefix-caching-off + serialization is both SAFE and FITS. The Ampere GPU has no MIG regardless.",
+      "alternatives_rejected": "Dedicated vLLM process per confidential tenant with its own 30B copy (exceeds 64GB by ~6GB minimum \u2014 the prior design's fatal arithmetic error); shared in-process vLLM WITH prefix caching enabled for confidential requests (shared-prefix KV leak risk); MIG partition (physically unavailable on AGX Orin).",
+      "consequences": "If true PROCESS isolation is ever mandated, the confidential process loads the SMALLER Qwen3-14B (~9GB) AND the public 30B is PAUSED/EVICTED first \u2014 NEVER two 30B copies resident; the memory budget proves both regimes fit. Confidential drafting requests are queued/serialized; backpressure exposed to the editor."
+    },
+    {
+      "id": "D11",
+      "title": "mod-workspace (confidential CRDT co-authoring) is PROMOTED to first-class Phase-0; walking-skeleton = real-time edit only",
+      "decision": "Build mod-workspace NOW as a first-class Phase-0 capability. WALKING-SKELETON P0 ships REAL-TIME concurrent edit only over Notion-style scoped roles on a CRDT (pycrdt) buffer snapshotted (AES-GCM blob) into the per-tenant KEK-bound draft store. Suggesting/tracked-changes (PI accept/reject) and anchored comments+resolve are P1.",
+      "rationale": "Confidential cross-group co-authoring IS the project's centerpiece \u2014 deferring it guts the loop. CORRECTION for builder tractability: shipping ALL three editorial modes + scoped roles + cascade in P0 is too large for a 30B builder; real-time edit alone proves the cross-group aha-moment (the activation north-star) and the confidential-snapshot + revocation security path. The kernel seams (IGrantStore, IRevocationAuthority, IAuditSink, MAX-rule drafts) are built against from P0.",
+      "alternatives_rejected": "Keeping mod-workspace at Phase-1+ (leaves the loop open, centerpiece unbuilt); shipping all three editorial modes in P0 (too much surface for a 30B builder to get the confidentiality right); a read-only 'comment' workspace (no true co-authoring \u2014 no aha-moment).",
+      "consequences": "CRDT websocket server + KEK snapshotting are Phase-0; draft/autosave/history inherit MAX-rule confidential tier and persist only in encrypted stores; suggesting-mode + anchored comments move to P1 with their own loop events."
+    },
+    {
+      "id": "D12",
+      "title": "The compounding write-back edge is a first-class, tested, memory-gated async data flow",
+      "decision": "On `proposal.outcome_recorded` (won), a SEMAPHORE-GATED async Dagster job (yielding to interactive generation, with CAPPED DuckDB/embedding memory) re-ingests the team, award, and produced artifacts through the SAME classify-gates-index monotonic-applier pipeline: materialize in-platform CO_PI_WITH edges, attach a TRANSPARENT outcome-weighted expertise signal (one signal among similarity+connectivity), add artifacts as public WORK nodes. A contract test asserts a won outcome demonstrably changes a subsequent match ranking.",
+      "rationale": "This is the compounding edge that converts the workflow into a flywheel. v2 had all the pieces but NEVER wired the EDGE. Outcome-weighting is a validated credibility signal; async-off-the-outbox respects HDD latency. CORRECTION: the write-back DuckDB/enrichment runs in the WRITEBACK-WINDOW budget (capped memory, semaphore-gated) so it does NOT contend uncontrolled with interactive serving \u2014 the prior 'headroom' was triple-counted across burst, DuckDB, and a (now-eliminated) second vLLM process.",
+      "alternatives_rejected": "No write-back (read-only graph = linear, non-compounding, no moat); synchronous write-back during editing (slow HDD graph writes on the interactive path); uncapped async DuckDB during interactive use (RAM contention); opaque outcome weighting as the sole ranker (incumbency-bias trap).",
+      "consequences": "Add a Pursuit + outcome domain model and a dedicated loop-event stream; the monotonic applier (projection_version vs revocation_epoch) guarantees a re-ingest cannot resurrect a revoked/down-classified record."
+    },
+    {
+      "id": "D13",
+      "title": "Tiered storage: HDD cold-archive only, NVMe hot tier, RAM transient; three mutually-exclusive memory regimes",
+      "decision": "Treat the spinning HDD as a COLD ARCHIVE (sequential bulk read/write of raw gzip CC0 snapshots only). An attached NVMe (PCIe Gen4 M.2, effectively mandatory in BOM) is the HOT tier for Postgres data dir + WAL, live vector/BM25/graph indexes (shared + per-tenant encrypted tablespaces), and Parquet working sets. RAM is transient + model weights + index hot pages. The box runs in ONE of three MUTUALLY-EXCLUSIVE memory regimes: SERVE, INGEST-WINDOW (serving paused / shared_buffers reduced, DuckDB memory_limit capped), WRITEBACK-WINDOW (semaphore-gated, capped). The authz/RLS hot path must NEVER incur HDD random seeks.",
+      "rationale": "Orin HDD random I/O is a documented bottleneck; HNSW is pure random I/O so serving it off HDD yields 10s+ queries; per-request authz off HDD would dominate latency. DuckDB out-of-core reads HDD SEQUENTIALLY at ingest and writes Parquet to NVMe. CORRECTION: the prior single 'headroom' figure was triple-counted (burst + DuckDB spill + second vLLM); replacing it with three mutually-exclusive regime budgets makes each provably fit (see memory_budget).",
+      "alternatives_rejected": "All-on-HDD (random-I/O kills query + authz latency); all-on-NVMe (raw corpora too large/expensive); in-RAM indexes only (competes with the GPU for unified 64GB); concurrent ingest+full-serve+writeback (triple-counts RAM).",
+      "consequences": "BOM must include NVMe; ingestion is a controlled batch DAG in the INGEST-WINDOW; cold raw snapshots stay gzip-compressed; warm-cache-before-serve for indexes; the three regimes are documented as an operator runbook + enforced by a serving-pause/semaphore mechanism."
+    },
+    {
+      "id": "D14",
+      "title": "Corpus = depth-within-tenant, scoped at ingest; OpenAlex free snapshot is QUARTERLY with updated_date delta ingestion",
+      "decision": "Build a deep per-tenant shared corpus (group's papers + prior winning proposals + matched funder calls) and scope public ingestion by a chosen ROR institution set and/or topic via DuckDB (NOT a full-world ingest). Integrate ORCID/SciENcv/Crossref/Grants.gov/RePORTER/NSF as periodic enrichment imports (snapshot/file readers, never metered live APIs on the hot path). The free OpenAlex snapshot is QUARTERLY; the ingestion DAG does DELTA ingestion partitioned by updated_date (download only new updated_date partitions, not a full re-ingest).",
+      "rationale": "We cannot win the breadth game on one HDD-bound box vs cloud-scale incumbents, but a deep, confidential, tenant-private corpus that grounds drafting is the #1 confirmed gap in every grant-AI tool. ORCID/SciENcv alignment makes teams submission-ready (NIH-required May 2026). CORRECTION (re-verified against current OpenAlex docs, 2026): the FREE public snapshot is refreshed QUARTERLY; MONTHLY snapshots + daily changefiles require a PAID plan. (The reviewer's 'monthly is free' claim is outdated \u2014 quarterly stands for the free tier.) The valid sub-point is adopted: OpenAlex partitions by updated_date, so ingestion is incremental delta, not full re-download.",
+      "alternatives_rejected": "Mirroring Pivot-RP/WoS-scale corpora locally (infeasible on HDD/single box); generic LLM with no corpus grounding (commodity baseline); proprietary profile schema (ignores federal rails); full VIVO/RDF runtime (heavy for an HDD box \u2014 borrow ontology for export only); assuming monthly free cadence (factually wrong per current docs; monthly = paid).",
+      "consequences": "Two grant feeds modeled distinctly (OPPORTUNITIES drive the win-loop, AWARDS feed expertise+co-funding edges); document QUARTERLY free freshness + updated_date DELTA ingestion in 09-ingestion; if monthly freshness is required, budget the PAID OpenAlex tier explicitly; commercial-OK license gate on tiered sources (PMC commercial subset only)."
+    }
+  ],
+  "domain_entities": [
+    {
+      "name": "Tenant",
+      "description": "A research group / institution on the one box. The unit of RLS isolation, KEK custody, encrypted-tablespace crypto-shred, and the per-tenant confidential retrieval surface. Long-term federation maps a Tenant to a node.",
+      "key_fields": "tenant_id (PK, leading index col on every scoped table), display_name, kek_id (-> LocalKms), confidential_tablespace_ref, created_at, entitlement_edition"
+    },
+    {
+      "name": "User / Researcher",
+      "description": "A person, anchored to a canonical ORCID iD. Holds memberships in one or more Tenants with roles. The node identity in the expertise graph.",
+      "key_fields": "subject_id (PK), orcid_id (canonical), display_name, primary_tenant_id, sciencv_profile_ref, name_variants[]"
+    },
+    {
+      "name": "TenantContext",
+      "description": "Request-scoped frozen identity (tenant_id + subject_id + resolved Entitlement) derived from the OIDC token and pinned to the transaction via SET LOCAL. Immutable for the request.",
+      "key_fields": "tenant_id, subject_id, entitlement (frozen), capabilities[]"
+    },
+    {
+      "name": "Entitlement / Capability",
+      "description": "Resolved per-tenant capability set evaluated AT the PEP (e.g. OWN_MATERIALS, PUBLIC_RETRIEVAL, CONFIDENTIAL_RETRIEVAL, CROSS_GROUP_SHARE, CONFIDENTIAL_DRAFTING). Modules read it, never decide it.",
+      "key_fields": "edition, capabilities[] (StrEnum set), permits_tier(tier) rule"
+    },
+    {
+      "name": "Work / Paper",
+      "description": "A scholarly output node in the expertise graph, anchored by DOI, carrying SPECTER2 (precomputed-at-ingest) + retrieval embeddings. Public-tier. Also created by the write-back edge when a won proposal produces artifacts.",
+      "key_fields": "work_id, doi, title, abstract, authorship[] (-> Researcher), topics[], venue, year, source, license, provenance"
+    },
+    {
+      "name": "Grant Opportunity",
+      "description": "An open funding call (Grants.gov daily XML extract). The top-of-loop trigger. Public-tier.",
+      "key_fields": "opportunity_id, agency, solicitation_number, title, deadline, required_concepts[], forecast_flag, source=grants_gov"
+    },
+    {
+      "name": "Grant Award",
+      "description": "A historical funded project (NIH RePORTER / NSF Awards). Feeds PI track-record and co-funding collaboration edges. Public-tier.",
+      "key_fields": "award_number, funder, pi_orcid, org_ror, abstract, fiscal_year, linked_work_dois[], co_pis[]"
+    },
+    {
+      "name": "Pursuit",
+      "description": "THE loop-threading object (Instrumentl project+tracker analog). Binds a matched Opportunity -> draft Proposal -> candidate Team + ongoing match alerts. The single sticky home that creates data-gravity.",
+      "key_fields": "pursuit_id, owner_tenant_id, opportunity_id, proposal_id, team_id, alert_config, lifecycle_state"
+    },
+    {
+      "name": "Proposal",
+      "description": "The confidential co-authored grant proposal. Lives as a CRDT buffer snapshotted (AES-GCM blob) into the KEK-bound draft store; also indexed into the OWNING tenant's confidential retrieval surface for own-tenant grounding. MAX-rule confidential tier; never enters the SHARED cross-tenant index.",
+      "key_fields": "proposal_id, pursuit_id, owner_tenant_id, tier=confidential, crdt_doc_ref, kek_snapshot_ref, confidential_index_ref, lifecycle_state, version"
+    },
+    {
+      "name": "ConfidentialIndexEntry",
+      "description": "A per-tenant, RLS-isolated retrieval entry (dense vector + BM25 posting) for the tenant's OWN confidential drafts and prior winning proposals, living on the tenant's encrypted tablespace. Queryable ONLY by that tenant's confidential drafting path (PEP-enforced). Resolves the STAGE-3 grounding requirement.",
+      "key_fields": "entry_id, tenant_id (leading index, RLS), source_proposal_id, embedding, bm25_terms, tablespace_ref"
+    },
+    {
+      "name": "Team / TeamMember (TEAM_ROLE)",
+      "description": "The assembled cross-group team and each member's scoped, revocable workspace role (PI=owner, co-PI=edit, reviewer=comment, viewer=view). Members may span tenants.",
+      "key_fields": "team_id, proposal_id, member_subject_id, member_tenant_id, role, granted_by, revoked_at"
+    },
+    {
+      "name": "SharingGrant",
+      "description": "A revocable, scope-bounded cross-group access grant (ReBAC relation tuple). Owner-authoritative; lights up cross-tenant workspace membership.",
+      "key_fields": "subject, relation, object, tenant_id (owner), scope, expires_at, reason"
+    },
+    {
+      "name": "RelationTuple",
+      "description": "The Zanzibar-style ReBAC storage row evaluated by the recursive-CTE Check() (LOCAL-only resolution; a federation-boundary rewrite). Inherits tenant RLS isolation.",
+      "key_fields": "subject, relation, object, tenant_id (leading index)"
+    },
+    {
+      "name": "ClassificationResult",
+      "description": "The fail-closed classifier output gating SHARED-index ingestion. Abstention -> QUARANTINE (=confidential). Determines is_retrievable for the shared index. Walking-skeleton P0 = binary allow/quarantine.",
+      "key_fields": "tier, decision (ALLOW/QUARANTINE/DENY), is_retrievable, class_codes[] (TEXT[]), confidence, compliance_flags[]"
+    },
+    {
+      "name": "PublishableProjection",
+      "description": "The ONLY shape that crosses into the SHARED/cross-tenant retrieval surface \u2014 an allowlist projection of public/private fields. The validator FORBIDS confidential. Only the broker constructs it. Carries discoverability_scope for future federation (a carry-forward-clean seam).",
+      "key_fields": "entity_ref, tier (public|private only), fields (allowlisted), discoverability_scope (enum, future-proof), projection_version"
+    },
+    {
+      "name": "ExpertiseFingerprint",
+      "description": "A researcher's time-evolving expertise vector (SPECTER2 space, precomputed-at-ingest + topic weights + outcome-weighted signal). The LIVING graph signal the write-back edge mutates.",
+      "key_fields": "subject_id, concept_weights[], specter2_centroid, outcome_weight_by_concept, last_enriched_at"
+    },
+    {
+      "name": "CollaborationEdge (CO_PI_WITH / CO_AUTHORED)",
+      "description": "A weighted, time-decayed collaboration edge built from co-authorship AND co-funding, plus in-platform won-proposal edges from the write-back. Powers the connectivity axis.",
+      "key_fields": "src_subject, dst_subject, edge_type, weight, time_decay, source_proposal_id (if in-platform), award_number (if funded)"
+    },
+    {
+      "name": "KEK / DEK (key material)",
+      "description": "Per-tenant Key-Encryption-Key wrapping a per-tenant Data-Encryption-Key. The DEK does AES-GCM on non-searchable blobs AND unlocks the per-tenant encrypted tablespace (searchable indexes). destroy_kek() = crypto-shred for BOTH. Box-master key anchored by fTPM/passphrase (P0 default).",
+      "key_fields": "kek_id, tenant_id, wrapped_dek, box_master_anchor_ref (fTPM PCR or passphrase-KDF), tablespace_unlock_ref, created_at, destroyed_at"
+    },
+    {
+      "name": "AuditEvent",
+      "description": "A per-stream hash-chained, tamper-evident security record (PEP decisions, classification, revocation, egress, grant-issued). prev_hash -> entry_hash with periodic signed checkpoints. SEPARATE from loop events.",
+      "key_fields": "stream_id, seq, prev_hash, entry_hash, event_type, payload, ts, signed_checkpoint_ref"
+    },
+    {
+      "name": "LoopEvent",
+      "description": "A NON-security product-analytics event on a dedicated stream (pursuit_created, opportunity_matched, collaborator_joined[cross-tenant], first_co_edit, outcome_recorded, graph_enriched). Keeps the security audit chain clean.",
+      "key_fields": "event_type, pursuit_id, actor_tenant_id, target_tenant_id, ts, is_cross_tenant"
+    },
+    {
+      "name": "TombstoneLog / RevocationRecord",
+      "description": "The owner-local durable, fsync'd revocation log. Authoritative for DENY; rebuilt on crash; refuses confidential reads until recovery completes. Revocation-by-reason (security/consent = zero allow-window).",
+      "key_fields": "object_ref, revoked_at, reason, revocation_epoch (monotonic), committed (fsync)"
+    }
+  ],
+  "security_spine": [
+    {
+      "control": "Single Policy Enforcement Point chokepoint",
+      "mechanism": "One in-process PolicyEnforcementPoint.authorize() + data-access broker; modules import only the kernel + own subpackage (import-linter + AST test forbid raw-store/classifier-engine imports and PublishableProjection construction); broker holds raw-store creds only for shared confidential/classification tables AND per-tenant confidential-index access.",
+      "rationale": "Every retrieve/egress/derive passes one fail-closed point, so new capabilities cannot become leak vectors and a 30B builder cannot scatter enforcement logic. More critical on one box where all groups share the process. The broker is also the sole gate to the per-tenant confidential retrieval surface."
+    },
+    {
+      "control": "Fixed fail-closed decision order",
+      "mechanism": "entitlement -> capability -> ABAC tier (in-Python lattice) -> ReBAC Check (Postgres recursive CTE, LOCAL-only) -> durable tombstone read (authoritative deny) -> short-TTL lease (narrow-only positive cache); any error/abstain DENIES; caches narrow-only; durable log authoritative for deny. The adversarial CI gates encoding this order are HUMAN-AUTHORED, not written by the 30B builder.",
+      "rationale": "Removes the fail-OPEN risk of undefined multi-store composition (convergence #1 finding); gives the builder one unambiguous order. A human authors the tripwires because they are the safety net and the model cannot be trusted to write its own."
+    },
+    {
+      "control": "Per-tenant Postgres isolation",
+      "mechanism": "FORCE RLS + AS RESTRICTIVE FOR ALL with USING + WITH CHECK on current_setting('app.tenant_id',true); tenant_id leading index; SET LOCAL via set_config(...,true) with bound param; app role NOSUPERUSER/NOBYPASSRLS/NOINHERIT non-owner. Applies equally to the per-tenant confidential retrieval surface.",
+      "rationale": "Belt-and-suspenders isolation behind the PEP for many groups on one shared Postgres; SET LOCAL is leak-proof under PgBouncer transaction pooling; leading index makes the predicate an index seek (vital on the HDD box)."
+    },
+    {
+      "control": "RLS-bypass lint (4 vectors)",
+      "mechanism": "CI lint check_rls_bypass.py forbids SECURITY DEFINER, MATERIALIZED VIEW, AND VIEW over tenant tables without security_invoker=true; plus a regression test asserting NO-SET-LOCAL transaction returns ZERO rows, and a probe asserting the app role lacks BYPASSRLS/superuser.",
+      "rationale": "Closes all known RLS-bypass footguns including the VIEW vector v2 missed; the empty-GUC test guarantees fail-closed on unset tenant; the role probe stops a misconfig silently disabling the boundary."
+    },
+    {
+      "control": "Classify-gates-index hard edge (SHARED index) + per-tenant confidential surface (own-tenant)",
+      "mechanism": "Record classified BEFORE embed/index/graph; only is_retrievable (Decision.ALLOW, public) reaches the SHARED cross-tenant sink; abstention -> QUARANTINE -> adjudication queue. SEPARATELY, own-tenant confidential drafts+prior proposals are indexed into a per-tenant RLS-isolated encrypted-tablespace surface queryable ONLY by that tenant's drafting path. The PublishableProjection validator rejects confidential tier for the SHARED index.",
+      "rationale": "Structural fail-closed enforcement at the SHARED pipeline edge for cross-tenant content; a distinct per-tenant confidential surface makes STAGE-3 own-proposal grounding (the moat) functional WITHOUT cross-tenant leakage. Proven by tenant-A-grounds / tenant-B-cannot-retrieve tests."
+    },
+    {
+      "control": "Crypto-shred of SEARCHABLE confidential derivatives via encrypted-tablespace DEK destruction",
+      "mechanism": "Per-tenant vector/BM25/graph confidential indexes live on a per-tenant ENCRYPTED TABLESPACE / LUKS volume; crypto-shred = destroy the per-tenant DEK that unlocks the volume, then drop-and-rebuild; post-shred zero-decryptable-hits CI gate.",
+      "rationale": "AES-GCM on vectors/BM25 is mathematically unsearchable (ciphertext destroys distance metrics; encrypted postings cannot be scored), so application-layer encryption CANNOT be the mechanism for searchable indexes \u2014 encrypted-volume + DEK-destroy is the ONLY workable crypto-shred for them and is therefore PRIMARY (corrects the prior inverted design)."
+    },
+    {
+      "control": "AES-GCM ALE for NON-searchable confidential blobs",
+      "mechanism": "Per-tenant DEK does AES-256-GCM on CRDT draft snapshots, autosave, version history, eval traces, and cache VALUES before insert; destroy_kek() shreds them O(1); post-shred zero-decryptable-hits CI gate covers this path too.",
+      "rationale": "ALE is correct EXACTLY where data is never searched (opaque blobs). Scoping it to non-searchable blobs makes crypto-shred reach drafts/history/eval while leaving searchable indexes to the encrypted-tablespace mechanism \u2014 the two mechanisms together cover all confidential derivatives correctly."
+    },
+    {
+      "control": "Box-master key custody (fTPM/passphrase P0 default; OP-TEE/EKB optional human hardening)",
+      "mechanism": "In-process LocalKms behind IKms holds per-tenant KEKs encrypted under ONE box-master key. P0 DEFAULT: box-master sealed to an fTPM PCR via userspace tpm2-tools/tpm2-pytss (no custom Trusted Application) OR derived from a boot-time passphrase via NIST SP 800-108 KDF (key never on disk). destroy_kek primitive explicit.",
+      "rationale": "The OP-TEE/EKB secure-world anchor is NOT turnkey \u2014 it needs irreversible fuse-burning + Secure Boot + a custom OP-TEE Trusted Application in C, with documented unresolved NVIDIA-forum failures \u2014 a hard wall for a Python 30B builder. The userspace fTPM/passphrase path needs no secure-world code and keeps the master key off the plaintext HDD."
+    },
+    {
+      "control": "Confidential = local-only inference + shared-generator KV isolation (NO second model copy, NO MIG)",
+      "mechanism": "One owned tier->locality policy table consulted by BOTH the router and the egress transport (disagreement = hard-fail); confidential/private -> in-boundary vLLM ONLY, public may use cloud. KV isolation on the ONE shared 30B generator process via prefix-caching DISABLED for confidential requests (--enable-prefix-caching=False) + serialized requests with a KV boundary. NO per-tenant model duplication; MIG unavailable on Orin Ampere.",
+      "rationale": "Confidential drafts must never egress; the two-enforcement-points-one-policy-table pattern stops router/transport drift. CRITICAL: a second dedicated 30B process needs a second ~17GB+context resident copy (total ~70GB > 64GB) \u2014 infeasible. vLLM does not leak KV across separate requests by default; the real leak vector is shared-prefix caching, which we disable for confidential requests, making one shared process both safe and within budget."
+    },
+    {
+      "control": "Owner-authoritative, fail-closed revocation with durable recovery",
+      "mechanism": "Revocation commits (fsync) to a durable revocation_log BEFORE any allow/deny observes it; crash-recovery rebuilds authorization strictly from the durable log and refuses confidential reads until recovery completes (anti-resurrection); revocation-by-reason (security/consent = zero allow-window); owner re-derives scope, caller claims are untrusted hints.",
+      "rationale": "Owner-authoritative fail-closed revocation is the correctness backbone of confidential sharing; on one box no-global-consensus is automatic, so what matters is durability + crash-recovery, proven by an injected-clock crash-mid-revocation deterministic test every CI."
+    },
+    {
+      "control": "Tamper-evident audit spine",
+      "mechanism": "Per-stream hash-chained AuditEvent (prev_hash -> entry_hash) in Postgres recording PEP decisions + data-access, with periodic locally-signed chain-head checkpoints; loop/product analytics kept on a SEPARATE non-security stream.",
+      "rationale": "A tamper-evident record of who accessed which group's confidential artifact under which grant is a right-sized multi-group moat and supports proving a revoked grant stopped serving; external RFC-3161/transparency-log anchoring dropped (a federation/compelled-operator concern, not a self-hosted box)."
+    },
+    {
+      "control": "Entitlement-at-PEP capability gating",
+      "mechanism": "Entitlement/edition evaluated AT the PEP; modules physically cannot enable a capability they are not entitled to (incl. CONFIDENTIAL_RETRIEVAL on the per-tenant surface); contract test 'a lower tier cannot construct a confidential/cross-group request'.",
+      "rationale": "Keeps capability decisions in one place (a 30B builder gets scattered gates wrong); cleanly gates which groups may participate in cross-group sharing vs public-discovery-only, and who may query the confidential surface."
+    },
+    {
+      "control": "Security-contract test suite as CI gates (HUMAN-authored)",
+      "mechanism": "Zero-leak adversarial classifier, broker-over-assert-denied, missing-ABAC-attr->deny, PIP-unavailable->deny, post-crypto-shred zero-decryptable-hits (BOTH tablespace-DEK-destroy and AES-GCM-blob paths), cross-tenant-read-denied (BOLA), confidential-surface-cross-tenant-denied, lower-tier-cannot-construct-confidential-request, crash-mid-revocation stays-denied, MAX-rule + ABAC-narrows-only property tests \u2014 all green-or-red gates. These tripwires are written by a HUMAN, not the 30B builder.",
+      "rationale": "Encodes the security spine as executable invariants rather than prose a mid-size model might ignore; the model cannot be trusted to author its own safety net, so a human writes the gates while the model writes the implementation against them."
+    }
+  ],
+  "retrieval_design": "P0 retrieval is a TWO-STAGE pipeline behind ONE IRetrievalStrategy interface, with ALL three sub-stores (IVectorStore, ILexicalIndex, IGraph) backed by a SINGLE Postgres 16 instance \u2014 the headline single-box revision of v2's locked Qdrant+OpenSearch decision (those become documented future scale-out adapters, not P0 build targets). There are TWO retrieval surfaces sharing this pipeline: (A) the SHARED cross-tenant PUBLIC index (public-tier only, classify-gated), and (B) per-tenant CONFIDENTIAL retrieval surfaces on per-tenant encrypted tablespaces holding ONLY that tenant's own confidential drafts + prior winning proposals, queryable ONLY by that tenant's confidential drafting path (PEP-enforced) \u2014 this resolves the STAGE-3 grounding-vs-public-only contradiction (mod-lit-intelligence grounds drafts on BOTH A and B for the owning tenant). STAGE 1 (hybrid): dense vector search (pgvector HNSW as the VERIFIED P0 default kept RAM-resident; VectorChord IVF+RaBitQ DiskANN-style is a P1 verify-then-adopt task, NOT a P0 dependency) + native BM25 (VectorChord-BM25 \u2014 verified aarch64 via SVE SIMD + runtime CPU dispatch \u2014 or ParadeDB pg_search, whichever benchmarks well on the ACTUAL aarch64 box; no inherited x86 '3x-vs-ES' claim is relied upon) fused with RRF k=60 in SQL. RRF is chosen because it is parameter-free, score-scale-immune, and needs ZERO labeled data \u2014 correct for a fresh deployment; learned/convex fusion deferred until per-tenant labels exist. BM25 is NON-optional: scholarly+grant queries are entity-heavy (author/lab names, grant/solicitation numbers, gene/method acronyms). STAGE 2 (rerank): a local cross-encoder reranks top-50 -> top-8 (bge-reranker-v2-m3 568M or Qwen3-Reranker-0.6B) via a dedicated vLLM score-endpoint process (sentence-transformers in-process fallback, which saves a CUDA context); rerank adds +5-15 nDCG@10 for <200ms; two-stage beats single-stage (Recall@5 0.816 vs 0.695). EMBEDDINGS: bge-m3 (dense+sparse+ColBERT, 8192 ctx) or Qwen3-Embedding-0.6B as the SINGLE serve-time retriever embedder; SPECTER2 (Apache-2.0, base+proximity adapter via the `adapters` library) is a SECOND citation-aware space for paper-similarity / expertise fingerprints \u2014 PRECOMPUTED AT INGEST as a batch job then UNLOADED (NOT serve-resident, NOT served by vLLM), so it appears only in the ingest-window memory budget. CHUNKING: section-aware splitting + hierarchical parent/child (embed 128-256 tok children, return 512-1024 tok parents); semantic/LLM chunking SKIPPED at P0 (NAACL 2025: fixed ~200-word chunks match/beat it). QUERY EXPANSION / AGENTIC: P0 is single-shot hybrid+rerank ONLY; P1 adds an Adaptive-RAG difficulty router that conditionally triggers HyDE/multi-query (each an extra LLM call contending for the one GPU, off by default) and a CRAG corrective loop on the proposal-grounding path; multi-agent decomposition reserved for team-assembly. GRAPH: a deterministic metadata-backbone edge table (authors/papers/citations/affiliations/venues/grants/topics) built from corpus metadata with NO recurring LLM entity-extraction tax \u2014 this same graph IS the collaborator-discovery product surface; bounded-hop recursive CTEs do traversal; HippoRAG2-style Personalized-PageRank graph-augmented retrieval (~1k tokens/query) is a P1 SQL/Python add (Microsoft GraphRAG global summarization ~331k tokens/query rejected as infeasible on edge; Apache AGE rejected). EVAL: RAGAS faithfulness + context precision/recall + nDCG@k/Recall@k on a small per-tenant gold set, wired into CI as a regression gate, with an IN-BOUNDARY local 30B judge (mandatory \u2014 confidential drafts forbid a cloud judge); eval artifacts are confidential-tier (AES-GCM blob, crypto-shred on erasure). BENCHMARK ACCEPTANCE: P0.5 includes a test that benchmarks BM25 latency on the REAL aarch64 box (not an inherited x86 number). HDD GUARDRAIL (load-bearing): the live HNSW index must NEVER be served off the spinning HDD; the index lives RAM-resident / on NVMe, Postgres data+WAL on NVMe, HDD restricted to sequential cold-blob reads at ingestion only. PARTIAL-FAILURE POLICY: public/shared discovery returns partial-results-with-honest-completeness-indicator (never whole-query-fail); the confidential path is whole-query-fail-closed.",
+  "memory_budget": "Single Orin AGX 64GB LPDDR5 UNIFIED memory (CPU+GPU share one pool \u2014 the hard ceiling for ALL processes COMBINED). The prior single 'headroom' figure was TRIPLE-COUNTED (burst + DuckDB spill + a now-ELIMINATED second vLLM process). It is replaced by THREE MUTUALLY-EXCLUSIVE regime budgets, each proven to fit. === REGIME 1: SERVE (interactive steady state) === (1) OS + L4T + CUDA drivers + headroom ~7GB. (2) GENERATOR process \u2014 Qwen3-30B-A3B INT4/W4A16, weights ~17GB (ALL 30.5B experts resident; the 3.3B active-per-token governs only DECODE SPEED ~30-45 tok/s, not footprint) + KV cache/activations/CUDA context @ ~20k ctx, small max-num-seqs ~8GB = ~25GB. (3) EMBEDDER process \u2014 bge-m3 568M FP16 weights ~1.2GB + CUDA context ~1.3GB = ~2.5GB. (4) RERANKER process \u2014 bge-reranker-v2-m3 568M weights ~1.2GB + CUDA context ~1.3GB = ~2.5GB. (5) SPECTER2 = 0GB (precomputed at ingest, UNLOADED at serve). (6) Postgres shared_buffers + OS page cache for the hot pgvector HNSW + BM25 index (scoped tenant corpus ~100K-1M chunks at 1024-dim + HNSW ~1.5-2x overhead; shared public + the small hot per-tenant confidential surfaces) ~7GB. (7) Postgres backends + PgBouncer + FastAPI + Python workers + CRDT websocket server (CRDT docs KB-MB, negligible) ~5GB. SERVE TOTAL = 7+25+2.5+2.5+0+7+5 = ~49GB, leaving ~15GB margin. RECOMMENDED SAVER: collapse embedder+reranker to sentence-transformers IN-PROCESS (drops 2 CUDA contexts ~2.6GB) -> ~46GB. CONFIDENTIAL DRAFTING adds NO resident model copy \u2014 it reuses the SAME generator process with --enable-prefix-caching=False + serialized requests (D10), so SERVE total is unchanged at ~49GB. (If true PROCESS isolation is ever mandated, the confidential process loads Qwen3-14B ~9GB weights + ~4GB context = ~13GB AND the public 30B is PAUSED/EVICTED first: 7 + 13 + 2.5 + 2.5 + 7 + 5 = ~37GB \u2014 NEVER two 30B copies, NEVER 70GB.) === REGIME 2: INGEST-WINDOW (bulk DuckDB load; interactive serving PAUSED, generator evicted or idle) === OS+drivers ~7GB; generator EVICTED (0GB) [or idle-resident ~17GB if a quick window]; DuckDB out-of-core with SET memory_limit='8GB' + capped threads ~8GB; SPECTER2 batch (base+proximity adapter, loaded only here) ~1.5GB; embedder process for chunk embeddings ~2.5GB; Postgres with REDUCED shared_buffers during bulk load + writer backends ~6GB. INGEST TOTAL (generator evicted) = 7+8+1.5+2.5+6 = ~25GB (huge margin); (generator idle-resident) = ~42GB. Fits either way. === REGIME 3: WRITEBACK-WINDOW (async loop enrichment, SEMAPHORE-GATED to yield to interactive generation) === SERVE baseline ~49GB + capped writeback DuckDB/enrichment (SET memory_limit='4GB') + SPECTER2 reload for fingerprint recompute ~1.5GB = ~54.5GB, within 64GB; the semaphore ensures writeback and an interactive generation burst do not both peak. === CONTENTION RULES === (a) the box is in exactly ONE regime at a time; ingestion (P0.7) runs in a maintenance window with serving paused; (b) serialize LLM generation vs heavy embedding batches; gate generation so the CRDT editor stays responsive; (c) confidential KV isolation = prefix-caching-off + serialization on the ONE shared generator, NO MIG (Orin Ampere lacks MIG; deferred to Thor/Blackwell). === DATA PLACEMENT === spinning HDD = COLD ARCHIVE only \u2014 raw CC0 snapshots gzip-compressed, read SEQUENTIALLY at ingestion (OpenAlex ~330GB gz scoped by ROR/topic via DuckDB, QUARTERLY free snapshot with updated_date DELTA ingestion; Crossref ~200GB via Academic Torrents; ORCID anchors-only from the ~730GB-uncompressed summaries; full small sources ROR/NSF/NIH/Grants.gov); NVMe (PCIe Gen4 M.2, effectively MANDATORY in BOM) = HOT tier for Postgres data dir + WAL + live shared/confidential indexes + Parquet working sets; RAM = transient + model weights + index hot pages. If a dense 32B were chosen, weights rise to ~19GB AND decode slows \u2014 a second reason the A3B MoE is correct.",
+  "build_phases": [
+    {
+      "phase": "P0.0 \u2014 Environment + kernel skeleton",
+      "goal": "Pin the Orin baseline and stand up the frozen contracts kernel so every later package has stable imports.",
+      "deliverables": "Pinned runbook (JetPack 6.2 / CUDA 12.6 / Python 3.11+ / SM 8.7 wheels from jetson-ai-lab); tigerexchange/packages/contracts with Tier lattice (MAX-rule, unknown->confidential), TenantContext/Entitlement/Capability (incl. CONFIDENTIAL_RETRIEVAL), ClassificationResult/Decision, PublishableProjection (validator forbids confidential), all I* Protocols (incl. deferred IExchangeFeed/IRevocationAuthority stubs), AuditEvent; import-linter kernel-no-feature-deps contract; docker-compose with Postgres 16 + PgBouncer.",
+      "acceptance_tests": "tier_join_all([])==confidential; PublishableProjection(tier=confidential) raises; import-linter green; pytest + ruff + mypy clean; one of the 3 vLLM processes loads a tiny model from the SM 8.7 wheel (smoke)."
+    },
+    {
+      "phase": "P0.1 \u2014 Tenant isolation + identity",
+      "goal": "Make multi-group isolation real and fail-closed before any data plane exists.",
+      "deliverables": "FORCE-RLS + RESTRICTIVE + USING/WITH CHECK migrations with tenant_id-leading indexes; app role NOSUPERUSER/NOBYPASSRLS/NOINHERIT non-owner; OIDC token -> frozen TenantContext + SET LOCAL via set_config(bound,true); check_rls_bypass.py lint (SECURITY DEFINER, MATERIALIZED VIEW, non-security_invoker VIEW).",
+      "acceptance_tests": "cross-tenant-read-denied (BOLA) [HUMAN-authored]; NO-SET-LOCAL transaction returns ZERO rows [HUMAN-authored]; app-role probe asserts no BYPASSRLS/superuser; WITH CHECK blocks inserting another tenant_id; lint fails on a planted SECURITY DEFINER and a non-invoker view."
+    },
+    {
+      "phase": "P0.2 \u2014 PEP + broker chokepoint",
+      "goal": "Build the single fail-closed authorization chokepoint with the fixed decision order.",
+      "deliverables": "mod-pep PolicyEnforcementPoint.authorize() with order entitlement->capability->in-Python ABAC tier->Postgres-CTE ReBAC Check->durable tombstone read->short-TTL lease; RelationTuple table + recursive-CTE Check(); data-access broker (creds for shared + confidential-index tables only); import-linter + AST test forbidding module raw-store/projection access.",
+      "acceptance_tests": "any step error/abstain -> DENY [HUMAN-authored]; lower-tier-cannot-construct-confidential-request [HUMAN-authored]; broker-over-assert-denied; missing-ABAC-attr->deny; PIP-unavailable->deny; ReBAC nested-relation Check resolves correctly; module-importing-raw-store fails import-linter."
+    },
+    {
+      "phase": "P0.3 \u2014 AI plane bring-up (embedder + reranker FIRST) + classification gate + audit spine",
+      "goal": "Stand up embeddings/reranker serving (needed by later phases) and gate ingestion fail-closed with a tamper-evident audit.",
+      "deliverables": "the embedder + reranker vLLM processes (or sentence-transformers in-process saver) behind IModelRouter \u2014 a SLICE of the AI plane brought up EARLY so retrieval/classification have embeddings; classification service FailClosedClassifier (walking-skeleton = BINARY allow/quarantine; abstention->QUARANTINE->adjudication queue, never indexed); per-stream hash-chained mod-audit IAuditSink with signed checkpoints; SEPARATE loop-event stream scaffold.",
+      "acceptance_tests": "embedder returns vectors + reranker returns scores (smoke); zero-leak adversarial classifier (quarantined record reaches NO shared sink) [HUMAN-authored]; class_codes TEXT[] in DDL+payload; audit prev_hash->entry_hash chain verifies; tampering breaks chain verification; loop events do not write to the security stream."
+    },
+    {
+      "phase": "P0.4a \u2014 Key material + non-searchable-blob crypto (NO store dependency)",
+      "goal": "Stand up envelope keys, the box-master anchor, and AES-GCM for blobs \u2014 before the data plane.",
+      "deliverables": "confidential_crypto per-tenant KEK/DEK envelope; LocalKms behind IKms with the P0 DEFAULT box-master anchor = fTPM-via-tpm2-tools (seal-to-PCR) OR passphrase-derived KDF (key never on disk); AES-256-GCM ALE for NON-searchable blobs (CRDT snapshots, autosave, history, eval traces, cache values); destroy_kek().",
+      "acceptance_tests": "post-crypto-shred zero-decryptable-hits across BLOB stores [HUMAN-authored]; KEK never plaintext on HDD; box-master sealed to fTPM PCR or passphrase-derived (not on disk); destroy_kek is O(1)."
+    },
+    {
+      "phase": "P0.5 \u2014 Data plane: single-Postgres hybrid retrieval (shared + per-tenant confidential surface)",
+      "goal": "Stand up dense+BM25+RRF+graph in one Postgres on the NVMe hot tier, including the per-tenant confidential retrieval surface.",
+      "deliverables": "retrieval package HybridRetriever/IRetrievalStrategy (pgvector HNSW + native BM25 + RRF k=60 in SQL), cross-encoder rerank via the P0.3 reranker; metadata edge-table graph + recursive-CTE traversal; the per-tenant CONFIDENTIAL retrieval surface (RLS-isolated, on a per-tenant tablespace) queryable only via the PEP; create_collection guarded by collection_exists.",
+      "acceptance_tests": "hybrid+rerank beats vector-only on a small gold set (Recall@k uplift); BM25 latency BENCHMARKED on the REAL aarch64 box (not an x86 number); index served RAM-resident/NVMe (no HDD on hot path) verified; graph bounded-hop CTE returns correct ego-net; RRF deterministic; tenant A's confidential surface NOT queryable by tenant B [HUMAN-authored]."
+    },
+    {
+      "phase": "P0.4b \u2014 Crypto-shred of SEARCHABLE confidential derivatives (AFTER the data plane)",
+      "goal": "Make the per-tenant search indexes crypto-shreddable by encrypted-tablespace DEK destruction.",
+      "deliverables": "per-tenant ENCRYPTED TABLESPACE / LUKS volume hosting the confidential vector/BM25/graph surface from P0.5; DEK unlocks the volume; crypto-shred = destroy the per-tenant DEK + drop-and-rebuild; wire to destroy_kek().",
+      "acceptance_tests": "post-crypto-shred zero-decryptable-hits across the SEARCHABLE confidential indexes [HUMAN-authored]; a confidential prior-proposal entry is unreadable after DEK destruction; shred is O(1) at the key level."
+    },
+    {
+      "phase": "P0.6 \u2014 Model router completion + generator + GPU isolation policy",
+      "goal": "Complete the AI plane: serve the 30B generator and route by classification to local-only confidential inference without a second model copy.",
+      "deliverables": "mod_ai ModelRouter/IModelRouter completed, provider registry, transport egress guard reading the ONE owned tier->locality table (router+transport hard-fail on disagreement); Qwen3-30B-A3B INT4 in ONE shared vLLM process; confidential KV isolation = --enable-prefix-caching=False + serialized confidential requests (NO MIG, NO second 30B copy).",
+      "acceptance_tests": "confidential/private routes to in-boundary only; router vs transport disagreement hard-fails; confidential requests run with prefix caching disabled (verified); decode ~30-45 tok/s smoke benchmark recorded; total resident memory in SERVE regime measured <= ~49GB."
+    },
+    {
+      "phase": "P0.7 \u2014 Ingestion: classify-gates-index + scoped corpus (INGEST-WINDOW regime)",
+      "goal": "Build the HDD-aware batch ingestion that feeds the public graph, in a serving-paused maintenance window.",
+      "deliverables": "mod-ingestion Dagster DAGs (snapshot->distill->classify[hard gate]->embed->index->graph) + transactional-outbox sensor; DuckDB out-of-core (SET memory_limit='8GB', capped threads) scoped OpenAlex (ROR/topic) -> Parquet on NVMe with updated_date DELTA ingestion; full small sources (ROR/NSF/NIH RePORTER/Grants.gov, ORCID anchors-only); SPECTER2 batch precompute then UNLOAD; identity-resolution (DETERMINISTIC ORCID/DOI/ROR only in P0; probabilistic blocking deferred to P1); monotonic applier (projection_version vs revocation_epoch); dagster>=1.8,<2; grants_gov enum; QUARTERLY OpenAlex cadence (monthly = paid).",
+      "acceptance_tests": "quarantined record never indexed; monotonic applier cannot resurrect a revoked/down-classified record on replay; HDD reads are sequential (no random-read on ingest hot path); two grant feeds (opportunities vs awards) ingested distinctly; commercial-OK license gate drops NC-only PMC; ingestion runs in INGEST-WINDOW with serving paused."
+    },
+    {
+      "phase": "P0.8 \u2014 Feature modules (discovery, lit-intelligence, funding)",
+      "goal": "Ship the read-side loop surfaces behind the PEP.",
+      "deliverables": "mod-discovery (PUBLIC-tier two-axis ranking: coverage matrix + connectivity + per-candidate why + human curation), mod-lit-intelligence (DUAL-SOURCE grounded drafting over shared public + own-tenant confidential surface + RAGAS gate, in-boundary judge), mod-funding (opportunity match -> Pursuit + award feeds); DI factory wiring; FastAPI routers.",
+      "acceptance_tests": "mod-discovery touches no confidential data (public-tier only); lit-intelligence grounds on BOTH surfaces for the owning tenant; team ranking surfaces coverage gaps + connectivity + why; RAGAS faithfulness gate green on gold set; Pursuit created from a matched opportunity; module imports pass import-linter."
+    },
+    {
+      "phase": "P0.9 \u2014 mod-workspace: confidential CRDT co-authoring, real-time mode (CENTERPIECE walking-skeleton)",
+      "goal": "Build the confidential cross-group editor \u2014 the project's centerpiece, real-time mode first.",
+      "deliverables": "pycrdt CRDT buffer + self-hosted websocket server; REAL-TIME concurrent edit (suggesting-mode + anchored comments deferred to P1); Notion-style scoped roles (TEAM_ROLE) + permission cascade + highest-permission-wins; KEK-bound AES-GCM snapshotting; MAX-rule confidential tagging of draft/autosave/history; indexing own-tenant drafts into the confidential retrieval surface; SharingGrant (ReBAC) lights cross-tenant membership.",
+      "acceptance_tests": "two users from DIFFERENT tenants concurrently edit and converge (CRDT); revoked collaborator loses access immediately (zero allow-window, security reason) [HUMAN-authored]; draft snapshot is KEK-bound and shred-reachable; tenant A grounds on A's own prior proposal, tenant B cannot retrieve it [HUMAN-authored]; crash mid-edit recovers the CRDT doc."
+    },
+    {
+      "phase": "P0.10 \u2014 Loop write-back edge + measurement (COMPOUNDING)",
+      "goal": "Close the loop: won outcomes re-weight the expertise graph, memory-gated.",
+      "deliverables": "Pursuit + outcome model; proposal.outcome_recorded event; Dagster outbox sensor -> SEMAPHORE-GATED async enrichment job (WRITEBACK-WINDOW: capped DuckDB/embedding memory, yields to interactive generation) doing in-platform CO_PI_WITH edges, transparent outcome-weighted fingerprint signal, artifacts as public WORK nodes via the same monotonic applier; dedicated loop-event stream; activation north-star instrumentation (cross-tenant collaborator_joined).",
+      "acceptance_tests": "a recorded WIN demonstrably changes a subsequent team-match ranking (the compounding contract test); write-back runs async off the outbox, semaphore-gated, NOT on the interactive path; outcome weight is one transparent signal among similarity+connectivity; loop-conversion funnel queryable; graph_enriched emitted; writeback memory stays within WRITEBACK-WINDOW budget."
+    }
+  ],
+  "open_risks": [
+    {
+      "risk": "NVMe absent from the delivered box; HDD-only deployment makes HNSW queries 10s+ and authz lookups seek-bound.",
+      "mitigation": "Flag NVMe (PCIe Gen4 M.2) as effectively MANDATORY in the BOM at P0.0; if truly unavailable, force the entire hot tier (Postgres data+WAL, indexes, relation tuples) into RAM via shared_buffers and cap corpus scope so the working set fits, accepting reduced corpus size."
+    },
+    {
+      "risk": "VectorChord-BM25 Rust extension fails to build on the JetPack/CUDA aarch64 base (build risk, NOT a performance risk \u2014 aarch64 SVE support is verified).",
+      "mitigation": "Default to pgvector HNSW + ParadeDB pg_search (co-equal verified BM25 alternate), treating VectorChord as an interchangeable choice; the P0.5 acceptance test benchmarks whichever BM25 engine builds, on the REAL aarch64 box; keep IVectorStore/ILexicalIndex interfaces clean so the swap is local."
+    },
+    {
+      "risk": "vLLM SM 8.7 community wheel drifts from JetPack/CUDA versions or the builder uses default-PyPI vllm (CPU fallback / silent failure) across the THREE vLLM processes.",
+      "mitigation": "PIN exact JetPack 6.2/CUDA 12.6/Python/vLLM versions verbatim; add a startup assertion that loaded torch/vllm reports SM 8.7 CUDA in EACH process; document llama.cpp (LLM) + sentence-transformers (embed/rerank) fallbacks; NEVER pip install vllm from default PyPI; prefer the sentence-transformers-in-process saver if the 3-process build is fragile."
+    },
+    {
+      "risk": "Confidential drafting KV isolation is mis-implemented (prefix caching left ON for confidential requests) -> shared-prefix KV leak; OR someone reintroduces a second 30B process and blows the 64GB ceiling.",
+      "mitigation": "Enforce --enable-prefix-caching=False on the confidential path with a startup/route assertion; HUMAN-authored test that a confidential request does not reuse a cached prefix; document in CONVENTIONS that a second resident 30B copy is FORBIDDEN (use prefix-off+serialization, or Qwen3-14B WITH the 30B evicted); a CI/runtime probe asserts SERVE-regime resident memory <= ~49GB."
+    },
+    {
+      "risk": "Crypto-shred mis-built: builder applies AES-GCM to vectors/BM25 (unsearchable -> broken confidential grounding) instead of encrypted-tablespace DEK destruction.",
+      "mitigation": "CONVENTIONS states the SPLIT explicitly (encrypted-tablespace+DEK-destroy for SEARCHABLE indexes; AES-GCM only for NON-searchable blobs); P0.4b builds the searchable path AFTER P0.5; HUMAN-authored zero-decryptable-hits gates cover BOTH paths; a test asserts the confidential vector surface remains SEARCHABLE while mounted."
+    },
+    {
+      "risk": "OP-TEE/EKB hardware key anchor becomes a hard build wall (irreversible fuse-burn + secure-world C, documented NVIDIA-forum failures).",
+      "mitigation": "P0 default is the USERSPACE fTPM (tpm2-tools, no custom TA) or passphrase-KDF master key; OP-TEE/EKB is documented as OPTIONAL human-operator hardening (out of scope for the automated build) behind the SAME IKms; state plainly that fuse-burning Secure Boot is irreversible."
+    },
+    {
+      "risk": "Outcome-weighted graph write-back entrenches established investigators (incumbency bias).",
+      "mitigation": "Keep outcome weight TRANSPARENT and as ONE signal among expertise-similarity and connectivity, never the sole ranker; surface per-candidate 'why'; allow PI curation; expose a tunable weight and log its influence on rankings."
+    },
+    {
+      "risk": "CRDT confidential draft leaks via autosave/version-history/synthesizer buffers that bypass the encrypted store.",
+      "mitigation": "MAX-rule-tag the generated draft, autosave, and history as confidential and persist them ONLY via AES-GCM blob encryption in the per-tenant KEK-bound store; snapshot the CRDT doc on autosave intervals (not per-keystroke); HUMAN-authored test that no draft artifact lands in a non-encrypted store."
+    },
+    {
+      "risk": "A 30B builder mis-implements the multi-store decision composition and creates a fail-OPEN path, OR writes weak adversarial tests for its own safety net.",
+      "mitigation": "Fix ONE decision order in the kernel docs + a single PEP function; encode it as failing-if-violated CI gates AUTHORED BY A HUMAN (any-step-error->deny, lower-tier-cannot-construct, PIP-unavailable->deny); forbid scattering authz logic via import-linter; keep the order in CONVENTIONS as 'this file wins'."
+    },
+    {
+      "risk": "Phase-0 scope overwhelms a mid-size local builder (full security kernel + retrieval + router + ingestion + CRDT + write-back).",
+      "mitigation": "Sequence as a WALKING SKELETON: prove the loop end-to-end on the simplest substrate (one tenant pair, real-time editing only, binary allow/quarantine, drop-tablespace crypto-shred, single embedding space, HNSW only). Defer to P1: suggesting-mode, anchored comments, HippoRAG2, probabilistic identity blocking, the OP-TEE hardware anchor, RaBitQ >RAM index. Humans author the security CI tripwires."
+    },
+    {
+      "risk": "DuckDB + Postgres + vLLM RAM contention at ingest/writeback time (the prior 'headroom' was triple-counted).",
+      "mitigation": "THREE mutually-exclusive regimes (SERVE / INGEST-WINDOW / WRITEBACK-WINDOW): bulk ingestion runs serving-paused; DuckDB capped via SET memory_limit (8GB ingest, 4GB writeback) + capped threads; writeback gated behind a semaphore that yields to interactive generation; each regime's budget shown to fit (memory_budget)."
+    },
+    {
+      "risk": "Single box = single point of failure (no HA); a disk or power loss loses live state.",
+      "mitigation": "Postgres data+WAL on NVMe with synchronous_commit=on + local WAL+PITR backups to the HDD cold tier; durable fsync'd revocation log with rebuild-from-log recovery (refuse confidential reads until recovery completes); document RPO/RTO honestly as single-box pilot-scale."
+    },
+    {
+      "risk": "Builder reintroduces dropped/federation tech (OPA daemon, SpiceDB cluster, CloudHSM, MIG, second 30B process, Qdrant+OpenSearch, ALE-on-vectors) by following un-revised v2/CONVENTIONS docs.",
+      "mitigation": "Author a single-box CONVENTIONS that REVISES the contested pins (ABAC=in-Python, ReBAC=Postgres-CTE, KMS=LocalKms+fTPM/passphrase, retrieval=single-Postgres, GPU-isolation=prefix-off-on-one-process-not-MIG-not-second-copy, crypto-shred=encrypted-tablespace-for-searchable + AES-GCM-for-blobs, serving=3-vLLM-processes-or-ST-saver) and states 'this file wins'; cite the ARM64/Orin evidence inline."
+    },
+    {
+      "risk": "License contamination: a non-commercial PMC article or ODC-BY S2 data reaches a commercial feature, or confidential drafts mix with public CC0 records.",
+      "mitigation": "Carry a per-record provenance+license tag on every ingested entity; fail-closed commercial-use gate ingests only PMC 'Commercial Use Allowed'; store the ODC-BY attribution string with derived data; classification + RLS + the separate confidential surface keep confidential drafts physically separate from public corpus."
+    },
+    {
+      "risk": "Federation over-claim: assuming single-box mechanisms 'just become a transport addition' when they are semantically node-local.",
+      "mitigation": "15-future-federation-interfaces.md HONESTLY lists encrypted-tablespace/volume crypto-shred and local-only CTE ReBAC resolution as KNOWN federation-boundary REWRITES; annotates which seams carry forward cleanly (PublishableProjection.discoverability_scope, IExchangeFeed, owner-authoritative re-derivation) vs which do not; removes the blanket 'transport addition, not a rewrite' claim."
+    }
+  ],
+  "doc_set": [
+    {
+      "filename": "00-START-HERE.md",
+      "purpose": "Orientation + reading order + the single-box re-basing of the v2 plan set for the local builder.",
+      "key_contents": "What changed from the federated v2 plan; the D1-D14 decision map; the WALKING-SKELETON-first execution order (security kernel -> AI-plane embed/rerank slice -> data plane -> searchable crypto-shred -> features -> mod-workspace real-time -> loop); the four corrected criticals (no second 30B copy; encrypted-tablespace crypto-shred not ALE-on-vectors; fTPM/passphrase not OP-TEE; 3 vLLM processes not one); 'this doc set is the spec'."
+    },
+    {
+      "filename": "CONVENTIONS-single-box.md",
+      "purpose": "The authoritative 'this file wins' conventions, REVISED for the single Orin.",
+      "key_contents": "Package/import-root map; the REVISED pins (ABAC=in-Python, ReBAC=Postgres-CTE, KMS=LocalKms+fTPM/passphrase, retrieval=single-Postgres, GPU-isolation=prefix-off-one-process-NOT-MIG-NOT-second-copy, crypto-shred=encrypted-tablespace-for-searchable + AES-GCM-for-blobs, serving=3-vLLM-processes-or-ST-saver, SPECTER2=ingest-only); FORBIDDEN: second resident 30B, ALE-on-vectors, OP-TEE-as-build-deliverable; Python 3.11+; dagster>=1.8,<2; grants_gov enum; OpenAlex QUARTERLY+delta; precedence order; HUMAN-authors-security-CI-gates rule."
+    },
+    {
+      "filename": "01-product-and-loop-overview.md",
+      "purpose": "The product thesis and the compounding loop as the centerpiece.",
+      "key_contents": "Market gap; the five loop stages + the write-back edge; the Pursuit object; DUAL-SOURCE grounding (shared public + own-tenant confidential surface); activation north-star (cross-tenant collaborator_joined); empirical validation; what we deliberately do NOT build (breadth)."
+    },
+    {
+      "filename": "02-glossary-and-domain-primer.md",
+      "purpose": "Define every domain term once for a small-context builder.",
+      "key_contents": "Tenant/group, Tier/MAX-rule, PEP/broker, PublishableProjection, KEK/DEK/crypto-shred (encrypted-tablespace vs AES-GCM-blob), per-tenant confidential retrieval surface, ORCID/SciENcv/ROR/OpenAlex/Grants.gov/RePORTER, RRF/rerank/HippoRAG2, CRDT/real-time-mode, Pursuit/outcome/write-back."
+    },
+    {
+      "filename": "03-architecture-and-orin-constraints.md",
+      "purpose": "The high-level design + the hardware envelope.",
+      "key_contents": "Modular-monolith topology; the THREE mutually-exclusive memory regimes (SERVE/INGEST/WRITEBACK) with the corrected budget table; HDD/NVMe/RAM tiering; no-MIG/no-cloud/single-box; no-second-30B-copy; the federation seams (designed, not built) with HONEST carry-forward annotations; the pinned JetPack/CUDA/SM 8.7 baseline."
+    },
+    {
+      "filename": "04-tech-stack-and-arm64-runbook.md",
+      "purpose": "Every component with its ARM64/Orin status, exact install, and fallback.",
+      "key_contents": "THREE vLLM processes (or ST-in-process saver) + CUDA-context budget; Qwen3-30B-A3B INT4 ONE shared process; bge-m3/bge-reranker; SPECTER2 base+proximity-adapter via `adapters`, INGEST-ONLY/unload; Postgres+pgvector+native-BM25 (verified aarch64, benchmark on-box); DuckDB capped; Dagster; pycrdt; cryptography/AES-GCM (blobs only) + encrypted-tablespace/LUKS (searchable); fTPM tpm2-tools; the jetson-ai-lab index warning; per-layer fallbacks."
+    },
+    {
+      "filename": "05-kernel-contracts.md",
+      "purpose": "The frozen contracts kernel \u2014 verbatim types and interfaces.",
+      "key_contents": "Tier lattice + MAX-rule; TenantContext/Entitlement/Capability (incl. CONFIDENTIAL_RETRIEVAL); ClassificationResult/Decision; PublishableProjection (confidential-reject, discoverability_scope seam); all I* Protocols incl. IKms, IModelRouter, deferred IExchangeFeed/IRevocationAuthority; the kernel fitness function."
+    },
+    {
+      "filename": "06-security-spine-lld.md",
+      "purpose": "The complete security kernel design.",
+      "key_contents": "Fixed PEP decision order; FORCE-RLS footgun checklist + 4 bypass-lint vectors; in-Python ABAC + Postgres-CTE ReBAC (local-only caveat); crypto-shred SPLIT (encrypted-tablespace DEK-destroy for searchable; AES-GCM for blobs); LocalKms + fTPM/passphrase anchor (OP-TEE optional human hardening); per-tenant confidential retrieval surface isolation; owner-authoritative durable revocation + crash recovery; hash-chained audit; the HUMAN-AUTHORED security-contract CI suite."
+    },
+    {
+      "filename": "07-data-layer-and-retrieval-lld.md",
+      "purpose": "The single-Postgres data plane and two-stage retrieval.",
+      "key_contents": "Schema + RLS migrations; pgvector HNSW + native BM25 + RRF-in-SQL; the SHARED public index vs the per-tenant CONFIDENTIAL surface (on encrypted tablespaces); edge-table graph + recursive CTE + HippoRAG2 P1; chunking; reranker; on-aarch64 BM25 benchmark test; RaBitQ as P1 verify-then-adopt; RAGAS-in-CI with in-boundary judge; HDD/NVMe placement; partial-failure (degrade public, fail-closed confidential)."
+    },
+    {
+      "filename": "08-ai-plane-and-model-router-lld.md",
+      "purpose": "Classification-routed local inference and shared-generator KV isolation.",
+      "key_contents": "IModelRouter + provider registry; the ONE tier->locality policy table (router+transport hard-fail); confidential=local-only; ONE shared 30B generator with --enable-prefix-caching=False + serialized confidential requests (NO MIG, NO second copy; Qwen3-14B-with-30B-evicted only if true process isolation is ever needed); THREE vLLM processes (or ST saver); SPECTER2 ingest-only; async/queued drafting concurrency model."
+    },
+    {
+      "filename": "09-ingestion-and-identity-resolution-lld.md",
+      "purpose": "The HDD-aware classify-gates-index batch pipeline + the expertise graph build.",
+      "key_contents": "Dagster DAGs + outbox sensor; DuckDB capped out-of-core scoped OpenAlex->Parquet with updated_date DELTA ingestion; QUARTERLY free cadence (monthly=paid); small full sources + ORCID anchors-only; DETERMINISTIC ORCID/DOI/ROR (probabilistic blocking = P1); monotonic applier; two grant feeds; SPECTER2 batch-then-unload; license/provenance tagging; INGEST-WINDOW regime (serving paused)."
+    },
+    {
+      "filename": "10-feature-modules-lld.md",
+      "purpose": "The three read-side feature modules behind the PEP.",
+      "key_contents": "mod-discovery two-axis ranking (PUBLIC-tier only); mod-lit-intelligence DUAL-SOURCE grounded drafting (shared public + own-tenant confidential surface) + RAGAS gate; mod-funding opportunity match -> Pursuit + award feeds; the plug-in contract (import-linter + AST)."
+    },
+    {
+      "filename": "11-mod-workspace-confidential-coauthoring-lld.md",
+      "purpose": "The centerpiece: confidential cross-group CRDT co-authoring.",
+      "key_contents": "pycrdt + self-hosted websocket server; WALKING-SKELETON real-time mode (suggesting-mode + anchored comments = P1); Notion-style scoped roles + cascade + highest-permission-wins; AES-GCM blob snapshotting + MAX-rule tagging; indexing own-tenant drafts into the confidential surface; SharingGrant ReBAC; immediate revocation; crash recovery."
+    },
+    {
+      "filename": "12-collaboration-loop-and-writeback-lld.md",
+      "purpose": "The compounding edge and loop measurement.",
+      "key_contents": "Pursuit lifecycle state machine; proposal.outcome_recorded -> SEMAPHORE-GATED async Dagster enrichment (WRITEBACK-WINDOW: capped memory, yields to interactive generation) doing in-platform CO_PI_WITH edges, transparent outcome-weighted fingerprint, artifacts as WORK nodes via monotonic applier; the dedicated loop-event stream; activation north-star + funnel queries; the compounding contract test."
+    },
+    {
+      "filename": "13-data-model-and-schemas.md",
+      "purpose": "Concrete DDL + Pydantic models for every domain entity.",
+      "key_contents": "Tenant/User/Pursuit/Proposal/ConfidentialIndexEntry/Team/SharingGrant/RelationTuple/Work/Opportunity/Award/Fingerprint/CollaborationEdge/KEK/AuditEvent/LoopEvent; tenant_id-leading indexes; class_codes TEXT[]; confidential_tablespace_ref + tablespace_unlock_ref; frozen Pydantic v2 value objects."
+    },
+    {
+      "filename": "14-build-runbook-and-phases.md",
+      "purpose": "The TDD phase-by-phase build script with acceptance tests.",
+      "key_contents": "P0.0-P0.10 ordered phases with the CORRECTED ordering (AI-plane embed/rerank slice in P0.3 before data plane; P0.4 SPLIT into P0.4a blobs-no-store-dep and P0.4b searchable-after-P0.5); the failing tests, exact commands, commit messages per task; which tests are HUMAN-authored; the three memory regimes per phase; each phase 'done' only when its deliverable + contract tests are green."
+    },
+    {
+      "filename": "15-future-federation-interfaces.md",
+      "purpose": "The clean seams for the deferred cross-BOX layer (design now, build later) \u2014 HONEST about what carries forward.",
+      "key_contents": "IExchangeFeed / IRevocationAuthority / central read-PEP contracts; PublishableProjection.discoverability_scope; owner-authoritative re-derivation invariant; tombstone-epoch export shape; CARRY-FORWARD-CLEAN seams vs KNOWN FEDERATION-BOUNDARY REWRITES (encrypted-tablespace/volume crypto-shred is node-local; CTE ReBAC resolves local-only; both need rework for multi-node); where SpiceDB/MIG/cloud-KMS/OP-TEE would attach later \u2014 explicitly NOT built in Phase-0."
+    }
+  ]
+}
