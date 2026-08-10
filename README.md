@@ -343,7 +343,8 @@ See the [V2 Roadmap](docs/wiki/tigerbrain_v2_roadmap.md) and [Project Journey](d
 
 ## 📝 License
 
-MIT License - feel free to use for educational purposes
+Copyright (c) 2026 Anurag Lnu. All rights reserved.
+This repository and its contents are proprietary. See `/LICENSE` for full terms.
 
 ## 🤝 Contributing
 
