@@ -343,16 +343,18 @@ See the [V2 Roadmap](docs/wiki/tigerbrain_v2_roadmap.md) and [Project Journey](d
 
 ## 📝 License
 
-MIT License - feel free to use for educational purposes
+Copyright (c) 2026 Anurag Lnu. All rights reserved.
 
-## 🤝 Contributing
-
-This is a student project for RIT. Contributions welcome!
+This repository and its contents are proprietary. No permission is granted
+to use, copy, modify, distribute, sublicense, publish, or create derivative
+works from this software or its documentation for commercial, educational,
+personal, research, or any other purpose without prior written permission
+from the copyright holder.
 
 ## 📧 Contact
 
-For questions or collaboration, reach out through RIT channels.
+For questions or collaboration, reach out to anuragpandey2796@gmail.com
+
 
 ---
 
-**Built with ❤️ at RIT** 🐅
